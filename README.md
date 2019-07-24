@@ -70,3 +70,22 @@ Delta time is a reliable timer that allows programs to update data independently
 
 ## Pulses per quarter note 
 
+----
+
+
+
+## More ideas:
+
+move playhead around with html video, select a timestamp and commit the time stamp to an entire channel or a note on a channel. :))))))))
+
+then submit the timestamp key vals
+
+```
+ '34:45' : {
+    channel: 3,
+    notes: [3,44,3]
+ }
+
+```
+
+process, rinse and repeat. Take this data to concat new video. 
