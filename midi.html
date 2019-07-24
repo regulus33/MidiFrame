@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.0.13/Tone.min.js"></script>
+<script> 
+
+
+const main = () => {
+  
+  
+  navigator.requestMIDIAccess().then( access => {
+    console.log(access.inputs);
+    
+    const devices = access.inputs.values();
+    for (let device of devices ) {
+      device.onmidimessage = onMidiMessage 
+    }
+    
+  }).catch(console.error);
+  
+  
+  function onMidiMessage(message){
+    if(message.data[2] > 0) {
+        noteOn(message)
+    } else {
+        // noteOff(message)
+    }
+    
+  }
+
+  function noteOn(message) {
+        //inspect
+        console.log("NOTE ON!: ");
+        console.log(message);
+        //what is the timestamp?
+        console.log("Timestamp is: " + message.timeStamp);
+  }
+
+  function noteOff(message) {
+        //inspect
+        console.log("NOTE OFF!: " +  message);
+        //what is the timestamp?
+        console.log("Timestamp is: " + message.timeStamp);
+  }
+  
+}
+
+
+const setListener = () => {
+  document.getElementById("div").addEventListener("click", main)
+}
+
+
+window.onload = setListener;
+
+</script>
+
+<div id="div" style="width:100%;height:700px;background-color:red;">
+    touch me 
+  </div>
+    

@@ -1,0 +1,14 @@
+{
+  "name": "frtvertiiiiiiiii",
+  "version": "1.0.0",
+  "description": "MAMAMAM6666(^^^^(996",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Zeek the streak",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
