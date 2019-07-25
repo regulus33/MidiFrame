@@ -3,7 +3,46 @@
 <script> 
 
 
+//use this to determine which chanel an input comes from 
+
+//http://computermusicresource.com/MIDI.Commands.html?source=post_page---------------------------
+const CHANNELS = {
+    "144": "1",
+    "145": "2",
+    "146": "3",
+    "147": "4",
+    "148": "5",
+    "149": "6",
+    "150": "7",
+    "151": "8",
+    "152": "9",
+    "153": "10",
+    "154": "11",
+    "155": "12",
+    "156": "13",
+    "157": "14",
+    "158": "15",
+    "159": "16"
+}
+
+
+let channelsAndStamps = {}
+
 const main = () => {
+
+  function sendData() {
+     const Http = new XMLHttpRequest();
+     const url = "http://localhost:3000/midi"
+     Http.open("POST", url);
+     Http.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+     Http.send(JSON.stringify(channelsAndStamps));
+
+     Http.onreadystatechange = onsuccess; 
+  }
+
+  const onsuccess = (response) => {
+    console.log(response);
+  }
   
   
   navigator.requestMIDIAccess().then( access => {
@@ -11,7 +50,10 @@ const main = () => {
     
     const devices = access.inputs.values();
     for (let device of devices ) {
-      device.onmidimessage = onMidiMessage 
+      if (device.name == "OP-Z") {
+        device.onmidimessage = onMidiMessage
+        device.onstatechange = handleDeviceStateChange 
+      }
     }
     
   }).catch(console.error);
@@ -26,12 +68,21 @@ const main = () => {
     
   }
 
+  function handleDeviceStateChange(arg) {
+    if(arg.currentTarget.state == "disconnected") {
+      //sendchannelsandstamps to api
+      sendData();
+    }
+  }
+
   function noteOn(message) {
         //inspect
         console.log("NOTE ON!: ");
         console.log(message);
         //what is the timestamp?
         console.log("Timestamp is: " + message.timeStamp);
+        // debugger
+        commitValue(message.timeStamp, CHANNELS[message.data[0].toString()])
   }
 
   function noteOff(message) {
@@ -40,6 +91,13 @@ const main = () => {
         //what is the timestamp?
         console.log("Timestamp is: " + message.timeStamp);
   }
+
+  //build up our video script 
+  function commitValue(time, channel) {
+      channelsAndStamps[channel] = time
+      console.log("CHANNELSANDSTAMPS") 
+  }
+
   
 }
 
