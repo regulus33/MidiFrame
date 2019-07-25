@@ -1,3 +1,13 @@
+# Links 
+
+https://medium.com/abraia/basic-video-editing-for-social-media-with-ffmpeg-commands-1e873801659
+
+
+
+
+
+
+
 # Functionality 
 
 command line app does two things:
