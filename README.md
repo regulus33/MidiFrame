@@ -1,3 +1,16 @@
+# Ideas
+
+trim:
+
+`ffmpeg -i trailer_1080p.mov -ss 13.2 -to 16 video_clip.mp4`
+
+trim to new:
+
+`ffmpeg -i test_a.mp4 -ss 15 -t 60 -acodec copy -vcodec copy output.mp4`
+
+Output will be from 16 seconds to end of clip as 60 is longer than clip.
+
+
 # Links 
 
 https://medium.com/abraia/basic-video-editing-for-social-media-with-ffmpeg-commands-1e873801659
