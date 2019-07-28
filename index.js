@@ -83,9 +83,10 @@ async function writeMidi(midiJson) {
 
 
 const createVideo = (jsonMidi) => {
+    
 
     //build correct data object
-    
+
 
     
     //https://trac.ffmpeg.org/wiki/Concatenate
