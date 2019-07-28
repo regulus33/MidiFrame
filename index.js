@@ -9,6 +9,48 @@ const fs = require('fs').promises;
 // This must run inside a function marked `async`:
 
 
+//use this to determine which chanel an input comes from 
+
+//http://computermusicresource.com/MIDI.Commands.html?source=post_page---------------------------
+const ON_CHANNELS = {
+    "144": "1",
+    "145": "2",
+    "146": "3",
+    "147": "4",
+    "148": "5",
+    "149": "6",
+    "150": "7",
+    "151": "8",
+    "152": "9",
+    "153": "10",
+    "154": "11",
+    "155": "12",
+    "156": "13",
+    "157": "14",
+    "158": "15",
+    "159": "16"
+}
+
+const OFF_CHANNELS = {
+    '128': '1',
+    '129': '2',
+    '130': '3',
+    '131': '4',
+    '132': '5',
+    '133': '6',
+    '134': '7',
+    '135': '8',
+    '136': '9',
+    '137': '10',
+    '138': '11',
+    '139': '12',
+    '140': '13',
+    '141': '14',
+    '142': '15',
+    '143': '16'
+}
+
+
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
 
@@ -41,6 +83,10 @@ async function writeMidi(midiJson) {
 
 
 const createVideo = (jsonMidi) => {
+
+    //build correct data object
+    
+
     
     //https://trac.ffmpeg.org/wiki/Concatenate
     // async function ls() {
@@ -49,5 +95,10 @@ const createVideo = (jsonMidi) => {
     //   console.log('stderr:', stderr);
     // }
     // ls();
+
+    //event_pair = [{start: 46665, stop: 5778, channel: 3}]
+    //generate empty video of track length
+    //now join videos at even timestamps, trim to be duratio of note on to off and insert at timestamp. 
+
 
 }
