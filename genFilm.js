@@ -64,15 +64,15 @@ const sortedChannels = {
     "16":[]
 }
 
-
+//in seconds, so 121 is two min and one second
 channelStartPoints = {
-    "1":2.45,
+    "1":121,
     "2":3.67,
     "3":6.78,    
 }
 
 channelVideos = {
-    "1":"test_a.mp4",
+    "1":"wood.mp4",
     "2":"test_b.mp4",
     "3":"test_b.mp4" 
 }
@@ -91,9 +91,19 @@ fs.readFile(midiFile, 'utf8', function(err, data) {
     //kick drum has priority or channel 1
     fs.writeFileSync(path.join(__dirname + '/json/processed.json'), JSON.stringify(sortedChannels));
 
-    sortedChannels["1"].forEach((e) => {
-        let start = channelStartPoints["1"]
-        let video = channelVideos["1"]
+
+    for(i=0; i < sortedChannels["1"].length; i++) {
+        if(!sortedChannels["1"][i].noteOn) {
+                //if this is note off, great! Lets go get the note on that got us here in the first place, i -1 should do it!
+            let startOfNote = sortedChannels["1"][i-1].time
+            let endOfNote = sortedChannels["1"][i].time 
+            let clipLength =  endOfNote - startOfNote
+            exec(`ffmpeg -i ${path.join(__dirname + '/video_pool/wood.mp4')} -ss ${channelStartPoints["1"]} -t ${clipLength} -async 1 ${path.join(__dirname)}/channel_1/${startOfNote}.mp4`)
+        
+        }
+
+        // let start = channelStartPoints["1"]
+        // let video = channelVideos["1"]
          
         // 1. GENERATE CLIPS
         //choose 2:01 in video_pool/wood.mp4 
@@ -114,8 +124,11 @@ fs.readFile(midiFile, 'utf8', function(err, data) {
         //3. MERGE CLIP
         //finally, sort all files by title in numerical order from smallest in a list
         //print each file name to input.txt file, write it, run ffmpeg concat and wait :) 
+
+
+      
         
-    })
+    }
 
 });
 
