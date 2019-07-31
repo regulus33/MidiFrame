@@ -60,6 +60,7 @@ app.use(bodyParser.json())
 const port = 3000
 
 app.get('/', (req, res) => res.sendFile(path.join(__dirname + '/midi.html')))
+app.get('/recorder.js', (req, res) => res.sendFile(path.join(__dirname + '/vendor/recorder.js')))
 
 app.listen(port, () => console.log(`Listening on ${port}!`))
 
