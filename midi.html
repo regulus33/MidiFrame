@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.0.13/Tone.min.js"></script>
-<script> 
+<script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
+<script>
 
+const iterableEmojis = ["✌","😂","😝","😁","😱","👉","🙌","🍻","🔥","🌈","☀","🎈","🌹","💄","🎀","⚽","🎾","🏁","😡","👿","🐻","🐶","🐬","🐟","🍀","👀","🚗","🍎","💝","💙","👌","❤","😍","😉","😓","😳","💪","💩","🍸","🔑","💖","🌟","🎉","🌺","🎶","👠","🏈","⚾","🏆","👽","💀","🐵","🐮","🐩","🐎","💣","👃","👂","🍓","💘","💜","👊","💋","😘","😜","😵","🙏","👋","🚽","💃","💎","🚀","🌙","🎁","⛄","🌊","⛵","🏀","🎱","💰","👶","👸","🐰","🐷","🐍","🐫","🔫","👄","🚲","🍉","💛","💚"]
 
 //use this to determine which chanel an input comes from 
 
@@ -56,10 +58,10 @@ const main = () => {
      Http.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
      Http.send(JSON.stringify(channelsAndStamps));
 
-     Http.onreadystatechange = onsuccess; 
+     Http.onreadystatechange = onRequestSuccess; 
   }
 
-  const onsuccess = (response) => {
+  const onRequestSuccess = (response) => {
     console.log(response);
   }
   
@@ -82,7 +84,13 @@ const main = () => {
     console.log(message.data[0].toString())
     if ((ON_CHANNELS[message.data[0].toString()] != undefined) || (OFF_CHANNELS[message.data[0].toString()] != undefined)) {
       channelsAndStamps.push({"noteChannel": message.data[0], "timeStamp": event.timeStamp })
-    }
+      //////FOR FUN :)DDD///////
+      ///  
+      //////////////////////////
+      document.getElementById("div").style["background-color"] = '#'+Math.floor(Math.random()*16777215).toString(16)
+      ////more fuuuuuuuuuuuuuuun
+      document.getElementById("iterableEmoji").innerText = iterableEmojis[Math.round(Math.random() * (iterableEmojis.length - 1))]
+    } 
 
   }
 
@@ -92,7 +100,7 @@ const main = () => {
       sendData();
     }
   }
-  
+
 }
 
 
@@ -106,24 +114,7 @@ window.onload = setListener;
 </script>
 
 <div id="div" style="width:100%;height:700px;background-color:cornflowerblue;">
-    CLICK
-    CLICK
-    CLICK
-    CLICK
-    CLICK
-    CLICK
-    CLICK
-    CLICK
-    CLICK
-    CLICK
-    CLICK
-    CLICK
-    CLICK
-    CLICK
-    CLICK
-    CLICK
-    CLICK
-    CLICK
-    CLICK
-  </div>
+  <h1 style="text-align:center; letter-spacing: 5px;font-family: Arial, Helvetica, sans-serif; color: white">CLICK ANYWHERE TO BEGIN... THEN PRESS PLAY ON YOUR OPZ</h1>
+  <h1 id="iterableEmoji" style="text-align:center; font-size: 90px">💀</h1>
+</div>
     
