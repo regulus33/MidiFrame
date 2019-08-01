@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const app = express();
 var path = require('path');
 const fs = require('fs').promises;
+var fileUpload = require('express-fileupload');
 
 // This must run inside a function marked `async`:
 
@@ -54,16 +55,19 @@ const OFF_CHANNELS = {
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
 
+app.use(fileUpload());
+
+
 // parse application/json
 app.use(bodyParser.json())
 
 const port = 3000
 
 app.get('/', (req, res) => res.sendFile(path.join(__dirname + '/midi.html')))
+
 app.get('/recorder.js', (req, res) => res.sendFile(path.join(__dirname + '/vendor/recorder.js')))
 
 app.listen(port, () => console.log(`Listening on ${port}!`))
-
 
 app.post('/midi',function(req,res){
     const song = req.body 
@@ -75,6 +79,17 @@ app.post('/midi',function(req,res){
     console.log("file is written file")
 });
 
+
+app.post('/audio', (req, res) => {
+    debugger
+    console.log(req.files.data);
+    
+    req.files.audio_data.mv(path.join(__dirname + '/test.wav'), (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+});
 
 async function writeMidi(midiJson) {
     await fs.writeFile(path.join(__dirname + '/json/miditest.json'), JSON.stringify(midiJson));

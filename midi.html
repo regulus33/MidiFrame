@@ -3,11 +3,31 @@
 <script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
 <script>
 
-const iterableEmojis = ["✌","😂","😝","😁","😱","👉","🙌","🍻","🔥","🌈","☀","🎈","🌹","💄","🎀","⚽","🎾","🏁","😡","👿","🐻","🐶","🐬","🐟","🍀","👀","🚗","🍎","💝","💙","👌","❤","😍","😉","😓","😳","💪","💩","🍸","🔑","💖","🌟","🎉","🌺","🎶","👠","🏈","⚾","🏆","👽","💀","🐵","🐮","🐩","🐎","💣","👃","👂","🍓","💘","💜","👊","💋","😘","😜","😵","🙏","👋","🚽","💃","💎","🚀","🌙","🎁","⛄","🌊","⛵","🏀","🎱","💰","👶","👸","🐰","🐷","🐍","🐫","🔫","👄","🚲","🍉","💛","💚"]
+
+// )  (
+//      (   ) )
+//       ) ( (
+//  mrf_______)_
+//  .-'---------|  
+// ( C|/\/\/\/\/|
+//  '-./\/\/\/\/|
+//    '_________'
+//     '-------'
 
 //use this to determine which chanel an input comes from 
 
 //http://computermusicresource.com/MIDI.Commands.html?source=post_page---------------------------
+
+// M I D I ---- C H A N N E L - M A P P I N G S
+//   .---------.
+//   |.-------.|
+//   ||>run#  ||
+//   ||       ||
+//   |"-------'|etf
+// .-^---------^-.
+// | ---~   AMiGA|
+// "-------------'
+
 const ON_CHANNELS = {
     "144": "1",
     "145": "2",
@@ -47,11 +67,78 @@ const OFF_CHANNELS = {
 }
 
 
+
+let dirty = false 
+
 let channelsAndStamps = []
+  /////setup audio recording 
+let gumStream;
+  //stream from getUserMedia() 
+let rec;
+  //Recorder.js object 
+let input;
 
-const main = () => {
+const iterableEmojis = ["✌","😂","😝","😁","😱","👉","🙌","🍻","🔥","🌈","☀","🎈","🌹","💄","🎀","⚽","🎾","🏁","😡","👿","🐻","🐶","🐬","🐟","🍀","👀","🚗","🍎","💝","💙","👌","❤","😍","😉","😓","😳","💪","💩","🍸","🔑","💖","🌟","🎉","🌺","🎶","👠","🏈","⚾","🏆","👽","💀","🐵","🐮","🐩","🐎","💣","👃","👂","🍓","💘","💜","👊","💋","😘","😜","😵","🙏","👋","🚽","💃","💎","🚀","🌙","🎁","⛄","🌊","⛵","🏀","🎱","💰","👶","👸","🐰","🐷","🐍","🐫","🔫","👄","🚲","🍉","💛","💚"]
 
-  function sendData() {
+//   RECORD THAT MIDI.... FAST
+// +--^----------,--------,-----,--------^-,
+//  | |||||||||   `--------'     |          O
+//  `+---------------------------^----------|
+//    `\_,---------,---------,--------------'
+//      / XXXXXX /'|       /'
+//     / XXXXXX /  `\    /'
+//    / XXXXXX /`-------'
+//   / XXXXXX /
+//  / XXXXXX /
+// (________(                
+//  `------'   
+
+const requestMIDIAccess = () => {
+    navigator.requestMIDIAccess().then( access => {
+      console.log(access.inputs);
+      
+      const devices = access.inputs.values();
+      for (let device of devices ) {
+        if (device.name == "OP-Z") {
+          device.onmidimessage = onMidiMessage
+          device.onstatechange = handleOPZChange 
+        }
+      }
+    }).catch(console.error);
+}
+
+const onRequestSuccess = (response) => {
+    console.log(response);
+}
+  
+const onMidiMessage = (message) => { 
+  console.log(message.data[0].toString())
+  if ((ON_CHANNELS[message.data[0].toString()] != undefined) || (OFF_CHANNELS[message.data[0].toString()] != undefined)) {
+  
+    !dirty ? setupAndBeginRecording() : ""
+
+    dirty = true 
+    
+    channelsAndStamps.push({"noteChannel": message.data[0], "timeStamp": event.timeStamp })
+    //////FOR FUN :)DDD///////
+    ///  
+    //////////////////////////
+    document.getElementById("div").style["background-color"] = '#'+Math.floor(Math.random()*16777215).toString(16)
+    ////more fuuuuuuuuuuuuuuun
+    document.getElementById("iterableEmoji").innerText = iterableEmojis[Math.round(Math.random() * (iterableEmojis.length - 1))]
+  } 
+}
+
+  // send data once opz is disconnected
+const handleOPZChange = (arg) => {
+  if(arg.currentTarget.state == "disconnected") {
+    sendDataMidi();
+    //colects BLOB and sends the audio to the server
+    stopRecording();
+  }
+}
+
+const sendDataMidi = () => {
      const Http = new XMLHttpRequest();
      const url = "http://localhost:3000/midi"
      Http.open("POST", url);
@@ -59,56 +146,76 @@ const main = () => {
      Http.send(JSON.stringify(channelsAndStamps));
 
      Http.onreadystatechange = onRequestSuccess; 
-  }
-
-  const onRequestSuccess = (response) => {
-    console.log(response);
-  }
-  
-  
-  navigator.requestMIDIAccess().then( access => {
-    console.log(access.inputs);
-    
-    const devices = access.inputs.values();
-    for (let device of devices ) {
-      if (device.name == "OP-Z") {
-        device.onmidimessage = onMidiMessage
-        device.onstatechange = handleDeviceStateChange 
-      }
-    }
-    
-  }).catch(console.error);
-  
-  
-  function onMidiMessage(message){
-    console.log(message.data[0].toString())
-    if ((ON_CHANNELS[message.data[0].toString()] != undefined) || (OFF_CHANNELS[message.data[0].toString()] != undefined)) {
-      channelsAndStamps.push({"noteChannel": message.data[0], "timeStamp": event.timeStamp })
-      //////FOR FUN :)DDD///////
-      ///  
-      //////////////////////////
-      document.getElementById("div").style["background-color"] = '#'+Math.floor(Math.random()*16777215).toString(16)
-      ////more fuuuuuuuuuuuuuuun
-      document.getElementById("iterableEmoji").innerText = iterableEmojis[Math.round(Math.random() * (iterableEmojis.length - 1))]
-    } 
-
-  }
-
-  // send data once opz is disconnected
-  function handleDeviceStateChange(arg) {
-    if(arg.currentTarget.state == "disconnected") {
-      sendData();
-    }
-  }
-
 }
+
+const setupAndBeginRecording = () => {
+    // shim for AudioContext when it's not avb. 
+    let AudioContext = window.AudioContext || window.webkitAudioContext;
+    let audioContext = new AudioContext;
+  //new audio context to help us record 
+    let constraints = {
+      audio: true,
+      video: false
+    } 
+    navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
+      console.log("getUserMedia() success, stream created, initializing Recorder.js ..."); 
+      /* assign to gumStream for later use */
+      gumStream = stream;
+      /* use the stream */
+      input = audioContext.createMediaStreamSource(stream);
+      //stereo 
+      rec = new Recorder(input, {
+          numChannels: 2
+      }) 
+      //start the recording process 
+      rec.record()
+      console.log("Recording started");
+    }).catch(function(err) {
+        console.log(`couldnt get user media becuase: ${err}`)
+    });
+}
+
+
+const stopRecording = () => {
+    console.log("recording stopped")
+    //tell the recorder to stop the recording 
+    rec.stop(); //stop microphone access 
+    gumStream.getAudioTracks()[0].stop();
+    //create the wav blob and pass it on to createDownloadLink 
+    rec.exportWAV(sendAudio);
+}
+
+
+const sendAudio = (blob) => {
+  let xhr = new XMLHttpRequest();
+  xhr.onload = (e) => {
+      if (this.readyState === 4) {
+          console.log("Server returned: ", e.target.responseText);
+      }
+  };
+  var fd = new FormData();
+  fd.append("audio_data", blob, "test.wav");
+  xhr.open("POST", "http://localhost:3000/audio", true);
+  xhr.send(fd);
+  console.log("send req for song audio")
+}
+//   /|
+//        =  =  =      / |
+//   ____| || || |____/  | -_-_-_-_-_-_
+// |)----| || || |____   |    MAGIC HAPPENS HERE CUZ WE NEED TO MAKE USER CLICK FIRST NOW 
+//   ((  | || || |  ))\  | _-_-_-_-_-_-
+//    \\_|_||_||_|_//  \ |
+//     \___________/    \|
+
+
+const main = () => {
+  requestMIDIAccess()     
+} //end main
 
 
 const setListener = () => {
   document.getElementById("div").addEventListener("click", main)
 }
-
-
 window.onload = setListener;
 
 </script>
@@ -118,3 +225,7 @@ window.onload = setListener;
   <h1 id="iterableEmoji" style="text-align:center; font-size: 90px">💀</h1>
 </div>
     
+
+
+
+
