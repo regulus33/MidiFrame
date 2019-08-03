@@ -1,0 +1,25 @@
+ffmpeg -i inputs0.mp4 -i inputs1.mp4 -i inputs2.mp4 -i inputs3.mp4 -i inputs4.mp4 -i inputs5.mp4 \
+-filter_complex \
+"[0:v]trim=3.001,scale=1280:720,setpts=PTS-STARTPTS[v0]; \
+ [1:v]trim=30:36,setpts=PTS-STARTPTS[v1]; \
+ [2:v]trim=5:12,setpts=PTS-STARTPTS[v2]; \
+ [3:v]trim=46:56,scale=1280:720,setpts=PTS-STARTPTS[v3]; \
+ [4:v]trim=2:19,setpts=PTS-STARTPTS[v4]; \
+ [5:v]trim=128:166,setpts=PTS-STARTPTS[v5]; \
+ [v0][v1][v2][v3][v4][v5]concat=n=6:v=1:a=0[v]"
+-map "[v]" -c:v h264_omx outputss.mp4
+
+
+ffmpeg -i inputs0.mp4 -i inputs1.mp4 -i inputs2.mp4 -i inputs3.mp4 -i inputs4.mp4 -i inputs5.mp4 \
+-filter_complex \
+"[0:v]trim=0000000000.001,scale=1280:720,setpts=PTS-STARTPTS[v0]; \
+[1:v]trim=0.001,setpts=PTS-STARTPTS[v1]; \
+[3:v]trim=0.001,scale=1280:720,setpts=PTS-STARTPTS[v3]; \
+[4:v]trim=0.001,setpts=PTS-STARTPTS[v4]; \
+[5:v]trim=0.0011,setpts=PTS-STARTPTS[v5]; \
+[v0][v1][v2][v3][v4][v5]concat=n=6:v=1:a=0[v]"
+-map "[v]" -c : v h264_omx ./outputbro.mp4
+
+
+
+
