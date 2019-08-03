@@ -1,5 +1,4 @@
 const express = require('express');
-const util = require('util');
 // const exec = util.promisify(require('child_process').exec);
 // const { exec } = require('child_process');
 const execSync = require('child_process').execSync;
@@ -96,8 +95,8 @@ fs.readFile(midiFile, 'utf8', function(err, data) {
     sortAndProcessData(jsonData);
     //kick drum has priority or channel 1
     fs.writeFileSync(path.join(__dirname + '/json/processed.json'), JSON.stringify(sortedChannels));
-
-    execSync(`rm -rf ${path.join(__dirname)}/channel_1/./*`)
+    //clean old slices 
+    execSync(`rm -rf ${path.join(__dirname)}/midi_slices/channel_1/./*`)
 
     for(i=0; i < sortedChannels["1"].length; i++) {
         if(!sortedChannels["1"][i].noteOn) {
@@ -107,9 +106,7 @@ fs.readFile(midiFile, 'utf8', function(err, data) {
             let clipLength =  endOfNote - startOfNote
             if(i != sortedChannels["1"].length -1 ) {
                 let timeTilNext = sortedChannels["1"][i+1].time - startOfNote                                       //was cliplength 
-                execSync(`ffmpeg -i ${path.join(__dirname + '/video_pool/wood.mp4')} -ss ${channelStartPoints["1"]} -t ${timeTilNext} -async 1 ${path.join(__dirname)}/channel_1/${startOfNote}.mp4`)
-
-                // execSync(`ffmpeg -i ${path.join(__dirname + '/video_pool/wood.mp4')} -ss ${channelStartPoints["1"]} -c copy -t ${timeTilNext} ${path.join(__dirname)}/channel_1/${startOfNote}.mp4`)
+                execSync(`ffmpeg -i ${path.join(__dirname + '/assets/video_bank/wood.mp4')} -ss ${channelStartPoints["1"]} -t ${timeTilNext} -async 1 ${path.join(__dirname)}/midi_slices/channel_1/${startOfNote}.mp4`)
             }
         }
 
@@ -144,7 +141,7 @@ fs.readFile(midiFile, 'utf8', function(err, data) {
     concatInstructionsString = ""
 
     //video trim now complete, time to concat all files 
-    const directoryPath = path.join(__dirname, '/channel_1');
+    const directoryPath = path.join(__dirname, '/midi_slices/channel_1');
     //passsing directoryPath and callback function
     var files =  fs.readdirSync(directoryPath)
         // //handling error
@@ -155,13 +152,13 @@ fs.readFile(midiFile, 'utf8', function(err, data) {
         files.forEach((file) => {
             console.log(file); 
             if(file != ".DS_Store") {
-                concatInstructionsString += "file" + " '" + path.join(__dirname + "/channel_1/") + file + "'" + "\n"
+                concatInstructionsString += "file" + " '" + path.join(__dirname + "/midi_slices/channel_1/") + file + "'" + "\n"
             }   
 
         });
         fs.writeFileSync(path.join(__dirname + '/input.txt'), concatInstructionsString );
 
-        execSync(`ffmpeg -f concat -safe 0 -i ${path.join(__dirname + '/input.txt')} -c copy concated.mp4`)
+        execSync(`ffmpeg -f concat -safe 0 -i ${path.join(__dirname + '/input.txt')} -c copy outputs/video_${Date.now()}.mp4`)
             
 
 });
