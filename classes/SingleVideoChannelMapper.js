@@ -73,7 +73,6 @@ module.exports = class SingleVideoChannelMidiMapper {
         return pathFile;
     }
 
-
     executeConcat(pathFile) {
         execSync(`ffmpeg -f concat -safe 0 -i ${pathFile} -c copy outputs/video_${Date.now()}.mp4`)
     }
@@ -96,6 +95,12 @@ module.exports = class SingleVideoChannelMidiMapper {
             }
 
         })
+    }
+
+    _removeAudio(vidName) {
+        let newPath = `${this._app_directory()}/${vidName}_nosound.mp4`;
+        `ffmpeg -i ${this._app_directory()}/${vidName}.mp4 -c copy -an ${newPath}`;
+        return newPath;
     }
 
     _millisToSeconds(millis){
