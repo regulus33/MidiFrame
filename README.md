@@ -116,3 +116,26 @@ then submit the timestamp key vals
 ```
 
 process, rinse and repeat. Take this data to concat new video. 
+
+
+## Sunday aug 4th
+
+refactored everything into a class. 
+
+Now we need to merge the audio with the vid. 
+
+`ffmpeg -i "./outputs/video_1564874385172.mp4" -i "./assets/audio/audio_1564874385571.wav" -shortest outPutFile.mp4`
+
+this works super well but looks like we might also need to offset the audio based on some reliable conditions: 
+
+looks like:
+
+`ffmpeg -i input_vid.mp4 -itsoffset 00:00:05.0 -i ./assets/audio/audio_1564874385571.wav -vcodec copy -acodec copy output.mp4`
+
+anyway! today's checklist:
+
+automote audio + video stitching (maybe subtract audio first for performance??? if easy)
+
+Begin writing and conceiving of the algo to process more than a single channel with a single note.
+
+Draft out a way to represent these mappings in the gui.

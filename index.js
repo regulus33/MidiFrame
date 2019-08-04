@@ -1,6 +1,4 @@
 const express = require('express');
-const util = require('util');
-const execSync = require('child_process').execSync;
 const bodyParser = require('body-parser');
 const app = express();
 const path = require('path');
@@ -25,7 +23,7 @@ app.get('/', (req, res) => res.sendFile(path.join(__dirname + '/views/midi.html'
 
 app.post('/midi',(req,res) => {
 
-    const song = req.body 
+    const song = req.body; 
      
     mapper = new SingleVideoChannelMapper("1","wood.mp4",song);
 
@@ -33,7 +31,7 @@ app.post('/midi',(req,res) => {
 
     let pathFile = mapper.buildFFMPEGConcatFile("input");
     
-    mapper.executeConcat(pathFile)
+    mapper.executeConcat(pathFile);
 
     res.end("OK");
 
@@ -45,14 +43,10 @@ app.post('/audio', (req, res) => {
       if (err) {
         console.log(err);
       } else {
-          console.log(`File written to: `)
+        console.log(`File written to: `);
       }
     });
 });
 
- const writeMidi = (midiJson) => {
-    fs.writeFileSync(path.join(__dirname + '/json/miditest.json'), JSON.stringify(midiJson));
-    // execSync("node genFilm.js")
 
-}
 
