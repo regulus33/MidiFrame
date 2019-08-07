@@ -32,6 +32,8 @@ module.exports = class SingleVideoChannelMidiMapper {
 
     //slices the channel's video into mp4s in an isolated direcoty where each video file is named the same as its timestamp and therefore sorted in order for concatenation later 
     sliceChannelVid() {
+
+        execSync(`rm -rf ${this._app_directory()}/midi_slices/channel_${this.channel}/./*`)
         
         for(let i=0; i < this.sortedChannels["1"].length; i++) {
             if(!this.sortedChannels["1"][i].noteOn) {
