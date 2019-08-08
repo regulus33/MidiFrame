@@ -1,4 +1,4 @@
-import Recorder from 'recorderjs'
+
 // )  (
 //      (   ) )
 //       ) ( (
@@ -102,7 +102,7 @@ export default class SingleChannelHelper {
 
     //first thing that needs to happen 
     //get connection to opz 
-    requestMIDIAccess() {
+    requestMIDIAccess = () => {
         //comes from the navigator object (as per usual, thats where all the good stuff is in chrome anyway)
         navigator.requestMIDIAccess().then( access => {
           //there should really only be one here, but you never know 
@@ -115,6 +115,7 @@ export default class SingleChannelHelper {
             //when the use turns of the opz, we'll send our message
             //we need to swap this out with a record button. 
             if (device.name == "OP-Z") {
+              console.log(device.name)
               device.onmidimessage = this.onMidiMessage //keep
               device.onstatechange = this.handleOPZChange //change to have msg sent when we hit stop button 
             }
@@ -128,7 +129,7 @@ export default class SingleChannelHelper {
         console.log(response);
     }
     //literally fires every time a midi msg is sent from the opz  
-    onMidiMessage(message,e){
+    onMidiMessage = (message) => {
       //message data 0 is telling us if we are an off or on channel and which channel (1 - 16) at the same time 
       console.log(message.data[0].toString())
       //if its an on channel or off, its relevant, so commit it to the json 
@@ -138,8 +139,8 @@ export default class SingleChannelHelper {
           this.setupAndBeginRecording()  
          } 
          this.dirty = true 
-        //here we push into an unprocessed array, we shall return to this in a while. 
-        this.channelsAndStamps.push({"noteChannel": message.data[0], "timeStamp": e.timeStamp })
+        //here we push into an unprocessed array, we shall return to this in a while
+        this.channelsAndStamps.push({"noteChannel": message.data[0], "timeStamp": message.timeStamp })
         //////FOR FUN :)DDD///////
         ///  <<<<<<<><>>>>>>>>>>>..
         //////////////////////////
@@ -150,7 +151,7 @@ export default class SingleChannelHelper {
     }
     
       // send data once opz is disconnected
-    handleOPZChange(arg) {
+    handleOPZChange = (arg) => {
 
       if(arg.currentTarget.state == "disconnected") {
         this.sendDataMidi();
@@ -160,7 +161,7 @@ export default class SingleChannelHelper {
 
     }
     
-    sendDataMidi(){
+    sendDataMidi = () => {
          const Http = new XMLHttpRequest();
          const url = "http://localhost:3000/midi"
          Http.open("POST", url);
@@ -170,7 +171,7 @@ export default class SingleChannelHelper {
          Http.onreadystatechange = this.onMidiSentSuccess; 
     }
     
-    setupAndBeginRecording(){
+    setupAndBeginRecording = () => {
         // shim for AudioContext when it's not avb. 
         let AudioContext = this.window.AudioContext || this.window.webkitAudioContext;
         let audioContext = new AudioContext;
@@ -186,7 +187,7 @@ export default class SingleChannelHelper {
           /* use the stream */
           this.input = audioContext.createMediaStreamSource(stream);
           //stereo 
-          this.rec = new Recorder(this.input, {
+          this.rec = new window.Recorder(this.input, {
               numChannels: 2
           }) 
           //start the recording process 
@@ -198,7 +199,7 @@ export default class SingleChannelHelper {
     }
     
     
-    stopRecording(){
+    stopRecording = () => {
         console.log("recording stopped")
         //tell the recorder to stop the recording 
         this.rec.stop(); //stop microphone access 
@@ -208,7 +209,7 @@ export default class SingleChannelHelper {
     }
     
     
-    sendAudio(blob){
+    sendAudio = (blob) => {
       let xhr = new XMLHttpRequest();
       xhr.onload = (e) => {
           if (this.readyState === 4) {
