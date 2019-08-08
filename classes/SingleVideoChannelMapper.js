@@ -8,11 +8,13 @@ const CHANNEL_TEMPLATE = {"1":[],"2":[],"3":[],"4":[],"5":[],"6":[],"7":[],"8":[
 //this is a template that we'll plug our unsorted data into and extract channels/insert data into in an organizzzzed fash brash 
 //https://video.stackexchange.com/questions/25291/how-to-precisely-trim-video-with-ffmpeg-ss-and-t-are-off-by-more-than-a-half
 //in seconds, so 121 is two min and one second
+
 channelStartPoints = {
     "1":121,
     "2":3.67,
     "3":6.78,    
 }
+
 channelVideos = {
     "1":"wood.mp4",
     "2":"test_b.mp4",
