@@ -150,7 +150,7 @@ export default class SingleChannelHelper {
       } 
     }
     
-      // send data once opz is disconnected
+    // send data once opz is disconnected
     handleOPZChange = (arg) => {
 
       if(arg.currentTarget.state == "disconnected") {
