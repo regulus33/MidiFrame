@@ -24,10 +24,13 @@ channelVideos = {
 module.exports = class SingleVideoChannelMidiMapper {
     
     constructor(channel, video, data) {
+        this.offset = null;
+        this.finalOutputPath = null;
         this.video = video;
         this.channel = channel;
         this.sortedChannels = {"1":[],"2":[],"3":[],"4":[],"5":[],"6":[],"7":[],"8":[],"9":[],"10":[],"11":[],"12":[],"13":[],"14":[],"15":[],"16":[]};
-        this.slicedVidsDirectoryPath = this._app_directory() + `/midi_slices/channel_${this.channel}`;
+        this.slicedVidsDirectoryPath = `${this._app_directory()}/midi_slices/channel_${this.channel}`;
+        this.audio_dir_path = `${this._app_directory()}/assets/audio/`
         //the method here just sets this.sortedChannels to the relevant data 
         this._processMidiDataForChannelSlicing(data);
     }
@@ -48,7 +51,7 @@ module.exports = class SingleVideoChannelMidiMapper {
                 
                 if(i != this.sortedChannels["1"].length -1 ) {
                     let timeTilNext = this.sortedChannels["1"][i+1].time - startOfNote                                       //was cliplength 
-                    execSync(`ffmpeg -i ${this._app_directory()}` + `/assets/video_bank/${this.video}` + " -ss " + `${channelStartPoints["1"]} -t ${timeTilNext} -async 1 ${path.join(this._app_directory())}/midi_slices/channel_1/${startOfNote}.mp4`)
+                    execSync(`ffmpeg -i ${this._app_directory()}` + `/assets/video_bank/${this.video}` + " -ss " + `${channelStartPoints["1"]} -t ${timeTilNext} -async 1 -y ${path.join(this._app_directory())}/midi_slices/channel_1/${startOfNote}.mp4`)
                 }
             }
         }
@@ -68,6 +71,8 @@ module.exports = class SingleVideoChannelMidiMapper {
                 //each line looks like:
                 // file 'path/to/file.mp4'
                 concatInstructionsString += "file" + " '" + path.join(this._app_directory() + "/midi_slices/channel_1/") + file + "'" + "\n"
+                console.log("concat instructions::::")
+                console.log(concatInstructionsString)
             }   
 
         });
@@ -78,7 +83,12 @@ module.exports = class SingleVideoChannelMidiMapper {
     }
 
     executeConcat(pathFile) {
+        console.log('\x1b[36m%s\x1b[0m', 'executeConcat');
+        //we need this to know where the clip we need to trim will be 
+        this.finalOutputPath = `outputs/video_${Date.now()}.mp4`
         execSync(`ffmpeg -f concat -safe 0 -i ${pathFile} -c copy outputs/video_${Date.now()}.mp4`)
+        this._trimVideoFromOffset()
+        this._addAudioToVideo()
     }
 
     _app_directory() {
@@ -88,9 +98,13 @@ module.exports = class SingleVideoChannelMidiMapper {
     }
 
     _processMidiDataForChannelSlicing(data) {
+        //extract the offset first, you dont want this to be affecting data later on down the line 
+         this.offset = data.pop()
+        console.log(`offset is ${this.offset}`)
+        console.log(`last index of data is ${data[data.length-1]}`)
         console.log("processing data: " + data); 
         data.forEach((event) => {
-    
+            
             if(OFF_CHANNELS[event.noteChannel.toString()] != undefined) {
                 //push value into array of this channel //gets the actuall channel number to string 
                 this.sortedChannels[OFF_CHANNELS[event.noteChannel.toString()]].push({noteOn: false, time: this._millisToSeconds(event.timeStamp)})
@@ -99,6 +113,16 @@ module.exports = class SingleVideoChannelMidiMapper {
             }
 
         })
+    }
+
+    _trimVideoFromOffset() {
+        console.log('\x1b[36m%s\x1b[0m', '_trimVideoFromOffset');
+         `ffmpeg -i outputs/video_${Date.now()}.mp4 -ss ${this.offset} -c:v copy -c:a -y copy outputs/new_video_${Date.now()}.mp4`
+    }
+
+    _addAudioToVideo() {
+        console.log('\x1b[36m%s\x1b[0m', '_addAudioToVideo');
+        `ffmpeg -i input_vid.mp4 $ -i ${this.audio_dir_path}/song.wav -vcodec copy -acodec copy outputs/video_${Date.now()}.mp4` 
     }
 
     _removeAudio(vidName) {

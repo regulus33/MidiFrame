@@ -60,7 +60,7 @@ const OFF_CHANNELS = {
     '143': '16'
 }
 
-// let this.dirty = false 
+// let this.firstNote = false 
 
 // let this.channelsAndStamps = []
 //   /////setup audio recording 
@@ -69,8 +69,6 @@ const OFF_CHANNELS = {
 // let rec;
 //   //Recorder.js object 
 // let input;
-
-
 
 //   RECORD THAT MIDI.... FAST
 // +--^----------,--------,-----,--------^-,
@@ -94,15 +92,17 @@ export default class SingleChannelHelper {
         this.channelsAndStamps = []
         this.window = window;
         this.document = doc;
-        this.dirty = false;
+        this.firstNote = false;
         this.gumStream = null;
         this.input = null;
         this.rec = null;
+        this.timeOfFirstMidiNote = null;
+        this.timeOfFirstRecord = null;
     }
 
     //first thing that needs to happen 
     //get connection to opz 
-    requestMIDIAccess = () => {
+    startMidi = () => {
         //comes from the navigator object (as per usual, thats where all the good stuff is in chrome anyway)
         navigator.requestMIDIAccess().then( access => {
           //there should really only be one here, but you never know 
@@ -126,7 +126,7 @@ export default class SingleChannelHelper {
     //once we send the enire huge json of midi to server, we need to notify the user TODO
     onMidiSentSuccess(response){
         //TODO: notify success
-        console.log(response);
+        console.log("the midi request ended");
     }
     //literally fires every time a midi msg is sent from the opz  
     onMidiMessage = (message) => {
@@ -135,10 +135,11 @@ export default class SingleChannelHelper {
       //if its an on channel or off, its relevant, so commit it to the json 
       if ((ON_CHANNELS[message.data[0].toString()] != undefined) || (OFF_CHANNELS[message.data[0].toString()] != undefined)) {
         //useless var, we should only begin recording once the user hits record. Remove tonight 
-        if(this.dirty == false){
-          this.setupAndBeginRecording()  
-         } 
-         this.dirty = true 
+        if(this.firstNote == true){
+          this.timeOfFirstMidiNote = Date.now()
+          // this.setupAndBeginRecording()  
+        } 
+         this.firstNote = false 
         //here we push into an unprocessed array, we shall return to this in a while
         this.channelsAndStamps.push({"noteChannel": message.data[0], "timeStamp": message.timeStamp })
         //////FOR FUN :)DDD///////
@@ -153,15 +154,25 @@ export default class SingleChannelHelper {
     // send data once opz is disconnected
     handleOPZChange = (arg) => {
 
-      if(arg.currentTarget.state == "disconnected") {
-        this.sendDataMidi();
-        //colects BLOB and sends the audio to the server
-        this.stopRecording();
-      }
+      // if(arg.currentTarget.state == "disconnected") {
+      //   this.stopRecording();
+      //   this.sendDataMidi();
+      //   //colects BLOB and sends the audio to the server
+      // }
+
+    }
+
+    onStop = () => {
+      
+      this.stopRecording();
+    
+      //colects BLOB and sends the audio to the server
 
     }
     
-    sendDataMidi = () => {
+    sendDataMidi = (offset) => {
+        //add offset to request 
+        this.channelsAndStamps.push(offset)
          const Http = new XMLHttpRequest();
          const url = "http://localhost:3000/midi"
          Http.open("POST", url);
@@ -191,13 +202,13 @@ export default class SingleChannelHelper {
               numChannels: 2
           }) 
           //start the recording process 
+          this.timeOfFirstRecord = Date.now()
           this.rec.record()
           console.log("Recording started");
         }).catch(function(err) {
             console.log(`couldnt get user media becuase: ${err}`)
         });
     }
-    
     
     stopRecording = () => {
         console.log("recording stopped")
@@ -207,7 +218,6 @@ export default class SingleChannelHelper {
         //create the wav blob and pass it on to createDownloadLink 
         this.rec.exportWAV(this.sendAudio);
     }
-    
     
     sendAudio = (blob) => {
       let xhr = new XMLHttpRequest();
@@ -220,6 +230,15 @@ export default class SingleChannelHelper {
       fd.append("audio_data", blob, "test.wav");
       xhr.open("POST", "http://localhost:3000/audio", true);
       xhr.send(fd);
+      xhr.onreadystatechange = () => {
+        console.log("audio uploaded")
+        console.log("hopefully? the values of offset will be calculated at runtime and not compile time, and hopefully I'm at least a little bit not a complete idiot")
+        let offset = this.timeOfFirstRecord - this.timeOfFirstMidiNote
+        this.sendDataMidi(offset);
+
+        
+        //send the midi request here
+      }
       console.log("send req for song audio")
     }
     //   /|

@@ -1,9 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
+const execSync = require('child_process').execSync;
 const path = require('path');
 const fileUpload = require('express-fileupload');
 const SingleVideoChannelMapper = require('./classes/SingleVideoChannelMapper.js')
+
 
 // This must run inside a function marked `async`:
 //use this to determine which chanel an input comes from 
@@ -30,7 +32,9 @@ app.get('/test', function (req, res) {
 });
 
 app.post('/midi',(req,res) => {
-
+   
+    console.log('\x1b[36m%s\x1b[0m', 'POST /midi'); 
+    
     const song = req.body; 
      
     mapper = new SingleVideoChannelMapper("1","wood.mp4",song);
@@ -45,15 +49,18 @@ app.post('/midi',(req,res) => {
 
 });
 
-app.post('/audio', (req, res) => {    
+app.post('/audio', (req, res) => { 
+    console.log('\x1b[36m%s\x1b[0m', 'POST /audio');   
     let fileName = "audio_" + Date.now() 
-    req.files.audio_data.mv(path.join(__dirname + `/assets/audio/${fileName}.wav`), (err) => {
+    execSync(`rm -rf ${path.join(__dirname)}/assets/audio/./*`)
+    req.files.audio_data.mv(path.join(__dirname + `/assets/audio/song.wav`), (err) => {
       if (err) {
         console.log(err);
       } else {
-        console.log(`File written to: `);
+        console.log(`Audio file written to: /assets/audio/song.wav`);
       }
     });
+    res.end("OK");
 });
 
 

@@ -1,5 +1,5 @@
 import React from 'react';
-const StartButton = (clickHanlder) => {
+const StartButton = (props) => {
 
     const startStyles = {
         margin: "0 auto",
@@ -10,12 +10,8 @@ const StartButton = (clickHanlder) => {
         borderTop: "100px solid #e49a5b",
     }
 
-    const startButton = (event) => {
-        event.target.style["borderTop"] = "100px solid grey"
-    }
-
     return (
-        <div onClick={startButton} style={startStyles}></div>
+        <div onClick={props.onClick} style={startStyles}></div>
     );
 }
 

@@ -1,4 +1,14 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## GUI logistic
+
+Hit triangle button --> kicks off midi permisions negoitation, midi listener starts, flash message "Hit the record button, then hit play on the OPZ"
+
+on first record hit, wav is being generated 
+
+on first midi message, midi recording starts
+
+on stop, send midi and wav,
+
+offset = lastly time_midi_start - time_record_start = 3000 
 
 ## Available Scripts
 
