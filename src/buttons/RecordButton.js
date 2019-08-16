@@ -1,5 +1,5 @@
 import React from 'react';
-const RecordButton = (clickListener) => {
+const RecordButton = (props) => {
 
     const recordStyles = {
         height: "60px",
@@ -12,7 +12,7 @@ const RecordButton = (clickListener) => {
 
 
     return (
-        <div onClick={()=>{clickListener()}} style={recordStyles}></div>
+        <div onClick={props.onClick} style={recordStyles}></div>
     );
 }
 
