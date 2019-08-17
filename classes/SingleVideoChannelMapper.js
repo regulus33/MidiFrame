@@ -62,8 +62,9 @@ module.exports = class SingleVideoChannelMidiMapper {
 
         let concatInstructionsString = ""
         let slicedVideoFiles = fs.readdirSync(this.slicedVidsDirectoryPath)
-         
-        slicedVideoFiles.forEach((file) => {
+        //sorts based on file number name 
+        let slicedVideoFilesSorted = slicedVideoFiles.sort((a,b)=>{return Number(a.split(".").shift()) - Number(b.split(".").shift())})
+        slicedVideoFilesSorted.forEach((file) => {
             
             console.log("slicedVideos: " + file); 
             //leave out the bullshit 
@@ -86,9 +87,9 @@ module.exports = class SingleVideoChannelMidiMapper {
         console.log('\x1b[36m%s\x1b[0m', 'executeConcat');
         //we need this to know where the clip we need to trim will be 
         this.finalOutputPath = `outputs/video_${Date.now()}.mp4`
-        execSync(`ffmpeg -f concat -safe 0 -i ${pathFile} -c copy outputs/video_${Date.now()}.mp4`)
-        this._trimVideoFromOffset()
-        this._addAudioToVideo()
+        execSync(`ffmpeg -f concat -safe 0 -i ${pathFile} -c copy ${this.finalOutputPath}`)
+        let videoPathForAduioVideoMerge = this._trimVideoFromOffset()
+        this._addAudioToVideo(videoPathForAduioVideoMerge)
     }
 
     _app_directory() {
@@ -117,12 +118,21 @@ module.exports = class SingleVideoChannelMidiMapper {
 
     _trimVideoFromOffset() {
         console.log('\x1b[36m%s\x1b[0m', '_trimVideoFromOffset');
-         `ffmpeg -i outputs/video_${Date.now()}.mp4 -ss ${this.offset} -c:v copy -c:a -y copy outputs/new_video_${Date.now()}.mp4`
+        let newPath = this.finalOutputPath.replace(".mp4", "_trimmed.mp4")
+        let command = `ffmpeg -i ${this.finalOutputPath} -ss ${this.offset} -c:v copy ${newPath}`
+        console.log('\x1b[36m%s\x1b[0m', command);
+        execSync(`ffmpeg -i ${this.finalOutputPath} -ss ${this.offset} -c:v copy ${newPath}`)
+        return newPath
     }
 
-    _addAudioToVideo() {
-        console.log('\x1b[36m%s\x1b[0m', '_addAudioToVideo');
-        `ffmpeg -i input_vid.mp4 $ -i ${this.audio_dir_path}/song.wav -vcodec copy -acodec copy outputs/video_${Date.now()}.mp4` 
+    _addAudioToVideo(newPath) {
+        console.log('\x1b[36m%s\x1b[0m', '_addAudioToVideo')
+        // let command = `ffmpeg -i ${newPath} -i ${this.audio_dir_path}/song.wav -vcodec copy -acodec copy ${newPath}`
+        // let command = `ffmpeg -i ${newPath} -i ${this.audio_dir_path}/song.wav -c:v copy -map 0:v:0 -map 1:a:0 -c:a aac -b:a 192k ./outputs/${Date.now()}_moomoo.mp4`
+        let command = `ffmpeg -i ${newPath} -i ${this.audio_dir_path}/song.wav -c:v copy new${Date.now()}.mp4`
+        console.log(command)
+        console.log('\x1b[36m%s\x1b[0m', command)
+        execSync(command) 
     }
 
     _removeAudio(vidName) {
