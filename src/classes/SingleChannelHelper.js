@@ -92,12 +92,13 @@ export default class SingleChannelHelper {
         this.channelsAndStamps = []
         this.window = window;
         this.document = doc;
-        this.firstNote = false;
+        this.firstNote = true;
         this.gumStream = null;
         this.input = null;
         this.rec = null;
         this.timeOfFirstMidiNote = null;
         this.timeOfFirstRecord = null;
+        this.firstTime = true;
     }
 
     //first thing that needs to happen 
@@ -132,11 +133,16 @@ export default class SingleChannelHelper {
     onMidiMessage = (message) => {
       //message data 0 is telling us if we are an off or on channel and which channel (1 - 16) at the same time 
       console.log(message.data[0].toString())
+      console.log(message.timeStamp)
       //if its an on channel or off, its relevant, so commit it to the json 
       if ((ON_CHANNELS[message.data[0].toString()] != undefined) || (OFF_CHANNELS[message.data[0].toString()] != undefined)) {
+        //just fo a minit then we gonna falsify dat shit         
         //useless var, we should only begin recording once the user hits record. Remove tonight 
+        console.log("midi " +this.timeOfFirstMidiNote )
         if(this.firstNote == true){
           this.timeOfFirstMidiNote = Date.now()
+          console.log("first midi " +this.timeOfFirstMidiNote )
+
           // this.setupAndBeginRecording()  
         } 
          this.firstNote = false 
@@ -230,17 +236,29 @@ export default class SingleChannelHelper {
       fd.append("audio_data", blob, "test.wav");
       xhr.open("POST", "http://localhost:3000/audio", true);
       xhr.send(fd);
-      xhr.onreadystatechange = () => {
+      xhr.onreadystatechange = (res) => {
+        console.log(xhr.status)
+          if (xhr.status === 200 && this.firstTime === true) {
+            let offset = this._millisToSeconds(this.timeOfFirstRecord - this.timeOfFirstMidiNote)
+            this.sendDataMidi(offset);
+            this.firstTime = false 
+         } else {
+            console.log('failed to audio for some reason');
+         }
         console.log("audio uploaded")
         console.log("hopefully? the values of offset will be calculated at runtime and not compile time, and hopefully I'm at least a little bit not a complete idiot")
-        let offset = this.timeOfFirstRecord - this.timeOfFirstMidiNote
-        this.sendDataMidi(offset);
+  
 
         
         //send the midi request here
       }
       console.log("send req for song audio")
     }
+
+
+    _millisToSeconds(millis){
+      return millis/1000
+  }
     //   /|
     //        =  =  =      / |
     //   ____| || || |____/  | -_-_-_-_-_-_
