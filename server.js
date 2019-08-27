@@ -5,6 +5,7 @@ const execSync = require('child_process').execSync;
 const path = require('path');
 const fileUpload = require('express-fileupload');
 const SingleVideoChannelMapper = require('./classes/SingleVideoChannelMapper.js')
+const fs = require('fs')
 
 
 // This must run inside a function marked `async`:
@@ -34,16 +35,29 @@ app.get('/test', function (req, res) {
 app.post('/midi',(req,res) => {
    
     console.log('\x1b[36m%s\x1b[0m', 'POST /midi'); 
+
+
+    let jsonContent = JSON.stringify(req.body);
+console.log(jsonContent);
+ 
+fs.writeFile("consistent_midi_track3_opz.json", jsonContent, 'utf8', function (err) {
+    if (err) {
+        console.log("An error occured while writing JSON Object to File.");
+        return console.log(err);
+    }
+
+    console.log("JSON file has been saved.");
+});
     
-    const song = req.body; 
+    // const song = req.body; 
      
-    mapper = new SingleVideoChannelMapper("1","wood.mp4",song);
+    // mapper = new SingleVideoChannelMapper("1","wood.mp4",song);
 
-    mapper.sliceChannelVid();
+    // mapper.sliceChannelVid();
 
-    let pathFile = mapper.buildFFMPEGConcatFile("input");
+    // let pathFile = mapper.buildFFMPEGConcatFile("input");
     
-    mapper.executeConcat(pathFile);
+    // mapper.executeConcat(pathFile);
 
     res.end("OK");
 
