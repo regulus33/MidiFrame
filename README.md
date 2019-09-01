@@ -1,78 +1,118 @@
-## GUI logistic
 
-Hit triangle button --> kicks off midi permisions negoitation, midi listener starts, flash message "Hit the record button, then hit play on the OPZ"
+# MidiMapper (prepares midi data for the logic)
 
-on first record hit, wav is being generated 
 
-on first midi message, midi recording starts
+## description: 
 
-on stop, send midi and wav,
+a midi parsing utility 
 
-offset = lastly time_midi_start - time_record_start = 3000 
+## methods 
 
-## Available Scripts
+`getMidiChannel(event)`
 
-In the project directory, you can run:
+will determine the human readable midi channel from unprocessed midi data. Takes our custom event objects as an argument. 
 
-### `npm start`
+| parameters        | description           | example  |
+| ------------- |:-------------:| -----:|
+| event   | a simple object  | `{data: ['127','127','127']}` | 
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
 
-### `npm test`
+returns `string`
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+`sortedEventsToChannels(events)`
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Iterates through a provided array of raw unprocessed midi events. returns an object of keyed number strings representing channels:
 
-### `npm run eject`
+| parameters        | description           | example  |
+| ------------- |:-------------:| -----:|
+| events   | an array  | NA | 
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+returns `object`
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+`determineNoteOnOff(event)`
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+returns `true` for on and `false` for off 
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+| parameters        | description           | example  |
+| ------------- |:-------------:| -----:|
+| event  | object  | `{data: ['127','127','127']}` | 
 
-### Code Splitting
+returns `object`
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
 
-### Analyzing the Bundle Size
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+  
+  ---
 
-### Making a Progressive Web App
+`bakeDataForParsing(recordedMidi)`
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
 
-### Advanced Configuration
+returns an object 
+like this 
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+``` javascript
+    {
+      '3': [
+        {
+          noteOn: true,
+          timeStamp: 1,
+          noteNumber: '54',
+          velocityNumber: '100'
+        }
+      ]
+    }
+```
 
-### Deployment
+| parameters        | description           | example  |
+| ------------- |:-------------:| -----:|
+| recordedMidi  | json array, just the raw midi event captures you record in the browser  | NA| 
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+returns `object`
 
-### `npm run build` fails to minify
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+
+# MidiToVideo
+
+## description: 
+
+converts mapped, parsed midi into instructions for ffmpeg to build its video clips 
+
+## methods 
+
+`getMidiChannel(event)`
+
+provides data for the instance to figure out what will be in its clip instructions. The realtionship is 1 to 1 as in: midi channel 16 will be mapped to video 'a' and only one `miditovideo` instance will be responsible for creating the file for this channel, a new one of the next channel and so on. 
+
+each channel can only be mapped to a single video file. 
+
+| parameters        | description           | example  |
+| ------------- |:-------------:| -----:|
+| channel   | midi channel, string  | `"4"` | 
+| notesToStamps   | key val pair of notes and the timestamps they should be bound to in their video.  | `{"56":"3:36","35":"4:22"}` | 
+| video   | string, absolute path of video, provided and selected by user  | `"Users/foo/bar/baz/vid.mp4"` | 
+
+
+
+returns `string`
+
+---
+
+
+
+
+
+
+
+
+
+
