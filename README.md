@@ -4,7 +4,7 @@
 
 ## description: 
 
-a midi parsing utility 
+Basic midi parsing from the junk we get from the js midi api. 
 
 ## methods 
 
