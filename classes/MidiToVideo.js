@@ -20,20 +20,31 @@ export default class MidiToVideo {
 
             this.removeOldVideoSlices()
             console.log(this.processedDataArray)
-            this.processedDataArray.map(event => {
-                let lastIndex = (this.processedDataArray.indexOf(event)) === (this.processedDataArray.length - 1)
-                let nextIndex = lastIndex ? this.processedDataArray.indexOf(event) + 1 : null 
+            
+           return this.processedDataArray.map(event => {
+                //need to know so we dont get index out of bounds for next
+                let weAreAtTheEndOfArray = (this.processedDataArray.indexOf(event)) === (this.processedDataArray.length - 1)
+            
+                let nextEvent = !weAreAtTheEndOfArray ? (this.processedDataArray[this.processedDataArray.indexOf(event) + 1]) : null 
+                
                 let startOfClip = event.timeStamp 
+
+                let endOfClip
                 //cop out out to avoid index out of bounds 
-                let endOfClip = !lastIndex ? nextIndex.timeStamp : (startOfClip + 1)
+                if(weAreAtTheEndOfArray) {
+                  endOfClip = startOfClip + 1
+                //we arent there yet  
+                } else {
+                    endOfClip = nextEvent.timeStamp
+
+                }
                 
                 let clipLength = endOfClip - startOfClip 
-
                 let sliceStart = this.convertTimeStampToSecondsInteger(
                     this.getBeginningOfSlice(event)
                 )
 
-                `ffmpeg -i ${this.app_root}/assets/video_bank/${this.video} -ss ${sliceStart} -t ${timeTilNext} -async 1 -y ${path.join(this._app_directory())}/midi_slices/channel_1/${startOfNote}.mp4`
+                return `ffmpeg -i ${this.app_root}/assets/video_bank/${this.clip} -ss ${sliceStart} -t ${clipLength} -async 1 -y ${path.join(this.app_root)}/midi_slices/channel_${this.channel}/${event.timeStamp}.mp4`
 
 
             })

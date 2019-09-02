@@ -127,9 +127,8 @@ test('generateChannelSliceCommands() returns array of valid ffmpeg commands', ()
 
     let appDirectory = m.app_root
 
-    expect(result[0]).toBe(`ffmpeg -i ${appDirectory}/assets/video_bank/beethoven.mp4 -ss 213 -t 2 -async 1 -y ${appDirectory}/midi_slices/channel_7/1.mp4`)
+    expect(result[0]).toBe(`ffmpeg -i ${appDirectory}/assets/video_bank/beethoven.mp4 -ss 213 -t 1 -async 1 -y ${appDirectory}/midi_slices/channel_7/1.mp4`)
 
 })
 
-// `ffmpeg -i ${this._app_directory()}` + `/assets/video_bank/${this.video}` + " -ss " + `${channelStartPoints["1"]} -t ${timeTilNext} -async 1 -y ${path.join(this._app_directory())}/midi_slices/channel_1/${startOfNote}.mp4`
 
