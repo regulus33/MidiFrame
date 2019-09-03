@@ -99,7 +99,10 @@ export default class SingleChannelHelper {
         this.timeOfFirstMidiNote = null;
         this.timeOfFirstRecord = null;
         this.firstTime = true;
+        this.midiForTesting = [];
     }
+
+
 
     //first thing that needs to happen 
     //get connection to opz 
@@ -136,6 +139,18 @@ export default class SingleChannelHelper {
       console.log(message.timeStamp)
       //if its an on channel or off, its relevant, so commit it to the json 
       if ((ON_CHANNELS[message.data[0].toString()] != undefined) || (OFF_CHANNELS[message.data[0].toString()] != undefined)) {
+        
+        //send all midi messages to the server for tests 
+        
+        let stringedData = []
+        message.data.forEach((d)=>{stringedData.push(d.toString())})
+        let obj = {
+          data: stringedData,
+          timeStamp: message.timeStamp
+        }
+
+        this.midiForTesting.push(obj)
+
         //just fo a minit then we gonna falsify dat shit         
         //useless var, we should only begin recording once the user hits record. Remove tonight 
         console.log("midi " +this.timeOfFirstMidiNote )
@@ -183,7 +198,7 @@ export default class SingleChannelHelper {
          const url = "http://localhost:3000/midi"
          Http.open("POST", url);
          Http.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-         Http.send(JSON.stringify(this.channelsAndStamps));
+         Http.send(JSON.stringify(this.midiForTesting));
     
          Http.onreadystatechange = this.onMidiSentSuccess; 
     }
@@ -219,10 +234,11 @@ export default class SingleChannelHelper {
     stopRecording = () => {
         console.log("recording stopped")
         //tell the recorder to stop the recording 
-        this.rec.stop(); //stop microphone access 
-        this.gumStream.getAudioTracks()[0].stop();
+        // this.rec.stop(); //stop microphone access 
+        // this.gumStream.getAudioTracks()[0].stop();
         //create the wav blob and pass it on to createDownloadLink 
-        this.rec.exportWAV(this.sendAudio);
+        // this.rec.exportWAV(this.sendAudio);
+        this.sendDataMidi(2)
     }
     
     sendAudio = (blob) => {
@@ -240,7 +256,7 @@ export default class SingleChannelHelper {
         console.log(xhr.status)
           if (xhr.status === 200 && this.firstTime === true) {
             let offset = this._millisToSeconds(this.timeOfFirstRecord - this.timeOfFirstMidiNote)
-            this.sendDataMidi(offset);
+            // this.sendDataMidi(offset);
             this.firstTime = false 
          } else {
             console.log('failed to audio for some reason');
