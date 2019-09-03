@@ -4,8 +4,7 @@
 
 ## description: 
 
-Basic midi parsing from the junk we get from the js midi api. 
-
+Client side, it sends the resulting data mods to the server where node processes it into ffmpeg stuff
 ## methods 
 
 `getMidiChannel(event)`
@@ -85,7 +84,7 @@ returns `object`
 
 ## description: 
 
-converts mapped, parsed midi into instructions for ffmpeg to build its video clips 
+converts mapped, parsed midi into instructions for ffmpeg to build its video clips, this is run server side.  
 
 ## methods 
 
@@ -100,12 +99,27 @@ each channel can only be mapped to a single video file.
 | channel   | midi channel, string  | `"4"` | 
 | notesToStamps   | key val pair of notes and the timestamps they should be bound to in their video.  | `{"56":"3:36","35":"4:22"}` | 
 | video   | string, absolute path of video, provided and selected by user  | `"Users/foo/bar/baz/vid.mp4"` | 
+| data   | object of channels as keys and processable arrays of midi events as values  | NA | 
 
 
 
 returns `string`
 
 ---
+
+`generateChannelSliceCommands()`
+
+Takes all the data required to calculate slices to concat later from member vars of the miditovideo instance. Generates an array of system commands to be executed by another method. Intervals are calculated by looking ahead to the next note that happens in time. The clip length becomes the time between the striking of the midi note and the striking of its successor. Therefore, polyphonic notes cannot be processed and will force a monophonic reading. 
+
+
+
+returns `array`
+
+---
+
+`makeClips()`
+
+One of two most user facing methods. This one will actually create the clips in the end. It calls the above method and clips are generated. 
 
 
 
