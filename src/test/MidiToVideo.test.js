@@ -1,5 +1,10 @@
 import MidiToVideo from '../../classes/MidiToVideo.js'
 
+const mockFS = require('mock-fs');
+const fs = require('fs')
+const path = require('path');
+
+
 test('getMidiChannel() has constructor with proper functions', () => {
     
     let channel, notes, clip, data 
@@ -130,5 +135,30 @@ test('generateChannelSliceCommands() returns array of valid ffmpeg commands', ()
     expect(result[0]).toBe(`ffmpeg -i ${appDirectory}/assets/video_bank/beethoven.mp4 -ss 213 -t 1 -async 1 -y ${appDirectory}/midi_slices/channel_7/1.mp4`)
 
 })
+
+
+test('generateChannelSliceCommands() returns array of valid ffmpeg commands', () => {
+    
+    let app_root = __dirname.split("/")
+    app_root.pop()
+    app_root.pop()
+
+    console.log(__dirname)
+
+    let args = {}
+
+    args[`${app_root}/midi_slices/channel_2`] = {
+        "5.2323455" : "video file content",
+        "2.2325455" : "video file content",
+        "0.9898909" : "more video"
+
+    }
+
+     mockFS(args);
+
+     expect(fs.readdirSync(`${app_root}/midi_slices/channel_2`)[0]).toBe("ds")
+})
+
+
 
 
