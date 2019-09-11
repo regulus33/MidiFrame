@@ -16,54 +16,49 @@ export default class MidiToVideo {
     }
 
         //slices the channel's video into mp4s in an isolated direcoty where each video file is named the same as its timestamp and therefore sorted in order for concatenation later 
-        generateChannelSliceCommands() {
+    generateChannelSliceCommands() {
 
-            this.removeOldVideoSlices()
-            console.log(this.processedDataArray)
+        this.removeOldVideoSlices()
+        console.log(this.processedDataArray)
+        
+        return this.processedDataArray.map(event => {
+            //need to know so we dont get index out of bounds for next
+            let weAreAtTheEndOfArray = (this.processedDataArray.indexOf(event)) === (this.processedDataArray.length - 1)
+        
+            let nextEvent = !weAreAtTheEndOfArray ? (this.processedDataArray[this.processedDataArray.indexOf(event) + 1]) : null 
             
-           return this.processedDataArray.map(event => {
-                //need to know so we dont get index out of bounds for next
-                let weAreAtTheEndOfArray = (this.processedDataArray.indexOf(event)) === (this.processedDataArray.length - 1)
+            let startOfClip = event.timeStamp 
+
+            let endOfClip
+            //cop out out to avoid index out of bounds 
+            if(weAreAtTheEndOfArray) {
+                endOfClip = startOfClip + 1
+            //we arent there yet  
+            } else {
+                endOfClip = nextEvent.timeStamp
+
+            }
             
-                let nextEvent = !weAreAtTheEndOfArray ? (this.processedDataArray[this.processedDataArray.indexOf(event) + 1]) : null 
-                
-                let startOfClip = event.timeStamp 
+            let clipLength = endOfClip - startOfClip 
+            let sliceStart = this.convertTimeStampToSecondsInteger(
+                this.getBeginningOfSlice(event)
+            )
 
-                let endOfClip
-                //cop out out to avoid index out of bounds 
-                if(weAreAtTheEndOfArray) {
-                  endOfClip = startOfClip + 1
-                //we arent there yet  
-                } else {
-                    endOfClip = nextEvent.timeStamp
-
-                }
-                
-                let clipLength = endOfClip - startOfClip 
-                let sliceStart = this.convertTimeStampToSecondsInteger(
-                    this.getBeginningOfSlice(event)
-                )
-
-                return `ffmpeg -i ${this.app_root}/assets/video_bank/${this.clip} -ss ${sliceStart} -t ${clipLength} -async 1 -y ${path.join(this.app_root)}/midi_slices/channel_${this.channel}/${event.timeStamp}.mp4`
+            return `ffmpeg -i ${this.app_root}/assets/video_bank/${this.clip} -ss ${sliceStart} -t ${clipLength} -async 1 -y ${path.join(this.app_root)}/midi_slices/channel_${this.channel}/${event.timeStamp}.mp4`
 
 
-            })
+        })
 
-            // for(let i=0; i < this.processedDataArray[this.channel].length; i++) {
-            //     if(!this.sortedChannels[this.channel][i].noteOn) {
-            //             //if this is note off, great! Lets go get the note on that got us here in the first place, i -1 should do it!
-            //         let startOfNote = this.sortedChannels[this.sortedChannels][i-1].time
-            //         let endOfNote = this.sortedChannels["1"][i].time 
-                    
-            //         // let clipLength =  endOfNote - startOfNote
-                    
-            //         if(i != this.sortedChannels[this.channel].length -1 ) {
-            //             let timeTilNext = this.sortedChannels["1"][i+1].time - startOfNote                                       //was cliplength 
-            //             execSync(`ffmpeg -i ${this._app_directory()}` + `/assets/video_bank/${this.video}` + " -ss " + `${channelStartPoints["1"]} -t ${timeTilNext} -async 1 -y ${path.join(this._app_directory())}/midi_slices/channel_1/${startOfNote}.mp4`)
-            //         }
-            //     }
-            // }
     }
+    
+    generateFfmpegConcatArgsForSelf() {
+        let dirName = `${this.app_root}/midi_slices/channel_${this.channel}`
+        let slicesDirectoryFiles = fs.readdirSync(dirName)
+        return slicesDirectoryFiles.map(fileName => {
+            return "file" + " '" +`${dirName}/${fileName}`+ "'" + "\n"
+        })
+    }
+
 
     convertTimeStampToSecondsInteger(stamp){
         let firstNumber = stamp.split(":").shift()

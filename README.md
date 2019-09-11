@@ -107,6 +107,17 @@ returns `string`
 
 ---
 
+`generateFfmpegConcatArgsForSelf()`
+
+Reads all entries in the channel directory that the instance is responsible for. `/midi_slices/channel_1/`
+
+builds a concated  file based on the entries  
+
+returns array of: `file '/Users/zacharyrowden/Desktop/notes/midi_slices/channel_2/5.2323455.mp4'`
+
+
+---
+
 
 
 
