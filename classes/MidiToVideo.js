@@ -19,7 +19,6 @@ export default class MidiToVideo {
     generateChannelSliceCommands() {
 
         this.removeOldVideoSlices()
-        console.log(this.processedDataArray)
         
         return this.processedDataArray.map(event => {
             //need to know so we dont get index out of bounds for next
@@ -47,6 +46,19 @@ export default class MidiToVideo {
             return `ffmpeg -i ${this.app_root}/assets/video_bank/${this.clip} -ss ${sliceStart} -t ${clipLength} -async 1 -y ${path.join(this.app_root)}/midi_slices/channel_${this.channel}/${event.timeStamp}.mp4`
 
 
+        })
+
+    }
+
+
+    createInput(){
+        let fileName = `${this.app_root}/midi_slices/input_${this.channel}`
+        let commands = ""
+        this.generateFfmpegConcatArgsForSelf().forEach(str =>{
+            commands += str
+        })
+        fs.writeFileSync(fileName, commands, error => {
+            err ?  console.log("[CREATEINPUT] input failed to write") :  console.log("[CREATEINPUT] input for ffmpeg successfully written")
         })
 
     }

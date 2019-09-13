@@ -1,4 +1,5 @@
 import MidiToVideo from '../../classes/MidiToVideo.js'
+import { readFileSync } from 'fs';
 
 const mockFS = require('mock-fs');
 const fs = require('fs')
@@ -137,7 +138,7 @@ test('generateChannelSliceCommands() returns array of valid ffmpeg commands', ()
 })
 
 
-test('generateChannelSliceCommands() returns array of valid ffmpeg commands', () => {
+test('generateFfmpegConcatArgsForSelf() returns a sorted array of file names to be fed to ffmpeg from smallest to largest timestamp titles', () => {
     
     let channel, notes, clip, data 
 
@@ -161,7 +162,6 @@ test('generateChannelSliceCommands() returns array of valid ffmpeg commands', ()
     app_root.pop()
     app_root = app_root.join('/')
 
-    console.log(__dirname)
 
     let fakeChannelDir = {}
 
@@ -185,6 +185,57 @@ test('generateChannelSliceCommands() returns array of valid ffmpeg commands', ()
 
 
 })
+
+
+test('input.txt is created when createInput() is called', () => {
+    
+    let notes, clip, data 
+
+    notes = {"55":"3:33", "54":"2:22", "53": "1:11", "52": '0:00'}
+    clip = "beethoven.mp4"
+    data = {
+        "1": [
+                {
+                    noteOn: true,
+                    timeStamp: 1,
+                    noteNumber: '55',
+                    velocityNumber: '100'
+                },
+            ]
+            
+    }
+
+    //FS SETUP
+    let app_root = __dirname.split("/")
+    app_root.pop()
+    app_root.pop()
+    app_root = app_root.join('/')
+
+
+    let fakeChannelDir = {}
+
+    fakeChannelDir[`${app_root}/midi_slices/channel_1`] = {
+        "5.2323455.mp4" : "video file content",
+        "0.9898909.mp4" : "more video",
+        "2.2325455.mp4" : "video file content"
+    }
+
+    mockFS(fakeChannelDir);
+
+    let m = new MidiToVideo("1",notes,clip,data)
+    m.createInput()
+    //create a fake filesystem and overwrite it in memory 
+     //make sure this node version is sorting the readdirsync results (yeah yeah i know)
+     expect(fs.readdirSync(`${app_root}/midi_slices/`).includes("input_1")).toBe(true)
+    
+     let contentOfInput = readFileSync(`${app_root}/midi_slices/input_1`).toString()
+     expect(contentOfInput.split('file').pop().split("/").pop().split("'\n").shift() === '5.2323455.mp4').toBe(true)
+     
+
+
+})
+
+
 
 
 
