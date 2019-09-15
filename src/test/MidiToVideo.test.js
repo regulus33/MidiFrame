@@ -3,7 +3,6 @@ import { readFileSync } from 'fs';
 
 const mockFS = require('mock-fs');
 const fs = require('fs')
-const path = require('path');
 
 
 test('getMidiChannel() has constructor with proper functions', () => {

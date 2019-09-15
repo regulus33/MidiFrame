@@ -84,6 +84,14 @@ test('bakeDataForParsing() generates an object of many channels as keys and valu
 
 })
 
+test("determineUsedNotes() returns a json of all channels used by each note", () => {
+
+    const testDataForChannelSort = getFileASJson('consistent_midi_track3_opz.json')
+    const m = new MidiMapper
+
+    expect(m.determineUsedNotes(testDataForChannelSort)['59']).toEqual(["5", "6"])
+})
+
 
 
 
