@@ -1,13 +1,22 @@
 import React from 'react';
-import logo from './logo.svg';
-import singleChannel from './SingleChannel'
 import './App.css';
 import SingleChannel from './SingleChannel';
+import VideoSelector from './VideoSelector'
 
 function App() {
-  return (
-   <SingleChannel/>
-  );
+
+  let midiRecorded = true
+
+  if (midiRecorded) {
+    return (
+      <VideoSelector />
+    )
+  } else {
+    return (
+      <SingleChannel />
+    )
+  }
+
 }
 
 export default App;
