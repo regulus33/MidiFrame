@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
-import SingleChannel from './SingleChannel';
-import VideoSelector from './VideoSelector'
+import SingleChannel from './SingleChannel.js';
+import VideoSelector from './VideoSelector.js'
 
 function App() {
 
