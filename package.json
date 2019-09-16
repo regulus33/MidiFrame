@@ -34,5 +34,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "mocha": "^6.2.0",
+    "node-mocks-http": "^1.7.6",
+    "should": "^13.2.3"
   }
 }
