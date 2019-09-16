@@ -150,6 +150,30 @@ export default class MidiMapper {
 
     }
 
+    determineUsedNotes(data) {
+        let channelsAndNotes = {}
+        let midiNotes = this.bakeDataForParsing(data)
+
+        Object.keys(midiNotes).forEach(keyName => {
+            console.log(channelsAndNotes)
+            midiNotes[keyName].forEach(event => {
+                let noteNumber = event["noteNumber"]
+
+                if(channelsAndNotes[noteNumber] === undefined) {
+                    channelsAndNotes[noteNumber] = []
+                    channelsAndNotes[noteNumber].push(keyName)
+                } else {
+                    if(!channelsAndNotes[noteNumber].includes(keyName)) {
+                        channelsAndNotes[noteNumber].push(keyName)
+                    }
+                }
+            })
+
+           
+        })
+        return channelsAndNotes
+    }
+
     
 
     
