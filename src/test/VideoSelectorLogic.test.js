@@ -1,5 +1,4 @@
-import {fetchVideoFilePaths} from '../classes/VideoSelectorLogic.js'
-import { readFileSync } from 'fs';
+import {fetchVideoFilePaths} from '../../classes/VideoSelectorLogic.js'
 
 const mockFS = require('mock-fs');
 const fs = require('fs')
