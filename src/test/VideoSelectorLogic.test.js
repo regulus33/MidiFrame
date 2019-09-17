@@ -1,7 +1,6 @@
 import {fetchVideoFilePaths} from '../../classes/VideoSelectorLogic.js'
 
 const mockFS = require('mock-fs');
-const fs = require('fs')
 
 
 test('fetchVideoFilePaths() returns an array of vid files', () => {
