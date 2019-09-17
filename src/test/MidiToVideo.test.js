@@ -231,6 +231,8 @@ test('input.txt is created when createInput() is called', () => {
      expect(contentOfInput.split('file').pop().split("/").pop().split("'\n").shift() === '5.2323455.mp4').toBe(true)
      
 
+     mockFS.restore()
+
 
 })
 
