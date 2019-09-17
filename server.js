@@ -9,10 +9,6 @@ const fileUpload = require('express-fileupload');
 const fs = require('fs')
 
 
-// This must run inside a function marked `async`:
-//use this to determine which chanel an input comes from 
-//http://computermusicresource.com/MIDI.Commands.html?source=post_page---------------------------
-//CONFIG
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -30,6 +26,7 @@ app.listen(port, () => console.log(`Listening on ${port}!`))
 
 app.get('/video-selector', (req, res) => {
   console.log("receinving requessts")
+  res.set('Content-Type', 'application/json');
   res.send(
     JSON.stringify(fetchVideoFilePaths())
   )
@@ -42,6 +39,7 @@ app.get('/test', function (req, res) {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 }); 
 
+export default app 
 // app.post('/midi',(req,res) => {
    
 //     console.log('\x1b[36m%s\x1b[0m', 'POST /midi'); 
