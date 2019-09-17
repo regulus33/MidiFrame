@@ -22,5 +22,7 @@ test('fetchVideoFilePaths() returns an array of vid files', () => {
     
     expect(fetchVideoFilePaths()[0]).toEqual("dumpyJoesVideoHosssssssss.mp4")
 
+    mockFS.restore()
+
 
 })
