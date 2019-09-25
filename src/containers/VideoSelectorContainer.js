@@ -15,7 +15,11 @@ class VideoSelecterContainer extends React.Component {
     }
 
     fetchVideoFilePaths() {
-        fetch('http://localhost:3000/video-selector').then(res => {
+        fetch('http://localhost:3000/video-selector',{
+            headers: {
+                "Access-Control-Allow-Origin" : "*"
+            }
+        }).then(res => {
             console.log(res)
             res.json().then((r) => {
                 this.setState({videoFiles:r})

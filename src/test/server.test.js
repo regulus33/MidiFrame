@@ -1,13 +1,12 @@
 // Import the dependencies for testing
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import app from '../../server.js';
-const mockFS = require('mock-fs');
+
+const app = require('../../server.js')
 // Configure chai
 chai.use(chaiHttp);
 chai.should();
 
-// Test to get all students record
 it("video-selector returns an array of video assets", (done) => {
 
     chai.request(app)
