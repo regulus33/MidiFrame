@@ -39,7 +39,7 @@ app.get('/test', function (req, res) {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 }); 
 
-// export default app 
+module.exports = app 
 
 // app.post('/midi',(req,res) => {
    
