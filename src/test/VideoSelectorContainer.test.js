@@ -1,4 +1,6 @@
-// Import the dependencies for testing
+/**
+ * @jest-environment node
+ */
 import VideoSelectorContainer from '../containers/VideoSelectorContainer'
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -14,17 +16,15 @@ it("video-selector returns an array of video assets", (done) => {
     const path = '/video-selector';
 
     nock(baseURL)
-        .log(console.log)
         .get(path)
         .reply(200, 'ok');
     
-    request({
-        uri: baseURL + path,
-    }, console.log);
+    // request({
+    //     uri: baseURL + path,
+    // }, console.log);
 
     const renderer = TestRenderer.create(<VideoSelectorContainer/>)
     const instance = renderer.root 
-    debugger
     // console.log(util.inspect(instance))
     //onsole.log(util.inspect(instance._fiber.stateNode.state))
     
