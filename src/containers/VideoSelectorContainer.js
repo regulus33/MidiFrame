@@ -16,7 +16,7 @@ class VideoSelecterContainer extends React.Component {
 
     fetchVideoFilePaths() {
         fetch('http://localhost:3000/video-selector',{headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },}).then(res => {
             console.log(res)
             res.json().then((r) => {
