@@ -2,6 +2,9 @@ import React from 'react';
 import './App.css';
 import SingleChannel from './SingleChannel.js';
 import VideoSelectorContainer from './containers/VideoSelectorContainer.js'
+import {
+  videoSelectorGet
+} from './network.js'
 
 function App() {
 
@@ -9,7 +12,7 @@ function App() {
 
   if (midiRecorded) {
     return (
-      <VideoSelectorContainer />
+      <VideoSelectorContainer videoSelectorGet={videoSelectorGet} />
     )
   } else {
     return (
