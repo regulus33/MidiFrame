@@ -155,7 +155,6 @@ export default class MidiMapper {
         let midiNotes = this.bakeDataForParsing(data)
 
         Object.keys(midiNotes).forEach(keyName => {
-            console.log(channelsAndNotes)
             midiNotes[keyName].forEach(event => {
                 let noteNumber = event["noteNumber"]
 

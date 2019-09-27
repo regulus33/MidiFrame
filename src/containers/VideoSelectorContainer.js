@@ -1,5 +1,6 @@
 import React from 'react'
 import VideoSelector from '../VideoSelector.js'
+import Option from '../Option.js'
 
 class VideoSelecterContainer extends React.Component {
 
@@ -24,10 +25,10 @@ class VideoSelecterContainer extends React.Component {
     }
 
     renderOptionsForDropDown() {
-        return this.state.videoFiles.map((address) => {
+        return this.state.videoFiles.map((address, index) => {
             let nameOfSelectedVideo = address.split("/").pop()
             return (
-                <option value={address}>{nameOfSelectedVideo}</option>
+                <Option key={index} keyToPass={address + index} value={address} displayName={nameOfSelectedVideo}/>
             )
         })
 

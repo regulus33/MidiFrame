@@ -1,32 +1,30 @@
-
 import VideoSelectorContainer from '../containers/VideoSelectorContainer'
-import VideoSelector from '../VideoSelector'
 import React from 'react';
-import ReactDOM from 'react-dom';
 import TestRenderer from 'react-test-renderer';
-import util from 'util'
-import { exportAllDeclaration } from '@babel/types';
-import { promised } from 'q';
-global.fetch = require('jest-fetch-mock')
+import Option from '../Option.js'
+
 // Test to get all students record
 it("video-selector returns an array of video assets", (done) => {
 
-    const moomoo = Promise.resolve(['jjj', 'pooppeep'])
+    const innermostPromise = Promise.resolve(['path/to/video1.mp4', 'path/to/video.mp4'])
 
-    const shittyFetch = Promise.resolve(
+    const fakeVidFetch = Promise.resolve(
         {
-            json: () => moomoo
+            json: () => innermostPromise
         }
     )
 
     const videoSelectorGetMocked = jest.fn()
-    videoSelectorGetMocked.mockReturnValueOnce(shittyFetch)    
+    videoSelectorGetMocked.mockReturnValueOnce(fakeVidFetch)    
 
+  
     const renderer = TestRenderer.create(<VideoSelectorContainer videoSelectorGet={videoSelectorGetMocked} />)
-    const instance = renderer.root 
+    const testInstance = renderer.root;
+    
 
-    return Promise.allSettled([moomoo]).then(()=>{
-        expect(renderer.toJSON()).toBe(true)
+    return Promise.allSettled([innermostPromise, fakeVidFetch]).then(()=>{
+        done()
+        expect(testInstance.findAllByType(Option)[0].props.value).toBe("path/to/video1.mp4")
 
     })
 
