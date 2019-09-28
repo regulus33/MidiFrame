@@ -39,6 +39,16 @@ app.get('/test', function (req, res) {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 }); 
 
+app.get('/video', function(req, res) {
+
+  let pathToFile = req.query.video_path
+
+  console.warn(pathToFile)
+
+  res.sendFile(pathToFile)
+})
+
+
 module.exports = app 
 
 // app.post('/midi',(req,res) => {

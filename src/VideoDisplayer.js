@@ -1,21 +1,13 @@
 import React from "react"
 
-class VideoDisplayer extends React.Component {
-    
-    constructor(props){
-        super(props)
-    }
-    
-    
-    render(){
+const VideoDisplayer = (props) => {
         return(
-        <div>
-            <video>
-                <source src={this.props.videoPath} type={`video/${this.props.fileExtension}`}/>
-            </video>
-        </div>
+            <div>
+            <h1>Channel Name Here</h1>
+                <video controls autoPlay name="media" src={`http://localhost:3000/video?video_path=${props.videoPath}`} type={`video/${props.videoPath.split(".").pop()}`}>
+                </video>
+            </div>
         )
-    }
-} 
+}
 
 export default VideoDisplayer
