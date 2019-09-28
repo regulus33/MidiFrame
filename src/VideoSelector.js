@@ -9,7 +9,7 @@ const VideoSelecter = props => {
             <select onChange={props.handleOptionClick}>
                 {props.renderOptionsForDropDown()}
             </select>
-            <VideoDisplayer/>
+            <VideoDisplayer videoPath={props.selectedVideoPath}/>
         </div>
     )
 }
