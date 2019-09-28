@@ -11,7 +11,7 @@ module.exports = {
         videoPath += "/assets/video_bank/"
         return fs.readdirSync(videoPath).filter(value =>{
             return value != ".DS_Store"
-        })
+        }).map(fileName => videoPath + fileName )
          
 
     }

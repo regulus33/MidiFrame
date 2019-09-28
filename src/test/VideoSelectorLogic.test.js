@@ -19,7 +19,7 @@ test('fetchVideoFilePaths() returns an array of vid files', () => {
 
     mockFS(fakeChannelDir);
     
-    expect(fetchVideoFilePaths()[0]).toEqual("dumpyJoesVideoHosssssssss.mp4")
+    expect(fetchVideoFilePaths()[0]).toEqual(`${app_root}/assets/video_bank/dumpyJoesVideoHosssssssss.mp4`)
 
     mockFS.restore()
 

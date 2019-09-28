@@ -7,21 +7,28 @@ class VideoSelecterContainer extends React.Component {
     constructor(props) {
         super(props);
         //for our array in assets s
-        this.state = {videoFiles:[]};
+        this.state = {videoFiles:[], selectedVideoPath: ""};
+        //overwrite this to remain this instance when called in another class 
         this.renderOptionsForDropDown = this.renderOptionsForDropDown.bind(this);
-    }
+        this.handleOptionClick = this.handleOptionClick.bind(this)
+    }   
 
-    componentDidMount(){
+    componentDidMount() {
         this.fetchVideoFilePaths()
     }
 
     fetchVideoFilePaths() {
         this.props.videoSelectorGet().then(res => {
-            console.log(res)
             res.json().then((r) => {
+            console.log(r)
+
                 this.setState({videoFiles:r})
             })
         })
+    }
+
+    handleOptionClick(event){
+        this.setState({selectedVideoPath: event.target.selectedOptions[0].value})
     }
 
     renderOptionsForDropDown() {
@@ -31,12 +38,12 @@ class VideoSelecterContainer extends React.Component {
                 <Option key={index} keyToPass={address + index} value={address} displayName={nameOfSelectedVideo}/>
             )
         })
-
     }
 
     render() {
+        console.log(this.state)
         return (
-          <VideoSelector renderOptionsForDropDown={this.renderOptionsForDropDown}/>
+            <VideoSelector handleOptionClick={this.handleOptionClick} selectedVideoPath={this.state.selectedVideoPath} renderOptionsForDropDown={this.renderOptionsForDropDown}/>
         )
     }
 
