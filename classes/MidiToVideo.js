@@ -14,6 +14,11 @@ export default class MidiToVideo {
         this.removeStrayVideoString = `rm -rf ${this.app_root}/midi_slices/channel_${this.channel}/./*`
     }
 
+    createClip(){
+        //TODO: call generateChannelSliceCommands and create input then:
+        //`ffmpeg concat pathtofile`
+    }
+
         //slices the channel's video into mp4s in an isolated direcoty where each video file is named the same as its timestamp and therefore sorted in order for concatenation later 
     generateChannelSliceCommands() {
 
@@ -49,7 +54,7 @@ export default class MidiToVideo {
 
     }
 
-
+    //create the file for arguments supplied to ffmpeg 
     createInput(){
         let fileName = `${this.app_root}/midi_slices/input_${this.channel}`
         let commands = ""
@@ -70,7 +75,6 @@ export default class MidiToVideo {
         })
     }
 
-
     convertTimeStampToSecondsInteger(stamp){
         let firstNumber = stamp.split(":").shift()
         let secondNumber = stamp.split(":").pop()
@@ -82,23 +86,25 @@ export default class MidiToVideo {
     }
 
     //TODO: all the below are untested and or undocumented 
-    
     makeClips(){
         this.generateChannelSliceCommands().forEach( command => {
             execSync(command)
         })
     }
     
+    //need this for FS stuff. 
     createAppRootString() {
         let absolutePath = path.join(__dirname).split("/");
         absolutePath.pop();
         return absolutePath.join("/");
     }
     
+    //cleaning, keep it light 
     removeOldVideoSlices(){
         execSync(this.removeStrayVideoString)
     }
 
+s
 
 
     
