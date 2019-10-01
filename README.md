@@ -1,30 +1,6 @@
-# General Summary
+# What duhit du
 
-This is a web application designed to auto-generate music videos based on midi-data sent from a comprehensive midi sequencer such as the Teenage Engineering OP-Z. The application is dessigned to run locally only and requires that the host machine have FFMPEG installed. 
-
-The midi processing is divided into two main classes. MidiToVideo and MidiMapper. 
-
-Midi mapper processes "raw" midi data in a JSON file transferred over http. The app is never meant to run in the wild. 
-
-Midi mapper takes a series of numeric values and generates meaningful data for our midi to video process. 
-
-The MidiToVideo class takes this data and a supplied video path argument and cuts the videos into concatable slices which get reassembled in a rythmic order. 
-
-The client side code is responsible for displaying a complex array of data to the user to collect the input used by the ffmpeg integrations on the backend. 
-
-In order to document and better understand these features for myself, I have laid out a summary of the user experience below. 
-
-When I open the main page I see 8 dropdowns each listing all videos in the main asset directory(this can be set by a constant on the backend).
-
-The dropdown displays all videos from which I am allowed to associate a particular channel. The first dropdown is associated with channel 1 and the 8th dropdown is associated with channel 8. 
-
-The user will be able to view the video in an html5 video element and decide which timestamps to associate the recorded notes in  the channel with. 
-
-The above action requires some midi parsing to group events into notes belonging to channels. 
-
-For each channel, there is a text input belonging to the note-ons fired in the song. User will choose a timestamp for each note. 
-
-we then send the midi data of the song 
+Plugin your op-z and hash together a vid from some recorded midi. 
 
 ```json
 midi: {
@@ -44,17 +20,15 @@ midi: {
 }
 ```
 
-# MidiMapper (prepares midi data for the logic)
+# MidiMapper 
 
+All it does is convert browser recording of midi events into a format we can use on the server. 
 
-## description: 
-
-Client side, it sends the resulting data mods to the server where node processes it into ffmpeg stuff
 ## methods 
 
 `getMidiChannel(event)`
 
-will determine the human readable midi channel from unprocessed midi data. Takes our custom event objects as an argument. 
+will determine the human readable midi channel from unprocessed midi data. Takes custom event objects as an argument. 
 
 | parameters        | description           | example  |
 | ------------- |:-------------:| -----:|
@@ -84,7 +58,7 @@ returns `object`
 `determineNoteOnOff(event)`
 
 
-returns `true` for on and `false` for off 
+returns `true` for on and `false` for off. We need to use this to know when a note ends.  
 
 | parameters        | description           | example  |
 | ------------- |:-------------:| -----:|
@@ -99,9 +73,7 @@ returns `object`
 
 `bakeDataForParsing(recordedMidi)`
 
-
-returns an object 
-like this 
+returns an object where each key is a midi channel and each value is an array of events that occured on that midi channel. The inidividual objects specify note, whether its being pressed or released and velocity number. 
 
 ``` javascript
     {
@@ -122,14 +94,11 @@ like this
 
 returns `object`
 
-
-
+---
 
 # MidiToVideo
-
-## description: 
-
-converts mapped, parsed midi into instructions for ffmpeg to build its video clips, this is run server side.  
+ 
+converts the data created by midi mapper to FFMPEG commands and runs them to stitch video. 
 
 ## methods 
 
@@ -150,9 +119,7 @@ each channel can only be mapped to a single video file.
 
 returns `string`
 
----
 
-<<<<<<< HEAD
 `generateChannelSliceCommands()`
 
 Takes all the data required to calculate slices to concat later from member vars of the miditovideo instance. Generates an array of system commands to be executed by another method. Intervals are calculated by looking ahead to the next note that happens in time. The clip length becomes the time between the striking of the midi note and the striking of its successor. Therefore, polyphonic notes cannot be processed and will force a monophonic reading. 
@@ -165,22 +132,54 @@ returns `array`
 
 `makeClips()`
 
-One of two most user facing methods. This one will actually create the clips in the end. It calls the above method and clips are generated. 
+Public (as in this is what is actually used by other processess from this class.) 
 
-=======
+---
+
 `generateFfmpegConcatArgsForSelf()`
 
 Reads all entries in the channel directory that the instance is responsible for. `/midi_slices/channel_1/`
+
 
 builds a concated  file based on the entries  
 
 returns array of: `file '/Users/zacharyrowden/Desktop/notes/midi_slices/channel_2/5.2323455.mp4'`
 
+`createClip`
+
+Creates the clip by calling all the internal methods that generate the requirements and returns the path to the finished video. 
 
 ---
 
->>>>>>> setup-to-send-midi-tests
+## All network calls are consolidated to `network.js`
+this is for testing, we need to be able to mock server responses
 
+---
+
+### Components: Containers
+
+`VideoSelectorContainer`
+
+Video container is a stateful component responsible for displaying 
+a video element and a drop down menu for video selection.
+
+It will trigger re-renders when fetches are made for videos and when inputs are selected. 
+
+it rneders the following sub components:
+`VideoSelector.js renders:`
+`\\ VideoDisplayer.js` 
+`and html for select, in that html we call props.renderOptionsForDropDown() passed from VideoContainer.js`
+
+```js
+   return (
+        <div style={{ width: "100%", margin: "auto" }}>
+            <select onChange={props.handleOptionClick}>
+                {props.renderOptionsForDropDown()}
+            </select>
+            <VideoDisplayer videoPath={props.selectedVideoPath}/>
+        </div>
+    )
+```
 
 
 
