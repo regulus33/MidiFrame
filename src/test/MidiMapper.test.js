@@ -9,8 +9,6 @@ const getFileASJson = filename => {
 }
 
 
-
-
 test('getMidiChannel() returns the channel string from a midi message object', () => {
       let m = new MidiMapper
     

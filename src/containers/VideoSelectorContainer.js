@@ -1,6 +1,8 @@
 import React from 'react'
 import VideoSelector from '../VideoSelector.js'
 import Option from '../Option.js'
+import MidiMapper from '../classes/MidiMapper.js'
+import ChannelPicker from '../ChannelPicker.js';
 
 class VideoSelecterContainer extends React.Component {
 
@@ -10,6 +12,7 @@ class VideoSelecterContainer extends React.Component {
         this.state = {videoFiles:[], selectedVideoPath: ""};
         //overwrite this to remain this instance when called in another class 
         this.renderOptionsForDropDown = this.renderOptionsForDropDown.bind(this);
+        this.renderOptionsForChannelPickerData = this.renderOptionsForChannelPickerData.bind(this)
         this.handleOptionClick = this.handleOptionClick.bind(this)
     }   
 
@@ -21,7 +24,6 @@ class VideoSelecterContainer extends React.Component {
         this.props.videoSelectorGet().then(res => {
             res.json().then((r) => {
             console.log(r)
-
                 this.setState({videoFiles:r})
             })
         })
@@ -29,6 +31,19 @@ class VideoSelecterContainer extends React.Component {
 
     handleOptionClick(event){
         this.setState({selectedVideoPath: event.target.selectedOptions[0].value})
+    }
+
+    renderOptionsForChannelPickerData(){
+        //grab the midi dataaaaa
+        let capturedMidiData = this.props.rawMidi
+        let m = new MidiMapper
+        let channelsNotes = m.determineUsedNotes(capturedMidiData)
+        console.log(channelsNotes)
+        let channs = Object.keys(channelsNotes)
+        return channs.map((c,index) => {
+           return  <Option key={index} keyToPass={c + index} value={c} displayName={c}/>
+        })
+
     }
 
     renderOptionsForDropDown() {
@@ -43,7 +58,16 @@ class VideoSelecterContainer extends React.Component {
     render() {
         console.log(this.state)
         return (
-            <VideoSelector handleOptionClick={this.handleOptionClick} selectedVideoPath={this.state.selectedVideoPath} renderOptionsForDropDown={this.renderOptionsForDropDown}/>
+            <div>
+                <VideoSelector 
+                    handleOptionClick={this.handleOptionClick} 
+                    selectedVideoPath={this.state.selectedVideoPath} 
+                    renderOptionsForDropDown={this.renderOptionsForDropDown} 
+                />
+                <ChannelPicker 
+                    renderOptionsForDropDown={this.renderOptionsForChannelPickerData}
+                />
+            </div>
         )
     }
 

@@ -16,9 +16,9 @@ it("video-selector returns an array of video assets", (done) => {
 
     const videoSelectorGetMocked = jest.fn()
     videoSelectorGetMocked.mockReturnValueOnce(fakeVidFetch)    
-
+    let mock = [{"data":["148","31","100"],"timeStamp":5254.274999955669}]
   
-    const renderer = TestRenderer.create(<VideoSelectorContainer videoSelectorGet={videoSelectorGetMocked} />)
+    const renderer = TestRenderer.create(<VideoSelectorContainer videoSelectorGet={videoSelectorGetMocked} rawMidi={mock} />)
     const testInstance = renderer.root;
     
 
