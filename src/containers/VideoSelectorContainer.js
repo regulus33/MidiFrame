@@ -3,6 +3,7 @@ import VideoSelector from '../VideoSelector.js'
 import Option from '../Option.js'
 import MidiMapper from '../classes/MidiMapper.js'
 import ChannelPicker from '../ChannelPicker.js';
+import {reverseChannelsAndNotesObject} from '../Helpers.js'
 
 class VideoSelecterContainer extends React.Component {
 
@@ -38,10 +39,11 @@ class VideoSelecterContainer extends React.Component {
         let capturedMidiData = this.props.rawMidi
         let m = new MidiMapper
         let channelsNotes = m.determineUsedNotes(capturedMidiData)
+        let actualUseableData = reverseChannelsAndNotesObject(channelsNotes)
         console.log(channelsNotes)
-        let channs = Object.keys(channelsNotes)
+        let channs = Object.keys(actualUseableData)
         return channs.map((c,index) => {
-           return  <Option key={index} keyToPass={c + index} value={c} displayName={c}/>
+           return <Option key={index} keyToPass={c + index} value={c} displayName={c}/>
         })
 
     }
