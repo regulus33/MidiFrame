@@ -11,7 +11,7 @@ it("Displays a video when supplied path and filet extension", (done) => {
     const result = renderer.getRenderOutput();
     done()
     expect(result.props.children).toEqual(
-        [<h1>Channel Name Here</h1>, <video autoPlay={true} controls={true} name="media" src="http://localhost:3000/video?video_path=path/to/video.mp4" type="video/mp4" />]
+        [<h1/>, <video autoPlay={true} controls={true} name="media" src="http://localhost:3000/video?video_path=path/to/video.mp4" type="video/mp4" />]
     )
 
 
