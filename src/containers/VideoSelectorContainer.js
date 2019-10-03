@@ -10,11 +10,12 @@ class VideoSelecterContainer extends React.Component {
     constructor(props) {
         super(props);
         //for our array in assets s
-        this.state = {videoFiles:[], selectedVideoPath: ""};
+        this.state = {videoFiles:[], selectedVideoPath: "", selectedChannel: "1"};
         //overwrite this to remain this instance when called in another class 
         this.renderOptionsForDropDown = this.renderOptionsForDropDown.bind(this);
         this.renderOptionsForChannelPickerData = this.renderOptionsForChannelPickerData.bind(this)
         this.handleOptionClick = this.handleOptionClick.bind(this)
+        this.handleChannelOptionClick = this.handleChannelOptionClick.bind(this)
     }   
 
     componentDidMount() {
@@ -32,6 +33,10 @@ class VideoSelecterContainer extends React.Component {
 
     handleOptionClick(event){
         this.setState({selectedVideoPath: event.target.selectedOptions[0].value})
+    }
+
+    handleChannelOptionClick(event){
+        this.setState({selectedChannel: event.target.selectedOptions[0].value})
     }
 
     renderOptionsForChannelPickerData(){
@@ -58,16 +63,17 @@ class VideoSelecterContainer extends React.Component {
     }
 
     render() {
-        console.log(this.state)
         return (
-            <div>
+            <div className="vidContainer">
+                 <ChannelPicker 
+                    handleChannelOptionClick={this.handleChannelOptionClick}
+                    renderOptionsForDropDown={this.renderOptionsForChannelPickerData}
+                />
                 <VideoSelector 
+                    selectedChannelName={this.state.selectedChannel}
                     handleOptionClick={this.handleOptionClick} 
                     selectedVideoPath={this.state.selectedVideoPath} 
                     renderOptionsForDropDown={this.renderOptionsForDropDown} 
-                />
-                <ChannelPicker 
-                    renderOptionsForDropDown={this.renderOptionsForChannelPickerData}
                 />
             </div>
         )
