@@ -12,7 +12,7 @@ const midi =[{"data":["148","31","100"],"timeStamp":5254.274999955669},{"data":[
 function App() {
 
   let midiRecorded = true
-
+  
   if (midiRecorded) {
     return (
       <VideoSelectorContainer videoSelectorGet={videoSelectorGet} rawMidi={midi} />

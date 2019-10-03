@@ -6,10 +6,11 @@ const VideoSelecter = props => {
 
     return (
         <div style={{ width: "100%", margin: "auto" }}>
+            <span>Video</span>
             <select onChange={props.handleOptionClick}>
                 {props.renderOptionsForDropDown()}
             </select>
-            <VideoDisplayer videoPath={props.selectedVideoPath}/>
+            <VideoDisplayer selectedChannelName={props.selectedChannelName} videoPath={props.selectedVideoPath}/>
         </div>
     )
 }
