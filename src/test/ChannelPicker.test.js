@@ -10,6 +10,6 @@ it('Channel Picker Renders props properly', () => {
     const renderer = new ShallowRenderer()
     renderer.render(<ChannelPicker renderOptionsForDropDown={fakePropsFunction}/>)
     const result = renderer.getRenderOutput();
-    expect(result.props.children).toEqual(<select>random rendered string, doesn't matter what it is as long as I am rendered insiiiiiiiide</select>)
+    expect(result.props.children).toEqual([<span>Channel</span>, <select>random rendered string, doesn't matter what it is as long as I am rendered insiiiiiiiide</select>])
 
 });
