@@ -3,7 +3,12 @@ import VideoSelector from '../VideoSelector.js'
 import Option from '../Option.js'
 import MidiMapper from '../classes/MidiMapper.js'
 import ChannelPicker from '../ChannelPicker.js';
-import {reverseChannelsAndNotesObject} from '../Helpers.js'
+import {
+    reverseChannelsAndNotesObject,
+    mergeArrays,
+    getNotesFromChannelInSuppliedObject
+} from '../Helpers.js'
+import NoteTextField from '../NoteTextField'
 
 class VideoSelecterContainer extends React.Component {
 
@@ -16,7 +21,14 @@ class VideoSelecterContainer extends React.Component {
         this.renderOptionsForChannelPickerData = this.renderOptionsForChannelPickerData.bind(this)
         this.handleOptionClick = this.handleOptionClick.bind(this)
         this.handleChannelOptionClick = this.handleChannelOptionClick.bind(this)
-    }   
+    }  
+    
+    getUsedNotesObject() {
+        let capturedMidiData = this.props.rawMidi
+        let m = new MidiMapper
+        let channelsNotes = m.determineUsedNotes(capturedMidiData)
+        return reverseChannelsAndNotesObject(channelsNotes)
+    }
 
     componentDidMount() {
         this.fetchVideoFilePaths()
@@ -35,22 +47,24 @@ class VideoSelecterContainer extends React.Component {
         this.setState({selectedVideoPath: event.target.selectedOptions[0].value})
     }
 
-    handleChannelOptionClick(event){
+    handleChannelOptionClick(event) {
         this.setState({selectedChannel: event.target.selectedOptions[0].value})
     }
 
-    renderOptionsForChannelPickerData(){
-        //grab the midi dataaaaa
-        let capturedMidiData = this.props.rawMidi
-        let m = new MidiMapper
-        let channelsNotes = m.determineUsedNotes(capturedMidiData)
-        let actualUseableData = reverseChannelsAndNotesObject(channelsNotes)
-        console.log(channelsNotes)
-        let channs = Object.keys(actualUseableData)
-        return channs.map((c,index) => {
+    renderOptionsForChannelPickerData() {
+        //grab the midi dataaaaa    
+        return Object.keys(this.getUsedNotesObject()).map((c,index) => {
            return <Option key={index} keyToPass={c + index} value={c} displayName={c}/>
         })
 
+    }
+
+    renderNoteInputs() {
+        let usedNotes = this.getUsedNotesObject()
+        
+        let notesBelongingToSelectedChannel = getNotesFromChannelInSuppliedObject(usedNotes, Number(this.state.selectedChannel))
+
+        return notesBelongingToSelectedChannel.map((el,i )=> <NoteTextField key={i} keyToPass={el + i} noteName={el}/>)
     }
 
     renderOptionsForDropDown() {
@@ -75,6 +89,7 @@ class VideoSelecterContainer extends React.Component {
                     selectedVideoPath={this.state.selectedVideoPath} 
                     renderOptionsForDropDown={this.renderOptionsForDropDown} 
                 />
+                {this.renderNoteInputs()}
             </div>
         )
     }
