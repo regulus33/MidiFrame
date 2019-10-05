@@ -28,4 +28,22 @@ export const reverseChannelsAndNotesObject = (obj) => {
 
     return newObject
 }
+
+export const mergeArrays = (arrayOfArrays) => {
+    let flattenedArray = []
+    arrayOfArrays.forEach(el => {
+        el.forEach(l =>{
+            flattenedArray.push(l)
+        })
+    })
+    return flattenedArray
+}
+
+export const getNotesFromChannelInSuppliedObject = (channelsToNotes, selectedChannel) => {
+    if(channelsToNotes[selectedChannel] == undefined) { 
+        return []
+    } else {
+        return channelsToNotes[selectedChannel]
+    }
+}
     
