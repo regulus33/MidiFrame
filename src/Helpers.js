@@ -42,7 +42,7 @@ export const mergeArrays = (arrayOfArrays) => {
 export const getNotesFromChannelInSuppliedObject = (channelsToNotes, selectedChannel) => {
     if(channelsToNotes[selectedChannel] == undefined) { 
         return []
-    } else {
+    }else {
         return channelsToNotes[selectedChannel]
     }
 }
