@@ -93,6 +93,7 @@ export default class MidiMapper {
             return false 
 
         } else {
+            
             throw new Error("Unrecognizable number for midi note on/off")
         }
 

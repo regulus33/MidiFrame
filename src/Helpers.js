@@ -14,7 +14,7 @@ export const reverseChannelsAndNotesObject = (obj) => {
 
     let newObject = {}
 
-    uniqChans.forEach(el=>{
+    uniqChans.forEach(el => {
         newObject[el] = []
     })
 

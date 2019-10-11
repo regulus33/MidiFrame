@@ -9,18 +9,21 @@ import {
     getNotesFromChannelInSuppliedObject
 } from '../Helpers.js'
 import NoteTextField from '../NoteTextField'
+import { thisExpression } from '@babel/types';
+import MidiFormScraper from '../classes/MidiFormScraper.js';
 
 class VideoSelecterContainer extends React.Component {
 
     constructor(props) {
         super(props);
         //for our array in assets s
-        this.state = {videoFiles:[], selectedVideoPath: "", selectedChannel: "1"};
+        this.state = {videoFiles:[], selectedVideoPath: "", selectedChannel: "1", notes:{}};
         //overwrite this to remain this instance when called in another class 
         this.renderOptionsForDropDown = this.renderOptionsForDropDown.bind(this);
         this.renderOptionsForChannelPickerData = this.renderOptionsForChannelPickerData.bind(this)
         this.handleOptionClick = this.handleOptionClick.bind(this)
         this.handleChannelOptionClick = this.handleChannelOptionClick.bind(this)
+        this.handleTypeTextChange = this.handleTypeTextChange.bind(this)
     }  
     
     getUsedNotesObject() {
@@ -47,6 +50,17 @@ class VideoSelecterContainer extends React.Component {
         this.setState({selectedVideoPath: event.target.selectedOptions[0].value})
     }
 
+    handleTypeTextChange(event){
+        let noteTimeObj = {}
+        
+        let inputs = document.getElementsByClassName("noteTextField")
+        for(let i = 0; i < inputs.length; i++) {
+            noteTimeObj[inputs[i].name] = inputs[i].value 
+        }
+
+        this.setState({notes:noteTimeObj})
+    }
+
     handleChannelOptionClick(event) {
         this.setState({selectedChannel: event.target.selectedOptions[0].value})
     }
@@ -64,7 +78,7 @@ class VideoSelecterContainer extends React.Component {
         
         let notesBelongingToSelectedChannel = getNotesFromChannelInSuppliedObject(usedNotes, Number(this.state.selectedChannel))
 
-        return notesBelongingToSelectedChannel.map((el,i )=> <NoteTextField key={i} keyToPass={el + i} noteName={el}/>)
+        return notesBelongingToSelectedChannel.map( ( el,i ) => <NoteTextField key={i} keyToPass={el + i} noteName={el}/>)
     }
 
     renderOptionsForDropDown() {
@@ -77,6 +91,9 @@ class VideoSelecterContainer extends React.Component {
     }
 
     render() {
+        //call the scraper, when render runs it meanss state has changed 
+        let singletonFormDataMidi = new MidiFormScraper //singleton instance
+        singletonFormDataMidi.commitState(this.state)
         return (
             <div className="vidContainer">
                  <ChannelPicker 
@@ -89,7 +106,9 @@ class VideoSelecterContainer extends React.Component {
                     selectedVideoPath={this.state.selectedVideoPath} 
                     renderOptionsForDropDown={this.renderOptionsForDropDown} 
                 />
-                {this.renderNoteInputs()}
+                <form onChange={this.handleTypeTextChange}>
+                    {this.renderNoteInputs()}
+                </form>
             </div>
         )
     }
