@@ -3,10 +3,10 @@ import React from 'react'
 
 const NoteTextField = props => {
     return (
-        <form>
+        <div>
             <span style={{"color":"white"}}>{props.noteName}</span><br/>
-            <input type="text" name={props.noteName}/><br/>
-        </form>
+            <input className="noteTextField" type="text" name={props.noteName}/><br/>
+        </div>
     )
 }
 

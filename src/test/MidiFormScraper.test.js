@@ -1,10 +1,10 @@
 import VideoSelectorContainer from '../containers/VideoSelectorContainer'
 import React from 'react';
 import TestRenderer from 'react-test-renderer';
+import MidiFormScraper from '../classes/MidiFormScraper'
 import Option from '../Option.js'
 
-// Test to get all students record
-it("video-selector returns an array of video assets", (done) => {
+it("Scrapes duh forrrrmmmmmssss", (done) => {
 
     const innermostPromise = Promise.resolve(['path/to/video1.mp4', 'path/to/video.mp4'])
 
@@ -21,19 +21,19 @@ it("video-selector returns an array of video assets", (done) => {
     const renderer = TestRenderer.create(<VideoSelectorContainer videoSelectorGet={videoSelectorGetMocked} rawMidi={mock} />)
     const testInstance = renderer.root;
     
-
+    // expect(3).toBe(4)
     return Promise.allSettled([innermostPromise, fakeVidFetch]).then(()=>{
         //first option picker is channel 
         expect(testInstance.findAllByType(Option)[0].props.value).toBe("5")
         //second is video path 
         expect(testInstance.findAllByType(Option)[1].props.value).toBe("path/to/video1.mp4")
+        const form = new MidiFormScraper()
+        
+        expect(form.selectedData).toEqual({"5":[{67:"3:45"},"path/to/video.mp4"]})
         done()
 
 
     })
-
-
-
     
 
 });
