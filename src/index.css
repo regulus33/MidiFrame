@@ -1,23 +1,31 @@
 body {
-  background-color: black;
+  background-color: white;
 }
 
 h1 {
-  color: white;
+  color: gray;
   font-family: futura;
   text-align: center;
+  font-weight: lighter;
 }
 
 span {
-  color: white;
+  color: gray;
   font-size: 20px;
   font-family: futura;
   letter-spacing: 5px;
   margin: 20px;
 }
 
+.description{
+  color:black;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;;
+  padding-bottom: 20px;
+}
+
 .vidContainer{
-  text-align: center;
+  text-align: left;
 }
 
 

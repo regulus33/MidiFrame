@@ -25,7 +25,6 @@ export default class MidiFormScraper {
     }
 
     commitState(stateSnapshot){
-        debugger
     }
 
     

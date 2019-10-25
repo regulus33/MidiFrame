@@ -4,7 +4,7 @@ import React from 'react'
 const ChannelPicker = props => {
     return (
         <div style={{ width: "100%", margin: "auto" }}>
-            <span>Channel</span>
+            <span>channel:</span>
             <select onChange={props.handleChannelOptionClick}>
                 {props.renderOptionsForDropDown()}
             </select>

@@ -35,13 +35,15 @@ class VideoSelecterContainer extends React.Component {
 
     componentDidMount() {
         this.fetchVideoFilePaths()
+        //TODO setting default selected channel should be in the most early and rare occuring method 
+       this.setState({selectedChannel: Object.keys(this.getUsedNotesObject())[0]})
     }
 
     fetchVideoFilePaths() {
         this.props.videoSelectorGet().then(res => {
             res.json().then((r) => {
             console.log(r)
-                this.setState({videoFiles:r})
+                this.setState({videoFiles:r, selectedVideoPath: r.pop()})
             })
         })
     }
@@ -77,7 +79,7 @@ class VideoSelecterContainer extends React.Component {
         let usedNotes = this.getUsedNotesObject()
         
         let notesBelongingToSelectedChannel = getNotesFromChannelInSuppliedObject(usedNotes, Number(this.state.selectedChannel))
-
+        
         return notesBelongingToSelectedChannel.map( ( el,i ) => <NoteTextField key={i} keyToPass={el + i} noteName={el}/>)
     }
 
@@ -96,19 +98,28 @@ class VideoSelecterContainer extends React.Component {
         singletonFormDataMidi.commitState(this.state)
         return (
             <div className="vidContainer">
-                 <ChannelPicker 
-                    handleChannelOptionClick={this.handleChannelOptionClick}
-                    renderOptionsForDropDown={this.renderOptionsForChannelPickerData}
-                />
+                <div className="formParent">
+                    <div className="channelPicker">
+                        <span className="description">pick the channel you want to modify</span>
+                        <ChannelPicker 
+                            handleChannelOptionClick={this.handleChannelOptionClick}
+                            renderOptionsForDropDown={this.renderOptionsForChannelPickerData}
+                        />
+                    </div>
+                    <div className="noteSelector">
+                    <span className="description">choose timestamps (3:33) from the video and add them to the note fields:</span>
+                        <form onChange={this.handleTypeTextChange}>
+                            {this.renderNoteInputs()}
+                        </form>
+                    </div>
+                </div>
                 <VideoSelector 
                     selectedChannelName={this.state.selectedChannel}
                     handleOptionClick={this.handleOptionClick} 
                     selectedVideoPath={this.state.selectedVideoPath} 
                     renderOptionsForDropDown={this.renderOptionsForDropDown} 
                 />
-                <form onChange={this.handleTypeTextChange}>
-                    {this.renderNoteInputs()}
-                </form>
+               
             </div>
         )
     }
