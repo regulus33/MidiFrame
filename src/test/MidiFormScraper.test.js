@@ -20,7 +20,7 @@ it("Scrapes duh forrrrmmmmmssss", (done) => {
   
     const renderer = TestRenderer.create(<VideoSelectorContainer videoSelectorGet={videoSelectorGetMocked} rawMidi={mock} />)
     const testInstance = renderer.root;
-    
+    //DIDNT WE DECIDE THIS WAS UNNECCESSSARRYY
     // expect(3).toBe(4)
     return Promise.allSettled([innermostPromise, fakeVidFetch]).then(()=>{
         //first option picker is channel 
