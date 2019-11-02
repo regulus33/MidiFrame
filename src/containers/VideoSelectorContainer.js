@@ -11,6 +11,7 @@ import {
 import NoteTextField from '../NoteTextField'
 import { thisExpression } from '@babel/types';
 import MidiFormScraper from '../classes/MidiFormScraper.js';
+import StartButton from '../buttons/StartButton.js'
 
 class VideoSelecterContainer extends React.Component {
 
@@ -24,6 +25,7 @@ class VideoSelecterContainer extends React.Component {
         this.handleOptionClick = this.handleOptionClick.bind(this)
         this.handleChannelOptionClick = this.handleChannelOptionClick.bind(this)
         this.handleTypeTextChange = this.handleTypeTextChange.bind(this)
+        //begin the listener for midi.js events 
     }  
     
     getUsedNotesObject() {
@@ -112,6 +114,8 @@ class VideoSelecterContainer extends React.Component {
                             {this.renderNoteInputs()}
                         </form>
                     </div>
+                    <span className="description">Start the process HERE? :)</span>
+                    <StartButton onClick={this.props.scraper.startMidi}/>
                 </div>
                 <VideoSelector 
                     selectedChannelName={this.state.selectedChannel}

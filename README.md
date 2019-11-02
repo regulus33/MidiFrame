@@ -226,9 +226,17 @@ this.state = {
 
 ### methods:
 
-TODO:
+TOOD: describe the methods 
 
-descrube the methods
+---
+
+
+# MidiFormScraper.js
+
+We need something to intercept midi events as they come in, store them in midiformscraper and play the videos.
+
+The MidiFormScraper initializes the listeners for incoming midi data. 
+
 
 
 
