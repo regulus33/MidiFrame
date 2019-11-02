@@ -1,8 +1,8 @@
-# What duhit du
+# What dun du???
 
 Plugin your op-z and hash together a vid from some recorded midi. 
 
-```json
+```js
 midi: {
   song: [
     //a bunch of midi events
@@ -22,13 +22,15 @@ midi: {
 
 # MidiMapper 
 
-All it does is convert browser recording of midi events into a format we can use on the server. 
+It kicks off the first step in the chain of processing. It molds the data created by midi.js into something we can process and analyze. 
 
-## methods 
+## methods:
 
-`getMidiChannel(event)`
+``` js
+getMidiChannel(event)
+```
 
-will determine the human readable midi channel from unprocessed midi data. Takes custom event objects as an argument. 
+The midi.js api (and the midi specification in general) use an unusual format to store notes. Most values end up being between 0 and 127. Since we are not number genius computers, we made this method to translate one of these numbers into something from 1-16 (which are the standard midi channel numbers) 
 
 | parameters        | description           | example  |
 | ------------- |:-------------:| -----:|
@@ -41,10 +43,11 @@ returns `string`
 ---
 
 
-`sortedEventsToChannels(events)`
+```js
+sortedEventsToChannels(events)
+```
 
-
-Iterates through a provided array of raw unprocessed midi events. returns an object of keyed number strings representing channels:
+Takes an array of midi.js events and outputs an object where each key represents a midi channel (1 -16) and each value represents a collection of midi events that happened in that channel.
 
 | parameters        | description           | example  |
 | ------------- |:-------------:| -----:|
@@ -55,10 +58,11 @@ returns `object`
 ---
 
 
-`determineNoteOnOff(event)`
+```js
+determineNoteOnOff(event)
+```
 
-
-returns `true` for on and `false` for off. We need to use this to know when a note ends.  
+True is on, false is off. The arg is a midi.js event.   
 
 | parameters        | description           | example  |
 | ------------- |:-------------:| -----:|
@@ -71,9 +75,11 @@ returns `object`
   
   ---
 
-`bakeDataForParsing(recordedMidi)`
+```js
+bakeDataForParsing(recordedMidi)
+```
 
-returns an object where each key is a midi channel and each value is an array of events that occured on that midi channel. The inidividual objects specify note, whether its being pressed or released and velocity number. 
+The return value is similar to `sortedEventsToChannels` and calls that function, but it returns an object with values that have been processed further and are more readilly iterated, deconstructed and unpacked. 
 
 ``` javascript
     {
@@ -98,58 +104,68 @@ returns `object`
 
 # MidiToVideo
  
-converts the data created by midi mapper to FFMPEG commands and runs them to stitch video. 
+Builds strings ready to execute as shell commands based on the data output by MidiMapper
+
+in the constructor: 
+```js
+constructor(channel,notes,clip, data)
+```
+* channel: channel this instance assigned to 
+* notes: which notes (represented by arbitrary unique nums) are played in this channel
+* a string rep of path to video to be
+
 
 ## methods 
-
-`getMidiChannel(event)`
-
-provides data for the instance to figure out what will be in its clip instructions. The realtionship is 1 to 1 as in: midi channel 16 will be mapped to video 'a' and only one `miditovideo` instance will be responsible for creating the file for this channel, a new one of the next channel and so on. 
-
-each channel can only be mapped to a single video file. 
-
-| parameters        | description           | example  |
-| ------------- |:-------------:| -----:|
-| channel   | midi channel, string  | `"4"` | 
-| notesToStamps   | key val pair of notes and the timestamps they should be bound to in their video.  | `{"56":"3:36","35":"4:22"}` | 
-| video   | string, absolute path of video, provided and selected by user  | `"Users/foo/bar/baz/vid.mp4"` | 
-| data   | object of channels as keys and processable arrays of midi events as values  | NA | 
-
-
 
 returns `string`
 
 
-`generateChannelSliceCommands()`
+```js
+generateChannelSliceCommands()
+```
 
-Takes all the data required to calculate slices to concat later from member vars of the miditovideo instance. Generates an array of system commands to be executed by another method. Intervals are calculated by looking ahead to the next note that happens in time. The clip length becomes the time between the striking of the midi note and the striking of its successor. Therefore, polyphonic notes cannot be processed and will force a monophonic reading. 
+Takes all the data required to calculate slices to concat later from instance variables of the miditovideo object. Generates an array of system commands to be executed by another method. 
 
-
+Intervals are calculated by looking ahead to the next note that happens in time and subtracting the difference of the successor's start time and the current's begin time. 
 
 returns `array`
 
 ---
 
-`makeClips()`
+```js
+makeClips()
+```
 
-Public (as in this is what is actually used by other processess from this class.) 
+Self explanatory. Use this in the server code to kick off process.
+
+---
+
+```js
+generateFfmpegConcatArgsForSelf()
+```
+
+Reads all entries in the folder where we keep the midi slices for this channel. `/midi_slices/channel_1/`
+
+concats all them files  
+
+returns array of strings that look like this: `file '/Users/zacharyrowden/Desktop/notes/midi_slices/channel_2/5.2323455.mp4'`
+
+```js
+createClip()
+```
+
+The last step in the chain. Generates a rythmic clip. Other processes must update the state of MidiToVideo instance before this....
 
 ---
 
-`generateFfmpegConcatArgsForSelf()`
+```js
+createInput()
+```
 
-Reads all entries in the channel directory that the instance is responsible for. `/midi_slices/channel_1/`
-
-
-builds a concated  file based on the entries  
-
-returns array of: `file '/Users/zacharyrowden/Desktop/notes/midi_slices/channel_2/5.2323455.mp4'`
-
-`createClip`
-
-Creates the clip by calling all the internal methods that generate the requirements and returns the path to the finished video. 
+Generates a .txt file. Its fed to ffmpeg as an arg. 
 
 ---
+
 
 ## All network calls are consolidated to `network.js`
 this is for testing, we need to be able to mock server responses
@@ -160,26 +176,25 @@ this is for testing, we need to be able to mock server responses
 
 `VideoSelectorContainer`
 
-Video container is a stateful component responsible for displaying 
-a video element and a drop down menu for video selection.
+Video container selector. Its the only smart component. All UI related methods and form data are processed here. 
 
-It will trigger re-renders when fetches are made for videos and when inputs are selected. 
 
-it rneders the following sub components:
-`VideoSelector.js renders:`
-`\\ VideoDisplayer.js` 
-`and html for select, in that html we call props.renderOptionsForDropDown() passed from VideoContainer.js`
-
+### state:
 ```js
-   return (
-        <div style={{ width: "100%", margin: "auto" }}>
-            <select onChange={props.handleOptionClick}>
-                {props.renderOptionsForDropDown()}
-            </select>
-            <VideoDisplayer videoPath={props.selectedVideoPath}/>
-        </div>
-    )
+this.state = {
+  videoFiles:[], //selectable els
+  selectedVideoPath: "", //path of chosen video
+  selectedChannel: "1", //path of selected channel
+  notes:{} //notes used in this channel 
+};
 ```
+
+### methods:
+
+TODO:
+
+descrube the methods
+
 
 
 
