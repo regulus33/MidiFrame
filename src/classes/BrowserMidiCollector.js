@@ -1,3 +1,5 @@
+import MidiMapper from "./MidiMapper.js"
+
 const ON_CHANNELS = {
   "144": "1",
   "145": "2",
@@ -16,6 +18,7 @@ const ON_CHANNELS = {
   "158": "15",
   "159": "16"
 }
+
 const OFF_CHANNELS = {
   '128': '1',
   '129': '2',
@@ -35,10 +38,10 @@ const OFF_CHANNELS = {
   '143': '16'
 }
 
-
-
-export default class MidiFormScraper {
-    constructor() {
+export default class BrowserMidiCollector {
+    constructor(stateSub) {
+        this.stateSubscriptionFromVideoSelectorContainer = stateSub
+        //for sending to server
         this.midiToBeMapped = [];
         this.midiData = {
             "0":[],
@@ -90,21 +93,25 @@ export default class MidiFormScraper {
           data: stringedData,
           timeStamp: message.timeStamp
         }
-
+         /////////////////////////////////////////////////////////
+         ////                                                 ////
+         ////  first add the events to an array unprocessed   ////                                             
+         ////                                                 ////
+         /////////////////////////////////////////////////////////
         this.midiToBeMapped.push(obj)
-
-        console.log("midi " +this.timeOfFirstMidiNote )
-        if(this.firstNote == true){
-          this.timeOfFirstMidiNote = Date.now()
-          console.log("first midi " +this.timeOfFirstMidiNote )
-
-          // this.setupAndBeginRecording()  
-        } 
-         this.firstNote = false 
-        //here we push into an unprocessed array, we shall return to this in a while
-        // this.channelsAndStamps.push({"noteChannel": message.data[0], "timeStamp": message.timeStamp })
+         /////////////////////////////////////////////////////////
+         ////                                                 ////
+         ////  this is where we will have the live video stuff////                                               
+         ////                                                 ////
+         /////////////////////////////////////////////////////////
+        // this.stateSubscriptionFromVideoSelectorContainer
+        // {videoFiles:[], selectedVideoPath: "", selectedChannel: "1", notes:{}}
+        
+        
       } 
     }
+
+
 
     
     

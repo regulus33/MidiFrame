@@ -10,7 +10,7 @@ import {
 } from '../Helpers.js'
 import NoteTextField from '../NoteTextField'
 import { thisExpression } from '@babel/types';
-import MidiFormScraper from '../classes/MidiFormScraper.js';
+import BrowserMidiCollector from '../classes/BrowserMidiCollector.js';
 import StartButton from '../buttons/StartButton.js'
 
 class VideoSelecterContainer extends React.Component {
@@ -25,7 +25,9 @@ class VideoSelecterContainer extends React.Component {
         this.handleOptionClick = this.handleOptionClick.bind(this)
         this.handleChannelOptionClick = this.handleChannelOptionClick.bind(this)
         this.handleTypeTextChange = this.handleTypeTextChange.bind(this)
-        //begin the listener for midi.js events 
+        //Subscribe midiCollector to the state, you will need it to update video based on midi events
+        //remember not to touch this, passing by reference
+        
     }  
     
     getUsedNotesObject() {
@@ -95,9 +97,9 @@ class VideoSelecterContainer extends React.Component {
     }
 
     render() {
-        //call the scraper, when render runs it meanss state has changed 
-        let singletonFormDataMidi = new MidiFormScraper //singleton instance
-        singletonFormDataMidi.commitState(this.state)
+        console.log(this.state)
+        //each time the form changes we need to notify the browsermidicollector 
+        Object.assign(this.props.midiCollector, this.state)
         return (
             <div className="vidContainer">
                 <div className="formParent">
@@ -115,7 +117,7 @@ class VideoSelecterContainer extends React.Component {
                         </form>
                     </div>
                     <span className="description">Start the process HERE? :)</span>
-                    <StartButton onClick={this.props.scraper.startMidi}/>
+                    <StartButton onClick={this.props.midiCollector.startMidi}/>
                 </div>
                 <VideoSelector 
                     selectedChannelName={this.state.selectedChannel}
