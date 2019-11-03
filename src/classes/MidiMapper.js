@@ -49,7 +49,7 @@ export default class MidiMapper {
 
     }
 
-    getMidiChannel(event) {
+    static getMidiChannel(event) {
         let number = event["data"][0]
         if (OFF_CHANNELS[number] != undefined) {
            return OFF_CHANNELS[number]
@@ -66,13 +66,13 @@ export default class MidiMapper {
         
        events.forEach(event => {
             // key does not yet exist, create an array to hold subsequent objects   
-            if(channels[this.getMidiChannel(event)] == undefined) {
+            if(channels[this.constructor.getMidiChannel(event)] == undefined) {
                 let arrayOfChannelEvents = []
                 arrayOfChannelEvents.push(event)
-                channels[this.getMidiChannel(event)] = arrayOfChannelEvents
+                channels[this.constructor.getMidiChannel(event)] = arrayOfChannelEvents
             // key exists as array, add the event object to the existing group
             } else {
-                channels[this.getMidiChannel(event)].push(event)    
+                channels[this.constructor.getMidiChannel(event)].push(event)    
             }
         });
 

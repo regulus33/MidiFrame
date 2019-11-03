@@ -72,7 +72,6 @@ export default class BrowserMidiCollector {
               console.log(device.name)
               device.onmidimessage = this.onMidiMessage //keep
               device.onstatechange = this.handleOPZChange //change to have msg sent when we hit stop button 
-            
             }
 
           }
@@ -106,10 +105,19 @@ export default class BrowserMidiCollector {
          /////////////////////////////////////////////////////////
         // this.stateSubscriptionFromVideoSelectorContainer
         // {videoFiles:[], selectedVideoPath: "", selectedChannel: "1", notes:{}}
-        
-        
+               
       } 
     }
+
+    //all this needs to tell us is if the currently selected form data permits this note to be a part of the midi playing
+    processEvent(event) {
+      let result = {}
+      let channel = MidiMapper.getMidiChannel(event)
+      result["channel"] = channel 
+      result["noteNumber"] = event.data[1]
+      return result 
+    }
+
 
 
 
