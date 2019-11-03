@@ -112,6 +112,9 @@ export default class BrowserMidiCollector {
     //all this needs to tell us is if the currently selected form data permits this note to be a part of the midi playing
     processEvent(event) {
       let result = {}
+      if(!MidiMapper.determineNoteOnOff(event)) {
+        return null
+      }
       let channel = MidiMapper.getMidiChannel(event)
       result["channel"] = channel 
       result["noteNumber"] = event.data[1]
