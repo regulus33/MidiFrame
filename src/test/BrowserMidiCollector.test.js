@@ -1,7 +1,7 @@
 import VideoSelectorContainer from '../containers/VideoSelectorContainer'
 import React from 'react';
 import TestRenderer from 'react-test-renderer';
-import MidiFormScraper from '../classes/MidiFormScraper'
+import BrowserMidiCollector from '../classes/BrowserMidiCollector'
 import Option from '../Option.js'
 
 it("Scrapes duh forrrrmmmmmssss", (done) => {
@@ -27,7 +27,7 @@ it("Scrapes duh forrrrmmmmmssss", (done) => {
         expect(testInstance.findAllByType(Option)[0].props.value).toBe("5")
         //second is video path 
         expect(testInstance.findAllByType(Option)[1].props.value).toBe("path/to/video1.mp4")
-        const form = new MidiFormScraper()
+        const form = new BrowserMidiCollector()
         
         expect(form.selectedData).toEqual({"5":[{67:"3:45"},"path/to/video.mp4"]})
         done()

@@ -226,21 +226,23 @@ this.state = {
 
 ### methods:
 
-TOOD: describe the methods 
+TOOD: describe the methods of this container
 
 ---
 
 
-# MidiFormScraper.js
+# BrowserMidiCollector.js
 
-We need something to intercept midi events as they come in, store them in midiformscraper and play the videos.
+We need something to intercept midi events as they come in, store them in BrowserMidiCollector and play the videos.
 
-The MidiFormScraper initializes the listeners for incoming midi data. 
-
-
+The BrowserMidiCollector initializes the listeners for incoming midi data. 
 
 
+## TODO 
 
+Test BrowserMidiCollector
+Fix remainging tests. 
+Clear notes fields on form change
 
 
 

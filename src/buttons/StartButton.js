@@ -2,16 +2,22 @@ import React from 'react';
 const StartButton = (props) => {
 
     const startStyles = {
-        margin: "0 auto",
+        margin: "30 left",
         width: "0",
         height: "0",
-        borderLeft: "50px solid transparent",
-        borderRight: "50px solid transparent",
-        borderTop: "100px solid #e49a5b",
+        borderLeft: "30px solid transparent",
+        borderRight: "30px solid transparent",
+        borderTop: "60px solid #e49a5b",
+        marginLeft: "105px"
+    }
+
+    const handleclick = (event) => {
+        props.onClick()
+        event.target.style.borderTop = "60px solid gray"
     }
 
     return (
-        <div onClick={props.onClick} style={startStyles}></div>
+        <div className="triangle" onClick={handleclick} style={startStyles}></div>
     );
 }
 
