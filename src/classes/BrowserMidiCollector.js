@@ -64,12 +64,12 @@ export default class BrowserMidiCollector {
     startMidi = () => {
         navigator.requestMIDIAccess().then( access => {
           //there should really only be one here, but you never know 
-          console.log(access.inputs);
+          // console.log(access.inputs);
           const devices = access.inputs.values();
           for (let device of devices ) {
 
             if (device.name == "OP-Z") {
-              console.log(device.name)
+              // console.log(device.name)
               device.onmidimessage = this.onMidiMessage //keep
               device.onstatechange = this.handleOPZChange //change to have msg sent when we hit stop button 
             }
@@ -80,8 +80,8 @@ export default class BrowserMidiCollector {
 
     onMidiMessage = (message) => {
       //message data 0 is telling us if we are an off or on channel and which channel (1 - 16) at the same time 
-      console.log(message.data[0].toString())
-      console.log(message.timeStamp)
+      // console.log(message.data[0].toString())
+      // console.log(message.timeStamp)
       //if its an on channel or off, its relevant, so commit it to the json 
       if ((ON_CHANNELS[message.data[0].toString()] != undefined) || (OFF_CHANNELS[message.data[0].toString()] != undefined)) {
         

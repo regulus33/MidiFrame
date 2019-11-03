@@ -6,6 +6,7 @@ import ChannelPicker from '../ChannelPicker.js';
 import {
     reverseChannelsAndNotesObject,
     mergeArrays,
+    getRandomColor,
     getNotesFromChannelInSuppliedObject
 } from '../Helpers.js'
 import NoteTextField from '../NoteTextField'
@@ -18,7 +19,7 @@ class VideoSelecterContainer extends React.Component {
     constructor(props) {
         super(props);
         //for our array in assets s
-        this.state = {videoFiles:[], selectedVideoPath: "", selectedChannel: "1", notes:{}};
+        this.state = {videoFiles:[], selectedVideoPath: "", selectedChannel: "1", notes:{}, latestCapturedMidi:[]};
         //overwrite this to remain this instance when called in another class 
         this.renderOptionsForDropDown = this.renderOptionsForDropDown.bind(this);
         this.renderOptionsForChannelPickerData = this.renderOptionsForChannelPickerData.bind(this)
@@ -27,17 +28,21 @@ class VideoSelecterContainer extends React.Component {
         this.handleTypeTextChange = this.handleTypeTextChange.bind(this)
         //Subscribe midiCollector to the state, you will need it to update video based on midi events
         //remember not to touch this, passing by reference
-        
     }  
     
     getUsedNotesObject() {
-        let capturedMidiData = this.props.rawMidi
+        let capturedMidiData = this.state.latestCapturedMidi
+        // debugger 
+        // let capturedMidiData = this.props.rawMidi
         let m = new MidiMapper
         let channelsNotes = m.determineUsedNotes(capturedMidiData)
-        return reverseChannelsAndNotesObject(channelsNotes)
+        let formatted =  reverseChannelsAndNotesObject(channelsNotes)
+        return formatted
     }
 
     componentDidMount() {
+        //listener for 'r'
+        this.registerRefreshDataListener()
         this.fetchVideoFilePaths()
         //TODO setting default selected channel should be in the most early and rare occuring method 
        this.setState({selectedChannel: Object.keys(this.getUsedNotesObject())[0]})
@@ -94,6 +99,19 @@ class VideoSelecterContainer extends React.Component {
                 <Option key={index} keyToPass={address + index} value={address} displayName={nameOfSelectedVideo}/>
             )
         })
+    }
+    
+    registerRefreshDataListener() {
+        document.onkeyup = (event) => { 
+           if(event.key === "r"){
+            //makes it obvious that you changed something 
+            document.getElementsByClassName("vidContainer")[0].style.backgroundColor = getRandomColor()
+            this.setState({latestCapturedMidi: this.props.midiCollector.midiToBeMapped})
+           }
+            // debugger 
+
+        }
+
     }
 
     render() {
