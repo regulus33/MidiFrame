@@ -14,7 +14,7 @@ test('getMidiChannel() returns the channel string from a midi message object', (
     
       let oneMidiEvent = getFileASJson('./midi_notes_on_off.json')[0] 
 
-      let result = m.getMidiChannel(oneMidiEvent)
+      let result = MidiMapper.getMidiChannel(oneMidiEvent)
       expect(result).toBe("3")
 
 })
@@ -26,7 +26,7 @@ test('getMidiChannel() throws exceptionn when channel not found', () => {
   
     try {
 
-        m.getMidiChannel(badEvent)
+        MidiMapper.getMidiChannel(badEvent)
       
         
     } catch (e) {

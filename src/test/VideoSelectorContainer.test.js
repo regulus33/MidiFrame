@@ -2,6 +2,7 @@ import VideoSelectorContainer from '../containers/VideoSelectorContainer'
 import React from 'react';
 import TestRenderer from 'react-test-renderer';
 import Option from '../Option.js'
+import BrowserMidiCollector from '../classes/BrowserMidiCollector';
 
 // Test to get all students record
 it("video-selector returns an array of video assets", (done) => {
@@ -18,7 +19,7 @@ it("video-selector returns an array of video assets", (done) => {
     videoSelectorGetMocked.mockReturnValueOnce(fakeVidFetch)    
     let mock = [{"data":["148","31","100"],"timeStamp":5254.274999955669}]
   
-    const renderer = TestRenderer.create(<VideoSelectorContainer videoSelectorGet={videoSelectorGetMocked} rawMidi={mock} />)
+    const renderer = TestRenderer.create(<VideoSelectorContainer videoSelectorGet={videoSelectorGetMocked} rawMidi={mock} midiCollector={new BrowserMidiCollector()} />)
     const testInstance = renderer.root;
     
 
