@@ -44,12 +44,12 @@ it("converts a raw midi.js event to a parceable, meaningfull object", () => {
     let result = b.processEvent(singleEvent)
     expect(result).toEqual({
         channel: "6",
-        note: "60",
+        noteNumber: "60",
     })
 })
 
 it("Does not touch midi off notes", () => {
-    let singleEvent = {"data":["149","60","100"],"timeStamp":5502.5799999712035}
+    let singleEvent = {"data":["128","60","100"],"timeStamp":5502.5799999712035}
     const b = new BrowserMidiCollector()
     let result = b.processEvent(singleEvent)
     expect(result).toEqual(null)

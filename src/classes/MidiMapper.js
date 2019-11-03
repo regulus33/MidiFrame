@@ -80,7 +80,7 @@ export default class MidiMapper {
 
     }
 
-    determineNoteOnOff(event){
+    static determineNoteOnOff(event){
 
         let onOffNumber = event["data"][0]
 
@@ -117,7 +117,7 @@ export default class MidiMapper {
                     velocityNumber: null
                 }
 
-                if(this.determineNoteOnOff(event)) {
+                if(this.constructor.determineNoteOnOff(event)) {
                     newEvent["noteOn"] = true 
 
                 } else {

@@ -63,8 +63,8 @@ test('determineNoteOnOff() returns true for note ons and false for note offs', (
 
     const m = new MidiMapper
 
-    expect(m.determineNoteOnOff(noteOnEvent)).toBe(true)
-    expect(m.determineNoteOnOff(noteOffEvent)).toBe(false)
+    expect(MidiMapper.determineNoteOnOff(noteOnEvent)).toBe(true)
+    expect(MidiMapper.determineNoteOnOff(noteOffEvent)).toBe(false)
 
 })
 
