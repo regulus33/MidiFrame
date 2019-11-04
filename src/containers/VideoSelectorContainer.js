@@ -30,6 +30,7 @@ class VideoSelecterContainer extends React.Component {
         //remember not to touch this, passing by reference
     }  
     
+    // takes the midi that has been sent so far from opz to midi.js to the component's state.latestCapturedMidi (a collection of simple midi events)
     getUsedNotesObject() {
         let capturedMidiData = this.state.latestCapturedMidi
         // debugger 
@@ -75,7 +76,7 @@ class VideoSelecterContainer extends React.Component {
     handleChannelOptionClick(event) {
         this.setState({selectedChannel: event.target.selectedOptions[0].value})
     }
-
+    //////// I"M NEXTTTTTTT
     renderOptionsForChannelPickerData() {
         //grab the midi dataaaaa    
         return Object.keys(this.getUsedNotesObject()).map((c,index) => {

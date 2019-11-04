@@ -225,10 +225,81 @@ this.state = {
 ```
 
 ### methods:
+---
+`contructor(props)`
 
-TOOD: describe the methods of this container
+props are made up of:  
+
+`rawMidi` (soon to be deleted, its just test midi data)
+
+`midiCollector` which is just an instance of `BrowserMidiCollector` so we can get references to form data and recorded midi data. 
 
 ---
+
+```js
+getUsedNotesObject()
+```
+takes the midi that has been sent so far from opz to midi.js to the component's `state.latestCapturedMidi` (a collection of simple midi events)
+
+---
+
+```js
+componentDidMount()
+```
+
+We know what its for but what we do in that method and why:
+
+```js
+    //When user hits 'r' we add the latest played midi to the state.latestCapturedMidi
+    this.registerRefreshDataListener()
+    //fetch video files from the vid directory for form 
+    this.fetchVideoFilePaths()
+    //set a default selected channel (their shouldn't be one til you record midi so this might change)
+    this.setState({selectedChannel: Object.keys(this.getUsedNotesObject())[0]})
+```
+
+Basically we set some form data and register click listeners, will add more soon.
+
+---
+
+```js
+fetchVideoFilePaths()
+```
+
+self expl...
+
+---
+
+```js
+handleOptionClick(event)
+```
+
+sets the form to display the selected video. At the moment it does not update in any meaningful way, only displays data
+
+TODO: this would be a good place to call a shared method that 'notifies data sset changed' and would retrigger an update of a form representing this object. Also why don't we update the state here but we do so everywhere else?
+
+---
+
+```js 
+ handleTypeTextChange(event)
+```
+
+This could probably be improved. It scrapes every form every time the user hits a key inside a text edit. Then iterates through all inputs on the dom and sets a new empty object representing the current values. This asssumes that when we change the form we wipe all the state for these forms, which is probably a fine way to do it. We still need to make sure that we are persisting selected fields somewhere though so a user comes back to texdt inputs for channel 5 from 6 and sees the data they entered. 
+
+```js 
+     let noteTimeObj = {}
+        
+        let inputs = document.getElementsByClassName("noteTextField")
+        for(let i = 0; i < inputs.length; i++) {
+            noteTimeObj[inputs[i].name] = inputs[i].value 
+        }
+
+        this.setState({notes:noteTimeObj})
+```
+
+
+---
+
 
 
 # BrowserMidiCollector.js
