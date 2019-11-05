@@ -8,8 +8,8 @@ const VideoSelecter = props => {
         <div style={{ width: "100%", margin: "auto" }}>
             <span className="description">choose a video to bind the midi data to:</span><br/>
             <span>video:</span>
-            <select onChange={props.handleOptionClick}>
-                {props.renderOptionsForDropDown()}
+            <select onChange={props.handleVideoOptionClick}>
+                {props.renderOptionsForVideoDropDown()}
             </select>
             <VideoDisplayer selectedChannelName={props.selectedChannelName} videoPath={props.selectedVideoPath}/>
         </div>
