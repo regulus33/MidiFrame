@@ -5,13 +5,10 @@ import MidiMapper from '../classes/MidiMapper.js'
 import ChannelPicker from '../ChannelPicker.js';
 import {
     reverseChannelsAndNotesObject,
-    mergeArrays,
     getRandomColor,
     getNotesFromChannelInSuppliedObject
 } from '../Helpers.js'
 import NoteTextField from '../NoteTextField'
-import { thisExpression } from '@babel/types';
-import BrowserMidiCollector from '../classes/BrowserMidiCollector.js';
 import StartButton from '../buttons/StartButton.js'
 
 class VideoSelecterContainer extends React.Component {
@@ -21,11 +18,11 @@ class VideoSelecterContainer extends React.Component {
         //for our array in assets s
         this.state = {videoFiles:[], selectedVideoPath: "", selectedChannel: "1", notes:{}, latestCapturedMidi:[]};
         //overwrite this to remain this instance when called in another class 
-        this.renderOptionsForDropDown = this.renderOptionsForDropDown.bind(this);
+        this.renderOptionsForVideoDropDown = this.renderOptionsForVideoDropDown.bind(this);
         this.renderOptionsForChannelPickerData = this.renderOptionsForChannelPickerData.bind(this)
-        this.handleOptionClick = this.handleOptionClick.bind(this)
+        this.handleVideoOptionClick = this.handleVideoOptionClick.bind(this)
         this.handleChannelOptionClick = this.handleChannelOptionClick.bind(this)
-        this.handleTypeTextChange = this.handleTypeTextChange.bind(this)
+        this.handleTimeStampInput = this.handleTimeStampInput.bind(this)
         //Subscribe midiCollector to the state, you will need it to update video based on midi events
         //remember not to touch this, passing by reference
     }  
@@ -43,7 +40,7 @@ class VideoSelecterContainer extends React.Component {
 
     componentDidMount() {
         //listener for 'r'
-        this.registerRefreshDataListener()
+        this.handleRefreshClick()
         this.fetchVideoFilePaths()
         //TODO setting default selected channel should be in the most early and rare occuring method 
        this.setState({selectedChannel: Object.keys(this.getUsedNotesObject())[0]})
@@ -58,11 +55,11 @@ class VideoSelecterContainer extends React.Component {
         })
     }
 
-    handleOptionClick(event){
+    handleVideoOptionClick(event){
         this.setState({selectedVideoPath: event.target.selectedOptions[0].value})
     }
 
-    handleTypeTextChange(event){
+    handleTimeStampInput(event){
         let noteTimeObj = {}
         
         let inputs = document.getElementsByClassName("noteTextField")
@@ -84,7 +81,9 @@ class VideoSelecterContainer extends React.Component {
         })
 
     }
-
+    //we need to reverse the channels:notes object
+    // 7: [112,134]
+    //
     renderNoteInputs() {
         let usedNotes = this.getUsedNotesObject()
         
@@ -93,7 +92,7 @@ class VideoSelecterContainer extends React.Component {
         return notesBelongingToSelectedChannel.map( ( el,i ) => <NoteTextField key={i} keyToPass={el + i} noteName={el}/>)
     }
 
-    renderOptionsForDropDown() {
+    renderOptionsForVideoDropDown() {
         return this.state.videoFiles.map((address, index) => {
             let nameOfSelectedVideo = address.split("/").pop()
             return (
@@ -101,16 +100,14 @@ class VideoSelecterContainer extends React.Component {
             )
         })
     }
-    
-    registerRefreshDataListener() {
+    //when user hits r we refresh the incoming midi data
+    handleRefreshClick() {
         document.onkeyup = (event) => { 
            if(event.key === "r"){
             //makes it obvious that you changed something 
             document.getElementsByClassName("vidContainer")[0].style.backgroundColor = getRandomColor()
             this.setState({latestCapturedMidi: this.props.midiCollector.midiToBeMapped})
            }
-            // debugger 
-
         }
 
     }
@@ -126,12 +123,12 @@ class VideoSelecterContainer extends React.Component {
                         <span className="description">pick the channel you want to modify</span>
                         <ChannelPicker 
                             handleChannelOptionClick={this.handleChannelOptionClick}
-                            renderOptionsForDropDown={this.renderOptionsForChannelPickerData}
+                            renderOptionsForVideoDropDown={this.renderOptionsForChannelPickerData}
                         />
                     </div>
                     <div className="noteSelector">
                     <span className="description">choose timestamps (3:33) from the video and add them to the note fields:</span>
-                        <form onChange={this.handleTypeTextChange}>
+                        <form onChange={this.handleTimeStampInput}>
                             {this.renderNoteInputs()}
                         </form>
                     </div>
@@ -140,9 +137,9 @@ class VideoSelecterContainer extends React.Component {
                 </div>
                 <VideoSelector 
                     selectedChannelName={this.state.selectedChannel}
-                    handleOptionClick={this.handleOptionClick} 
+                    handleVideoOptionClick={this.handleVideoOptionClick} 
                     selectedVideoPath={this.state.selectedVideoPath} 
-                    renderOptionsForDropDown={this.renderOptionsForDropDown} 
+                    renderOptionsForVideoDropDown={this.renderOptionsForVideoDropDown} 
                 />
                
             </div>

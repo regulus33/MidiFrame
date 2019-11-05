@@ -6,7 +6,7 @@ const ChannelPicker = props => {
         <div style={{ width: "100%", margin: "auto" }}>
             <span>channel:</span>
             <select onChange={props.handleChannelOptionClick}>
-                {props.renderOptionsForDropDown()}
+                {props.renderOptionsForVideoDropDown()}
             </select>
         </div>
     )

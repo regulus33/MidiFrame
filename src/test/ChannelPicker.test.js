@@ -8,7 +8,7 @@ it('Channel Picker Renders props properly', () => {
     const fakePropsFunction = jest.fn()
     fakePropsFunction.mockReturnValueOnce(thingyToRenderrrrrrrr)  
     const renderer = new ShallowRenderer()
-    renderer.render(<ChannelPicker renderOptionsForDropDown={fakePropsFunction}/>)
+    renderer.render(<ChannelPicker renderOptionsForVideoDropDown={fakePropsFunction}/>)
     const result = renderer.getRenderOutput();
     expect(result.props.children).toEqual([<span>channel:</span>, <select>random rendered string, doesn't matter what it is as long as I am rendered insiiiiiiiide</select>])
 
