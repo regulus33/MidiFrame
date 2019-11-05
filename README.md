@@ -251,7 +251,7 @@ We know what its for but what we do in that method and why:
 
 ```js
     //When user hits 'r' we add the latest played midi to the state.latestCapturedMidi
-    this.registerRefreshDataListener()
+    this.handleRefreshClick()
     //fetch video files from the vid directory for form 
     this.fetchVideoFilePaths()
     //set a default selected channel (their shouldn't be one til you record midi so this might change)
@@ -271,7 +271,7 @@ self expl...
 ---
 
 ```js
-handleOptionClick(event)
+handleVideoOptionClick(event)
 ```
 
 sets the form to display the selected video. At the moment it does not update in any meaningful way, only displays data
@@ -281,7 +281,7 @@ TODO: this would be a good place to call a shared method that 'notifies data sse
 ---
 
 ```js 
- handleTypeTextChange(event)
+ handleTimeStampInput(event)
 ```
 
 This could probably be improved. It scrapes every form every time the user hits a key inside a text edit. Then iterates through all inputs on the dom and sets a new empty object representing the current values. This asssumes that when we change the form we wipe all the state for these forms, which is probably a fine way to do it. We still need to make sure that we are persisting selected fields somewhere though so a user comes back to texdt inputs for channel 5 from 6 and sees the data they entered. 
@@ -297,8 +297,70 @@ This could probably be improved. It scrapes every form every time the user hits 
         this.setState({notes:noteTimeObj})
 ```
 
+---
+
+```js 
+  handleChannelOptionClick(event)
+```
+
+Simply explained, this one just sets the state to the value of the option the user clicks CHANNEL state that is.
 
 ---
+
+```js 
+renderOptionsForChannelPickerData()
+```
+
+calls getUsedNotesObject() to get an to get this object
+
+---
+
+```js
+{
+  7: [134,34,134,156],
+  8: [123,345,235]
+}
+```
+this object has the channels as keys so we call 
+`Object.keys` and map an array of these channel strings into `<Option/>` for user selection. 
+
+SUPER SIMPLE... but could be simplified more. 
+
+---
+
+```js
+renderNoteInputs() 
+```
+
+The purpose is to figure out which notes should be associated with the selected channel. 
+
+CURRENTLY its a little over complexicated. 
+
+We have to get notes that occur in this channel which we do in a very roundabout way by reversing the channels:notes object. Anyway, each time you click a channel, we recalc this stuff. 
+
+---
+
+```js
+renderOptionsForVideoDropDown()
+```
+Just maps a bunch of options out. 
+
+---
+
+```js
+handleRefreshClick()
+```
+when user hits r we refresh the incoming midi data
+
+We bind the onkeyup event to document.
+
+which then sets the state of captured midi to whtever was recorded by the `midiCollector` which is the instance of `BrowserMidiCollector`
+
+---
+
+
+
+
 
 
 
