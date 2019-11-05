@@ -43,7 +43,7 @@ it("converts a raw midi.js event to a parceable, meaningfull object", () => {
     const b = new BrowserMidiCollector()
     let result = b.processEvent(singleEvent)
     expect(result).toEqual({
-        channel: "6",
+        channel: "6", 
         noteNumber: "60",
     })
 })
@@ -53,4 +53,37 @@ it("Does not touch midi off notes", () => {
     const b = new BrowserMidiCollector()
     let result = b.processEvent(singleEvent)
     expect(result).toEqual(null)
+})
+
+it("updateState() preserves state accross changes to the video selector's state", () => {
+    let pretendState = {
+    videoFiles:['thePath.mp4'], 
+    selectedVideoPath: "thePath.mp4", 
+    selectedChannel: "1", 
+    notes:{
+        53: "3:45",
+        54: "",
+        56: "",
+        57: "",
+        58: "",
+        60: "",
+        67: ""
+    }, 
+    latestCapturedMidi:[
+            {
+                "data":["148","31","100"],
+                "timeStamp":5254.274999955669
+            }
+        ]
+    }
+
+    let midiCollector = new BrowserMidiCollector()
+    let options = {}
+    options.channel = "6"
+    options.videoPath = "35InaMillion.mpeg"
+    options.VideoSelectorContainer = pretendState.notes
+    midiCollector.updateState(options)
+
+    expect(midiCollector.midiData["6"].notes[53]).toBe("3:45")
+    
 })

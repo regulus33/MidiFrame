@@ -44,17 +44,17 @@ export default class BrowserMidiCollector {
         //for sending to server
         this.midiToBeMapped = [];
         this.midiData = {
-            "0":[],
-            "1":[],
-            "2":[],
-            "3":[],
-            "4":[],
-            "5":[],
-            "6":[],
-            "7":[],
-            "8":[],
-            "9":[],
-            "10":[]
+            "0":{},
+            "1":{},
+            "2":{},
+            "3":{},
+            "4":{},
+            "5":{},
+            "6":{},
+            "7":{},
+            "8":{},
+            "9":{},
+            "10":{}
         }
     }
 
@@ -121,10 +121,18 @@ export default class BrowserMidiCollector {
       return result 
     }
 
+    //eat arguments and commit to the saved state attached to this instance
+    //persists state beyond channel form changes
+    //I guess this is kind of a ZACK makeshift version of what redux used to be???
+    updateState(state = {}) {
+      this.midiData[state.channel] = {
+        notes: state.notes,
+        videoPath: state.videoPath
+      }
 
+      
+    }
 
-
-    
     
 }
 
