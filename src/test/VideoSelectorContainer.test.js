@@ -25,6 +25,7 @@ it("video-selector returns an array of video assets", (done) => {
 
     return Promise.allSettled([innermostPromise, fakeVidFetch]).then(()=>{
         //first option picker is channel 
+        console.log(testInstance.findAllByType(Option))
         expect(testInstance.findAllByType(Option)[0].props.value).toBe("5")
         //second is video path 
         expect(testInstance.findAllByType(Option)[1].props.value).toBe("path/to/video1.mp4")

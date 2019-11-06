@@ -49,7 +49,7 @@ class VideoSelecterContainer extends React.Component {
     fetchVideoFilePaths() {
         this.props.videoSelectorGet().then(res => {
             res.json().then((r) => {
-            console.log(r)
+            //console.log(r)
                 this.setState({videoFiles:r, selectedVideoPath: r.pop()})
             })
         })
@@ -113,7 +113,7 @@ class VideoSelecterContainer extends React.Component {
     }
 
     render() {
-        console.log(this.state)
+        //console.log(this.state)
         //each time the form changes we need to notify the browsermidicollector 
         Object.assign(this.props.midiCollector, this.state)
         return (

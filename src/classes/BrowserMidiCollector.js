@@ -126,8 +126,7 @@ export default class BrowserMidiCollector {
         notes: state.notes,
         videoPath: state.videoPath
       }
-
-
+      
     }
 
     
