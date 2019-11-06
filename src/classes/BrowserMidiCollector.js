@@ -58,9 +58,6 @@ export default class BrowserMidiCollector {
         }
     }
 
-    commitState(stateSnapshot){
-    }
-
     startMidi = () => {
         navigator.requestMIDIAccess().then( access => {
           //there should really only be one here, but you never know 
@@ -110,7 +107,7 @@ export default class BrowserMidiCollector {
     }
 
     //all this needs to tell us is if the currently selected form data permits this note to be a part of the midi playing
-    processEvent(event) {
+    translateForeignMidiEvent(event) {
       let result = {}
       if(!MidiMapper.determineNoteOnOff(event)) {
         return null
@@ -130,7 +127,7 @@ export default class BrowserMidiCollector {
         videoPath: state.videoPath
       }
 
-      
+
     }
 
     

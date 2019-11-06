@@ -359,23 +359,74 @@ which then sets the state of captured midi to whtever was recorded by the `midiC
 ---
 
 
-
-
-
-
-
 # BrowserMidiCollector.js
 
-We need something to intercept midi events as they come in, store them in BrowserMidiCollector and play the videos.
+We need something to intercept midi events as they come in, store them in BrowserMidiCollector 
 
 The BrowserMidiCollector initializes the listeners for incoming midi data. 
 
+---
+
+##methods
+
+Most important
+```js
+updateState(options={})
+```
+
+It commits state from each form for each channel to a keep track of able global statey object. 
+Should refactor and separate this out eventually.
+
+You provide it options like this 
+
+```js
+ let midiCollector = new BrowserMidiCollector()
+    let options = {}
+    options.channel = "6"
+    options.videoPath = "35InaMillion.mpeg"
+    options.VideoSelectorContainer = pretendState.notes
+    midiCollector.updateState(options)
+```
+
+---
+
+```js
+onMidiMessage = (message)
+```
+Registers reactions to midi events from midi.js that fork into two directions. One is for processing data to save into a server side parceable json msg. The other is to process each individual event as a video playback queu for realtime midi visualization. 
+
+
+THE BEST TIME TO DO THIS i THIIINK is in the render method since we know that the state has changed and the only way to change it there is when we submit forms, but I could be wrong. We'll see DELETE ME LATER ZACK
+
+---
+```js
+translateForeignMidiEvent(event)
+```
+This gets midi ready for any processing we want to do in the browser. Tells us if the note is noteOn, its channel and its note number, lots of unneccessary bullshit that could be cleaned the FUCK OUT. BUT Do I look like I have FUCKING TIME?!!!
+Deal with it. 
+;) 
+```js
+    //all this needs to tell us is if the currently selected form data permits this note to be a part of the midi playing
+    translateForeignMidiEvent(event) {
+      let result = {}
+      if(!MidiMapper.determineNoteOnOff(event)) {
+        return null
+      }
+      let channel = MidiMapper.getMidiChannel(event)
+      result["channel"] = channel 
+      result["noteNumber"] = event.data[1]
+      return result 
+    }
+```
 
 ## TODO 
 
-Test BrowserMidiCollector
-Fix remainging tests. 
+
 Clear notes fields on form change
+
+ the midi specification makes processing real time events extremely efficient if we mapp things more easily and factor in big O 
+
+think object notation vs iteration and checking. amen
 
 
 

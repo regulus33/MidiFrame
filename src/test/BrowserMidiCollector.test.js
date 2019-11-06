@@ -41,7 +41,7 @@ import Option from '../Option.js'
 it("converts a raw midi.js event to a parceable, meaningfull object", () => {
     let singleEvent = {"data":["149","60","100"],"timeStamp":5502.5799999712035}
     const b = new BrowserMidiCollector()
-    let result = b.processEvent(singleEvent)
+    let result = b.translateForeignMidiEvent(singleEvent)
     expect(result).toEqual({
         channel: "6", 
         noteNumber: "60",
@@ -51,7 +51,7 @@ it("converts a raw midi.js event to a parceable, meaningfull object", () => {
 it("Does not touch midi off notes", () => {
     let singleEvent = {"data":["128","60","100"],"timeStamp":5502.5799999712035}
     const b = new BrowserMidiCollector()
-    let result = b.processEvent(singleEvent)
+    let result = b.translateForeignMidiEvent(singleEvent)
     expect(result).toEqual(null)
 })
 
