@@ -66,14 +66,14 @@ module.exports = class SingleVideoChannelMidiMapper {
         let slicedVideoFilesSorted = slicedVideoFiles.sort((a,b)=>{return Number(a.split(".").shift()) - Number(b.split(".").shift())})
         slicedVideoFilesSorted.forEach((file) => {
             
-            console.log("slicedVideos: " + file); 
+            // console.log("slicedVideos: " + file); 
             //leave out the bullshit 
             if(file != ".DS_Store") {
                 //each line looks like:
                 // file 'path/to/file.mp4'
                 concatInstructionsString += "file" + " '" + path.join(this._app_directory() + "/midi_slices/channel_1/") + file + "'" + "\n"
-                console.log("concat instructions::::")
-                console.log(concatInstructionsString)
+                // console.log("concat instructions::::")
+                // console.log(concatInstructionsString)
             }   
 
         });
@@ -84,7 +84,7 @@ module.exports = class SingleVideoChannelMidiMapper {
     }
 
     executeConcat(pathFile) {
-        console.log('\x1b[36m%s\x1b[0m', 'executeConcat');
+        // console.log('\x1b[36m%s\x1b[0m', 'executeConcat');
         //we need this to know where the clip we need to trim will be 
         this.finalOutputPath = `outputs/video_${Date.now()}.mp4`
         execSync(`ffmpeg -f concat -safe 0 -i ${pathFile} -c copy ${this.finalOutputPath}`)
@@ -101,9 +101,9 @@ module.exports = class SingleVideoChannelMidiMapper {
     _processMidiDataForChannelSlicing(data) {
         //extract the offset first, you dont want this to be affecting data later on down the line 
          this.offset = data.pop()
-        console.log(`offset is ${this.offset}`)
-        console.log(`last index of data is ${data[data.length-1]}`)
-        console.log("processing data: " + data); 
+        // console.log(`offset is ${this.offset}`)
+        // console.log(`last index of data is ${data[data.length-1]}`)
+        // console.log("processing data: " + data); 
         data.forEach((event) => {
             
             if(OFF_CHANNELS[event.noteChannel.toString()] != undefined) {
@@ -117,7 +117,7 @@ module.exports = class SingleVideoChannelMidiMapper {
     }
 
     _trimVideoFromOffset() {
-        console.log('\x1b[36m%s\x1b[0m', '_trimVideoFromOffset');
+        // console.log('\x1b[36m%s\x1b[0m', '_trimVideoFromOffset');
         let newPath = this.finalOutputPath.replace(".mp4", "_trimmed.mp4")
         let command = `ffmpeg -i ${this.finalOutputPath} -ss ${this.offset} -c:v copy ${newPath}`
         console.log('\x1b[36m%s\x1b[0m', command);

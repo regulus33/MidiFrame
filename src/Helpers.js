@@ -2,7 +2,7 @@ export const reverseChannelsAndNotesObject = (obj) => {
     let collectedChannels = []
     Object.keys(obj).forEach(function(key) {
 
-        console.log(key, obj[key]);
+        //console.log(key, obj[key]);
 
         obj[key].forEach(el =>{
             collectedChannels.push(el)

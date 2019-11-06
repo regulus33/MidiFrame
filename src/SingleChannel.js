@@ -25,15 +25,15 @@ const SingleChannel = () => {
   }
 
   const recordHandler = (event) => {
-    console.log("clicked")
-    console.log(event)
+    //console.log("clicked")
+    //console.log(event)
     event.target.style.backgroundColor = "#676767"
     helper.setupAndBeginRecording()
     //for offset in video editing later on 
   }
 
   const stopHandler = (event) => {
-    console.log("stop handler called")
+    //console.log("stop handler called")
     event.target.style.backgroundColor = "#777"
     helper.onStop()
   }
