@@ -57,12 +57,12 @@ class VideoSelecterContainer extends React.Component {
 
     handleVideoOptionClick(event){
         this.setState({selectedVideoPath: event.target.selectedOptions[0].value})
-    }
+    }   
 
     handleTimeStampInput(event){
         let noteTimeObj = {}
         
-        let inputs = document.getElementsByClassName("noteTextField")
+        let inputs = this.getTimeInputs()
         for(let i = 0; i < inputs.length; i++) {
             noteTimeObj[inputs[i].name] = inputs[i].value 
         }
@@ -70,16 +70,20 @@ class VideoSelecterContainer extends React.Component {
         this.setState({notes:noteTimeObj})
     }
 
+    //no need to test for now 
+    getTimeInputs(){
+        return document.getElementsByClassName("noteTextField")
+    }   
+
     handleChannelOptionClick(event) {
         this.setState({selectedChannel: event.target.selectedOptions[0].value})
     }
-    //////// I"M NEXTTTTTTT
+
     renderOptionsForChannelPickerData() {
         //grab the midi dataaaaa    
         return Object.keys(this.getUsedNotesObject()).map((c,index) => {
            return <Option key={index} keyToPass={c + index} value={c} displayName={c}/>
         })
-
     }
     //we need to reverse the channels:notes object
     // 7: [112,134]

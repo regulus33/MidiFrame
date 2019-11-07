@@ -10,6 +10,7 @@ it("Displays a video when supplied path and filet extension", (done) => {
     renderer.render(<VideoDisplayer videoPath={"path/to/video.mp4"} fileExtension={"mp4"} />)
     const result = renderer.getRenderOutput();
     done()
+    
     expect(result.props.children).toEqual(
         [<h1>
             editing notes on midi channel 
