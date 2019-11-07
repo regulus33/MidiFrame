@@ -26,17 +26,6 @@ class VideoSelecterContainer extends React.Component {
         //Subscribe midiCollector to the state, you will need it to update video based on midi events
         //remember not to touch this, passing by reference
     }  
-    
-    // takes the midi that has been sent so far from opz to midi.js to the component's state.latestCapturedMidi (a collection of simple midi events)
-    getUsedNotesObject() {
-        let capturedMidiData = this.state.latestCapturedMidi
-        // debugger 
-        // let capturedMidiData = this.props.rawMidi
-        let m = new MidiMapper
-        let channelsNotes = m.determineUsedNotes(capturedMidiData)
-        let formatted =  reverseChannelsAndNotesObject(channelsNotes)
-        return formatted
-    }
 
     componentDidMount() {
         //listener for 'r'
@@ -53,6 +42,17 @@ class VideoSelecterContainer extends React.Component {
                 this.setState({videoFiles:r, selectedVideoPath: r.pop()})
             })
         })
+    }
+    
+    // takes the midi that has been sent so far from opz to midi.js to the component's state.latestCapturedMidi (a collection of simple midi events)
+    getUsedNotesObject() {
+        let capturedMidiData = this.state.latestCapturedMidi
+        // debugger 
+        // let capturedMidiData = this.props.rawMidi
+        let m = new MidiMapper
+        let channelsNotes = m.determineUsedNotes(capturedMidiData)
+        let formatted =  reverseChannelsAndNotesObject(channelsNotes)
+        return formatted
     }
 
     handleVideoOptionClick(event){

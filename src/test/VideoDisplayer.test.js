@@ -31,6 +31,6 @@ it("Displays a video when supplied path and filet extension", (done) => {
         />
         ]
     )
-
+    done() 
 
 });
