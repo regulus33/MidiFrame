@@ -122,7 +122,7 @@ export default class BrowserMidiCollector {
     //persists state beyond channel form changes
     //I guess this is kind of a ZACK makeshift version of what redux used to be???
     updateState(state = {}) {
-      this.midiData[state.channel] = {
+      this.midiData[state.selectedChannel] = {
         notes: state.notes,
         videoPath: state.videoPath
       }
