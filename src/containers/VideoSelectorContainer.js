@@ -14,9 +14,9 @@ import StartButton from '../buttons/StartButton.js'
 class VideoSelecterContainer extends React.Component {
 
     constructor(props) {
-        super(props);
+        super(props);   
         //for our array in assets s
-        this.state = {videoFiles:[], selectedVideoPath: "", selectedChannel: "1", notes:{}, latestCapturedMidi:[]};
+        this.state = {videoFiles:[], selectedVideoPath: "", selectedChannel: "1", notes:{}, latestCapturedMidi:props.rawMidi};
         //overwrite this to remain this instance when called in another class 
         this.renderOptionsForVideoDropDown = this.renderOptionsForVideoDropDown.bind(this);
         this.renderOptionsForChannelPickerData = this.renderOptionsForChannelPickerData.bind(this)
@@ -32,7 +32,14 @@ class VideoSelecterContainer extends React.Component {
         this.handleRefreshClick()
         this.fetchVideoFilePaths()
         //TODO setting default selected channel should be in the most early and rare occuring method 
-       this.setState({selectedChannel: Object.keys(this.getUsedNotesObject())[0]})
+       let chan = Object.keys(this.usedNotesAndChannels())[0]
+       let usedNotes = this.usedNotesAndChannels()
+       let notesBelongingToSelectedChannel
+       notesBelongingToSelectedChannel = getNotesFromChannelInSuppliedObject(usedNotes, Number(this.state.selectedChannel))
+       let notesTimes = {}
+       //Set all these notes to blank as this is the first render 
+       notesBelongingToSelectedChannel.forEach((e)=>{notesTimes[String[e]]=""})
+       this.setState({selectedChannel: chan, notes: notesBelongingToSelectedChannel})
     }
 
     fetchVideoFilePaths() {
@@ -45,13 +52,13 @@ class VideoSelecterContainer extends React.Component {
     }
     
     // takes the midi that has been sent so far from opz to midi.js to the component's state.latestCapturedMidi (a collection of simple midi events)
-    getUsedNotesObject() {
+    usedNotesAndChannels() {
         let capturedMidiData = this.state.latestCapturedMidi
         // debugger 
         // let capturedMidiData = this.props.rawMidi
         let m = new MidiMapper
         let channelsNotes = m.determineUsedNotes(capturedMidiData)
-        let formatted =  reverseChannelsAndNotesObject(channelsNotes)
+        let formatted = reverseChannelsAndNotesObject(channelsNotes)
         return formatted
     }
 
@@ -76,12 +83,21 @@ class VideoSelecterContainer extends React.Component {
     }   
 
     handleChannelOptionClick(event) {
-        this.setState({selectedChannel: event.target.selectedOptions[0].value})
+        let currentChannel = this.state.selectedChannel
+        let channel = event.target.selectedOptions[0].value
+        this.setState({selectedChannel: channel, notes: })
+        //we've changed the channel which means we need to get the form data for this channel from browsermidicollector's midiData 
+        if(this.props.midiCollector.midiData[channel]){
+            // {videoFiles:[], selectedVideoPath: "", selectedChannel: "1", notes:{}, latestCapturedMidi:[]};
+            this.setState({notes:this.props.midiCollector.midiData[channel].notes})  
+        }
     }
+
+  
 
     renderOptionsForChannelPickerData() {
         //grab the midi dataaaaa    
-        return Object.keys(this.getUsedNotesObject()).map((c,index) => {
+        return Object.keys(this.usedNotesAndChannels()).map((c,index) => {
            return <Option key={index} keyToPass={c + index} value={c} displayName={c}/>
         })
     }
@@ -89,11 +105,7 @@ class VideoSelecterContainer extends React.Component {
     // 7: [112,134]
     //
     renderNoteInputs() {
-        let usedNotes = this.getUsedNotesObject()
-        
-        let notesBelongingToSelectedChannel = getNotesFromChannelInSuppliedObject(usedNotes, Number(this.state.selectedChannel))
-        
-        return notesBelongingToSelectedChannel.map( ( el,i ) => <NoteTextField key={i} keyToPass={el + i} noteName={el}/>)
+        return Object.keys(this.state.notes).map((num, indexxx) => <NoteTextField value={this.state.notes[num]} key={indexxx} keyToPass={num + indexxx} noteName={num}/>)
     }
 
     renderOptionsForVideoDropDown() {
@@ -119,7 +131,7 @@ class VideoSelecterContainer extends React.Component {
     render() {
         //console.log(this.state)
         //each time the form changes we need to notify the browsermidicollector 
-        Object.assign(this.props.midiCollector, this.state)
+        // Object.assign(this.props.midiCollector, this.state)
         return (
             <div className="vidContainer">
                 <div className="formParent">

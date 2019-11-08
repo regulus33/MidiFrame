@@ -237,7 +237,7 @@ props are made up of:
 ---
 
 ```js
-getUsedNotesObject()
+usedNotesAndChannels()
 ```
 takes the midi that has been sent so far from opz to midi.js to the component's `state.latestCapturedMidi` (a collection of simple midi events)
 
@@ -255,7 +255,7 @@ We know what its for but what we do in that method and why:
     //fetch video files from the vid directory for form 
     this.fetchVideoFilePaths()
     //set a default selected channel (their shouldn't be one til you record midi so this might change)
-    this.setState({selectedChannel: Object.keys(this.getUsedNotesObject())[0]})
+    this.setState({selectedChannel: Object.keys(this.usedNotesAndChannels())[0]})
 ```
 
 Basically we set some form data and register click listeners, will add more soon.
@@ -311,7 +311,7 @@ Simply explained, this one just sets the state to the value of the option the us
 renderOptionsForChannelPickerData()
 ```
 
-calls getUsedNotesObject() to get an to get this object
+calls usedNotesAndChannels() to get an to get this object
 
 ---
 
@@ -427,6 +427,10 @@ Clear notes fields on form change
  the midi specification makes processing real time events extremely efficient if we mapp things more easily and factor in big O 
 
 think object notation vs iteration and checking. amen
+
+
+1. default  channels and form inputs 
+2. browser midi collector needs   
 
 
 
