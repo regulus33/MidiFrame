@@ -29,7 +29,7 @@ describe("VideoSelectorContainer",() => {
             />
         )
 
-        return Promise.allSettled([innermostPromise, fakeVidFetch]).then(()=>{
+        return Promise.allSettled([innermostPromise, fakeVidFetch]).then(() => {
             let instance = renderer.getInstance()
             instance.state.latestCapturedMidi = [{"data":["148","31","100"],"timeStamp":100}]
             instance.state.selectedChannel = "5"
@@ -40,7 +40,7 @@ describe("VideoSelectorContainer",() => {
     })
 
 
-    it("getUsedNotesObject() returns an object where keys are channel and value is an array of notes used in each of those channels",(done) => {
+    it("usedNotesAndChannels() returns an object where keys are channel and value is an array of notes used in each of those channels",(done) => {
 
         const innermostPromise = Promise.resolve(['path/to/video1.mp4', 'path/to/video.mp4'])
 
@@ -66,7 +66,7 @@ describe("VideoSelectorContainer",() => {
             let instance = renderer.getInstance()
             instance.state.latestCapturedMidi = [{"data":["148","31","100"],"timeStamp":100}]
             instance.state.selectedChannel = "5"
-            expect(instance.getUsedNotesObject()).toEqual({
+            expect(instance.usedNotesAndChannels()).toEqual({
                 "5": [31]
             })
             done() 
@@ -227,10 +227,44 @@ describe("VideoSelectorContainer",() => {
 
             let instance = renderer.getInstance()
             expect(renderer.getInstance().renderOptionsForVideoDropDown()[0].props.value).toBe("path/to/video1.mp4")
-            
-            
             //TODO call refresh here and update browsermidicollector first 
-            
+            return done()
+
+
+        })
+
+
+    });
+
+    it("Calls BrowserMidiCollector update state when state is changed", (done) => {
+        const innermostPromise = Promise.resolve(['path/to/video1.mp4', 'path/to/video.mp4'])
+
+        const fakeVidFetch = Promise.resolve(
+            {
+                json: () => innermostPromise
+            }
+        )
+    
+        const videoSelectorGetMocked = jest.fn()
+        videoSelectorGetMocked.mockReturnValueOnce(fakeVidFetch)    
+        let mock = [{"data":["148","31","100"],"timeStamp":5254.274999955669}]
+
+
+
+        const renderer = TestRenderer.create(
+            <VideoSelectorContainer 
+                videoSelectorGet={videoSelectorGetMocked} 
+                rawMidi={mock} 
+                midiCollector={new BrowserMidiCollector()}
+            />
+        )
+        
+
+        return Promise.allSettled([innermostPromise, fakeVidFetch]).then(()=>{
+
+            let instance = renderer.getInstance()
+
+            //TODO call refresh here and update browsermidicollector first 
             return done()
 
 
