@@ -39,7 +39,7 @@ class VideoSelecterContainer extends React.Component {
        notesBelongingToSelectedChannel = getNotesFromChannelInSuppliedObject(usedNotes, Number(this.state.selectedChannel))
        let channelsToNotes = usedNotes
        let selectedChannel = Number(this.state.selectedChannel)
-       if(channelsToNotes[selectedChannel] == undefined) { 
+       if(channelsToNotes[this.state.selectedChannel] == undefined) { 
         notesBelongingToSelectedChannel = []
         }else {
         notesBelongingToSelectedChannel = channelsToNotes[selectedChannel]
@@ -51,16 +51,16 @@ class VideoSelecterContainer extends React.Component {
        this.setState({selectedChannel: chan, notes: notesTimes})
     }
 
-    getInitialValuesForNotes(){
+    getInitialValuesForNotes(channel){
         let usedNotes = this.usedNotesAndChannels()
         let notesBelongingToSelectedChannel
-        notesBelongingToSelectedChannel = getNotesFromChannelInSuppliedObject(usedNotes, Number(this.state.selectedChannel))
+        notesBelongingToSelectedChannel = getNotesFromChannelInSuppliedObject(usedNotes, Number(channel))
         let channelsToNotes = usedNotes
-        let selectedChannel = Number(this.state.selectedChannel)
-        if(channelsToNotes[selectedChannel] == undefined) { 
+        let selectedChannel = Number(channel)
+        if(channelsToNotes[channel] == undefined) { 
          notesBelongingToSelectedChannel = []
          }else {
-         notesBelongingToSelectedChannel = channelsToNotes[selectedChannel]
+         notesBelongingToSelectedChannel = channelsToNotes[channel]
         }
        
         let notesTimes = {}
@@ -111,12 +111,14 @@ class VideoSelecterContainer extends React.Component {
     handleChannelOptionClick(event) {
         //before we make changes to the state, save it, we will need it later
         this.props.midiCollector.updateState(this.state)
-        debugger
-        let channel = event.target.selectedOptions[0].value
-        if(this.props.midiCollector.midiData[this.state.selectedChannel].notes != undefined) {
-            this.setState({selectedChannel: channel, notes: this.props.midiCollector.midiData[this.state.selectedChannel].notes})
+        // debugger
+        let channelToSelect = event.target.selectedOptions[0].value
+        //if we have already recorded the notes and values for this channel, retrieve the values from midiCollector 
+        if(this.props.midiCollector.midiData[channelToSelect].notes != undefined && Object.keys(this.props.midiCollector.midiData[channelToSelect].notes).length > 0) {
+        //else we haven't navigated to this channel yet,  determine the used notes for this channel and populate state. 
+            this.setState({selectedChannel: channelToSelect, notes: this.props.midiCollector.midiData[channelToSelect].notes})
         } else {
-            this.setState({selectedChannel: channel, notes: this.getInitialValuesForNotes() }) 
+            this.setState({selectedChannel: channelToSelect, notes: this.getInitialValuesForNotes(channelToSelect) }) 
         }
     
     }
