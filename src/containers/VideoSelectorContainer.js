@@ -33,6 +33,7 @@ class VideoSelecterContainer extends React.Component {
         this.fetchVideoFilePaths()
         //TODO setting default selected channel should be in the most early and rare occuring method 
         //sets selected channel to whatever is the first channel in the used notes object. 
+        //TODO: nothing should appear on form until a midi option is clicked
        let chan = Object.keys(this.usedNotesAndChannels())[0]
        let usedNotes = this.usedNotesAndChannels()
        let notesBelongingToSelectedChannel
