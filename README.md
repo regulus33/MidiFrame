@@ -303,7 +303,7 @@ This could probably be improved. It scrapes every form every time the user hits 
   handleChannelOptionClick(event)
 ```
 
-Simply explained, this one just sets the state to the value of the option the user clicks CHANNEL state that is.
+This does a lot because inside this method we need to check if midi has been recorded yet for this channel, if the channel has not been touched, we need to get the used midi notes from the recorded data. Else we just grab it from the BrowserMidiCollector. 
 
 ---
 
@@ -357,6 +357,13 @@ We bind the onkeyup event to document.
 which then sets the state of captured midi to whtever was recorded by the `midiCollector` which is the instance of `BrowserMidiCollector`
 
 ---
+
+```js
+ getInitialValuesForNotes(channel)
+ ```
+ If the user has not picked incomming channel yet BUT midi has been played, we need to dtermine which notes were used on this channel, we pluck them out and set all the midi notes as keys in an object each with blank values. Later we will alway look at the BrowserMidiCollector's mididata state for answers. 
+
+ ---
 
 
 # BrowserMidiCollector.js

@@ -78,18 +78,18 @@ it("updateState() preserves state accross changes to the video selector's state"
     }
 
     let midiCollector = new BrowserMidiCollector()
-    let options = {}
-    options.channel = "6"
-    options.videoPath = "35InaMillion.mpeg"
-    options.notes = pretendState.notes
-    midiCollector.updateState(options)
+    let mockedState = {}
+    mockedState.selectedChannel = "6"
+    mockedState.videoPath = "35InaMillion.mpeg"
+    mockedState.notes = pretendState.notes
+    midiCollector.updateState(mockedState)
 
     expect(midiCollector.midiData["6"].notes[53]).toBe("3:45")
 
-    options.channel = "8"
-    options.videoPath = "1manpuddleeee.mpeg"
+    mockedState.selectedChannel = "8"
+    mockedState.videoPath = "1manpuddleeee.mpeg"
 
-    midiCollector.updateState(options)
+    midiCollector.updateState(mockedState)
 
     expect(midiCollector.midiData["6"].notes[53]).toBe("3:45")
     expect(midiCollector.midiData["8"].notes[53]).toBe("3:45")
