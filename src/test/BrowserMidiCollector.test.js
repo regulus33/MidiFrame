@@ -3,6 +3,7 @@ import React from 'react';
 import TestRenderer from 'react-test-renderer';
 import BrowserMidiCollector from '../classes/BrowserMidiCollector'
 import Option from '../Option.js'
+import MidiPlayerLive from '../classes/MidiPlayerLive';
 
 // it("Scrapes duh forrrrmmmmmssss", (done) => {
 
@@ -103,4 +104,60 @@ it("Updates active channel",() => {
     const b = new BrowserMidiCollector()
     b.activeChannelChange("4")
     expect(b.activeChannel).toBe("4") 
+})
+
+
+it("calls playNote if it knows this note",() => {
+    const b = new BrowserMidiCollector()
+    b.activeChannelChange("4")
+    b.updateState({selectedChannel:"4",notes:{32:""},videPath:"/path"})
+    MidiPlayerLive.playNote = jest.fn() 
+    let mockMessage = {
+        data: [147,32,120],
+        timeStamp: 333.4444
+    }
+    b.onMidiMessage(mockMessage)
+
+    expect(MidiPlayerLive.playNote).toHaveBeenCalled()
+})
+
+it("Does not get undefined errors if channel is not yet populated with notes object",() => {
+    const b = new BrowserMidiCollector()
+    b.activeChannelChange("4")
+    MidiPlayerLive.playNote = jest.fn() 
+    let mockMessage = {
+        data: [147,38,120],
+        timeStamp: 333.4444
+    }
+    b.onMidiMessage(mockMessage)
+
+    expect(MidiPlayerLive.playNote).not.toHaveBeenCalled()
+})
+
+it("Does not call play note if this note is not recorded in the midiData",() => {
+    const b = new BrowserMidiCollector()
+    b.activeChannelChange("4")
+    b.updateState({selectedChannel:"4",notes:{32:""},videPath:"/path"})
+    MidiPlayerLive.playNote = jest.fn() 
+    let mockMessage = {
+        data: [147,38,120],
+        timeStamp: 333.4444
+    }
+    b.onMidiMessage(mockMessage)
+
+    expect(MidiPlayerLive.playNote).not.toHaveBeenCalled()
+})
+
+
+it("Skips if active channel not picked yet.",() => {
+    const b = new BrowserMidiCollector()
+    b.updateState({selectedChannel:"4",notes:{32:""},videPath:"/path"})
+    MidiPlayerLive.playNote = jest.fn() 
+    let mockMessage = {
+        data: [147,38,120],
+        timeStamp: 333.4444
+    }
+    b.onMidiMessage(mockMessage)
+
+    expect(MidiPlayerLive.playNote).not.toHaveBeenCalled()
 })
