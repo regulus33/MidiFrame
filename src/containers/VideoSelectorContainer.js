@@ -121,7 +121,12 @@ class VideoSelecterContainer extends React.Component {
         } else {
             this.setState({selectedChannel: channelToSelect, notes: this.getInitialValuesForNotes(channelToSelect) }) 
         }
-    
+        
+        //notify the collector that we have a new active channel (for live midi playing)
+        this.props.midiCollector.activeChannelChange(this.state.selectedChannel)
+
+        
+        
     }
 
     renderOptionsForChannelPickerData() {

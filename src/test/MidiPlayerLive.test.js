@@ -8,9 +8,8 @@ import MidiPlayerLive from '../classes/MidiPlayerLive.js'
 
 it("converts 3:45 style time to a seconds integer", () => {
 
-    let player = new MidiPlayerLive()
 
-    expect(player.convertMinutesToSeconds("3:34")).toBe(214)
+    expect(MidiPlayerLive.convertMinutesToSeconds("3:34")).toBe(214)
 
 })
 
@@ -23,10 +22,9 @@ it("Plays video at time paired to this channel", () => {
             32: "3:30",
         }
     }
-    let player = new MidiPlayerLive()
-    player.playVideoAtSecondsStart = jest.fn() 
+    MidiPlayerLive.playVideoAtSecondsStart = jest.fn() 
    
-    player.playNote(midiEvent, state.selectedChannel, state.notes)
-    expect(player.playVideoAtSecondsStart).toHaveBeenCalled()
+    MidiPlayerLive.playNote(midiEvent, state.selectedChannel, state.notes)
+    expect(MidiPlayerLive.playVideoAtSecondsStart).toHaveBeenCalled()
 
 })

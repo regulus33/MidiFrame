@@ -16,25 +16,25 @@ const ON_CHANNELS = {
     "15":"158", 
     "16":"159", 
   }
+//TODO: make me a singleton or a util like thing
 export default class MidiPlayerLive {
 
     constructor() {
-        this.something = ''
     }
 
-    playVideoAtSecondsStart(secondsInteger){
+    static playVideoAtSecondsStart(secondsInteger){
         let vid = document.getElementsByTagName("video")[0]
         vid.currentTime = secondsInteger
         vid.play()
     }
 
-    convertMinutesToSeconds(stringOfMinutes){
+    static convertMinutesToSeconds(stringOfMinutes){
         let minutes = stringOfMinutes.split(":")[0]
         let seconds = stringOfMinutes.split(":")[1]
         return Number(minutes) * 60 + Number(seconds)
     }
 
-    playNote(midiEvent,selectedChannel,notes){
+    static playNote(midiEvent,selectedChannel,notes){
         let timeStampString = notes[midiEvent["data"][1]]
         if(ON_CHANNELS[selectedChannel] === midiEvent["data"][0] && timeStampString ){
             this.playVideoAtSecondsStart(
