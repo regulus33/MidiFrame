@@ -98,3 +98,9 @@ it("updateState() preserves state accross changes to the video selector's state"
 
     
 })
+
+it("Updates active channel",() => {
+    const b = new BrowserMidiCollector()
+    b.activeChannelChange("4")
+    expect(b.activeChannel).toBe("4") 
+})

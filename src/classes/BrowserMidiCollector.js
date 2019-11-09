@@ -1,4 +1,5 @@
 import MidiMapper from "./MidiMapper.js"
+import MidiPlayerLive from "./MidiPlayerLive.js"
 
 const ON_CHANNELS = {
   "144": "1",
@@ -39,9 +40,9 @@ const OFF_CHANNELS = {
 }
 
 export default class BrowserMidiCollector {
-    constructor(stateSub) {
-        this.stateSubscriptionFromVideoSelectorContainer = stateSub
+    constructor() {
         //for sending to server
+        this.activeChannel = ""
         this.midiToBeMapped = [];
         this.midiData = {
             "0":{},
@@ -56,6 +57,10 @@ export default class BrowserMidiCollector {
             "9":{},
             "10":{}
         }
+    }
+
+    activeChannelChange(channelString){
+      this.activeChannel = channelString
     }
 
     startMidi = () => {
@@ -85,7 +90,7 @@ export default class BrowserMidiCollector {
         //prepare the event to be processed
         let stringedData = []
         message.data.forEach((d)=>{stringedData.push(d.toString())})
-        let obj = {
+        let midiEvent = {
           data: stringedData,
           timeStamp: message.timeStamp
         }
@@ -94,10 +99,11 @@ export default class BrowserMidiCollector {
          ////  first add the events to an array unprocessed   ////                                             
          ////                                                 ////
          /////////////////////////////////////////////////////////
-        this.midiToBeMapped.push(obj)
+        this.midiToBeMapped.push(midiEvent)
          /////////////////////////////////////////////////////////
          ////                                                 ////
          ////  this is where we will have the live video stuff////                                               
+         MidiPlayerLive.playNote(midiEvent,this.activeChannel,this.midiData[this.activeChannel])
          ////                                                 ////
          /////////////////////////////////////////////////////////
         // this.stateSubscriptionFromVideoSelectorContainer
