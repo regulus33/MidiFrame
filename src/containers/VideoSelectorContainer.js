@@ -16,40 +16,44 @@ class VideoSelecterContainer extends React.Component {
     constructor(props) {
         super(props);   
         //for our array in assets s
-        this.state = {videoFiles:[], selectedVideoPath: "", selectedChannel: "", notes:{}, latestCapturedMidi:props.rawMidi};
+        this.state = {videoFiles:[], selectedVideoPath: "", selectedChannel: "", notes:{}, latestCapturedMidi:[]};
         //overwrite this to remain this instance when called in another class 
         this.renderOptionsForVideoDropDown = this.renderOptionsForVideoDropDown.bind(this);
         this.renderOptionsForChannelPickerData = this.renderOptionsForChannelPickerData.bind(this)
         this.handleVideoOptionClick = this.handleVideoOptionClick.bind(this)
         this.handleChannelOptionClick = this.handleChannelOptionClick.bind(this)
         this.handleTimeStampInput = this.handleTimeStampInput.bind(this)
+        this.registerRefreshListener = this.registerRefreshListener.bind(this)
         //Subscribe midiCollector to the state, you will need it to update video based on midi events
         //remember not to touch this, passing by reference
     }  
 
     componentDidMount() {
         //listener for 'r'
-        this.handleRefreshClick()
+        this.registerRefreshListener()
         this.fetchVideoFilePaths()
         //TODO setting default selected channel should be in the most early and rare occuring method 
         //sets selected channel to whatever is the first channel in the used notes object. 
         //TODO: nothing should appear on form until a midi option is clicked
-       let chan = Object.keys(this.usedNotesAndChannels())[0]
-       let usedNotes = this.usedNotesAndChannels()
-       let notesBelongingToSelectedChannel
-       notesBelongingToSelectedChannel = getNotesFromChannelInSuppliedObject(usedNotes, Number(this.state.selectedChannel))
-       let channelsToNotes = usedNotes
-       let selectedChannel = Number(this.state.selectedChannel)
-       if(channelsToNotes[this.state.selectedChannel] == undefined) { 
-        notesBelongingToSelectedChannel = []
-        }else {
-        notesBelongingToSelectedChannel = channelsToNotes[selectedChannel]
-       }
+    
+    
+    
+        //    let chan = Object.keys(this.usedNotesAndChannels())[0]
+    //    let usedNotes = this.usedNotesAndChannels()
+    //    let notesBelongingToSelectedChannel
+    //    notesBelongingToSelectedChannel = getNotesFromChannelInSuppliedObject(usedNotes, Number(this.state.selectedChannel))
+    //    let channelsToNotes = usedNotes
+    //    let selectedChannel = Number(this.state.selectedChannel)
+    //    if(channelsToNotes[this.state.selectedChannel] == undefined) { 
+    //     notesBelongingToSelectedChannel = []
+    //     }else {
+    //     notesBelongingToSelectedChannel = channelsToNotes[selectedChannel]
+    //    }
       
-       let notesTimes = {}
-       //Set all these notes to blank as this is the first render 
-       notesBelongingToSelectedChannel.forEach((e)=>{notesTimes[String[e]]=""})
-       this.setState({selectedChannel: chan, notes: notesTimes})
+    //    let notesTimes = {}
+    //    //Set all these notes to blank as this is the first render 
+    //    notesBelongingToSelectedChannel.forEach((e)=>{notesTimes[String[e]]=""})
+    //    this.setState({selectedChannel: chan, notes: notesTimes})
     }
 
     getInitialValuesForNotes(channel){
@@ -115,8 +119,10 @@ class VideoSelecterContainer extends React.Component {
         // debugger
         let channelToSelect = event.target.selectedOptions[0].value
         //if we have already recorded the notes and values for this channel, retrieve the values from midiCollector 
-        if(this.props.midiCollector.midiData[channelToSelect].notes != undefined && Object.keys(this.props.midiCollector.midiData[channelToSelect].notes).length > 0) {
-        //else we haven't navigated to this channel yet,  determine the used notes for this channel and populate state. 
+        if(
+            this.props.midiCollector.midiData[channelToSelect].notes != undefined && 
+            Object.keys(this.props.midiCollector.midiData[channelToSelect].notes).length > 0
+        ) {
             this.setState({selectedChannel: channelToSelect, notes: this.props.midiCollector.midiData[channelToSelect].notes})
         } else {
             this.setState({selectedChannel: channelToSelect, notes: this.getInitialValuesForNotes(channelToSelect) }) 
@@ -139,6 +145,10 @@ class VideoSelecterContainer extends React.Component {
     // 7: [112,134]
     //
     renderNoteInputs() {
+        if(Object.keys(this.state.notes) == 0){
+            //notes is empty, return!
+            return(<p>You haven't made the progrma aware of which notes you're using.</p>)
+        }
         return Object.keys(this.state.notes).map((num, indexxx) => {
             return <NoteTextField value={this.state.notes[num]} key={indexxx} keyToPass={num + indexxx} noteName={num}/>
         })
@@ -153,13 +163,16 @@ class VideoSelecterContainer extends React.Component {
         })
     }
     //when user hits r we refresh the incoming midi data
-    handleRefreshClick() {
+    registerRefreshListener() {
         document.onkeyup = (event) => { 
            if(event.key === "r"){
+            debugger
+            console.log(this.setState)
             //makes it obvious that you changed something 
             document.getElementsByClassName("vidContainer")[0].style.backgroundColor = getRandomColor()
             this.setState({latestCapturedMidi: this.props.midiCollector.midiToBeMapped})
-           }
+            console.log(this.state)  
+          }
         }
 
     }

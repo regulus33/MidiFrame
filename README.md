@@ -251,7 +251,7 @@ We know what its for but what we do in that method and why:
 
 ```js
     //When user hits 'r' we add the latest played midi to the state.latestCapturedMidi
-    this.handleRefreshClick()
+    this.registerRefreshListener()
     //fetch video files from the vid directory for form 
     this.fetchVideoFilePaths()
     //set a default selected channel (their shouldn't be one til you record midi so this might change)
@@ -348,7 +348,7 @@ Just maps a bunch of options out.
 ---
 
 ```js
-handleRefreshClick()
+registerRefreshListener()
 ```
 when user hits r we refresh the incoming midi data
 

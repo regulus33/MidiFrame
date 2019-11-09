@@ -70,7 +70,7 @@ export default class BrowserMidiCollector {
           for (let device of devices ) {
 
             if (device.name == "OP-Z") {
-              // console.log(device.name)
+              console.log(device.name)
               device.onmidimessage = this.onMidiMessage //keep
               device.onstatechange = this.handleOPZChange //change to have msg sent when we hit stop button 
             }
@@ -80,6 +80,8 @@ export default class BrowserMidiCollector {
     }
 
     onMidiMessage = (message) => {
+      console.log(message)
+
       //message data 0 is telling us if we are an off or on channel and which channel (1 - 16) at the same time 
       // console.log(message.data[0].toString())
       // console.log(message.timeStamp)
@@ -102,7 +104,6 @@ export default class BrowserMidiCollector {
         this.midiToBeMapped.push(midiEvent)
          /////////////////////////////////////////////////////////
          ////
-         debugger
          if(
           this.activeChannel != "" &&
           this.midiData[this.activeChannel]["notes"] != undefined && 

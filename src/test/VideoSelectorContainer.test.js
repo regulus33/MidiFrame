@@ -30,12 +30,42 @@ describe("VideoSelectorContainer",() => {
             let instance = renderer.getInstance()
             let notesFor5 = instance.getInitialValuesForNotes("5")
             instance.state.notes = notesFor5
+            debugger
             expect(instance.renderNoteInputs()[0].props.noteName).toBe("31")
             done() 
         })
             
     })
 
+    it("renderNoteInputs notifies when no notes recorded yet",(done) => {
+
+    const innermostPromise = Promise.resolve(['path/to/video1.mp4', 'path/to/video.mp4'])
+        const fakeVidFetch = Promise.resolve(
+            {
+                json: () => innermostPromise
+            }
+        )
+        const videoSelectorGetMocked = jest.fn()
+        videoSelectorGetMocked.mockReturnValueOnce(fakeVidFetch)    
+        let mock = [{"data":["148","31","100"],"timeStamp":5254.274999955669}]
+
+        const renderer = TestRenderer.create(
+            <VideoSelectorContainer 
+                videoSelectorGet={videoSelectorGetMocked} 
+                rawMidi={mock} 
+                midiCollector={new BrowserMidiCollector()}
+            />
+        )
+
+        return Promise.allSettled([innermostPromise, fakeVidFetch]).then(() => {
+            let instance = renderer.getInstance()
+            let notesFor5 = instance.getInitialValuesForNotes("5")
+            instance.state.notes = notesFor5
+            debugger
+            expect(instance.renderNoteInputs().props.children).toBe("You haven't made the progrma aware of which notes you're using.")
+            done() 
+        })
+    })
 
     it("usedNotesAndChannels() returns an object where keys are channel and value is an array of notes used in each of those channels",(done) => {
 
@@ -131,7 +161,7 @@ describe("VideoSelectorContainer",() => {
     })
 
 
-    it("handleChannelOptionClick() sets selected channel to state and retrieves notes from latestCapturedMidi when not found in browsermidicollector",(done) => {
+    it("handleChannelOptionClick() sets selected channel to state and retrieves notes from latestCapturedMidi when notes for theis channel are not found in browsermidicollector",(done) => {
         const innermostPromise = Promise.resolve(['path/to/video1.mp4', 'path/to/video.mp4'])
         const fakeVidFetch = Promise.resolve(
             {
@@ -140,18 +170,17 @@ describe("VideoSelectorContainer",() => {
         )
         const videoSelectorGetMocked = jest.fn()
         videoSelectorGetMocked.mockReturnValueOnce(fakeVidFetch)    
-        let mock = [{"data":["151","31","100"],"timeStamp":5254.274999955669}]
+        let capturedMidi = [{"data":["151","31","100"],"timeStamp":5254.274999955669}]
 
         let theBoneCollector = new BrowserMidiCollector()
-        theBoneCollector.midiData[8] = {
-            notes:{
-                "139": "3:45",
+        theBoneCollector.midiData[7] = {
+            notes: {
+                "notInWrongChannel": "timestamp",
             }
         }
         const renderer = TestRenderer.create(
             <VideoSelectorContainer 
                 videoSelectorGet={videoSelectorGetMocked} 
-                rawMidi={mock} 
                 midiCollector={theBoneCollector}
             />
         )
@@ -164,11 +193,11 @@ describe("VideoSelectorContainer",() => {
             }
         }
 
-        instance.state.latestCapturedMidi = mock 
+        instance.state.latestCapturedMidi = capturedMidi 
 
         instance.handleChannelOptionClick(mockEvent)
 
-        expect(instance.state.selectedChannel).toBe("8")
+        expect(instance.state.selectedChannel).toBe(mockEvent.target.selectedOptions[0].value)
         expect(instance.state.notes).toEqual({31:""})
 
         return done()
