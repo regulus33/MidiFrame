@@ -14,6 +14,7 @@ it("converts 3:45 style time to a seconds integer", () => {
 })
 
 it("Plays video at time paired to this channel", () => {
+
     let midiEvent = {"data":["148","31","100"],"timeStamp":5254.274999955669}
     let state = {
         selectedChannel: "5",
@@ -22,9 +23,12 @@ it("Plays video at time paired to this channel", () => {
             32: "3:30",
         }
     }
+
     MidiPlayerLive.playVideoAtSecondsStart = jest.fn() 
    
     MidiPlayerLive.playNote(midiEvent, state.selectedChannel, state.notes)
     expect(MidiPlayerLive.playVideoAtSecondsStart).toHaveBeenCalled()
 
 })
+
+

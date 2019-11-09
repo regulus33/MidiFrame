@@ -35,6 +35,7 @@ export default class MidiPlayerLive {
     }
 
     static playNote(midiEvent,selectedChannel,notes){
+        // if(notes[selectedChannel] == )
         let timeStampString = notes[midiEvent["data"][1]]
         if(ON_CHANNELS[selectedChannel] === midiEvent["data"][0] && timeStampString ){
             this.playVideoAtSecondsStart(
@@ -42,14 +43,6 @@ export default class MidiPlayerLive {
             )
         }
     }
-
-
-
-
-
-
-
-    
 
 
 }

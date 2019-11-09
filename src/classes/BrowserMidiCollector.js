@@ -45,7 +45,6 @@ export default class BrowserMidiCollector {
         this.activeChannel = ""
         this.midiToBeMapped = [];
         this.midiData = {
-            "0":{},
             "1":{},
             "2":{},
             "3":{},
@@ -85,6 +84,7 @@ export default class BrowserMidiCollector {
       // console.log(message.data[0].toString())
       // console.log(message.timeStamp)
       //if its an on channel or off, its relevant, so commit it to the json 
+      // TODO:its unneccessary to convert these to strings leave them as they are
       if ((ON_CHANNELS[message.data[0].toString()] != undefined) || (OFF_CHANNELS[message.data[0].toString()] != undefined)) {
         
         //prepare the event to be processed
@@ -101,9 +101,15 @@ export default class BrowserMidiCollector {
          /////////////////////////////////////////////////////////
         this.midiToBeMapped.push(midiEvent)
          /////////////////////////////////////////////////////////
-         ////                                                 ////
-         ////  this is where we will have the live video stuff////                                               
-         MidiPlayerLive.playNote(midiEvent,this.activeChannel,this.midiData[this.activeChannel])
+         ////
+         debugger
+         if(
+          this.activeChannel != "" &&
+          this.midiData[this.activeChannel]["notes"] != undefined && 
+          this.midiData[this.activeChannel]["notes"][midiEvent["data"][1]] != undefined
+          ) {
+          MidiPlayerLive.playNote(midiEvent,this.activeChannel,this.midiData[this.activeChannel])
+         }                                                 ////
          ////                                                 ////
          /////////////////////////////////////////////////////////
         // this.stateSubscriptionFromVideoSelectorContainer
@@ -134,6 +140,8 @@ export default class BrowserMidiCollector {
       }
       
     }
+
+
 
     
 }
