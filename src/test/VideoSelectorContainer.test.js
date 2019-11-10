@@ -30,7 +30,6 @@ describe("VideoSelectorContainer",() => {
             let instance = renderer.getInstance()
             let notesFor5 = instance.getInitialValuesForNotes("5")
             instance.state.notes = notesFor5
-            debugger
             expect(instance.renderNoteInputs()[0].props.noteName).toBe("31")
             done() 
         })
@@ -61,7 +60,6 @@ describe("VideoSelectorContainer",() => {
             let instance = renderer.getInstance()
             let notesFor5 = instance.getInitialValuesForNotes("5")
             instance.state.notes = notesFor5
-            debugger
             expect(instance.renderNoteInputs().props.children).toBe("You haven't made the progrma aware of which notes you're using.")
             done() 
         })

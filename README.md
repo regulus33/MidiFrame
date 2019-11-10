@@ -426,18 +426,17 @@ Deal with it.
     }
 ```
 
+## Quick thoughts
+
+dont forget to hit start and r for refresh
+
 ## TODO 
 
 
-Clear notes fields on form change
+1. default channels and form inputs, handle first time app starts 
+2. Notes dont refresh propery when hitting r, they should disappear if user cleared them on the opz(We are having a weird bug in the realtionship between latest captured midi, browser midiToConvert and the midi messages coming in from the web midi api. Once we solve this we should be pretty close.)
+3.Channels seem to be wrong, I saw way more notes on channe 2 than there should have been 
 
- the midi specification makes processing real time events extremely efficient if we mapp things more easily and factor in big O 
-
-think object notation vs iteration and checking. amen
-
-
-1. default  channels and form inputs 
-2. browser midi collector needs   
 
 
 

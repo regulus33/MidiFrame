@@ -63,6 +63,7 @@ export default class BrowserMidiCollector {
     }
 
     startMidi = () => {
+      console.log("startMidi was called")
         navigator.requestMIDIAccess().then( access => {
           //there should really only be one here, but you never know 
           // console.log(access.inputs);
@@ -80,8 +81,6 @@ export default class BrowserMidiCollector {
     }
 
     onMidiMessage = (message) => {
-      console.log(message)
-
       //message data 0 is telling us if we are an off or on channel and which channel (1 - 16) at the same time 
       // console.log(message.data[0].toString())
       // console.log(message.timeStamp)
