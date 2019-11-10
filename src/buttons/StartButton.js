@@ -12,6 +12,7 @@ const StartButton = (props) => {
     }
 
     const handleclick = (event) => {
+        console.log("click handler called")
         props.onClick()
         event.target.style.borderTop = "60px solid gray"
     }
