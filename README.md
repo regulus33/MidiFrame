@@ -426,16 +426,41 @@ Deal with it.
     }
 ```
 
-## Quick thoughts
+## NOTES 
+In order to get this working right now we need to go through a ton of steps. 
+1. we need to click the orange triangle to register the op-z. 
+2. press play on the op-z
+3. hit refresh to load data into the `latestCapturedMidi` array 
+4. select a channel 
+5. add timestamps to one or more of the notefields
+6. navigate away from the channel
+7. navigate back 
 
-dont forget to hit start and r for refresh
+all just to get the midi processing going, so we need to simplify this as much as possible.
 
-## TODO 
+Flow idea:
+
+There needs to be a naked screen prompting user to click and then press play  
+
+once midi data begins populating the the midiToBeMapped we should begin showing the forms. 
+
+UNTIL the midi capturing mechanism realizes there is no more midi to capture, it should say: analyzing midi to figure out what notes are in your song. 
+
+Then once that process finishes (5: 32 is already in array and nothing else new is being added), drop the midi
+
+(user should be able to hit w or something which will tell the program to re figure out what notes should be used which will recollect it and drop the saved events but keep the state object saved with relevant stuff.)
+
+The final step in the user flow is to RECORD the midi. This should be 4 to 8 bars of midi that will get saved into a local json array (not too large) and be sent to the server for processing. 
+
+The html5 vide stuff is in the end just a preview of hopefully will be much KOOLER
+
+LASTLY 
+
+we will need to handle polyphonic notes, dont forget!!! 
 
 
-1. default channels and form inputs, handle first time app starts 
-2. Notes dont refresh propery when hitting r, they should disappear if user cleared them on the opz(We are having a weird bug in the realtionship between latest captured midi, browser midiToConvert and the midi messages coming in from the web midi api. Once we solve this we should be pretty close.)
-3.Channels seem to be wrong, I saw way more notes on channe 2 than there should have been 
+
+
 
 
 
