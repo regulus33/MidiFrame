@@ -22,22 +22,24 @@ export default class MidiPlayerLive {
     constructor() {
     }
 
-    static playVideoAtSecondsStart(secondsInteger){
+    static playVideoAtSecondsStart(secondsInteger) {
         let vid = document.getElementsByTagName("video")[0]
         vid.currentTime = secondsInteger
         vid.play()
     }
 
-    static convertMinutesToSeconds(stringOfMinutes){
+    static convertMinutesToSeconds(stringOfMinutes) {
         let minutes = stringOfMinutes.split(":")[0]
         let seconds = stringOfMinutes.split(":")[1]
         return Number(minutes) * 60 + Number(seconds)
     }
 
-    static playNote(midiEvent,selectedChannel,notes){
+    static playNote(midiEvent,selectedChannel,notes) {
         // if(notes[selectedChannel] == )
         let timeStampString = notes[midiEvent["data"][1]]
         if(ON_CHANNELS[selectedChannel] === midiEvent["data"][0] && timeStampString ){
+        debugger
+
             this.playVideoAtSecondsStart(
                 this.convertMinutesToSeconds(timeStampString)
             )

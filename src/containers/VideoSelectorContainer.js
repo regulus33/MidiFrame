@@ -56,7 +56,7 @@ class VideoSelecterContainer extends React.Component {
     //    this.setState({selectedChannel: chan, notes: notesTimes})
     }
 
-    getInitialValuesForNotes(channel){
+    getInitialValuesForNotes(channel) {
         let usedNotes = this.usedNotesAndChannels()
         let notesBelongingToSelectedChannel
         notesBelongingToSelectedChannel = getNotesFromChannelInSuppliedObject(usedNotes, Number(channel))
@@ -67,7 +67,6 @@ class VideoSelecterContainer extends React.Component {
          }else {
          notesBelongingToSelectedChannel = channelsToNotes[channel]
         }
-       
         let notesTimes = {}
         //Set all these notes to blank as this is the first render 
         notesBelongingToSelectedChannel.forEach((e)=>{notesTimes[String(e)]=""})
@@ -129,7 +128,8 @@ class VideoSelecterContainer extends React.Component {
         }
         
         //notify the collector that we have a new active channel (for live midi playing)
-        this.props.midiCollector.activeChannelChange(this.state.selectedChannel)
+        //I guess we cant rely on the state just after setting it, it must be more of a promise than an actual function???
+        this.props.midiCollector.activeChannelChange(channelToSelect)
 
         
         
@@ -166,7 +166,6 @@ class VideoSelecterContainer extends React.Component {
     registerRefreshListener() {
         document.onkeyup = (event) => { 
            if(event.key === "r"){
-            debugger
             console.log(this.setState)
             //makes it obvious that you changed something 
             document.getElementsByClassName("vidContainer")[0].style.backgroundColor = getRandomColor()
