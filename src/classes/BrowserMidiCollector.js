@@ -102,13 +102,14 @@ export default class BrowserMidiCollector {
          /////////////////////////////////////////////////////////
         this.midiToBeMapped.push(midiEvent)
          /////////////////////////////////////////////////////////
-         ////
+         
          if(
           this.activeChannel != "" &&
           this.midiData[this.activeChannel]["notes"] != undefined && 
           this.midiData[this.activeChannel]["notes"][midiEvent["data"][1]] != undefined
           ) {
-          MidiPlayerLive.playNote(midiEvent,this.activeChannel,this.midiData[this.activeChannel])
+
+          MidiPlayerLive.playNote(midiEvent,this.activeChannel,this.midiData[this.activeChannel]["notes"])
          }                                                 ////
          ////                                                 ////
          /////////////////////////////////////////////////////////
