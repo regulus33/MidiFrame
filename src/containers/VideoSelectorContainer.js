@@ -172,6 +172,9 @@ class VideoSelecterContainer extends React.Component {
             this.setState({latestCapturedMidi: this.props.midiCollector.midiToBeMapped})
             console.log(this.state)  
           }
+          if(event.key === "m"){
+            this.props.midiCollector.startMidi()
+          }
         }
 
     }
@@ -196,8 +199,6 @@ class VideoSelecterContainer extends React.Component {
                             {this.renderNoteInputs()}
                         </form>
                     </div>
-                    <span className="description">Start the process HERE? :)</span>
-                    <StartButton onClick={this.props.midiCollector.startMidi}/>
                 </div>
                 <VideoSelector 
                     selectedChannelName={this.state.selectedChannel}
