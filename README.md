@@ -461,6 +461,25 @@ we will need to handle polyphonic notes, dont forget!!!
 Tips on JS performance. 
 https://www.oreilly.com/library/view/high-performance-javascript/9781449382308/ch04.html
 
+instead of huge if else can we have something like 
+```js
+state = {
+  //channel: note_numberss
+  "7":[32,45,67]
+}
+
+//then in the midi msg handler:
+if(state[msg.data[0]][msg.data[1]]){
+  //PLAY NOTE
+}
+
+```
+
+also we need to standardize the constants for out notes and keep them in one place, right now there are like 5 of the same information. 
+
+Delete unused code as well. Once we test serverside.
+
+All this should be done after getting the ffmpeg stuff working 
 
 
 
