@@ -161,3 +161,14 @@ it("Skips if active channel not picked yet.",() => {
 
     expect(MidiPlayerLive.playNote).not.toHaveBeenCalled()
 })
+
+it("handles the first midi note to help the rest of the app know which channel is default", () => {
+    const b = new BrowserMidiCollector()
+    let mockMessage = {
+        data: [147,38,120],
+        timeStamp: 333.4444
+    }
+    b.onMidiMessage(mockMessage)
+
+    expect(b.activeChannel).toBe("4")
+})

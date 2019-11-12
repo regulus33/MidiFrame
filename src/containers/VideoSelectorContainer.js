@@ -14,7 +14,8 @@ import StartButton from '../buttons/StartButton.js'
 class VideoSelecterContainer extends React.Component {
 
     constructor(props) {
-        super(props);   
+        super(props); 
+        this.firstUse = true   
         //for our array in assets s
         this.state = {videoFiles:[], selectedVideoPath: "", selectedChannel: "", notes:{}, latestCapturedMidi:[]};
         //overwrite this to remain this instance when called in another class 
@@ -24,44 +25,37 @@ class VideoSelecterContainer extends React.Component {
         this.handleChannelOptionClick = this.handleChannelOptionClick.bind(this)
         this.handleTimeStampInput = this.handleTimeStampInput.bind(this)
         this.registerRefreshListener = this.registerRefreshListener.bind(this)
+        this.repopulateRefresh = this.repopulateRefresh.bind(this)
         //Subscribe midiCollector to the state, you will need it to update video based on midi events
         //remember not to touch this, passing by reference
     }  
 
     componentDidMount() {
-        //listener for 'r'
+        this.repopulateRefresh()
+
         this.registerRefreshListener()
+        
         this.fetchVideoFilePaths()
-        //TODO setting default selected channel should be in the most early and rare occuring method 
-        //sets selected channel to whatever is the first channel in the used notes object. 
-        //TODO: nothing should appear on form until a midi option is clicked
-    
-    
-    
-        //    let chan = Object.keys(this.usedNotesAndChannels())[0]
-    //    let usedNotes = this.usedNotesAndChannels()
-    //    let notesBelongingToSelectedChannel
-    //    notesBelongingToSelectedChannel = getNotesFromChannelInSuppliedObject(usedNotes, Number(this.state.selectedChannel))
-    //    let channelsToNotes = usedNotes
-    //    let selectedChannel = Number(this.state.selectedChannel)
-    //    if(channelsToNotes[this.state.selectedChannel] == undefined) { 
-    //     notesBelongingToSelectedChannel = []
-    //     }else {
-    //     notesBelongingToSelectedChannel = channelsToNotes[selectedChannel]
-    //    }
-      
-    //    let notesTimes = {}
-    //    //Set all these notes to blank as this is the first render 
-    //    notesBelongingToSelectedChannel.forEach((e)=>{notesTimes[String[e]]=""})
-    //    this.setState({selectedChannel: chan, notes: notesTimes})
+        //select default, this gets set in midicollector on first message
+        //firs thtings first 
+        let options = {}
+            options["firstState"] = {
+             selectedChannel: this.props.midiCollector.activeChannel, 
+            notes: this.getInitialValuesForNotes(this.props.midiCollector.activeChannel),
+            videoFiles: [],
+            latestCapturedMidi: []
+        }
+        this.changeOrSetMidiChannel(this.props.midiCollector.activeChannel,options)
+        //part of the top part, since the form derives it scontent from latest captured midi, we need to set it somewhere
+        this.firstUse = false 
     }
 
     getInitialValuesForNotes(channel) {
         let usedNotes = this.usedNotesAndChannels()
         let notesBelongingToSelectedChannel
-        notesBelongingToSelectedChannel = getNotesFromChannelInSuppliedObject(usedNotes, Number(channel))
+        notesBelongingToSelectedChannel = getNotesFromChannelInSuppliedObject(usedNotes, channel)
         let channelsToNotes = usedNotes
-        let selectedChannel = Number(channel)
+        let selectedChannel =channel
         if(channelsToNotes[channel] == undefined) { 
          notesBelongingToSelectedChannel = []
          }else {
@@ -84,7 +78,7 @@ class VideoSelecterContainer extends React.Component {
     
     // takes the midi that has been sent so far from opz to midi.js to the component's state.latestCapturedMidi (a collection of simple midi events)
     usedNotesAndChannels() {
-        let capturedMidiData = this.state.latestCapturedMidi
+        let capturedMidiData = this.firstUse ? this.props.midiCollector.midiToBeMapped : this.state.latestCapturedMidi
         // let capturedMidiData = this.props.rawMidi
         let m = new MidiMapper
         let channelsNotes = m.determineUsedNotes(capturedMidiData)
@@ -113,26 +107,32 @@ class VideoSelecterContainer extends React.Component {
     }   
 
     handleChannelOptionClick(event) {
-        //before we make changes to the state, save it, we will need it later
-        this.props.midiCollector.updateState(this.state)
-        // debugger
-        let channelToSelect = event.target.selectedOptions[0].value
-        //if we have already recorded the notes and values for this channel, retrieve the values from midiCollector 
-        if(
-            this.props.midiCollector.midiData[channelToSelect].notes != undefined && 
-            Object.keys(this.props.midiCollector.midiData[channelToSelect].notes).length > 0
-        ) {
-            this.setState({selectedChannel: channelToSelect, notes: this.props.midiCollector.midiData[channelToSelect].notes})
-        } else {
-            this.setState({selectedChannel: channelToSelect, notes: this.getInitialValuesForNotes(channelToSelect) }) 
-        }
-        
-        //notify the collector that we have a new active channel (for live midi playing)
-        //I guess we cant rely on the state just after setting it, it must be more of a promise than an actual function???
-        this.props.midiCollector.activeChannelChange(channelToSelect)
+        this.changeOrSetMidiChannel(event.target.selectedOptions[0].value)
+    }
 
-        
-        
+    changeOrSetMidiChannel(channelToSelect,options={}){
+
+           //before we make changes to the state, save it, we will need it later
+           if(options.firstState){
+            this.props.midiCollector.updateState(options.firstState)
+           } else {
+            this.props.midiCollector.updateState(this.state)  
+           }
+           
+           //if we have already recorded the notes and values for this channel, retrieve the values from midiCollector 
+           if(
+               this.props.midiCollector.midiData[channelToSelect].notes != undefined && 
+               Object.keys(this.props.midiCollector.midiData[channelToSelect].notes).length > 0
+           ) {
+               this.setState({selectedChannel: channelToSelect, notes: this.props.midiCollector.midiData[channelToSelect].notes})
+           } else {
+               debugger 
+               this.setState({selectedChannel: channelToSelect, notes: this.getInitialValuesForNotes(channelToSelect) }) 
+           }
+           
+           //notify the collector that we have a new active channel (for live midi playing)
+           //I guess we cant rely on the state just after setting it, it must be more of a promise than an actual function???
+           this.props.midiCollector.activeChannelChange(channelToSelect)
     }
 
     renderOptionsForChannelPickerData() {
@@ -166,17 +166,17 @@ class VideoSelecterContainer extends React.Component {
     registerRefreshListener() {
         document.onkeyup = (event) => { 
            if(event.key === "r"){
-            console.log(this.setState)
             //makes it obvious that you changed something 
             document.getElementsByClassName("vidContainer")[0].style.backgroundColor = getRandomColor()
-            this.setState({latestCapturedMidi: this.props.midiCollector.midiToBeMapped})
-            console.log(this.state)  
+            this.repopulateRefresh() 
           }
-          if(event.key === "m"){
-            this.props.midiCollector.startMidi()
-          }
+    
         }
 
+    }
+    
+    repopulateRefresh(){
+        this.setState({latestCapturedMidi: this.props.midiCollector.midiToBeMapped})
     }
 
     render() {
