@@ -481,6 +481,8 @@ Delete unused code as well. Once we test serverside.
 
 All this should be done after getting the ffmpeg stuff working 
 
+OPTIMIZING VIDEO 
+https://www.keycdn.com/blog/video-optimization
 
 
 
