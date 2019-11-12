@@ -16,22 +16,39 @@ class App extends React.Component {
     super(props)
     this.midiCollector = new BrowserMidiCollector()
     this.state = {
-      midiInteracted: false
+      midiInteracted: false,
+      weGotMidi: false 
     }
   }
 
   redigsterStartMidi(){
     document.onkeyup = (event) => { 
       if(event.key === "m" && this.state.midiInteracted === false){
-        this.midiCollector.startMidi()
-        this.setState({midiInteracted: true})
+        this.midiCollector.startMidi().then(()=>{
+          this.setState({midiInteracted: true})
+        })
+      }
+      if(event.key === "Enter" && this.state.midiInteracted === true && this.determineAppState() === "SHOW_MAIN_APP") {
+        this.setState({weGotMidi:true})
       }
     }
   }
-  
+
+  determineAppState(){
+    //only one possibility bound to this condition
+    if(this.state.midiInteracted === false) {
+      return "SHOW_PRESS_M"
+    //midi interacted is true BUT we havent recorded anything yet.   
+    } else if(!this.midiCollector.receivedAnyMessageYet) {
+      return "SHOW_PLAY_MIDI"
+    } else {
+       return "SHOW_MAIN_APP"
+    }
+  }
 
   render(){
-    if (this.state.midiInteracted) {
+    let appState = this.determineAppState()
+    if (appState === "SHOW_MAIN_APP") {
       return (
         <VideoSelectorContainer videoSelectorGet={videoSelectorGet} rawMidi={midi} midiCollector={this.midiCollector} />
       )
@@ -39,7 +56,7 @@ class App extends React.Component {
       //we'll only use this once so only register it when needed
       this.redigsterStartMidi()
       return (
-        <Splash/>
+        <Splash appState={appState} userMessage={this.midiCollector.userMessage}/>
       )
     }
   }

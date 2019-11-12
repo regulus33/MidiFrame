@@ -43,7 +43,9 @@ export default class BrowserMidiCollector {
     constructor() {
         //for sending to server
         this.activeChannel = ""
-        this.midiToBeMapped = [];
+        this.midiToBeMapped = []
+        this.receivedAnyMessageYet = false 
+        this.userMessage = ""
         this.midiData = {
             "1":{},
             "2":{},
@@ -63,31 +65,38 @@ export default class BrowserMidiCollector {
     }
 
     startMidi = () => {
-      console.log("startMidi was called")
-        navigator.requestMIDIAccess().then( access => {
+        return navigator.requestMIDIAccess().then( access => {
           //there should really only be one here, but you never know 
           // console.log(access.inputs);
           const devices = access.inputs.values();
           for (let device of devices ) {
-
+            
             if (device.name == "OP-Z") {
               console.log(device.name)
+              this.userMessage = `${device.name} is connected!`
               device.onmidimessage = this.onMidiMessage //keep
               device.onstatechange = this.handleOPZChange //change to have msg sent when we hit stop button 
+            } else {
+              this.userMessage = "Something's wrong, do you have the OP-Z connected?"
             }
 
           }
         }).catch(console.error);
     }
-
+    //TODO: split all these conditions up into separe functions to be picked on initialization 
     onMidiMessage = (message) => {
       //message data 0 is telling us if we are an off or on channel and which channel (1 - 16) at the same time 
       // console.log(message.data[0].toString())
       // console.log(message.timeStamp)
       //if its an on channel or off, its relevant, so commit it to the json 
       // TODO:its unneccessary to convert these to strings leave them as they are
-      if ((ON_CHANNELS[message.data[0].toString()] != undefined) || (OFF_CHANNELS[message.data[0].toString()] != undefined)) {
-        
+      if ((ON_CHANNELS[message.data[0]] != undefined) || (OFF_CHANNELS[message.data[0]] != undefined)) {
+        //SET THIS AS THE ACTIVE CHANNEL IF FIRST MESSAGE< NEEDED FOR FORM
+        if(!this.receivedAnyMessageYet){
+          debugger 
+          this.handleFirstMidiMessage(message.data[0])
+        }
+
         //prepare the event to be processed
         let stringedData = []
         message.data.forEach((d)=>{stringedData.push(d.toString())})
@@ -117,6 +126,11 @@ export default class BrowserMidiCollector {
         // {videoFiles:[], selectedVideoPath: "", selectedChannel: "1", notes:{}}
                
       } 
+    }
+
+    handleFirstMidiMessage(message) {
+        this.activeChannel = ON_CHANNELS[message]
+        this.receivedAnyMessageYet = true 
     }
 
     //all this needs to tell us is if the currently selected form data permits this note to be a part of the midi playing
