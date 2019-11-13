@@ -9,7 +9,6 @@ import {
     getNotesFromChannelInSuppliedObject
 } from '../Helpers.js'
 import NoteTextField from '../NoteTextField'
-import StartButton from '../buttons/StartButton.js'
 
 class VideoSelecterContainer extends React.Component {
 
@@ -55,7 +54,6 @@ class VideoSelecterContainer extends React.Component {
         let notesBelongingToSelectedChannel
         notesBelongingToSelectedChannel = getNotesFromChannelInSuppliedObject(usedNotes, channel)
         let channelsToNotes = usedNotes
-        let selectedChannel =channel
         if(channelsToNotes[channel] == undefined) { 
          notesBelongingToSelectedChannel = []
          }else {
@@ -126,7 +124,6 @@ class VideoSelecterContainer extends React.Component {
            ) {
                this.setState({selectedChannel: channelToSelect, notes: this.props.midiCollector.midiData[channelToSelect].notes})
            } else {
-               debugger 
                this.setState({selectedChannel: channelToSelect, notes: this.getInitialValuesForNotes(channelToSelect) }) 
            }
            
@@ -147,7 +144,7 @@ class VideoSelecterContainer extends React.Component {
     renderNoteInputs() {
         if(Object.keys(this.state.notes) == 0){
             //notes is empty, return!
-            return(<p>You haven't made the progrma aware of which notes you're using.</p>)
+            return(<p style={{"color":"red"}}>There aren't any notes here, something is wrong</p>)
         }
         return Object.keys(this.state.notes).map((num, indexxx) => {
             return <NoteTextField value={this.state.notes[num]} key={indexxx} keyToPass={num + indexxx} noteName={num}/>
@@ -174,7 +171,7 @@ class VideoSelecterContainer extends React.Component {
         }
 
     }
-    
+    //TESTME
     repopulateRefresh(){
         this.setState({latestCapturedMidi: this.props.midiCollector.midiToBeMapped})
     }
