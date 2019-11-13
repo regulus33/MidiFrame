@@ -43,9 +43,11 @@ export default class BrowserMidiCollector {
     constructor() {
         //for sending to server
         this.activeChannel = ""
+        //TODO: DELTE ME
         this.midiToBeMapped = []
         this.receivedAnyMessageYet = false 
         this.userMessage = ""
+        //TODO DELETE Me
         this.midiData = {
             "1":{},
             "2":{},
@@ -58,6 +60,21 @@ export default class BrowserMidiCollector {
             "9":{},
             "10":{}
         }
+        //used notes here
+        this.notesAndChannels = {
+          "1": new Set(),
+          "2": new Set(),
+          "3": new Set(),
+          "4": new Set(),
+          "5": new Set(),
+          "6": new Set(),
+          "7": new Set(),
+          "8": new Set(),
+          "9": new Set(),
+          "10": new Set(),
+          "11": new Set(),
+          "12": new Set(),
+      }
     }
 
     activeChannelChange(channelString){
@@ -74,7 +91,8 @@ export default class BrowserMidiCollector {
             if (device.name == "OP-Z") {
               console.log(device.name)
               this.userMessage = `${device.name} is connected!`
-              device.onmidimessage = this.onMidiMessage //keep
+              // device.onmidimessage = this.onMidiMessage //keep
+              device.onmidimessage = this.onMidiMessageSketchPhase 
               device.onstatechange = this.handleOPZChange //change to have msg sent when we hit stop button 
             } else {
               this.userMessage = "Something's wrong, do you have the OP-Z connected?"
@@ -82,6 +100,12 @@ export default class BrowserMidiCollector {
 
           }
         }).catch(console.error);
+    }
+
+    onMidiMessageA = (message) => {
+      if(!!ON_CHANNELS[message.data[0]]) {
+        this.notesAndChannels[ON_CHANNELS[message.data[0]]].add(message.data[1])
+      }
     }
     //TODO: split all these conditions up into separe functions to be picked on initialization 
     onMidiMessage = (message) => {
