@@ -93,7 +93,6 @@ export default class BrowserMidiCollector {
       if ((ON_CHANNELS[message.data[0]] != undefined) || (OFF_CHANNELS[message.data[0]] != undefined)) {
         //SET THIS AS THE ACTIVE CHANNEL IF FIRST MESSAGE< NEEDED FOR FORM
         if(!this.receivedAnyMessageYet){
-          debugger 
           this.handleFirstMidiMessage(message.data[0])
         }
 

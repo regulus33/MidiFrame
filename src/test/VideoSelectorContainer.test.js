@@ -6,7 +6,7 @@ import BrowserMidiCollector from '../classes/BrowserMidiCollector';
 describe("VideoSelectorContainer",() => {
 
 
-    it("renderNoteInputs() returns array of text inputs with note numbers as names",(done) => {
+    it("renderNoteInputs renders notes",(done) => {
 
         const innermostPromise = Promise.resolve(['path/to/video1.mp4', 'path/to/video.mp4'])
         const fakeVidFetch = Promise.resolve(
@@ -16,13 +16,14 @@ describe("VideoSelectorContainer",() => {
         )
         const videoSelectorGetMocked = jest.fn()
         videoSelectorGetMocked.mockReturnValueOnce(fakeVidFetch)    
-        let mock = [{"data":["148","31","100"],"timeStamp":5254.274999955669}]
+        const mCollector = new BrowserMidiCollector()
+        mCollector.midiToBeMapped = [{"data":["148","31","100"],"timeStamp":5254.274999955669}]
+
 
         const renderer = TestRenderer.create(
             <VideoSelectorContainer 
                 videoSelectorGet={videoSelectorGetMocked} 
-                rawMidi={mock} 
-                midiCollector={new BrowserMidiCollector()}
+                midiCollector={mCollector}
             />
         )
 
@@ -60,7 +61,7 @@ describe("VideoSelectorContainer",() => {
             let instance = renderer.getInstance()
             let notesFor5 = instance.getInitialValuesForNotes("5")
             instance.state.notes = notesFor5
-            expect(instance.renderNoteInputs().props.children).toBe("You haven't made the progrma aware of which notes you're using.")
+            expect(instance.renderNoteInputs().props.children).toBe("There aren't any notes here, something is wrong")
             done() 
         })
     })
