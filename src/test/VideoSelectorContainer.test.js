@@ -34,7 +34,6 @@ describe("VideoSelectorContainer",() => {
             expect(instance.renderNoteInputs()[0].props.noteName).toBe("31")
             done() 
         })
-            
     })
 
     it("renderNoteInputs notifies when no notes recorded yet",(done) => {
