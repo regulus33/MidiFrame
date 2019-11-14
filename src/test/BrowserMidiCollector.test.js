@@ -162,3 +162,50 @@ it("notesAndChannels doesnt save dup notes", () => {
 
     expect(b.notesAndChannels["3"].size).toBe(1)
 })
+
+it("notesAndChannels doesnt save dup notes", () => {
+    const b = new BrowserMidiCollector()
+    let mockMessage = {
+        data: [146,38,120],
+        timeStamp: 333.4444
+    }
+
+    b.onMidiMessageA(mockMessage)
+    b.onMidiMessageA(mockMessage)
+    b.onMidiMessageA(mockMessage)
+
+    expect(b.notesAndChannels["3"].size).toBe(1)
+})
+
+it("onMidiMessageA sets received receivedanymidiYet to true when first midi received on the instance", ()=>{
+    const b = new BrowserMidiCollector()
+    let mockMessage = {
+        data: [146,38,120],
+        timeStamp: 333.4444
+    }
+
+    b.onMidiMessageA(mockMessage)
+
+    expect(b.receivedAnyMessageYet).toBe(true)
+
+})
+
+it("Has a getter for notesAndChannels() that squashes empty sets for the forms in videoselctorcontainer", ()=>{
+    const b = new BrowserMidiCollector()
+    let mockMessage = {
+        data: [146,38,120],
+        timeStamp: 333.4444
+    }
+    let mockMessage2 = {
+        data: [148,33,120],
+        timeStamp: 333.4444
+    }
+//3 and 5 
+    b.onMidiMessageA(mockMessage)
+    b.onMidiMessageA(mockMessage2)
+
+    expect(b.getNotesAndChannels()["3"]).toEqual([38])
+    expect(b.getNotesAndChannels()["5"]).toEqual([33])
+    expect(b.getNotesAndChannels()["9"]).toBe(undefined)
+
+})

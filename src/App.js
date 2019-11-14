@@ -28,6 +28,7 @@ class App extends React.Component {
           this.setState({midiInteracted: true})
         })
       }
+      debugger
       if(event.key === "Enter" && this.state.midiInteracted === true && this.determineAppState() === "SHOW_MAIN_APP") {
         this.setState({weGotMidi:true})
       }
