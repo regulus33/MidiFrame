@@ -24,13 +24,12 @@ class App extends React.Component {
   redigsterStartMidi(){
     document.onkeyup = (event) => { 
       if(event.key === "m" && this.state.midiInteracted === false){
-        this.midiCollector.startMidi().then(()=>{
+        this.midiCollector.startMidi().then(() => {
           this.setState({midiInteracted: true})
         })
       }
-      debugger
       if(event.key === "Enter" && this.state.midiInteracted === true && this.determineAppState() === "SHOW_MAIN_APP") {
-        this.setState({weGotMidi:true})
+        this.setState({weGotMidi: true})
       }
     }
   }

@@ -26,7 +26,7 @@ it("Plays video at time paired to this channel", () => {
 
     MidiPlayerLive.playVideoAtSecondsStart = jest.fn() 
    
-    MidiPlayerLive.playNote(midiEvent, state.selectedChannel, state.notes)
+    MidiPlayerLive.playNote(148, 31, state.selectedChannel, state.notes)
     expect(MidiPlayerLive.playVideoAtSecondsStart).toHaveBeenCalled()
 
 })
