@@ -107,7 +107,9 @@ export default class BrowserMidiCollector {
         if(!this.receivedAnyMessageYet ) {
           this.handleFirstMidiMessage(message.data[0])
         }
+        //add note to local note detection
         this.notesAndChannels[ON_CHANNELS[message.data[0]]].add(message.data[1])
+        MidiPlayerLive.playNote(message["data"][0], message["data"][1], this.activeChannel,this.midiData[this.activeChannel]["notes"])
       }
       
     }

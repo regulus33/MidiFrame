@@ -34,10 +34,11 @@ export default class MidiPlayerLive {
         return Number(minutes) * 60 + Number(seconds)
     }
 
-    static playNote(midiEvent,selectedChannel,notes) {
+    static playNote(channel, note, selectedChannel,notes) {
+        // debugger 
         // if(notes[selectedChannel] == )
-        let timeStampString = notes[midiEvent["data"][1]]
-        if(ON_CHANNELS[selectedChannel] === midiEvent["data"][0] && timeStampString ){
+        let timeStampString = notes[note]
+        if(ON_CHANNELS[selectedChannel] == channel && timeStampString ){
             this.playVideoAtSecondsStart(
                 this.convertMinutesToSeconds(timeStampString)
             )
@@ -46,3 +47,5 @@ export default class MidiPlayerLive {
 
 
 }
+
+// if(ON_CHANNELS[selectedChannel] === midiEvent["data"][0] && timeStampString ){
