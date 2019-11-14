@@ -76,12 +76,13 @@ class VideoSelecterContainer extends React.Component {
     
     // takes the midi that has been sent so far from opz to midi.js to the component's state.latestCapturedMidi (a collection of simple midi events)
     usedNotesAndChannels() {
-        let capturedMidiData = this.firstUse ? this.props.midiCollector.midiToBeMapped : this.state.latestCapturedMidi
-        // let capturedMidiData = this.props.rawMidi
-        let m = new MidiMapper
-        let channelsNotes = m.determineUsedNotes(capturedMidiData)
-        let formatted = reverseChannelsAndNotesObject(channelsNotes)
-        return formatted
+        // let capturedMidiData = this.firstUse ? this.props.midiCollector.midiToBeMapped : this.state.latestCapturedMidi
+        // let m = new MidiMapper
+        // let channelsNotes = m.determineUsedNotes(capturedMidiData)
+        // let formatted = reverseChannelsAndNotesObject(channelsNotes)
+        // return formatted
+        
+        return this.props.midiCollector.getNotesAndChannels()
     }
 
     handleVideoOptionClick(event){

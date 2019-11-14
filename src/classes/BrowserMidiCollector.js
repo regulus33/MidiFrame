@@ -92,7 +92,7 @@ export default class BrowserMidiCollector {
               console.log(device.name)
               this.userMessage = `${device.name} is connected!`
               // device.onmidimessage = this.onMidiMessage //keep
-              device.onmidimessage = this.onMidiMessageSketchPhase 
+              device.onmidimessage = this.onMidiMessageA 
               device.onstatechange = this.handleOPZChange //change to have msg sent when we hit stop button 
             } else {
               this.userMessage = "Something's wrong, do you have the OP-Z connected?"
@@ -104,8 +104,12 @@ export default class BrowserMidiCollector {
 
     onMidiMessageA = (message) => {
       if(!!ON_CHANNELS[message.data[0]]) {
+        if(!this.receivedAnyMessageYet ) {
+          this.handleFirstMidiMessage(message.data[0])
+        }
         this.notesAndChannels[ON_CHANNELS[message.data[0]]].add(message.data[1])
       }
+      
     }
     //TODO: split all these conditions up into separe functions to be picked on initialization 
     onMidiMessage = (message) => {
@@ -177,6 +181,16 @@ export default class BrowserMidiCollector {
         videoPath: state.videoPath
       }
       
+    }
+    //convert filled sets to arrays and leaves out key val pairs with emptiness
+    getNotesAndChannels(){
+      let dataForUI = {}
+      Object.keys(this.notesAndChannels).forEach((channelNum)=>{
+        if(this.notesAndChannels[channelNum].size > 0) {
+          dataForUI[channelNum] = Array.from(this.notesAndChannels[channelNum])
+        }
+      })
+      return dataForUI
     }
 
 
