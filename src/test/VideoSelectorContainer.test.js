@@ -77,19 +77,19 @@ describe("VideoSelectorContainer",() => {
     
         const videoSelectorGetMocked = jest.fn()
         videoSelectorGetMocked.mockReturnValueOnce(fakeVidFetch)    
-        let mock = [{"data":["148","31","100"],"timeStamp":5254.274999955669}]
-
+        let mock = {"data":["148","31","100"],"timeStamp":5254.274999955669}
+        const midiCollector = new BrowserMidiCollector()
+        midiCollector.onMidiMessageA(mock)
 
         const renderer = TestRenderer.create(
             <VideoSelectorContainer 
                 videoSelectorGet={videoSelectorGetMocked} 
-                rawMidi={mock} 
-                midiCollector={new BrowserMidiCollector()}
+                midiCollector={midiCollector}
             />
         )
         return Promise.allSettled([innermostPromise, fakeVidFetch]).then(()=>{
             let instance = renderer.getInstance()
-            instance.state.latestCapturedMidi = [{"data":["148","31","100"],"timeStamp":100}]
+            // instance.state.latestCapturedMidi = [{"data":["148","31","100"],"timeStamp":100}]
             instance.state.selectedChannel = "5"
             expect(instance.usedNotesAndChannels()).toEqual({
                 "5": [31]
