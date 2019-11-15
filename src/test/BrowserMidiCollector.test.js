@@ -209,3 +209,20 @@ it("Has a getter for notesAndChannels() that squashes empty sets for the forms i
     expect(b.getNotesAndChannels()["9"]).toBe(undefined)
 
 })
+
+it("Has notes in notes object at the appropriate time", () => {
+    const b = new BrowserMidiCollector()
+    let mockMessage = {
+        data: [146,38,120],
+        timeStamp: 333.4444
+    }
+    let mockMessage2 = {
+        data: [148,33,120],
+        timeStamp: 333.4444
+    }
+//3 and 5 
+    b.onMidiMessageA(mockMessage)
+    b.onMidiMessageA(mockMessage2)
+    
+
+})

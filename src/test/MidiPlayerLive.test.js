@@ -1,9 +1,3 @@
-import VideoSelectorContainer from '../containers/VideoSelectorContainer'
-import React from 'react';
-import TestRenderer from 'react-test-renderer';
-import BrowserMidiCollector from '../classes/BrowserMidiCollector'
-import Option from '../Option.js'
-
 import MidiPlayerLive from '../classes/MidiPlayerLive.js'
 
 it("converts 3:45 style time to a seconds integer", () => {
@@ -30,5 +24,7 @@ it("Plays video at time paired to this channel", () => {
     expect(MidiPlayerLive.playVideoAtSecondsStart).toHaveBeenCalled()
 
 })
+
+
 
 

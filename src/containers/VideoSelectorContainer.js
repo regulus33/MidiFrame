@@ -1,10 +1,8 @@
 import React from 'react'
 import VideoSelector from '../VideoSelector.js'
 import Option from '../Option.js'
-import MidiMapper from '../classes/MidiMapper.js'
 import ChannelPicker from '../ChannelPicker.js';
 import {
-    reverseChannelsAndNotesObject,
     getRandomColor,
     getNotesFromChannelInSuppliedObject
 } from '../Helpers.js'
@@ -51,13 +49,11 @@ class VideoSelecterContainer extends React.Component {
 
     getInitialValuesForNotes(channel) {
         let usedNotes = this.usedNotesAndChannels()
-        let notesBelongingToSelectedChannel
-        notesBelongingToSelectedChannel = getNotesFromChannelInSuppliedObject(usedNotes, channel)
-        let channelsToNotes = usedNotes
-        if(channelsToNotes[channel] == undefined) { 
-         notesBelongingToSelectedChannel = []
-         }else {
-         notesBelongingToSelectedChannel = channelsToNotes[channel]
+        let notesBelongingToSelectedChannel = getNotesFromChannelInSuppliedObject(usedNotes, channel)
+        if(usedNotes[channel] == undefined) { 
+         
+        } else {
+         notesBelongingToSelectedChannel = usedNotes[channel]
         }
         let notesTimes = {}
         //Set all these notes to blank as this is the first render 
@@ -74,7 +70,7 @@ class VideoSelecterContainer extends React.Component {
         })
     }
     
-    // takes the midi that has been sent so far from opz to midi.js to the component's state.latestCapturedMidi (a collection of simple midi events)
+    // takes the midi that has sbeen sent so far from opz to midi.js to the component's state.latestCapturedMidi (a collection of simple midi events)
     usedNotesAndChannels() {
         // let capturedMidiData = this.firstUse ? this.props.midiCollector.midiToBeMapped : this.state.latestCapturedMidi
         // let m = new MidiMapper
@@ -109,8 +105,8 @@ class VideoSelecterContainer extends React.Component {
         this.changeOrSetMidiChannel(event.target.selectedOptions[0].value)
     }
 
-    changeOrSetMidiChannel(channelToSelect,options={}){
-
+    changeOrSetMidiChannel(channelToSelect,options={}) {
+           
            //before we make changes to the state, save it, we will need it later
            if(options.firstState){
             this.props.midiCollector.updateState(options.firstState)
