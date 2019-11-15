@@ -39,6 +39,7 @@ export default class MidiPlayerLive {
         // if(notes[selectedChannel] == )
         let timeStampString = notes[note]
         if(ON_CHANNELS[selectedChannel] == channel && timeStampString ){
+            console.log("not play passed")
             this.playVideoAtSecondsStart(
                 this.convertMinutesToSeconds(timeStampString)
             )

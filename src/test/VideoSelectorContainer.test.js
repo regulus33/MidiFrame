@@ -17,8 +17,8 @@ describe("VideoSelectorContainer",() => {
         const videoSelectorGetMocked = jest.fn()
         videoSelectorGetMocked.mockReturnValueOnce(fakeVidFetch)    
         const mCollector = new BrowserMidiCollector()
-        mCollector.midiToBeMapped = [{"data":["148","31","100"],"timeStamp":5254.274999955669}]
-
+        let event = {"data":["148","31","100"],"timeStamp":5254.274999955669}
+        mCollector.onMidiMessageA(event)
 
         const renderer = TestRenderer.create(
             <VideoSelectorContainer 
@@ -92,7 +92,7 @@ describe("VideoSelectorContainer",() => {
             // instance.state.latestCapturedMidi = [{"data":["148","31","100"],"timeStamp":100}]
             instance.state.selectedChannel = "5"
             expect(instance.usedNotesAndChannels()).toEqual({
-                "5": [31]
+                "5": ["31"]
             })
             done() 
         })
@@ -112,7 +112,6 @@ describe("VideoSelectorContainer",() => {
         const renderer = TestRenderer.create(
             <VideoSelectorContainer 
                 videoSelectorGet={videoSelectorGetMocked} 
-                rawMidi={mock} 
                 midiCollector={new BrowserMidiCollector()}
             />
         )
@@ -176,6 +175,7 @@ describe("VideoSelectorContainer",() => {
                 "notInWrongChannel": "timestamp",
             }
         }
+        theBoneCollector.onMidiMessageA({"data":["151","31","100"],"timeStamp":5254.274999955669})
         const renderer = TestRenderer.create(
             <VideoSelectorContainer 
                 videoSelectorGet={videoSelectorGetMocked} 
@@ -265,11 +265,16 @@ describe("VideoSelectorContainer",() => {
             {"data":["148","31","100"],"timeStamp":5254.274999955669},
             {"data":["148","31","100"],"timeStamp":5254.274999955669},
         ]
+        const mCollector = new BrowserMidiCollector()
+        mCollector.onMidiMessageA({"data":["148","31","100"],"timeStamp":5254.274999955669})
+        mCollector.onMidiMessageA({"data":["153","31","100"],"timeStamp":5254.274999955669})
+        mCollector.onMidiMessageA({"data":["157","31","100"],"timeStamp":5254.274999955669})
+
+
         const renderer = TestRenderer.create(
             <VideoSelectorContainer 
                 videoSelectorGet={videoSelectorGetMocked} 
-                rawMidi={mock} 
-                midiCollector={new BrowserMidiCollector()}
+                midiCollector={mCollector}
             />
         )
         let instance = renderer.getInstance()
