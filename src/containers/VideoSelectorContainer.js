@@ -92,7 +92,9 @@ class VideoSelecterContainer extends React.Component {
         for(let i = 0; i < inputs.length; i++) {
             noteTimeObj[inputs[i].name] = inputs[i].value 
         }
-
+        //specific to this channel
+        //{67: "1:03", 69: "", 72: "", 76: "", 79: ""}
+        this.props.midiCollector.updateNotesForTimestampOnly(noteTimeObj)
         this.setState({notes:noteTimeObj})
     }
 
