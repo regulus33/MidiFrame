@@ -35,8 +35,7 @@ export default class MidiPlayerLive {
     }
 
     static playNote(channel, note, selectedChannel,notes) {
-        // debugger 
-        // if(notes[selectedChannel] == )
+       
         let timeStampString = notes[note]
         if(ON_CHANNELS[selectedChannel] == channel && timeStampString ){
             console.log("not play passed")

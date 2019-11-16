@@ -226,3 +226,13 @@ it("Has notes in notes object at the appropriate time", () => {
     
 
 })
+
+
+it("updateNotesForTimestampOnly() should pass", () => {
+    const b = new BrowserMidiCollector()
+    let notes = {67: "1:03", 69: "", 72: "", 76: "", 79: ""} 
+    b.activeChannel = "5"
+    b.updateNotesForTimestampOnly(notes)
+    expect(b.midiData["5"]["notes"]).toEqual(notes)
+})
+

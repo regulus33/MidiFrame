@@ -108,8 +108,13 @@ export default class BrowserMidiCollector {
           this.handleFirstMidiMessage(message.data[0])
         }
         //add note to local note detection
+      
         this.notesAndChannels[ON_CHANNELS[message.data[0]]].add(message.data[1])
-        MidiPlayerLive.playNote(message["data"][0], message["data"][1], this.activeChannel,this.notesAndChannels[this.activeChannel])
+        //before we actually fill in notes in form we should skip this 
+        
+        if(this.notesHasBeenDefined()) {
+         MidiPlayerLive.playNote(message["data"][0], message["data"][1], this.activeChannel, this.midiData[this.activeChannel]["notes"])
+        }
       }
       
     }
@@ -184,8 +189,12 @@ export default class BrowserMidiCollector {
       }
       
     }
+    //need this for the time stamp input
+    updateNotesForTimestampOnly(notes) {
+      this.midiData[this.activeChannel]["notes"] = Object.assign({}, notes)
+    }
     //convert filled sets to arrays and leaves out key val pairs with emptiness
-    getNotesAndChannels(){
+    getNotesAndChannels() {
       let dataForUI = {}
       Object.keys(this.notesAndChannels).forEach((channelNum)=>{
         if(this.notesAndChannels[channelNum].size > 0) {
@@ -194,6 +203,13 @@ export default class BrowserMidiCollector {
       })
       return dataForUI
     }
+
+    notesHasBeenDefined(){
+      return this.midiData[this.activeChannel]["notes"] != undefined
+    }
+
+  
+
 
 
 
