@@ -74,6 +74,10 @@ export default class BrowserMidiCollector {
           "10": new Set(),
           "11": new Set(),
           "12": new Set(),
+          "13": new Set(),
+          "14": new Set(),
+          "15": new Set(),
+          "16": new Set()
       }
     }
 
@@ -107,8 +111,8 @@ export default class BrowserMidiCollector {
         if(!this.receivedAnyMessageYet ) {
           this.handleFirstMidiMessage(message.data[0])
         }
+   
         //add note to local note detection
-      
         this.notesAndChannels[ON_CHANNELS[message.data[0]]].add(message.data[1])
         //before we actually fill in notes in form we should skip this 
         

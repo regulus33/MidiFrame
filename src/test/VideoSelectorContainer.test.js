@@ -108,11 +108,12 @@ describe("VideoSelectorContainer",() => {
         )
         const videoSelectorGetMocked = jest.fn()
         videoSelectorGetMocked.mockReturnValueOnce(fakeVidFetch)    
-        let mock = [{"data":["148","31","100"],"timeStamp":5254.274999955669}]
+        const b = new BrowserMidiCollector()
+        b.onMidiMessageA({"data":["148","31","100"],"timeStamp":5254.274999955669})
         const renderer = TestRenderer.create(
             <VideoSelectorContainer 
                 videoSelectorGet={videoSelectorGetMocked} 
-                midiCollector={new BrowserMidiCollector()}
+                midiCollector={b}
             />
         )
         let instance = renderer.getInstance()
