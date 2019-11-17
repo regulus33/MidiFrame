@@ -23,6 +23,5 @@ it("Displays the app when midi intaken and m pressed", () => {
   m.getInstance().state.midiInteracted = true 
   m.getInstance().midiCollector.receivedAnyMessageYet = true 
   expect(m.getInstance().determineAppState()).toBe("SHOW_MAIN_APP")
-
 });
 

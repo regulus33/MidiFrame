@@ -46,6 +46,8 @@ class App extends React.Component {
     }
   }
 
+  
+
   render(){
     let appState = this.determineAppState()
     if (appState === "SHOW_MAIN_APP") {
