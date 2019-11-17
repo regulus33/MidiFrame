@@ -40,9 +40,25 @@ export default class ProjectManagerContainer extends React.Component {
     }
 
     loadSavedProject(event){
+        this.props.midiCollector.wipeData()
         let data = JSON.parse(event.target.getAttribute("dataValue"))
         this.props.midiCollector.midiData = data 
+        this.props.midiCollector.activeChannel = this.getAnActiveChannelFromSavedMidi(data)
+        this.props.midiCollector.updateNotesAndChansFromLoad(data)
         this.props.navigateToVideoSelectorContainer() 
+    }
+
+    getAnActiveChannelFromSavedMidi(midiData) {
+
+        let keyToSomeActiveNotes = null
+
+       Object.keys( midiData ).forEach(( k ) => {
+            if(midiData[k]['notes']!= undefined) {
+                keyToSomeActiveNotes = k 
+            }
+       })
+
+       return keyToSomeActiveNotes
     }
 
     render(){
