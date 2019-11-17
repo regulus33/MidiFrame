@@ -4,6 +4,8 @@ export default class ProjectManagerContainer extends React.Component {
     constructor(props){
         super(props)
         this.saveProject = this.saveProject.bind(this)
+        this.loadSavedProject = this.loadSavedProject.bind(this)
+
     }
 
     getProjects = () => {
@@ -28,13 +30,19 @@ export default class ProjectManagerContainer extends React.Component {
 
     }
 
-    renderSavedProjects(){
+    renderSavedProjects() {
         if(window.localStorage.getItem('opz-app')){
             let stringedCollection = window.localStorage.getItem('opz-app')
             return JSON.parse(stringedCollection).map((e)=>{
-               return(<li>{e.name}</li>)
+               return(<li style={{color:"grey",cursor:"pointer"}} dataValue={JSON.stringify(e.data)} onClick={this.loadSavedProject}>{e.name}</li>)
             })
         }
+    }
+
+    loadSavedProject(event){
+        let data = JSON.parse(event.target.getAttribute("dataValue"))
+        this.props.midiCollector.midiData = data 
+        this.props.navigateToVideoSelectorContainer() 
     }
 
     render(){
@@ -46,7 +54,7 @@ export default class ProjectManagerContainer extends React.Component {
                 <input id="projectTitle" type="text"/>
             </div>
             <div>
-                <ul>
+                <ul style={{borderLeft:"double",backgroundColor:"beige"}}>
                     {this.renderSavedProjects()}
                 </ul>
             </div>
