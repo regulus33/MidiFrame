@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import VideoSelectorContainer from './containers/VideoSelectorContainer.js'
+import ProjectManagerContainer from './containers/ProjectManagerContainer.js'
 import {
   videoSelectorGet
 } from './network.js'
@@ -17,8 +18,11 @@ class App extends React.Component {
     this.midiCollector = new BrowserMidiCollector()
     this.state = {
       midiInteracted: false,
-      weGotMidi: false 
+      weGotMidi: false,
+      showProjectManager: true, 
+
     }
+    this.navigateToProjectManager = this.navigateToProjectManager.bind(this)
   }
 
   redigsterStartMidi(){
@@ -35,6 +39,9 @@ class App extends React.Component {
   }
 
   determineAppState(){
+    if(this.state.showProjectManager === true){
+      return "SHOW_PROJECT_MANAGER"
+    }
     //only one possibility bound to this condition
     if(this.state.midiInteracted === false) {
       return "SHOW_PRESS_M"
@@ -46,13 +53,22 @@ class App extends React.Component {
     }
   }
 
-  
+  navigateToProjectManager(){
+    this.setState({showProjectManager: true})
+  }
 
   render(){
     let appState = this.determineAppState()
+
+    if(appState === "SHOW_PROJECT_MANAGER") {
+
+      return <ProjectManagerContainer/>
+
+    }
+
     if (appState === "SHOW_MAIN_APP") {
       return (
-        <VideoSelectorContainer videoSelectorGet={videoSelectorGet} rawMidi={midi} midiCollector={this.midiCollector} />
+        <VideoSelectorContainer videoSelectorGet={videoSelectorGet} rawMidi={midi} midiCollector={this.midiCollector} navigateToProjectManager={this.navigateToProjectManager} />
       )
     } else {
       //we'll only use this once so only register it when needed

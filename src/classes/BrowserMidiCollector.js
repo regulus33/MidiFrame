@@ -213,6 +213,27 @@ export default class BrowserMidiCollector {
       return this.midiData[this.activeChannel]["notes"] != undefined
     }
 
+    formatMidiDataForStorage(name = null) {
+      let data = this.midiData
+      let namee
+      name ? namee = name : namee = Date.now()  
+      return {
+        data: data,
+        name: namee 
+      }
+    }
+
+    storeMidiDataInLocalStorage(name = null, window = window) {
+      let oldProjects = window.localStorage.getItem('opz-app')
+      if(oldProjects) {
+        let unStringed = JSON.parse(oldProjects)
+        unStringed.push(this.formatMidiDataForStorage(name))
+        window.localStorage.setItem('opz-app', JSON.stringify(unStringed))
+      } else {//this is the first project
+        window.localStorage.setItem('opz-app', JSON.stringify([this.formatMidiDataForStorage(name)]))
+      }
+    }
+
   
 
 

@@ -3,7 +3,6 @@ import VideoSelector from '../VideoSelector.js'
 import Option from '../Option.js'
 import ChannelPicker from '../ChannelPicker.js';
 import {
-    getRandomColor,
     getNotesFromChannelInSuppliedObject
 } from '../Helpers.js'
 import NoteTextField from '../NoteTextField'
@@ -11,7 +10,7 @@ import NoteTextField from '../NoteTextField'
 class VideoSelecterContainer extends React.Component {
 
     constructor(props) {
-        super(props); 
+        super(props) 
         this.firstUse = true 
         //for our array in assets s
         this.state = {
@@ -21,7 +20,7 @@ class VideoSelecterContainer extends React.Component {
             notes:{}, 
             refreshingMidi: false, 
             latestCapturedMidi:[]
-        };
+        }
         //overwrite this to remain this instance when called in another class 
         this.renderOptionsForVideoDropDown = this.renderOptionsForVideoDropDown.bind(this);
         this.renderOptionsForChannelPickerData = this.renderOptionsForChannelPickerData.bind(this)
@@ -30,6 +29,7 @@ class VideoSelecterContainer extends React.Component {
         this.handleTimeStampInput = this.handleTimeStampInput.bind(this)
         this.registerRefreshListener = this.registerRefreshListener.bind(this)
         this.repopulateRefresh = this.repopulateRefresh.bind(this)
+        this.handleSaveClick = this.handleSaveClick.bind(this)
         //Subscribe midiCollector to the state, you will need it to update video based on midi events
         //remember not to touch this, passing by reference
     } 
@@ -103,6 +103,10 @@ class VideoSelecterContainer extends React.Component {
         //{67: "1:03", 69: "", 72: "", 76: "", 79: ""}
         this.props.midiCollector.updateNotesForTimestampOnly(noteTimeObj)
         this.setState({notes:noteTimeObj})
+    }
+
+    handleSaveClick(){
+        this.props.navigateToProjectManager()
     }
 
     //no need to test for now 
@@ -185,10 +189,12 @@ class VideoSelecterContainer extends React.Component {
 
     }
 
-    //this needs to be CHANNGED 
-    repopulateRefresh(){
-        // this.setState({latestCapturedMidi: this.props.midiCollector.midiToBeMapped})
+    //this needs to be deleted 
+    repopulateRefresh() {
+        //this.setState({latestCapturedMidi: this.props.midiCollector.midiToBeMapped})
     }
+
+
 
     render() {
         //console.log(this.state)
@@ -217,6 +223,7 @@ class VideoSelecterContainer extends React.Component {
                     selectedVideoPath={this.state.selectedVideoPath} 
                     renderOptionsForVideoDropDown={this.renderOptionsForVideoDropDown} 
                 />
+                <button onClick={this.handleSaveClick}>save project</button>
                
             </div>
         )
