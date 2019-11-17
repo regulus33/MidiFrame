@@ -19,7 +19,7 @@ class App extends React.Component {
     this.state = {
       midiInteracted: false,
       weGotMidi: false,
-      showProjectManager: true, 
+      showProjectManager: false, 
 
     }
     this.navigateToProjectManager = this.navigateToProjectManager.bind(this)
@@ -62,7 +62,7 @@ class App extends React.Component {
 
     if(appState === "SHOW_PROJECT_MANAGER") {
 
-      return <ProjectManagerContainer/>
+      return <ProjectManagerContainer midiCollector={this.midiCollector}/>
 
     }
 
