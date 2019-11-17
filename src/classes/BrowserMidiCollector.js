@@ -197,6 +197,7 @@ export default class BrowserMidiCollector {
     updateNotesForTimestampOnly(notes) {
       this.midiData[this.activeChannel]["notes"] = Object.assign({}, notes)
     }
+    
     //convert filled sets to arrays and leaves out key val pairs with emptiness
     getNotesAndChannels() {
       let dataForUI = {}

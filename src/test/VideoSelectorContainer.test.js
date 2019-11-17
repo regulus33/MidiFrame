@@ -348,17 +348,60 @@ describe("VideoSelectorContainer",() => {
         
 
         return Promise.allSettled([innermostPromise, fakeVidFetch]).then(()=>{
-
+           
             let instance = renderer.getInstance()
-
             //TODO call refresh here and update browsermidicollector first 
             return done()
-
 
         })
 
 
-    });
+    })
+
+
+    it("Records midi when user holds down r", () => {
+
+        const innermostPromise = Promise.resolve(['path/to/video1.mp4', 'path/to/video.mp4'])
+
+        const fakeVidFetch = Promise.resolve(
+            {
+                json: () => innermostPromise
+            }
+        )
+    
+        const videoSelectorGetMocked = jest.fn()
+        videoSelectorGetMocked.mockReturnValueOnce(fakeVidFetch)    
+        let mock = [{"data":["148","31","100"],"timeStamp":5254.274999955669}]
+
+        const renderer = TestRenderer.create(
+            <VideoSelectorContainer 
+                midiCollector={new BrowserMidiCollector()}
+                videoSelectorGet={videoSelectorGetMocked} 
+            />
+        )
+
+        let instance = renderer.getInstance() 
+
+        let event = {
+            key: "r"
+        }
+        
+        document.getElementsByClassName = jest.fn() 
+        
+        document.getElementsByClassName.mockReturnValueOnce([{style:{backgroundColor: "white"}}])
+        
+        document.onkeydown(event) 
+
+        expect(instance.state.refreshingMidi).toBe(true)
+        
+        document.getElementsByClassName.mockReturnValueOnce([{style:{backgroundColor: "red"}}])
+
+        document.onkeyup(event) 
+
+        expect(instance.state.refreshingMidi).toBe(false)
+
+    })
+
 
 })
 

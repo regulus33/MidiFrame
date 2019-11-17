@@ -12,9 +12,16 @@ class VideoSelecterContainer extends React.Component {
 
     constructor(props) {
         super(props); 
-        this.firstUse = true   
+        this.firstUse = true 
         //for our array in assets s
-        this.state = {videoFiles:[], selectedVideoPath: "", selectedChannel: "", notes:{}, latestCapturedMidi:[]};
+        this.state = {
+            videoFiles:[], 
+            selectedVideoPath: "", 
+            selectedChannel: "", 
+            notes:{}, 
+            refreshingMidi: false, 
+            latestCapturedMidi:[]
+        };
         //overwrite this to remain this instance when called in another class 
         this.renderOptionsForVideoDropDown = this.renderOptionsForVideoDropDown.bind(this);
         this.renderOptionsForChannelPickerData = this.renderOptionsForChannelPickerData.bind(this)
@@ -25,7 +32,7 @@ class VideoSelecterContainer extends React.Component {
         this.repopulateRefresh = this.repopulateRefresh.bind(this)
         //Subscribe midiCollector to the state, you will need it to update video based on midi events
         //remember not to touch this, passing by reference
-    }  
+    } 
 
     componentDidMount() {
         this.repopulateRefresh()
@@ -160,19 +167,27 @@ class VideoSelecterContainer extends React.Component {
     }
     //when user hits r we refresh the incoming midi data
     registerRefreshListener() {
-        document.onkeyup = (event) => { 
-           if(event.key === "r"){
-            //makes it obvious that you changed something 
-            document.getElementsByClassName("vidContainer")[0].style.backgroundColor = getRandomColor()
-            this.repopulateRefresh() 
-          }
-    
-        }
+        document.onkeydown = (event) => { 
+            if(event.key === "r") {
+             this.setState({refreshingMidi: true}) 
+             document.getElementsByClassName("vidContainer")[0].style.backgroundColor = "red"
+
+           } 
+     
+         }
+         document.onkeyup = (event) => { 
+            if(event.key === "r") {
+            this.setState({refreshingMidi: false}) 
+             document.getElementsByClassName("vidContainer")[0].style.backgroundColor = "white"
+           } 
+     
+         }
 
     }
-    //TESTME
+
+    //this needs to be CHANNGED 
     repopulateRefresh(){
-        this.setState({latestCapturedMidi: this.props.midiCollector.midiToBeMapped})
+        // this.setState({latestCapturedMidi: this.props.midiCollector.midiToBeMapped})
     }
 
     render() {
