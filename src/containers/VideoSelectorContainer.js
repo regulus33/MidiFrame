@@ -11,6 +11,7 @@ class VideoSelecterContainer extends React.Component {
 
     constructor(props) {
         super(props) 
+        
         this.firstUse = true 
         //for our array in assets s
         this.state = {
@@ -35,6 +36,10 @@ class VideoSelecterContainer extends React.Component {
     } 
 
     componentDidMount() {
+
+        this.firstUse = this.props.naviGatedToFromProjectManager ? false : true 
+        
+        console.log("the value of first use is: " + this.firstUse)
         this.repopulateRefresh()
 
         this.registerRefreshListener()
@@ -49,8 +54,15 @@ class VideoSelecterContainer extends React.Component {
             videoFiles: [],
             latestCapturedMidi: []
         }
-        this.changeOrSetMidiChannel(this.props.midiCollector.activeChannel,options)
-        //part of the top part, since the form derives it scontent from latest captured midi, we need to set it somewhere
+
+        if(this.firstUse) {
+            this.changeOrSetMidiChannel(this.props.midiCollector.activeChannel,options)
+        } else {
+            this.changeOrSetMidiChannel(this.props.midiCollector.activeChannel)
+        }
+
+        //part of the top part, since the form derives its content from latest captured midi, we need to set it somewhere
+        
         this.firstUse = false 
     }
 
@@ -223,7 +235,7 @@ class VideoSelecterContainer extends React.Component {
                     selectedVideoPath={this.state.selectedVideoPath} 
                     renderOptionsForVideoDropDown={this.renderOptionsForVideoDropDown} 
                 />
-                <button onClick={this.handleSaveClick}>save project</button>
+                <button onClick={this.handleSaveClick}>save or load project</button>
                
             </div>
         )

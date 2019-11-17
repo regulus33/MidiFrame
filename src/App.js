@@ -20,9 +20,12 @@ class App extends React.Component {
       midiInteracted: false,
       weGotMidi: false,
       showProjectManager: false, 
+      showVideoSelector: false,
+      naviGatedToFromProjectManager: false,
 
     }
     this.navigateToProjectManager = this.navigateToProjectManager.bind(this)
+    this.navigateToVideoSelectorContainer = this.navigateToVideoSelectorContainer.bind(this)
   }
 
   redigsterStartMidi(){
@@ -42,6 +45,10 @@ class App extends React.Component {
     if(this.state.showProjectManager === true){
       return "SHOW_PROJECT_MANAGER"
     }
+
+    if(this.state.showVideoSelector == true ) {
+      return "SHOW_MAIN_APP"
+    }
     //only one possibility bound to this condition
     if(this.state.midiInteracted === false) {
       return "SHOW_PRESS_M"
@@ -54,7 +61,11 @@ class App extends React.Component {
   }
 
   navigateToProjectManager(){
-    this.setState({showProjectManager: true})
+    this.setState({showVideoSelector: false, showProjectManager: true})
+  }
+
+  navigateToVideoSelectorContainer(){
+    this.setState({showVideoSelector: true, showProjectManager: false, naviGatedToFromProjectManager: true})
   }
 
   render(){
@@ -62,13 +73,13 @@ class App extends React.Component {
 
     if(appState === "SHOW_PROJECT_MANAGER") {
 
-      return <ProjectManagerContainer midiCollector={this.midiCollector}/>
+      return <ProjectManagerContainer midiCollector={this.midiCollector} navigateToVideoSelectorContainer={this.navigateToVideoSelectorContainer} />
 
     }
 
     if (appState === "SHOW_MAIN_APP") {
       return (
-        <VideoSelectorContainer videoSelectorGet={videoSelectorGet} rawMidi={midi} midiCollector={this.midiCollector} navigateToProjectManager={this.navigateToProjectManager} />
+        <VideoSelectorContainer naviGatedToFromProjectManager={this.state.naviGatedToFromProjectManager} videoSelectorGet={videoSelectorGet} rawMidi={midi} midiCollector={this.midiCollector} navigateToProjectManager={this.navigateToProjectManager} />
       )
     } else {
       //we'll only use this once so only register it when needed

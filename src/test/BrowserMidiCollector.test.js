@@ -334,11 +334,42 @@ it("storeMidiDataInLocalStorage() stores midiData plus old data in local storage
 
     expect(mockWindow.localStorage.setItem).toHaveBeenLastCalledWith('opz-app',JSON.stringify(expectedSecondArg) )
 
+})
 
+
+it("Saves mididata that was loaded ", () => {
+    let mockWindow = {
+        localStorage: {
+            getItem: jest.fn(),
+            setItem: jest.fn(),
+        }
+    }
+
+
+
+    const b = new BrowserMidiCollector()
     
+    b.midiData = {
+        "1":{notes: [1,2,3], videoPath: "path.mp4"},
+        "2":{notes: [1,2,3], videoPath: "path.mp4"},
+        "3":{notes: [1,2,3], videoPath: "path.mp4"},
+        "4":{notes: [1,2,3], videoPath: "path.mp4"},
+        "5":{notes: [1,2,3], videoPath: "path.mp4"},
+        "6":{notes: [1,2,3], videoPath: "path.mp4"},
+        "7":{notes: [1,2,3], videoPath: "path.mp4"},
+        "8":{notes: [1,2,3], videoPath: "path.mp4"},
+        "9":{notes: [1,2,3], videoPath: "path.mp4"},
+        "10":{notes: [1,2,3], videoPath: "path.mp4"}
+    }
 
+    let mockReturnOfGetItem = [b.formatMidiDataForStorage(),b.formatMidiDataForStorage(),b.formatMidiDataForStorage(),b.formatMidiDataForStorage(),b.formatMidiDataForStorage(),b.formatMidiDataForStorage()]
+    mockWindow.localStorage.getItem.mockReturnValue(JSON.stringify(mockReturnOfGetItem))
+    mockReturnOfGetItem.push(b.formatMidiDataForStorage("fpoon"))
+    let expectedSecondArg = mockReturnOfGetItem
 
-    
+    b.storeMidiDataInLocalStorage("fpoon", mockWindow)
+
+    expect(mockWindow.localStorage.setItem).toHaveBeenLastCalledWith('opz-app',JSON.stringify(expectedSecondArg) )
 
 })
 

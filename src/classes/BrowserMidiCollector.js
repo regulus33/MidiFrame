@@ -158,11 +158,6 @@ export default class BrowserMidiCollector {
 
           MidiPlayerLive.playNote(midiEvent,this.activeChannel,this.midiData[this.activeChannel]["notes"])
          }                                                 ////
-         ////                                                 ////
-         /////////////////////////////////////////////////////////
-        // this.stateSubscriptionFromVideoSelectorContainer
-        // {videoFiles:[], selectedVideoPath: "", selectedChannel: "1", notes:{}}
-               
       } 
     }
 
@@ -234,11 +229,9 @@ export default class BrowserMidiCollector {
       }
     }
 
-  
+    updateStateFromStoredMidi(data){
+      this.midiData = data 
+    }
 
-
-
-
-    
 }
 
