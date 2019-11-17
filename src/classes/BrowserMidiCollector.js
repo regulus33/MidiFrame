@@ -58,7 +58,13 @@ export default class BrowserMidiCollector {
             "7":{},
             "8":{},
             "9":{},
-            "10":{}
+            "10":{},
+            "11":{},
+            "12":{},
+            "13":{},
+            "14":{},
+            "15":{},
+            "16":{}
         }
         //used notes here
         this.notesAndChannels = {
@@ -229,9 +235,56 @@ export default class BrowserMidiCollector {
       }
     }
 
-    updateStateFromStoredMidi(data){
-      this.midiData = data 
+    wipeData(data){
+      this.midiData = {
+        "1":{},
+        "2":{},
+        "3":{},
+        "4":{},
+        "5":{},
+        "6":{},
+        "7":{},
+        "8":{},
+        "9":{},
+        "10":{},
+        "11":{},
+        "12":{},
+        "13":{},
+        "14":{},
+        "15":{},
+        "16":{}
     }
+    this.notesAndChannels = {
+      "1": new Set(),
+      "2": new Set(),
+      "3": new Set(),
+      "4": new Set(),
+      "5": new Set(),
+      "6": new Set(),
+      "7": new Set(),
+      "8": new Set(),
+      "9": new Set(),
+      "10": new Set(),
+      "11": new Set(),
+      "12": new Set(),
+      "13": new Set(),
+      "14": new Set(),
+      "15": new Set(),
+      "16": new Set()
+    }
+
+  }
+
+  updateNotesAndChansFromLoad(midiDataa) {
+    Object.keys(midiDataa).forEach( ( e ) => {
+      if( midiDataa[e]["notes"] != undefined ) {
+
+      Object.keys(midiDataa[e]['notes']).forEach( ( f ) => {
+          this.notesAndChannels[e].add(f)
+      })
+      }
+    })
+  }
 
 }
 
