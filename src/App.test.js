@@ -25,3 +25,9 @@ it("Displays the app when midi intaken and m pressed", () => {
   expect(m.getInstance().determineAppState()).toBe("SHOW_MAIN_APP")
 });
 
+it("displays projectmanager when appropriate",() => {
+  const m = TestRenderer.create(<App/>)
+  m.getInstance().state.showProjectManager = true 
+  expect(m.getInstance().determineAppState()).toBe("SHOW_PROJECT_MANAGER")
+})
+
