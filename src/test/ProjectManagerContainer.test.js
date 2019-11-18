@@ -1,6 +1,7 @@
-import ProjectManagerContainer from '../ProjectManagerContainer.js'
+import ProjectManagerContainer from '../containers/ProjectManagerContainer.js'
 import TestRenderer from 'react-test-renderer'
 import BrowserMidiCollector from '../classes/BrowserMidiCollector.js'
+import React from 'react'
 
 
 describe("ProjectManagerContainer",() => {
