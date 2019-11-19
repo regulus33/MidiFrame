@@ -29,7 +29,6 @@ describe("ProjectManagerContainer",() => {
 
     const instance = renderer.getInstance()
 
-    // expect(instance)
 
 
   })
