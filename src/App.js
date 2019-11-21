@@ -24,11 +24,12 @@ class App extends React.Component {
       showProjectManager: false, 
       showVideoSelector: false,
       naviGatedToFromProjectManager: false,
-      showMidiRecorder: true,
+      showMidiRecorder: false,
 
     }
     this.navigateToProjectManager = this.navigateToProjectManager.bind(this)
     this.navigateToVideoSelectorContainer = this.navigateToVideoSelectorContainer.bind(this)
+    this.navigateToRecorderContainer = this.navigateToRecorderContainer.bind(this)
   }
 
   redigsterStartMidi(){
@@ -71,6 +72,10 @@ class App extends React.Component {
     this.setState({showVideoSelector: false, showProjectManager: true})
   }
 
+  navigateToRecorderContainer(){
+    this.setState({showMidiRecorder: true, showVideoSelector: false, showProjectManager: false})
+  }
+
   navigateToVideoSelectorContainer(){
     this.setState({showVideoSelector: true, showProjectManager: false, naviGatedToFromProjectManager: true})
   }
@@ -92,7 +97,7 @@ class App extends React.Component {
 
     if (appState === "SHOW_MAIN_APP") {
       return (
-        <VideoSelectorContainer naviGatedToFromProjectManager={this.state.naviGatedToFromProjectManager} videoSelectorGet={videoSelectorGet} rawMidi={midi} midiCollector={this.midiCollector} navigateToProjectManager={this.navigateToProjectManager} />
+        <VideoSelectorContainer naviGatedToFromProjectManager={this.state.naviGatedToFromProjectManager} videoSelectorGet={videoSelectorGet} rawMidi={midi} midiCollector={this.midiCollector} navigateToProjectManager={this.navigateToProjectManager} navigateToRecorderContainer={this.navigateToRecorderContainer}/>
       )
     } else {
       //we'll only use this once so only register it when needed
