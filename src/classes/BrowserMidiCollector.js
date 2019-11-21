@@ -47,6 +47,7 @@ export default class BrowserMidiCollector {
         this.midiToBeMapped = []
         this.receivedAnyMessageYet = false 
         this.userMessage = ""
+        this.recording = false 
         //TODO DELETE Me
         this.midiData = {
             "1":{},
@@ -112,7 +113,50 @@ export default class BrowserMidiCollector {
         }).catch(console.error);
     }
 
+    reconfigureMidiForRecording = () => {
+      return navigator.requestMIDIAccess().then( access => {
+        //there should really only be one here, but you never know 
+        debugger // console.log(access.inputs);
+        const devices = access.inputs.values();
+        for (let device of devices ) {
+          if (device.name == "OP-Z") {
+            console.log(device.name)
+            this.userMessage = `${device.name} is reconnected!`
+            // device.onmidimessage = this.onMidiMessage //keep
+            device.onmidimessage = this.onMidiMessageB 
+            device.onstatechange = this.handleOPZChange //change to have msg sent when we hit stop button 
+            debugger
+
+          } else {
+            this.userMessage = "Something's wrong, do you have the OP-Z connected?"
+          }
+
+        }
+      }).catch(console.error);
+    }
+
+    onMidiMessageB = (message) => {
+
+      if(message.data[0] == 250) {
+        console.log("OPZ LOOP STARTING")
+        this.recording = true 
+      } 
+      if(message.data[0] == 252) {
+        console.log("OPZ LOOP STOPPING")
+        this.recording = false 
+      }
+
+      if(this.recording) {
+        console.log("MIDI IS RECORDING")
+        if ((ON_CHANNELS[message.data[0]] != undefined) || (OFF_CHANNELS[message.data[0]] != undefined)) {
+          this.midiToBeMapped.push(message)
+        }
+      }
+      
+    }
+
     onMidiMessageA = (message) => {
+
       if(!!ON_CHANNELS[message.data[0]]) {
         if(!this.receivedAnyMessageYet ) {
           this.handleFirstMidiMessage(message.data[0])
@@ -166,6 +210,8 @@ export default class BrowserMidiCollector {
          }                                                 ////
       } 
     }
+
+    
 
     handleFirstMidiMessage(message) {
         this.activeChannel = ON_CHANNELS[message]

@@ -31,6 +31,7 @@ class VideoSelecterContainer extends React.Component {
         this.registerRefreshListener = this.registerRefreshListener.bind(this)
         this.repopulateRefresh = this.repopulateRefresh.bind(this)
         this.handleSaveClick = this.handleSaveClick.bind(this)
+        this.handleRecordClick = this.handleRecordClick.bind(this)
         //Subscribe midiCollector to the state, you will need it to update video based on midi events
         //remember not to touch this, passing by reference
     } 
@@ -119,6 +120,13 @@ class VideoSelecterContainer extends React.Component {
 
     handleSaveClick(){
         this.props.navigateToProjectManager()
+    }
+
+    handleRecordClick(){
+        this.props.navigateToRecorderContainer()
+        this.props.midiCollector.reconfigureMidiForRecording().then((d)=>{
+            debugger
+        })
     }
 
     //no need to test for now 
@@ -236,6 +244,7 @@ class VideoSelecterContainer extends React.Component {
                     renderOptionsForVideoDropDown={this.renderOptionsForVideoDropDown} 
                 />
                 <button onClick={this.handleSaveClick}>save or load project</button>
+                <button onClick={this.handleRecordClick}>Record Midiiiiii</button>
                
             </div>
         )
