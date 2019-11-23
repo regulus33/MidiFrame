@@ -51,12 +51,20 @@ app.get('/video', function(req, res) {
 app.post('/midi',(req,res) => {
 
     console.log('\x1b[36m%s\x1b[0m', 'POST /midi'); 
-debugger
-    let jsonContent = JSON.stringify(req.body);
-    console.log(jsonContent);
-    console.log("meme");
+    // const dataObject = JSON.parse(req.body)
+    debugger 
+    Object.keys(req.body.metaData).forEach((key)=>{
+      const dataObject = req.body.metaData[key]
+      if(dataObject[key].videoPath != '' &&  dataObject[key].notes != ''){
+        //loop through each channel, for each one, instantiate the video class and run the code for that channel to be generate 
+        //when done, take a shit
+      }
+    })
+    
 
     res.end("OK");
+
+    
 
 })
 
