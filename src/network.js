@@ -7,9 +7,11 @@ export const videoSelectorGet = () => {
 }
 
 export const postMidiData = (data) => {
+    debugger 
     return fetch('http://localhost:3000/midi', {
         method: 'POST',
-        body: data
+        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" },
     });
 }
     

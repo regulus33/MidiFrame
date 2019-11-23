@@ -51,9 +51,10 @@ app.get('/video', function(req, res) {
 app.post('/midi',(req,res) => {
 
     console.log('\x1b[36m%s\x1b[0m', 'POST /midi'); 
-
+debugger
     let jsonContent = JSON.stringify(req.body);
     console.log(jsonContent);
+    console.log("meme");
 
     res.end("OK");
 
