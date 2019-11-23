@@ -5,4 +5,11 @@
 export const videoSelectorGet = () => {
     return fetch('http://localhost:3000/video-selector')
 }
+
+export const postMidiData = (data) => {
+    return fetch('http://localhost:3000/midi', {
+        method: 'POST',
+        body: data
+    });
+}
     

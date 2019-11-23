@@ -84,7 +84,6 @@ class VideoSelecterContainer extends React.Component {
     fetchVideoFilePaths() {
         this.props.videoSelectorGet().then(res => {
             res.json().then((r) => {
-            //console.log(r)
                 this.setState({videoFiles:r, selectedVideoPath: r.pop()})
             })
         })

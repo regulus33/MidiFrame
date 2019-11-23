@@ -48,6 +48,17 @@ app.get('/video', function(req, res) {
   res.sendFile(pathToFile)
 })
 
+app.post('/midi',(req,res) => {
+
+    console.log('\x1b[36m%s\x1b[0m', 'POST /midi'); 
+
+    let jsonContent = JSON.stringify(req.body);
+    console.log(jsonContent);
+
+    res.end("OK");
+
+})
+
 
 module.exports = app 
 

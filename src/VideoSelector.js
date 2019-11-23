@@ -3,7 +3,7 @@ import VideoDisplayer from './VideoDisplayer.js'
 
 
 const VideoSelecter = props => {
-
+    
     return (
         <div style={{ width: "100%", margin: "auto" }}>
             <span className="description">choose a video to bind the midi data to:</span><br/>

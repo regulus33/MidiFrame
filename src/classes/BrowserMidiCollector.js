@@ -1,5 +1,8 @@
 import MidiMapper from "./MidiMapper.js"
 import MidiPlayerLive from "./MidiPlayerLive.js"
+import {
+  postMidiData
+} from '../network.js'
 
 const ON_CHANNELS = {
   "144": "1",
@@ -88,7 +91,7 @@ export default class BrowserMidiCollector {
       }
     }
 
-    activeChannelChange(channelString){
+    activeChannelChange(channelString) {
       this.activeChannel = channelString
     }
 
@@ -125,7 +128,6 @@ export default class BrowserMidiCollector {
             // device.onmidimessage = this.onMidiMessage //keep
             device.onmidimessage = this.onMidiMessageB 
             device.onstatechange = this.handleOPZChange //change to have msg sent when we hit stop button 
-            debugger
 
           } else {
             this.userMessage = "Something's wrong, do you have the OP-Z connected?"
@@ -136,7 +138,6 @@ export default class BrowserMidiCollector {
     }
 
     onMidiMessageB = (message) => {
-
       if(message.data[0] == 250) {
         console.log("OPZ LOOP STARTING")
         this.recording = true 
@@ -144,19 +145,25 @@ export default class BrowserMidiCollector {
       if(message.data[0] == 252) {
         console.log("OPZ LOOP STOPPING")
         this.recording = false 
+        this.completeRecording(this.midiToBeMapped)
+
       }
 
       if(this.recording) {
         console.log("MIDI IS RECORDING")
         if ((ON_CHANNELS[message.data[0]] != undefined) || (OFF_CHANNELS[message.data[0]] != undefined)) {
-          this.midiToBeMapped.push(message)
+          this.midiToBeMapped.push(this.processEvent(message))
+          //this is a callback added to the instance inside midirecordercontainer 
+          this.onNoteRecorded(this.processEvent(message))
         }
       }
-      
     }
 
     onMidiMessageA = (message) => {
-
+      //TODO: THIS BREAKS FOR SOME REASON WE SHOULDNT HAVE ON MIDIMESSAGE A RUNNING WHEN WE THING WE RESET THAT FUNCTION
+      if(this.recording){
+        return 
+      }
       if(!!ON_CHANNELS[message.data[0]]) {
         if(!this.receivedAnyMessageYet ) {
           this.handleFirstMidiMessage(message.data[0])
@@ -170,7 +177,6 @@ export default class BrowserMidiCollector {
          MidiPlayerLive.playNote(message["data"][0], message["data"][1], this.activeChannel, this.midiData[this.activeChannel]["notes"])
         }
       }
-      
     }
     //TODO: split all these conditions up into separe functions to be picked on initialization 
     onMidiMessage = (message) => {
@@ -210,8 +216,6 @@ export default class BrowserMidiCollector {
          }                                                 ////
       } 
     }
-
-    
 
     handleFirstMidiMessage(message) {
         this.activeChannel = ON_CHANNELS[message]
@@ -262,11 +266,13 @@ export default class BrowserMidiCollector {
 
     formatMidiDataForStorage(name = null) {
       let data = this.midiData
+      let songData = this.midiToBeMapped
       let namee
       name ? namee = name : namee = Date.now()  
       return {
         data: data,
-        name: namee 
+        name: namee ,
+        midiToBeMapped: songData,
       }
     }
 
@@ -330,6 +336,32 @@ export default class BrowserMidiCollector {
       })
       }
     })
+  }
+
+  processEvent(message){
+    let newObject = {}
+    newObject["data"] = message.data 
+    newObject["timeStamp"] = message.timeStamp 
+    return newObject
+  }
+  //////
+  //////
+  //////
+  //////
+  //////
+  //////
+  //////
+  //////   wefpohfpoi;w hgilwhjlahflihi;
+  //////
+  //////
+  completeRecording(){
+    const mapper = new MidiMapper(this.midiToBeMapped)
+    const dataForServer = mapper.bakeDataForParsing()
+    this.sendData(JSON.stringify(dataForServer))
+  }
+
+  sendData(data){
+    postMidiData(data)
   }
 
 }

@@ -371,6 +371,47 @@ it("Saves mididata that was loaded ", () => {
 
     expect(mockWindow.localStorage.setItem).toHaveBeenLastCalledWith('opz-app',JSON.stringify(expectedSecondArg) )
 
+
+   
 })
 
+test("data parser narrows down a midi message into its useable parts",()=>{
+
+    let bmc = new BrowserMidiCollector()
+   let event =  {
+        randomAttribute: "randValue",
+         data: [123,123,123],
+         timeStamp: 123.123
+    }
+    expect(bmc.processEvent(event).data).toEqual(event.data)
+    expect(bmc.processEvent(event).randomAttribute).toBe(undefined)
+
+})
+
+// test("Cuts off the 'offset' of timestamps recorded",()=>{
+
+//     let recordedMidi = [
+//         {"data":{"0":149,"1":54,"2":100},"timeStamp":6549.785000010161},
+
+//         {"data":{"0":146,"1":55,"2":100},"timeStamp":6549.785000010161},
+
+//         {"data":{"0":130,"1":55,"2":0},"timeStamp":6549.785000010161},
+
+//         {"data":{"0":146,"1":55,"2":100},"timeStamp":6549.785000010161},
+
+//         {"data":{"0":147,"1":54,"2":100},"timeStamp":6549.785000010161},
+
+//         {"data":{"0":133,"1":54,"2":0},"timeStamp":6615.98000000231},
+
+//         {"data":{"0":130,"1":55,"2":0},"timeStamp":6692.985000001499},
+
+//         {"data":{"0":146,"1":53,"2":100},"timeStamp":6713.575000001583}
+//     ]
+
+//     let bmc = newBrowserMidiCollector()
+
+//     bmc.midiTobeMapped = recordedMidi 
+//     bmc.
+
+// }) 
 
