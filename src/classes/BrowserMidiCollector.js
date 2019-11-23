@@ -240,7 +240,7 @@ export default class BrowserMidiCollector {
     updateState(state = {}) {
       this.midiData[state.selectedChannel] = {
         notes: state.notes,
-        videoPath: state.videoPath
+        videoPath: state.selectedVideoPath
       }
       
     }
