@@ -318,7 +318,7 @@ export default class BrowserMidiCollector {
       "9": new Set(),
       "10": new Set(),
       "11": new Set(),
-      "12": new Set(),
+      "12": new Set(),  
       "13": new Set(),
       "14": new Set(),
       "15": new Set(),

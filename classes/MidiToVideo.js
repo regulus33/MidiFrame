@@ -17,6 +17,7 @@ export default class MidiToVideo {
     createClip(){
         //TODO: call generateChannelSliceCommands and create input then:
         //`ffmpeg concat pathtofile`
+        // this.generateChannelSliceCommands()
     }
 
         //slices the channel's video into mp4s in an isolated direcoty where each video file is named the same as its timestamp and therefore sorted in order for concatenation later 
