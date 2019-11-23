@@ -354,14 +354,32 @@ export default class BrowserMidiCollector {
   //////   wefpohfpoi;w hgilwhjlahflihi;
   //////
   //////
-  completeRecording(){
+  completeRecording() {
     const mapper = new MidiMapper(this.midiToBeMapped)
     const dataForServer = mapper.bakeDataForParsing()
-    this.sendData(JSON.stringify(dataForServer))
+    this.sendData(dataForServer)
   }
 
-  sendData(data){
-    postMidiData(data)
+  //TODO: make sure video file is in this object 
+  findAndPrepareChannelsWithNotedata(){
+    let skinnyObject = {}
+    Object.keys(this.midiData).forEach((key)=>{
+      let data = this.midiData[key]
+      if(data["notes"] != undefined ){
+        skinnyObject[key] = data
+      }
+    })
+    return skinnyObject
+  }
+
+  sendData(data) {
+    debugger
+    this.findAndPrepareChannelsWithNotedata()
+    const datToSendToServer = {
+      metaData: this.findAndPrepareChannelsWithNotedata(),
+      musicData: data 
+    }
+    postMidiData(datToSendToServer)
   }
 
 }
