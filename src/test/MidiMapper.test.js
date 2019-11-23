@@ -53,7 +53,6 @@ test('sortedEventsToChannels() groups all active midi channels from a supplied a
     expect(result["7"].length).toBe(10)
     expect(result["6"].length).toBe(10)
 
-
 })
 
 test('determineNoteOnOff() returns true for note ons and false for note offs', () => {

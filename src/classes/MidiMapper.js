@@ -45,7 +45,7 @@ export default class MidiMapper {
 
     constructor(midi){
 
-        this.allMidi = midi
+        this.recordedMidi = midi
 
     }
 
@@ -97,11 +97,9 @@ export default class MidiMapper {
             throw new Error("Unrecognizable number for midi note on/off")
         }
 
-
-
     }
 
-    bakeDataForParsing(recordedMidi){
+    bakeDataForParsing(recordedMidi = this.recordedMidi){
 
         let channelsObject = this.sortedEventsToChannels(recordedMidi)
 

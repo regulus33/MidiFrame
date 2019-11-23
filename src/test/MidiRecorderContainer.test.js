@@ -6,10 +6,12 @@ import BrowserMidiCollector from '../classes/BrowserMidiCollector';
 describe("MidiRecorderContainer",() => {
 
 
+
     it("renderNoteInputs renders notes",(done) => {
-  
+        let midiCollector = new BrowserMidiCollector()
         const renderer = TestRenderer.create(
             <MidiRecorderContainer 
+                midiCollector={midiCollector}
             />
         )
         
