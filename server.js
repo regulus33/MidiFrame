@@ -7,6 +7,7 @@ const execSync = require('child_process').execSync;
 const path = require('path');
 const fileUpload = require('express-fileupload');
 const fs = require('fs')
+const MidiToVideo = require('./classes/MidiToVideo')
 
 
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -54,16 +55,15 @@ app.post('/midi',(req,res) => {
     // const dataObject = JSON.parse(req.body)
     Object.keys(req.body.metaData).forEach((channelKey)=>{
       const dataObject = req.body.metaData[channelKey]
-      debugger 
-      if(dataObject[channelKey] != undefined && channelKey != '' && dataObject[channelKey].videoPath != '' && dataObject[channelKey].notes != ''){
+      if(channelKey != '' && dataObject.videoPath != undefined && dataObject.videoPath != '' && dataObject.notes != undefined && dataObject.notes != ''){
         //loop through each channel, for each one, instantiate the video class and run the code for that channel to be generate 
         //when done, take a shit
-        const v = new MidiToVideo(req.body.musicData)
+        debugger 
+        const v = new MidiToVideo(channelKey, dataObject.notes, dataObject.videoPath,req.body.musicData)
         v.makeClips() 
         v.createInput()
         let pathToInputTextFile =  path.join(__dirname, `/midi_slices/input_${channelKey}`) 
         execSync(`ffmpeg concat ${pathToInputTextFile}`)
-
       }
     })
     
