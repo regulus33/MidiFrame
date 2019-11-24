@@ -2,7 +2,7 @@ const path = require('path');
 const execSync = require('child_process').execSync;
 const fs = require('fs');
 
-export default class MidiToVideo {
+module.exports = class MidiToVideo {
 
     constructor(channel,notes,clip, data){
         this.channel = channel
@@ -105,10 +105,5 @@ export default class MidiToVideo {
         execSync(this.removeStrayVideoString)
     }
 
-s
-
-
-    
-
-
 }
+
