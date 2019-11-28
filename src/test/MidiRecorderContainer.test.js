@@ -14,7 +14,7 @@ describe("MidiRecorderContainer",() => {
                 midiCollector={midiCollector}
             />
         )
-        
+        done() 
       
     
     })
