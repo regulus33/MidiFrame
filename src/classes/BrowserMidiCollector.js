@@ -287,6 +287,17 @@ export default class BrowserMidiCollector {
       }
     }
 
+    //removes item from array and overwrites the old one
+    deleteMidiDataFromLocalStorage(name = null, window = window) {
+      let allProjects = window.localStorage.getItem('opz-app')
+      let unStringed = JSON.parse(oldProjects)
+      let cleanedObject = unStringed.select((storageObject)=>{
+        //only return elements that do not equal this one  
+        storageObject.name != name 
+      })
+      window.localStorage.setItem('opz-app',JSON.stringify(cleanedObject))
+    }
+
     wipeData(data){
       this.midiData = {
         "1":{},
