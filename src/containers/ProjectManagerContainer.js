@@ -5,6 +5,7 @@ export default class ProjectManagerContainer extends React.Component {
         super(props)
         this.saveProject = this.saveProject.bind(this)
         this.loadSavedProject = this.loadSavedProject.bind(this)
+        this.deleteProject = this.deleteProject.bind(this)
         this.state = {
             justSaved: false,
         }
@@ -34,11 +35,16 @@ export default class ProjectManagerContainer extends React.Component {
 
     }
 
+    deleteProject(projectName) {
+        this.props.midiCollector.deleteMidiDataFromLocalStorage(projectName, window)
+        this.setState({justSaved: true})
+    }
+
     renderSavedProjects() {
         if(window.localStorage.getItem('opz-app')){
             let stringedCollection = window.localStorage.getItem('opz-app')
             return JSON.parse(stringedCollection).map((e)=>{
-               return(<li style={{color:"grey",cursor:"pointer"}} dataValue={JSON.stringify(e.data)} onClick={this.loadSavedProject}>{e.name}</li>)
+               return(<span><li style={{color:"grey",cursor:"pointer"}} dataValue={JSON.stringify(e.data)} onClick={this.loadSavedProject}>{e.name}</li><a href="#" onClick={(event) => {this.deleteProject(e.name)}}>DELETE</a></span>)
             })
         }
     }
@@ -54,8 +60,8 @@ export default class ProjectManagerContainer extends React.Component {
 
     getAnActiveChannelFromSavedMidi(midiData) {
 
-        let keyToSomeActiveNotes = null
-
+       let keyToSomeActiveNotes = null
+    debugger
        Object.keys( midiData ).forEach(( k ) => {
             if(midiData[k]['notes']!= undefined) {
                 keyToSomeActiveNotes = k 
