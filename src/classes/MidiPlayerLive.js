@@ -47,6 +47,14 @@ export default class MidiPlayerLive {
         }
     }
 
+    static randomTimeWithinThisSpan(max) {
+        let int = Math.floor(Math.random() * Math.floor(max))
+        let arrayOfMinutesAndThenSeconds = String(int/60).split(".")
+        let seconds = 60 * Number("0." + arrayOfMinutesAndThenSeconds.pop()) 
+        return arrayOfMinutesAndThenSeconds.shift() + ":" + seconds
+
+    }
+
     static playNote(channel, note, selectedChannel,notes) {
        
         let timeStampString = this.sanitize(notes[note])
