@@ -5,6 +5,9 @@ export default class ProjectManagerContainer extends React.Component {
         super(props)
         this.saveProject = this.saveProject.bind(this)
         this.loadSavedProject = this.loadSavedProject.bind(this)
+        this.state = {
+            justSaved: false,
+        }
 
     }
 
@@ -27,6 +30,7 @@ export default class ProjectManagerContainer extends React.Component {
         } else {
             this.props.midiCollector.storeMidiDataInLocalStorage(null, window)
         }
+        this.setState({justSaved: true})
 
     }
 
@@ -62,6 +66,9 @@ export default class ProjectManagerContainer extends React.Component {
     }
 
     render(){
+        if(this.state.justSaved == true) {
+            this.setState({justSaved: false})
+        }
         return(
         <div className="vidContainer" style={{textAlign: 'center'}}>
             <h1>Project Manager</h1>
