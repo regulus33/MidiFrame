@@ -336,14 +336,16 @@ it("storeMidiDataInLocalStorage() stores midiData plus old data in local storage
 
 })
 
-    deleteMidiDataFromLocalStorage(name = null, window = window) {
 //TODOOOOO test 
 it("deleteMidiDataFromLocalStorage(), pass", () => {
     let mockWindow = {
         localStorage: {
             removeItem: jest.fn(),
+            getItem: jest.fn(),
+            setItem: jest.fn()
         }
     }
+
 
 
 
@@ -362,10 +364,11 @@ it("deleteMidiDataFromLocalStorage(), pass", () => {
         "10":{notes: [1,2,3], videoPath: "path.mp4"}
     }
 
-    let mockReturnOfremoveItem = [b.formatMidiDataForStorage(),b.formatMidiDataForStorage(),b.formatMidiDataForStorage(),b.formatMidiDataForStorage(),b.formatMidiDataForStorage(),b.formatMidiDataForStorage()]
-    mockWindow.localStorage.removeItem.mockReturnValue(JSON.stringify(mockReturnOfremoveItem))
-    mockReturnOfremoveItem.push(b.formatMidiDataForStorage("fpoon"))
-    let expectedSecondArg = mockReturnOfremoveItem
+    let mockReturnOfGetItem = [b.formatMidiDataForStorage(),b.formatMidiDataForStorage(),b.formatMidiDataForStorage(),b.formatMidiDataForStorage(),b.formatMidiDataForStorage(),b.formatMidiDataForStorage()]
+
+    mockWindow.localStorage.removeItem.mockReturnValue(JSON.stringify(mockReturnOfGetItem))
+    mockReturnOfGetItem.push(b.formatMidiDataForStorage("fpoon"))
+    let expectedSecondArg = mockReturnOfGetItem
 
     b.storeMidiDataInLocalStorage("fpoon", mockWindow)
 
@@ -399,15 +402,19 @@ it("Saves mididata that was loaded ", () => {
         "10":{notes: [1,2,3], videoPath: "path.mp4"}
     }
 
-    let mockReturnOfGetItem = [b.formatMidiDataForStorage(),b.formatMidiDataForStorage(),b.formatMidiDataForStorage(),b.formatMidiDataForStorage(),b.formatMidiDataForStorage(),b.formatMidiDataForStorage()]
+    let mockReturnOfGetItem = [b.formatMidiDataForStorage(),b.formatMidiDataForStorage(),b.formatMidiDataForStorage(),
+        
+    b.formatMidiDataForStorage(),b.formatMidiDataForStorage(),b.formatMidiDataForStorage()]
+    
     mockWindow.localStorage.getItem.mockReturnValue(JSON.stringify(mockReturnOfGetItem))
+    
     mockReturnOfGetItem.push(b.formatMidiDataForStorage("fpoon"))
+    
     let expectedSecondArg = mockReturnOfGetItem
 
     b.storeMidiDataInLocalStorage("fpoon", mockWindow)
 
     expect(mockWindow.localStorage.setItem).toHaveBeenLastCalledWith('opz-app',JSON.stringify(expectedSecondArg) )
-
 
    
 })

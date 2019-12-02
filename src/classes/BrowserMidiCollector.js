@@ -290,11 +290,12 @@ export default class BrowserMidiCollector {
     //removes item from array and overwrites the old one
     deleteMidiDataFromLocalStorage(name = null, window = window) {
       let allProjects = window.localStorage.getItem('opz-app')
-      let unStringed = JSON.parse(oldProjects)
+      let unStringed = JSON.parse(allProjects)
       let cleanedObject = unStringed.select((storageObject)=>{
         //only return elements that do not equal this one  
-        storageObject.name != name 
+        return storageObject.name != name 
       })
+      //remove the specified key and re-ssave a new collection of k v pairs without the specified 1. 
       window.localStorage.setItem('opz-app',JSON.stringify(cleanedObject))
     }
 
