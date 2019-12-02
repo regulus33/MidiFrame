@@ -198,16 +198,22 @@ class VideoSelecterContainer extends React.Component {
              document.getElementsByClassName("vidContainer")[0].style.backgroundColor = "red"
 
            } 
+           if(event.key == "f") {
+               this.randomizeInputs()
+               //repopulate
+               this.setState({refreshingMidi: true}) 
+           }
      
          }
          document.onkeyup = (event) => { 
-            if(event.key === "r") {
-            this.setState({refreshingMidi: false}) 
-             document.getElementsByClassName("vidContainer")[0].style.backgroundColor = "white" 
+           if(event.key === "r") {
+                this.setState({refreshingMidi: false}) 
+                 document.getElementsByClassName("vidContainer")[0].style.backgroundColor = "white" 
            } 
            if(event.key == "f") {
-               this.randomizeInputs()
+            this.setState({refreshingMidi: false}) 
            }
+          
      
          }
 
