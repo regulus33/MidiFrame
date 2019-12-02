@@ -33,6 +33,7 @@ class VideoSelecterContainer extends React.Component {
         this.repopulateRefresh = this.repopulateRefresh.bind(this)
         this.handleSaveClick = this.handleSaveClick.bind(this)
         this.handleRecordClick = this.handleRecordClick.bind(this)
+        this.randomizeInputs = this.randomizeInputs.bind(this)
         //Subscribe midiCollector to the state, you will need it to update video based on midi events
         //remember not to touch this, passing by reference
     } 
@@ -204,6 +205,9 @@ class VideoSelecterContainer extends React.Component {
             this.setState({refreshingMidi: false}) 
              document.getElementsByClassName("vidContainer")[0].style.backgroundColor = "white" 
            } 
+           if(event.key == "f") {
+               this.randomizeInputs()
+           }
      
          }
 
@@ -212,6 +216,15 @@ class VideoSelecterContainer extends React.Component {
     //this needs to be deleted 
     repopulateRefresh() {
         //this.setState({latestCapturedMidi: this.props.midiCollector.midiToBeMapped})
+    }
+
+    randomizeInputs(){
+        let vid = document.getElementsByTagName("video")[0]
+        let times = this.state.notes 
+        Object.keys(times).forEach((e)=>{
+            times[e] = MidiPlayerLive.randomTimeWithinThisSpan(vid.duration)
+        })
+        
     }
 
 
