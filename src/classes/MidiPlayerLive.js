@@ -51,8 +51,7 @@ export default class MidiPlayerLive {
         let int = Math.floor(Math.random() * Math.floor(max))
         let arrayOfMinutesAndThenSeconds = String(int/60).split(".")
         let seconds = 60 * Number("0." + arrayOfMinutesAndThenSeconds.pop()) 
-        return arrayOfMinutesAndThenSeconds.shift() + ":" + seconds
-
+        return arrayOfMinutesAndThenSeconds.shift() + ":" + String(seconds).split(".").shift()
     }
 
     static playNote(channel, note, selectedChannel,notes) {
