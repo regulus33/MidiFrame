@@ -2,6 +2,7 @@ import React from 'react'
 import VideoSelector from '../VideoSelector.js'
 import Option from '../Option.js'
 import ChannelPicker from '../ChannelPicker.js';
+import MidiPlayerLive from '../classes/MidiPlayerLive'
 import {
     getNotesFromChannelInSuppliedObject
 } from '../Helpers.js'
@@ -109,7 +110,7 @@ class VideoSelecterContainer extends React.Component {
         
         let inputs = this.getTimeInputs()
         for(let i = 0; i < inputs.length; i++) {
-            noteTimeObj[inputs[i].name] = inputs[i].value 
+            noteTimeObj[inputs[i].name] = inputs[i].value
         }
         //specific to this channel
         //{67: "1:03", 69: "", 72: "", 76: "", 79: ""}

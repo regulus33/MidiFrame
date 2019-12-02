@@ -34,32 +34,27 @@ export default class MidiPlayerLive {
         return Number(minutes) * 60 + Number(seconds)
     }
 
-    static makeSureInputIsNumber(hopefullyNumber){
-        let leftSide = hopefullyNumber.split(":").shift()
-        let rightSide = hopefullyNumber.split(":").pop()
-        if(
-            leftSide != "" && rightSide != "" && leftSide/1 != NaN && rightSide/1 != NaN
-        )
-        {
-            return true 
+    static sanitize(input){
+        if (input == undefined) {
+            return ""
         }
-        return false
+        let leftSide =  input.split(":").shift()
+        let rightSide = input.split(":").pop()
+        if(rightSide == "" || leftSide == "" || (input.split(":").length == 1)) {
+            return ""   
+        } else {
+            return input 
+        }
     }
 
     static playNote(channel, note, selectedChannel,notes) {
-        
-        let timeStampString = notes[note]
-        if (!this.makeSureInputIsNumber(timeStampString)) {
-            return 
-        }
-        
+       
+        let timeStampString = this.sanitize(notes[note])
         if(ON_CHANNELS[selectedChannel] == channel && timeStampString ){
             console.log("not play passed")
-            
             this.playVideoAtSecondsStart(
                 this.convertMinutesToSeconds(timeStampString)
             )
-
         }
     }
 
