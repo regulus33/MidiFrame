@@ -104,7 +104,9 @@ class VideoSelecterContainer extends React.Component {
     }
 
     handleVideoOptionClick(event){
-        this.setState({selectedVideoPath: event.target.selectedOptions[0].value})
+        this.props.midiCollector.updateState(this.state)
+        let videoToSelect = event.target.selectedOptions[0].value
+        this.setState({selectedVideoPath: videoToSelect})
     }   
 
     handleTimeStampInput(event){
@@ -136,7 +138,14 @@ class VideoSelecterContainer extends React.Component {
     }   
 
     handleChannelOptionClick(event) {
-        this.changeOrSetMidiChannel(event.target.selectedOptions[0].value)
+        const channelToSelect = event.target.selectedOptions[0].value
+        this.changeOrSetMidiChannel(channelToSelect)
+        debugger 
+        //populate the previously selected channel for this
+       let videoPathFromSelectedChannel = this.props.midiCollector.midiData[channelToSelect].videoPath ? this.props.midiCollector.midiData[channelToSelect].videoPath : ""
+
+       this.setState({selectedVideoPath: videoPathFromSelectedChannel})
+
     }
 
     changeOrSetMidiChannel(channelToSelect,options={}) {
@@ -153,11 +162,11 @@ class VideoSelecterContainer extends React.Component {
                this.props.midiCollector.midiData[channelToSelect].notes != undefined && 
                Object.keys(this.props.midiCollector.midiData[channelToSelect].notes).length > 0
            ) {
-               this.setState({selectedChannel: channelToSelect, notes: this.props.midiCollector.midiData[channelToSelect].notes})
+               this.setState({selectedChannel: channelToSelect, notes: this.props.midiCollector.midiData[channelToSelect].notes, selectedVideoPath: this.props.midiCollector.midiData[channelToSelect].videoPath ? this.props.midiCollector.midiData[channelToSelect].videoPath : ""})
            } else {
-               this.setState({selectedChannel: channelToSelect, notes: this.getInitialValuesForNotes(channelToSelect) }) 
+               this.setState({selectedChannel: channelToSelect, notes: this.getInitialValuesForNotes(channelToSelect), selectedVideoPath: this.state.videoFiles[0] ? this.state.videoFiles[0] : "" }) 
            }
-           
+        
            //notify the collector that we have a new active channel (for live midi playing)
            //I guess we cant rely on the state just after setting it, it must be more of a promise than an actual function???
            this.props.midiCollector.activeChannelChange(channelToSelect)
@@ -238,6 +247,10 @@ class VideoSelecterContainer extends React.Component {
 
     render() {
         console.log(this.state)
+<<<<<<< HEAD
+        console.log(this.props.midiCollector.midiData)
+=======
+>>>>>>> fa29a0e821abd63c69f576b36f2fede6ef7847ac
         //each time the form changes we need to notify the browsermidicollector 
         // Object.assign(this.props.midiCollector, this.state)
         return (
