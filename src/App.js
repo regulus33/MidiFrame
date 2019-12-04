@@ -46,6 +46,8 @@ class App extends React.Component {
   }
 
   determineAppState(){
+    return "SHOW_MAIN_APP"
+
     if(this.state.showProjectManager === true){
       return "SHOW_PROJECT_MANAGER"
     }
