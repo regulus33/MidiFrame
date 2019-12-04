@@ -475,6 +475,15 @@ if(state[msg.data[0]][msg.data[1]]){
 
 ```
 
+TODO::::
+install ffmpeg, 
+polish up UI code, 
+test UI CODE test manually and auto. 
+Organize things, make the UI look and feel fantastic.
+READ DOCS ABOUT MIDI READ DOCS ABOUT HTML5 video READ DOCSS ABOUT JS optimization
+
+
+
 also we need to standardize the constants for out notes and keep them in one place, right now there are like 5 of the same information. 
 
 Delete unused code as well. Once we test serverside.

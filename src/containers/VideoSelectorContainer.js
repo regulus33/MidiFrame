@@ -84,7 +84,7 @@ class VideoSelecterContainer extends React.Component {
     fetchVideoFilePaths() {
         this.props.videoSelectorGet().then(res => {
             res.json().then((r) => {
-                this.setState({videoFiles:r, selectedVideoPath: r.pop()})
+                this.setState({videoFiles:r, selectedVideoPath: r[0]})
             })
         })
     }
@@ -126,7 +126,6 @@ class VideoSelecterContainer extends React.Component {
     handleRecordClick(){
         this.props.navigateToRecorderContainer()
         this.props.midiCollector.reconfigureMidiForRecording().then((d)=>{
-            debugger
         })
     }
 
@@ -197,6 +196,7 @@ class VideoSelecterContainer extends React.Component {
             )
         })
     }
+  
     //when user hits r we refresh the incoming midi data
     registerRefreshListener() {
         document.onkeydown = (event) => { 
@@ -210,7 +210,7 @@ class VideoSelecterContainer extends React.Component {
          document.onkeyup = (event) => { 
             if(event.key === "r") {
             this.setState({refreshingMidi: false}) 
-             document.getElementsByClassName("vidContainer")[0].style.backgroundColor = "white"
+             document.getElementsByClassName("vidContainer")[0].style.backgroundColor = "white" 
            } 
      
          }
@@ -226,7 +226,10 @@ class VideoSelecterContainer extends React.Component {
 
     render() {
         console.log(this.state)
+<<<<<<< HEAD
         console.log(this.props.midiCollector.midiData)
+=======
+>>>>>>> fa29a0e821abd63c69f576b36f2fede6ef7847ac
         //each time the form changes we need to notify the browsermidicollector 
         // Object.assign(this.props.midiCollector, this.state)
         return (
@@ -236,6 +239,7 @@ class VideoSelecterContainer extends React.Component {
                         <span className="description">pick the channel you want to modify</span>
                         <ChannelPicker 
                             handleChannelOptionClick={this.handleChannelOptionClick}
+                            //todo:change the title of this props, makes no sense!
                             renderOptionsForVideoDropDown={this.renderOptionsForChannelPickerData}
                         />
                     </div>
