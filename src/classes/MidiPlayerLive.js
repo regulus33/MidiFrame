@@ -23,6 +23,7 @@ export default class MidiPlayerLive {
     }
 
     static playVideoAtSecondsStart(secondsInteger) {
+        console.log(secondsInteger)
         let vid = document.getElementsByTagName("video")[0]
         vid.currentTime = secondsInteger
         vid.play()
@@ -49,16 +50,27 @@ export default class MidiPlayerLive {
 
     static randomTimeWithinThisSpan(max) {
         let int = Math.floor(Math.random() * Math.floor(max))
-        let arrayOfMinutesAndThenSeconds = String(int/60).split(".")
+        let arrayOfMinutesAndThenSeconds = this.getArrayOfMinutesThensseconds(int)
         let seconds = 60 * Number("0." + arrayOfMinutesAndThenSeconds.pop()) 
+        if(arrayOfMinutesAndThenSeconds[0]== undefined){
+            debugger
+        }
         return arrayOfMinutesAndThenSeconds.shift() + ":" + String(seconds).split(".").shift()
+    }
+
+    static getArrayOfMinutesThensseconds(int) {
+        const arr = String(int/60).split(".")
+        if(arr.length == 1) {
+            arr.push("00")
+            return arr 
+        }
+        return arr 
     }
 
     static playNote(channel, note, selectedChannel,notes) {
        
         let timeStampString = this.sanitize(notes[note])
         if(ON_CHANNELS[selectedChannel] == channel && timeStampString ){
-            console.log("not play passed")
             this.playVideoAtSecondsStart(
                 this.convertMinutesToSeconds(timeStampString)
             )
