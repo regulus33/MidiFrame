@@ -2,6 +2,7 @@ import React from 'react'
 import VideoSelector from '../VideoSelector.js'
 import Option from '../Option.js'
 import ChannelPicker from '../ChannelPicker.js';
+import ActionButton from '../buttons/ActionButton.js';
 import MidiPlayerLive from '../classes/MidiPlayerLive'
 import {
     getNotesFromChannelInSuppliedObject
@@ -257,14 +258,15 @@ class VideoSelecterContainer extends React.Component {
                         </form>
                     </div>
                 </div>
+                <ActionButton onClick={this.handleSaveClick}buttonText={'Save or Load'}/>
+                <ActionButton onClick={this.handleRecordClick} buttonText={'Record Midi'}/>
                 <VideoSelector 
                     selectedChannelName={this.state.selectedChannel}
                     handleVideoOptionClick={this.handleVideoOptionClick} 
                     selectedVideoPath={this.state.selectedVideoPath} 
                     renderOptionsForVideoDropDown={this.renderOptionsForVideoDropDown} 
                 />
-                <button onClick={this.handleSaveClick}>save or load project</button>
-                <button onClick={this.handleRecordClick}>Record Midiiiiii</button>
+            
                
             </div>
         )
