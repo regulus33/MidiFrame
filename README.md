@@ -493,6 +493,28 @@ All this should be done after getting the ffmpeg stuff working
 OPTIMIZING VIDEO 
 https://www.keycdn.com/blog/video-optimization
 
+T O D O 
+
+Delete a saved project [ DONE ] 
+
+Random inputs don’t populate nottextfields [ DONE ] 
+
+Saving should show new projects immediately [ DONE ] 
+
+VIDEO slicing takes forever and is only cutting from a single specified variable to the very end of the video. So the channel area fills up with tons of long videos![ ]
+
+[NULL @ 0x7f862b80bc00] Unable to find a suitable output format for 'concat'
+concat: Invalid argument [ ]
+
+VIDEOPATH ONLY SAVEs WHEN YOU ACTUALLY INTERACT WITH THE DrOPDOWN [ ]
+
+Only one channel midi data can be sent to server, otherwise midi notes with no data associated will crash server processes expecting non-nulls [ ]
+
+Synced playback of created video, useful for testing [ ]
+
+navigating to any other container while midi is playing crashes app. [ ]
+
+
 
 
 
