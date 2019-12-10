@@ -22,42 +22,47 @@ module.exports = class MidiToVideo {
 
         //slices the channel's video into mp4s in an isolated direcoty where each video file is named the same as its timestamp and therefore sorted in order for concatenation later 
     generateChannelSliceCommands() {
-
+        //just run an rm -rf in the directory where thiss channel stores video slices
         this.removeOldVideoSlices()
-        
+        //iterate through the reorded midi events
         return this.processedDataArray.map(event => {
             //need to know so we dont get index out of bounds for next
             let weAreAtTheEndOfArray = (this.processedDataArray.indexOf(event)) === (this.processedDataArray.length - 1)
-        
+            //we need to look ahead to determin the length of this clip, the length is the distance of time between pressing this key and the next. 
             let nextEvent = !weAreAtTheEndOfArray ? (this.processedDataArray[this.processedDataArray.indexOf(event) + 1]) : null 
-            
+            //start of clip 
             let startOfClip = event.timeStamp 
 
             let endOfClip
             //cop out out to avoid index out of bounds 
             if(weAreAtTheEndOfArray) {
+                //ZACK this doesnt make sense does it? If we are at the last note in the data array, the length of it should be calculated by subtracting the time from hitting the stop button back to the last midi note trigger. Look for a sys ex message stop, you already look for this in MidiRecorderContainer through BrowserMidiCollector
                 endOfClip = startOfClip + 1
-            //we arent there yet  
             } else {
+                //we arent there yet  
                 endOfClip = nextEvent.timeStamp
-
             }
-            
-            let clipLength = endOfClip - startOfClip 
+            //nothing out of the ordinary here 
+            let clipLength = this.convertMillisecondsToSeconds(endOfClip - startOfClip)  
+            //generate SLICE
             let sliceStart = this.convertTimeStampToSecondsInteger(
                 this.getBeginningOfSlice(event)
             )
-
-            return `ffmpeg -i ${this.app_root}/assets/video_bank/${this.clip} -ss ${sliceStart} -t ${clipLength} -async 1 -y ${path.join(this.app_root)}/midi_slices/channel_${this.channel}/${event.timeStamp}.mp4`
+            debugger
+            return `ffmpeg -i ${this.clip} -ss ${sliceStart} -t ${clipLength} -async 1 -y ${path.join(this.app_root)}/midi_slices/channel_${this.channel}/${event.timeStamp}.mp4`
 
 
         })
 
     }
 
+    convertMillisecondsToSeconds(num){
+        return num * 0.001 
+    }
+
     //create the file for arguments supplied to ffmpeg 
     createInput(){
-        let fileName = `${this.app_root}/midi_slices/input_${this.channel}`
+        let fileName = `${this.app_root}/midi_slices/input_${this.channel}.txt`
         let commands = ""
         this.generateFfmpegConcatArgsForSelf().forEach(str =>{
             commands += str
@@ -72,11 +77,15 @@ module.exports = class MidiToVideo {
         let dirName = `${this.app_root}/midi_slices/channel_${this.channel}`
         let slicesDirectoryFiles = fs.readdirSync(dirName)
         return slicesDirectoryFiles.map(fileName => {
-            return "file" + " '" +`${dirName}/${fileName}`+ "'" + "\n"
+            //only add actual files to the array 
+            if(fileName != ".DS_Store") {
+                return "file" + " '" +`${dirName}/${fileName}`+ "'" + "\n"
+            }
         })
     }
 
     convertTimeStampToSecondsInteger(stamp){
+        debugger
         let firstNumber = stamp.split(":").shift()
         let secondNumber = stamp.split(":").pop()
         return Number(firstNumber) * 60 + Number(secondNumber)
@@ -88,7 +97,9 @@ module.exports = class MidiToVideo {
 
     //TODO: all the below are untested and or undocumented 
     makeClips(){
+        debugger 
         this.generateChannelSliceCommands().forEach( command => {
+            console.log(`we are in makeClips in generateChannelSliceCommands().forEach and we are sync executing this command: ${command}`)
             execSync(command)
         })
     }

@@ -178,11 +178,10 @@ test('generateFfmpegConcatArgsForSelf() returns a sorted array of file names to 
      expect(fs.readdirSync(`${app_root}/midi_slices/channel_2`)[2]).toBe("5.2323455.mp4")
 
     let concatArray  = m.generateFfmpegConcatArgsForSelf()
+    
     let result =  "file" + " '" +`${app_root}/midi_slices/channel_2/5.2323455.mp4`+ "'" + "\n"
 
     expect(concatArray[2]).toBe(result)
-
-
 })
 
 
@@ -216,24 +215,23 @@ test('input.txt is created when createInput() is called', () => {
     fakeChannelDir[`${app_root}/midi_slices/channel_1`] = {
         "5.2323455.mp4" : "video file content",
         "0.9898909.mp4" : "more video",
-        "2.2325455.mp4" : "video file content"
+        "2.2325455.mp4" : "video file content",
     }
 
-    mockFS(fakeChannelDir);
-
-    let m = new MidiToVideo("1",notes,clip,data)
+    mockFS(fakeChannelDir)
+    
+    let m = new MidiToVideo("1", notes, clip, data)
+    
     m.createInput()
     //create a fake filesystem and overwrite it in memory 
      //make sure this node version is sorting the readdirsync results (yeah yeah i know)
-     expect(fs.readdirSync(`${app_root}/midi_slices/`).includes("input_1")).toBe(true)
+    expect(fs.readdirSync(`${app_root}/midi_slices/`).includes("input_1")).toBe(true)
     
-     let contentOfInput = readFileSync(`${app_root}/midi_slices/input_1`).toString()
-     expect(contentOfInput.split('file').pop().split("/").pop().split("'\n").shift() === '5.2323455.mp4').toBe(true)
-     
+    let contentOfInput = readFileSync(`${app_root}/midi_slices/input_1`).toString()
+    
+    expect(contentOfInput.split('file').pop().split("/").pop().split("'\n").shift() === '5.2323455.mp4').toBe(true) 
 
-     mockFS.restore()
-
-
+    mockFS.restore()
 })
 
 

@@ -278,11 +278,14 @@ export default class BrowserMidiCollector {
 
     storeMidiDataInLocalStorage(name = null, window = window) {
       let oldProjects = window.localStorage.getItem('opz-app')
+      debugger
       if(oldProjects) {
+        debugger
         let unStringed = JSON.parse(oldProjects)
         unStringed.push(this.formatMidiDataForStorage(name))
         window.localStorage.setItem('opz-app', JSON.stringify(unStringed))
       } else {//this is the first project
+        debugger  
         window.localStorage.setItem('opz-app', JSON.stringify([this.formatMidiDataForStorage(name)]))
       }
     }

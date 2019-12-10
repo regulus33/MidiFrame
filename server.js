@@ -55,18 +55,19 @@ app.post('/midi',(req,res) => {
     // const dataObject = JSON.parse(req.body)
     Object.keys(req.body.metaData).forEach((channelKey)=>{
       const dataObject = req.body.metaData[channelKey]
-      if(channelKey != '' && dataObject.videoPath != undefined && dataObject.videoPath != '' && dataObject.notes != undefined && dataObject.notes != ''){
+      //ZACK fix this data scrubbing in the client. SHould have been done before it gets sent here. 
+      if(channelKey != '' && dataObject.videoPath != undefined && dataObject.videoPath != '' && dataObject.notes != undefined && dataObject.notes != '') {
         //loop through each channel, for each one, instantiate the video class and run the code for that channel to be generate 
         //when done, take a shit
-        debugger 
         const v = new MidiToVideo(channelKey, dataObject.notes, dataObject.videoPath,req.body.musicData)
+        console.log(v.generateChannelSliceCommands())
         v.makeClips() 
         v.createInput()
-        let pathToInputTextFile =  path.join(__dirname, `/midi_slices/input_${channelKey}`) 
-        execSync(`ffmpeg concat ${pathToInputTextFile}`)
+        //ZACK don't  do this here man! Do it in the class, you're duplicating code
+        let pathToInputTextFile =  path.join(__dirname, `/midi_slices/input_${channelKey}.txt`) 
+        execSync(`ffmpeg concat -i ${pathToInputTextFile} -c copy output_${channelKey}.mp4`)
       }
     })
-    
 
     res.end("OK");
 

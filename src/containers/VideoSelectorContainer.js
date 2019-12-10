@@ -247,10 +247,6 @@ class VideoSelecterContainer extends React.Component {
 
     render() {
         console.log(this.state)
-<<<<<<< HEAD
-        console.log(this.props.midiCollector.midiData)
-=======
->>>>>>> fa29a0e821abd63c69f576b36f2fede6ef7847ac
         //each time the form changes we need to notify the browsermidicollector 
         // Object.assign(this.props.midiCollector, this.state)
         return (
