@@ -65,7 +65,8 @@ app.post('/midi',(req,res) => {
         v.createInput()
         //ZACK don't  do this here man! Do it in the class, you're duplicating code
         let pathToInputTextFile =  path.join(__dirname, `/midi_slices/input_${channelKey}.txt`) 
-        execSync(`ffmpeg concat -i ${pathToInputTextFile} -c copy output_${channelKey}.mp4`)
+        let command = `ffmpeg -f concat -safe 0 -i ${pathToInputTextFile} -c copy output_${channelKey}_at_${Date.now()}.mp4`
+        execSync(command)
       }
     })
 

@@ -391,11 +391,12 @@ export default class BrowserMidiCollector {
   sendData(data) {
     debugger
     this.findAndPrepareChannelsWithNotedata()
-    const datToSendToServer = {
+    const dataToSendToServer = {
       metaData: this.findAndPrepareChannelsWithNotedata(),
       musicData: data 
     }
-    postMidiData(datToSendToServer)
+    console.log("sserver data", dataToSendToServer)
+    postMidiData(dataToSendToServer)
   }
 
 }
