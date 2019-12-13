@@ -81,7 +81,7 @@ module.exports = class MidiToVideo {
             if(fileName != ".DS_Store") {
                 return "file" + " '" +`${dirName}/${fileName}`+ "'" + "\n"
             }
-        })
+        }).filter(d=>d!=undefined)
     }
 
     convertTimeStampToSecondsInteger(stamp){
