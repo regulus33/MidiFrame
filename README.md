@@ -523,7 +523,7 @@ ffmpeg -i input.mp4 -c copy -an outpu.mp4
 
 eventually we can automate this but i dont mind doing it manually for now. 
 
-
+btw we are using ffmpeg version `4.1.3`
 
 
 
