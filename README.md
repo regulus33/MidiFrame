@@ -515,6 +515,17 @@ Synced playback of created video, useful for testing [ ]
 navigating to any other container while midi is playing crashes app. [ ]
 
 
+########### LATEST NOTESS 
+
+you need to make sure to strip audio for themost accurate results when splitting with ffmpeg 
+
+ffmpeg -i input.mp4 -c copy -an outpu.mp4
+
+eventually we can automate this but i dont mind doing it manually for now. 
+
+
+
+
 
 
 

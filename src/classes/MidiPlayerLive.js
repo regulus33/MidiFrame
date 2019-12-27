@@ -26,7 +26,7 @@ export default class MidiPlayerLive {
         console.log(secondsInteger)
         let vid = document.getElementsByTagName("video")[0]
         vid.currentTime = secondsInteger
-        vid.play()
+        // vid.play()
     }
 
     static convertMinutesToSeconds(stringOfMinutes) {
