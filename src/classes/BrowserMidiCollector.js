@@ -160,6 +160,8 @@ export default class BrowserMidiCollector {
     }
 
     onMidiMessageA = (message) => {
+      console.log(message.timeStamp)
+
       //TODO: THIS BREAKS FOR SOME REASON WE SHOULDNT HAVE ON MIDIMESSAGE A RUNNING WHEN WE THING WE RESET THAT FUNCTION
       if(this.recording){
         return 
@@ -373,6 +375,7 @@ export default class BrowserMidiCollector {
   completeRecording() {
     const mapper = new MidiMapper(this.midiToBeMapped)
     const dataForServer = mapper.bakeDataForParsing()
+    console.log(dataForServer)
     this.sendData(dataForServer)
   }
 
@@ -395,8 +398,8 @@ export default class BrowserMidiCollector {
       metaData: this.findAndPrepareChannelsWithNotedata(),
       musicData: data 
     }
-    console.log("sserver data", dataToSendToServer)
-    postMidiData(dataToSendToServer)
+    console.log("server data", dataToSendToServer)
+    postMidiData(dataToSendToServer, this.clearMusicDataAfterSendingToServer)
   }
 
 }

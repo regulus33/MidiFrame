@@ -48,9 +48,8 @@ module.exports = class MidiToVideo {
             let sliceStart = this.convertTimeStampToSecondsInteger(
                 this.getBeginningOfSlice(event)
             )
-            debugger
-            return `ffmpeg -i ${this.clip} -ss ${sliceStart} -t ${clipLength} -async 1 -y ${path.join(this.app_root)}/midi_slices/channel_${this.channel}/${event.timeStamp}.mp4`
 
+            return `ffmpeg -an -y -ss ${sliceStart} -i ${this.clip} -t ${clipLength} -c:v libx264 ${path.join(this.app_root)}/midi_slices/channel_${this.channel}/${event.timeStamp}.mp4`
 
         })
 
