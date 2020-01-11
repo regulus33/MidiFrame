@@ -146,7 +146,6 @@ export default class MidiMapper {
         }) 
         return channelsObject
 
-
     }
 
     determineUsedNotes(data) {

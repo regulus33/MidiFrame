@@ -43,6 +43,7 @@
     "jest-fetch-mock": "^2.1.2",
     "mocha": "^6.2.0",
     "node-mocks-http": "^1.7.6",
-    "should": "^13.2.3"
+    "should": "^13.2.3",
+    "video.js": "^7.6.6"
   }
 }
