@@ -1,3 +1,5 @@
+import videojs from  'video.js'
+
 const ON_CHANNELS = {
     "1":"144",
     "2":"145",
@@ -24,9 +26,11 @@ export default class MidiPlayerLive {
 
     static playVideoAtSecondsStart(secondsInteger) {
         console.log(secondsInteger)
-        let vid = document.getElementsByTagName("video")[0]
-        vid.currentTime = secondsInteger
+        // let vid = document.getElementsByTagName("video")[0]
+        // vid.currentTime = secondsInteger
         // vid.play()
+        var myPlayer = videojs('player')
+        myPlayer.currentTime(secondsInteger)
     }
 
     static convertMinutesToSeconds(stringOfMinutes) {
