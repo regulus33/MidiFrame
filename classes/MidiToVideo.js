@@ -14,7 +14,7 @@ module.exports = class MidiToVideo {
         this.removeStrayVideoString = `rm -rf ${this.app_root}/midi_slices/channel_${this.channel}/./*`
     }
 
-    createClip(){
+    createClip() {
         //TODO: call generateChannelSliceCommands and create input then:
         //`ffmpeg concat pathtofile`
         // this.generateChannelSliceCommands()
@@ -83,8 +83,7 @@ module.exports = class MidiToVideo {
         }).filter(d=>d!=undefined)
     }
 
-    convertTimeStampToSecondsInteger(stamp){
-        debugger
+    convertTimeStampToSecondsInteger(stamp) {
         let firstNumber = stamp.split(":").shift()
         let secondNumber = stamp.split(":").pop()
         return Number(firstNumber) * 60 + Number(secondNumber)
@@ -95,8 +94,7 @@ module.exports = class MidiToVideo {
     }
 
     //TODO: all the below are untested and or undocumented 
-    makeClips(){
-        debugger 
+    makeClips() {
         this.generateChannelSliceCommands().forEach( command => {
             console.log(`we are in makeClips in generateChannelSliceCommands().forEach and we are sync executing this command: ${command}`)
             execSync(command)
