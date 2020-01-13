@@ -51,6 +51,7 @@ export default class BrowserMidiCollector {
         this.receivedAnyMessageYet = false 
         this.userMessage = ""
         this.recording = false 
+        this.videoPlayer = null //this will be a video player 
         //TODO DELETE Me
         this.midiData = {
             "1":{},
@@ -106,7 +107,7 @@ export default class BrowserMidiCollector {
               console.log(device.name)
               this.userMessage = `${device.name} is connected!`
               // device.onmidimessage = this.onMidiMessage //keep
-              device.onmidimessage = this.onMidiMessageA 
+              device.onmidimessage = this.onMidiMessageJamming 
               device.onstatechange = this.handleOPZChange //change to have msg sent when we hit stop button 
             } else {
               this.userMessage = "Something's wrong, do you have the OP-Z connected?"
@@ -126,7 +127,7 @@ export default class BrowserMidiCollector {
             console.log(device.name)
             this.userMessage = `${device.name} is reconnected!`
             // device.onmidimessage = this.onMidiMessage //keep
-            device.onmidimessage = this.onMidiMessageB 
+            device.onmidimessage = this.onMidiMessageRecording 
             device.onstatechange = this.handleOPZChange //change to have msg sent when we hit stop button 
 
           } else {
@@ -137,7 +138,7 @@ export default class BrowserMidiCollector {
       }).catch(console.error);
     }
 
-    onMidiMessageB = (message) => {
+    onMidiMessageRecording = (message) => {
       if(message.data[0] == 250) {
         console.log("OPZ LOOP STARTING")
         this.recording = true 
@@ -159,10 +160,7 @@ export default class BrowserMidiCollector {
       }
     }
 
-    onMidiMessageA = (message) => {
-      console.log(message.timeStamp)
-
-      //TODO: THIS BREAKS FOR SOME REASON WE SHOULDNT HAVE ON MIDIMESSAGE A RUNNING WHEN WE THING WE RESET THAT FUNCTION
+    onMidiMessageJamming = (message) => {
       if(this.recording){
         return 
       }
@@ -171,12 +169,11 @@ export default class BrowserMidiCollector {
           this.handleFirstMidiMessage(message.data[0])
         }
    
-        //add note to local note detection
         this.notesAndChannels[ON_CHANNELS[message.data[0]]].add(message.data[1])
-        //before we actually fill in notes in form we should skip this 
         
         if(this.notesHasBeenDefined()) {
-         MidiPlayerLive.playNote(message["data"][0], message["data"][1], this.activeChannel, this.midiData[this.activeChannel]["notes"])
+
+         MidiPlayerLive.playNote(message["data"][0], message["data"][1], this.activeChannel, this.midiData[this.activeChannel]["notes"],this.videoPlayer)//send the videoPlayer instance so we can call currentTime(3), sets the time that the playhead hits on each midi note
         }
       }
     }
@@ -200,21 +197,14 @@ export default class BrowserMidiCollector {
           data: stringedData,
           timeStamp: message.timeStamp
         }
-         /////////////////////////////////////////////////////////
-         ////                                                 ////
-         ////  first add the events to an array unprocessed   ////                                             
-         ////                                                 ////
-         /////////////////////////////////////////////////////////
         this.midiToBeMapped.push(midiEvent)
-         /////////////////////////////////////////////////////////
-         
          if(
           this.activeChannel != "" &&
           this.midiData[this.activeChannel]["notes"] != undefined && 
           this.midiData[this.activeChannel]["notes"][midiEvent["data"][1]] != undefined
           ) {
 
-          MidiPlayerLive.playNote(midiEvent,this.activeChannel,this.midiData[this.activeChannel]["notes"])
+          MidiPlayerLive.playNote(midiEvent,this.activeChannel,this.midiData[this.activeChannel]["notes"], this.videoPlayer)
          }                                                 ////
       } 
     }
@@ -236,9 +226,8 @@ export default class BrowserMidiCollector {
       return result 
     }
 
-    //eat arguments and commit to the saved state attached to this instance
     //persists state beyond channel form changes
-    //I guess this is kind of a ZACK makeshift version of what redux used to be???
+    //will remain intact for the lifecycle of the app
     updateState(state = {}) {
       this.midiData[state.selectedChannel] = {
         notes: state.notes,
@@ -280,14 +269,11 @@ export default class BrowserMidiCollector {
 
     storeMidiDataInLocalStorage(name = null, window = window) {
       let oldProjects = window.localStorage.getItem('opz-app')
-      debugger
       if(oldProjects) {
-        debugger
         let unStringed = JSON.parse(oldProjects)
         unStringed.push(this.formatMidiDataForStorage(name))
         window.localStorage.setItem('opz-app', JSON.stringify(unStringed))
       } else {//this is the first project
-        debugger  
         window.localStorage.setItem('opz-app', JSON.stringify([this.formatMidiDataForStorage(name)]))
       }
     }
@@ -295,7 +281,6 @@ export default class BrowserMidiCollector {
     //removes item from array and overwrites the old one
     deleteMidiDataFromLocalStorage(name = null, window = window) {
       let allProjects = window.localStorage.getItem('opz-app')
-      debugger  
       let unStringed = JSON.parse(allProjects)
       let cleanedObject = unStringed.filter((storageObject)=>{
         //only return elements that do not equal this one  
@@ -392,7 +377,6 @@ export default class BrowserMidiCollector {
   }
 
   sendData(data) {
-    debugger
     this.findAndPrepareChannelsWithNotedata()
     const dataToSendToServer = {
       metaData: this.findAndPrepareChannelsWithNotedata(),
@@ -400,6 +384,10 @@ export default class BrowserMidiCollector {
     }
     console.log("server data", dataToSendToServer)
     postMidiData(dataToSendToServer, this.clearMusicDataAfterSendingToServer)
+  }
+
+  setVideoPlayer(player) {
+    this.videoPlayer = player 
   }
 
 }

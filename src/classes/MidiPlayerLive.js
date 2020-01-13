@@ -24,13 +24,8 @@ export default class MidiPlayerLive {
     constructor() {
     }
 
-    static playVideoAtSecondsStart(secondsInteger) {
-        console.log(secondsInteger)
-        // let vid = document.getElementsByTagName("video")[0]
-        // vid.currentTime = secondsInteger
-        // vid.play()
-        var myPlayer = videojs('player')
-        myPlayer.currentTime(secondsInteger)
+    static playVideoAtSecondsStart(secondsInteger, videoPlayer) {
+        videoPlayer.currentTime(secondsInteger) 
     }
 
     static convertMinutesToSeconds(stringOfMinutes) {
@@ -70,13 +65,15 @@ export default class MidiPlayerLive {
         }
         return arr 
     }
-
-    static playNote(channel, note, selectedChannel,notes) {
+                                                        //call the currentTime() function on the instance
+    static playNote(channel, note, selectedChannel,notes,videoPlayer) {
        
         let timeStampString = this.sanitize(notes[note])
         if(ON_CHANNELS[selectedChannel] == channel && timeStampString ){
             this.playVideoAtSecondsStart(
-                this.convertMinutesToSeconds(timeStampString)
+                this.convertMinutesToSeconds(timeStampString),
+                videoPlayer
+                
             )
         }
     }
