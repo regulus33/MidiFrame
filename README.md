@@ -527,6 +527,17 @@ btw we are using ffmpeg version `4.1.3`
 
 
 
+#### Debugging node 
+
+`node inspect server.js`
+
+`cont`
+
+`repl`
+
+
+
+
 
 
 

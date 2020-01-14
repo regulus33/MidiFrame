@@ -5,7 +5,12 @@ const NoteTextField = props => {
     return (
         <div>
             {/* on click pass the notenumber back to video selector container. We'll use it the highlight the note in case you want to do a function with it */}
-            <span onClick={(event) => {props.toggleNoteHighlight(props.noteName, event.target)}} style={{"color":"grey"}}>{props.noteName}</span> 
+            <span 
+                id={props.noteName}
+                className={"noteNumberSpan"}
+                onClick={(event) => {props.toggleNoteHighlight(props.noteName, event.target)}} 
+                style={{"color":"grey"}}>{props.noteName}
+            </span> 
             <input 
                 onBlur={props.handleTimeStampInput} 
                 className="noteTextField" 
