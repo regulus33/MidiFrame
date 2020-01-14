@@ -70,6 +70,13 @@ export default class MidiPlayerLive {
        
         let timeStampString = this.sanitize(notes[note])
         if(ON_CHANNELS[selectedChannel] == channel && timeStampString ){
+            ////// YOU NEED TO REFACTOR THIS ////////////////////////////
+            let spans = document.getElementsByClassName('noteNumberSpan')
+            for(let i=0;i<spans.length;i++){
+               spans[i].style['color']='grey'
+            }
+            document.getElementById(note).style['color'] = "gold"
+            /////////////////////////////////////////////////////////////
             this.playVideoAtSecondsStart(
                 this.convertMinutesToSeconds(timeStampString),
                 videoPlayer

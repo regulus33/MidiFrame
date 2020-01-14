@@ -15,9 +15,9 @@ module.exports = class MidiToVideo {
     }
 
     createClip() {
-        //TODO: call generateChannelSliceCommands and create input then:
-        //`ffmpeg concat pathtofile`
-        // this.generateChannelSliceCommands()
+        let pathToInputTextFile = `${this.app_root}//midi_slices/input_${this.channel}.txt`
+        let command = `ffmpeg -an -f concat -safe 0 -i ${pathToInputTextFile} -c copy output_${this.channel}_at_${Date.now()}.mp4`
+        execSync(command)
     }
 
         //slices the channel's video into mp4s in an isolated direcoty where each video file is named the same as its timestamp and therefore sorted in order for concatenation later 

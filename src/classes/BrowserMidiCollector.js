@@ -168,11 +168,10 @@ export default class BrowserMidiCollector {
         if(!this.receivedAnyMessageYet ) {
           this.handleFirstMidiMessage(message.data[0])
         }
-   
+        
         this.notesAndChannels[ON_CHANNELS[message.data[0]]].add(message.data[1])
         
         if(this.notesHasBeenDefined()) {
-
          MidiPlayerLive.playNote(message["data"][0], message["data"][1], this.activeChannel, this.midiData[this.activeChannel]["notes"],this.videoPlayer)//send the videoPlayer instance so we can call currentTime(3), sets the time that the playhead hits on each midi note
         }
       }
@@ -349,14 +348,6 @@ export default class BrowserMidiCollector {
   }
   //////
   //////
-  //////
-  //////
-  //////
-  //////
-  //////
-  //////   wefpohfpoi;w hgilwhjlahflihi;
-  //////
-  //////
   completeRecording() {
     const mapper = new MidiMapper(this.midiToBeMapped)
     const dataForServer = mapper.bakeDataForParsing()
@@ -364,24 +355,29 @@ export default class BrowserMidiCollector {
     this.sendData(dataForServer)
   }
 
-  //TODO: make sure video file is in this object 
-  findAndPrepareChannelsWithNotedata(){
-    let skinnyObject = {}
-    Object.keys(this.midiData).forEach((key)=>{
-      let data = this.midiData[key]
-      if(data["notes"] != undefined ){
-        skinnyObject[key] = data
-      }
-    })
-    return skinnyObject
+  
+  prepareDataForProcessing(data){
+    //PLUCK only the data from the active channel 
+    //en ressults of the blocks below are like 
+    //{4: metadatastuff}
+    //{4: mididatastuff}
+    const midiNotes = {}
+    midiNotes[this.activeChannel] = data[this.activeChannel]
+
+    const metaData = {}
+    metaData[this.activeChannel] = this.midiData[this.activeChannel]
+    
+    return {
+      metaData: metaData,
+      data: midiNotes
+    }
+    
   }
 
+
+
   sendData(data) {
-    this.findAndPrepareChannelsWithNotedata()
-    const dataToSendToServer = {
-      metaData: this.findAndPrepareChannelsWithNotedata(),
-      musicData: data 
-    }
+    const dataToSendToServer = this.prepareDataForProcessing(data)
     console.log("server data", dataToSendToServer)
     postMidiData(dataToSendToServer, this.clearMusicDataAfterSendingToServer)
   }
@@ -389,6 +385,8 @@ export default class BrowserMidiCollector {
   setVideoPlayer(player) {
     this.videoPlayer = player 
   }
+
+  
 
 }
 
