@@ -4,6 +4,7 @@
 node_modules/
 build
 .DS_Store
+*.mp4
 *.tgz
 my-app*
 template/src/__tests__/__snapshots__/

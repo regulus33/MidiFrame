@@ -537,6 +537,12 @@ btw we are using ffmpeg version `4.1.3`
 
 
 
+### Filters? 
+fps V->V Force constant framerate
+framestep V->V Select one frame every N frames.
+can we say if video is 60 fps, if clip is 0.3 seconds, grab 20 frames from start? 
+Do we need to do something with framerates still? 
+
 
 
 

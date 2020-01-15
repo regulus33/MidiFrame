@@ -152,10 +152,14 @@ export default class BrowserMidiCollector {
 
       if(this.recording) {
         console.log("MIDI IS RECORDING")
-        if ((ON_CHANNELS[message.data[0]] != undefined) || (OFF_CHANNELS[message.data[0]] != undefined)) {
+        if ((ON_CHANNELS[message.data[0]] != undefined)) {
           this.midiToBeMapped.push(this.processEvent(message))
           //this is a callback added to the instance inside midirecordercontainer 
-          this.onNoteRecorded(this.processEvent(message))
+
+          //if this message is from the active channel 
+          if(ON_CHANNELS[message.data[0]] == this.activeChannel){
+            this.onNoteRecorded(this.processEvent(message))
+          }
         }
       }
     }
