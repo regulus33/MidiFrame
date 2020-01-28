@@ -1,5 +1,7 @@
 import MidiMapper from "./MidiMapper.js"
 import MidiPlayerLive from "./MidiPlayerLive.js"
+import MidiCounter from "./MidiCounter.js"
+
 import {
   postMidiData
 } from '../network.js'
@@ -52,6 +54,13 @@ export default class BrowserMidiCollector {
         this.userMessage = ""
         this.recording = false 
         this.videoPlayer = null //this will be a video player 
+        //FOR AUTOMATION OF START AND STOP MESSSAGES IN RECORDING
+        this.midiAccess = null//need to use it to send messsagess later in reconfigure midi for recoring 
+        this.deviceId = 0//need to use it to send messsagess later in reconfigure midi for recoring 
+       //96 clocks per 1 bar or 1 full note 
+        this.clockPulsesSinceRecordStart = 0 
+        //need to store the bar count selected by user 
+        this.barCountForRecording = 0
         //TODO DELETE Me
         this.midiData = {
             "1":{},
@@ -119,11 +128,19 @@ export default class BrowserMidiCollector {
 
     reconfigureMidiForRecording = () => {
       return navigator.requestMIDIAccess().then( access => {
-        //there should really only be one here, but you never know 
-        debugger // console.log(access.inputs);
+        //there should really only be one here, but you never know
+        const outputs = access.outputs.values()
+        for (let output of outputs ) {
+          this.midiAccess = access
+          this.deviceId = output.id 
+          
+        }
         const devices = access.inputs.values();
         for (let device of devices ) {
           if (device.name == "OP-Z") {
+            debugger 
+            //SET PERMISSIONS TO SEND MIDI DATA TO DEVICE
+            ////////////////////////////////////////////
             console.log(device.name)
             this.userMessage = `${device.name} is reconnected!`
             // device.onmidimessage = this.onMidiMessage //keep
@@ -139,23 +156,31 @@ export default class BrowserMidiCollector {
     }
 
     onMidiMessageRecording = (message) => {
+      //if you bind the stop and start events to the clock signal, the clipping should be adequately quantized 
+      if(message.data[0]==248 && this.recording){
+        //so to explain, on each clock pulse, we check if this loop should exit.
+        //user sets total bars in midirecordercontainer. 
+        this.clockPulsesSinceRecordStart += 1
+        if(this.clockPulsesSinceRecordStart == MidiCounter.getLength(this.barCountForRecording)){
+          this.stopMidiRecording()
+        }
+      }
+
       if(message.data[0] == 250) {
         console.log("OPZ LOOP STARTING")
         this.recording = true 
       } 
-      if(message.data[0] == 252) {
-        console.log("OPZ LOOP STOPPING")
-        this.recording = false 
-        this.completeRecording(this.midiToBeMapped)
 
-      }
+      //THE END OF RECORDING:
+      //see this.stopMidiRecording(), we do it in the code and send the message to stop to op-z 
+      //all unhooking and processing is done there  
 
       if(this.recording) {
         console.log("MIDI IS RECORDING")
         if ((ON_CHANNELS[message.data[0]] != undefined)) {
           this.midiToBeMapped.push(this.processEvent(message))
           //this is a callback added to the instance inside midirecordercontainer 
-
+          
           //if this message is from the active channel 
           if(ON_CHANNELS[message.data[0]] == this.activeChannel){
             this.onNoteRecorded(this.processEvent(message))
@@ -165,6 +190,10 @@ export default class BrowserMidiCollector {
     }
 
     onMidiMessageJamming = (message) => {
+       if(message["data"][0]!=248){
+        console.log(message)
+
+      }
       if(this.recording){
         return 
       }
@@ -378,8 +407,6 @@ export default class BrowserMidiCollector {
     
   }
 
-
-
   sendData(data) {
     const dataToSendToServer = this.prepareDataForProcessing(data)
     console.log("server data", dataToSendToServer)
@@ -388,6 +415,15 @@ export default class BrowserMidiCollector {
 
   setVideoPlayer(player) {
     this.videoPlayer = player 
+  }
+
+  stopMidiRecording(){
+    const output = this.midiAccess.outputs.get(this.deviceId);
+    console.log("OPZ LOOP STOPPING")
+    this.recording = false 
+    this.completeRecording(this.midiToBeMapped)
+    //stop the op-z after we stop listening for midi, the internal recording is all that really matters here.
+    output.send([252])
   }
 
   

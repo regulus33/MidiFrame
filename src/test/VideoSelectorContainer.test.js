@@ -4,37 +4,52 @@ import TestRenderer from 'react-test-renderer';
 import BrowserMidiCollector from '../classes/BrowserMidiCollector';
 
 describe("VideoSelectorContainer",() => {
-
-
-    it("renderNoteInputs renders notes",(done) => {
-
-        const innermostPromise = Promise.resolve(['path/to/video1.mp4', 'path/to/video.mp4'])
-        const fakeVidFetch = Promise.resolve(
-            {
-                json: () => innermostPromise
+        const video = document.createElement('video');
+        
+        Object.defineProperty(
+            global.document, 'getElementById', { 
+    
+                    value: (e) => {
+                        if(e == 'videoSelector'){
+                            return {selectedOptions: [{value:"/path/to/video"}]}
+                        } else {
+                            return video 
+                        }
+                }
             }
         )
-        const videoSelectorGetMocked = jest.fn()
-        videoSelectorGetMocked.mockReturnValueOnce(fakeVidFetch)    
-        const mCollector = new BrowserMidiCollector()
-        let event = {"data":["148","31","100"],"timeStamp":5254.274999955669}
-        mCollector.onMidiMessageA(event)
 
-        const renderer = TestRenderer.create(
-            <VideoSelectorContainer 
-                videoSelectorGet={videoSelectorGetMocked} 
-                midiCollector={mCollector}
-            />
-        )
+        
+ 
+    // it("renderNoteInputs renders notes",(done) => {
 
-        return Promise.allSettled([innermostPromise, fakeVidFetch]).then(() => {
-            let instance = renderer.getInstance()
-            let notesFor5 = instance.getInitialValuesForNotes("5")
-            instance.state.notes = notesFor5
-            expect(instance.renderNoteInputs()[0].props.noteName).toBe("31")
-            done() 
-        })
-    })
+    //     const innermostPromise = Promise.resolve(['path/to/video1.mp4', 'path/to/video.mp4'])
+    //     const fakeVidFetch = Promise.resolve(
+    //         {
+    //             json: () => innermostPromise
+    //         }
+    //     )
+    //     const videoSelectorGetMocked = jest.fn()
+    //     videoSelectorGetMocked.mockReturnValueOnce(fakeVidFetch)    
+    //     const mCollector = new BrowserMidiCollector()
+    //     let event = {"data":["148","31","100"],"timeStamp":5254.274999955669}
+    //     mCollector.onMidiMessageJamming(event)
+
+    //     const renderer = TestRenderer.create(
+    //         <VideoSelectorContainer 
+    //             videoSelectorGet={videoSelectorGetMocked} 
+    //             midiCollector={mCollector}
+    //         />
+    //     )
+
+    //     return Promise.allSettled([innermostPromise, fakeVidFetch]).then(() => {
+    //         let instance = renderer.getInstance()
+    //         let notesFor5 = instance.getInitialValuesForNotes("5")
+    //         instance.state.notes = notesFor5
+    //         expect(instance.renderNoteInputs()[0].props.noteName).toBe("31")
+    //         done() 
+    //     })
+    // })
 
     it("renderNoteInputs notifies when no notes recorded yet",(done) => {
 
@@ -79,7 +94,7 @@ describe("VideoSelectorContainer",() => {
         videoSelectorGetMocked.mockReturnValueOnce(fakeVidFetch)    
         let mock = {"data":["148","31","100"],"timeStamp":5254.274999955669}
         const midiCollector = new BrowserMidiCollector()
-        midiCollector.onMidiMessageA(mock)
+        midiCollector.onMidiMessageJamming(mock)
 
         const renderer = TestRenderer.create(
             <VideoSelectorContainer 
@@ -109,7 +124,7 @@ describe("VideoSelectorContainer",() => {
         const videoSelectorGetMocked = jest.fn()
         videoSelectorGetMocked.mockReturnValueOnce(fakeVidFetch)    
         const b = new BrowserMidiCollector()
-        b.onMidiMessageA({"data":["148","31","100"],"timeStamp":5254.274999955669})
+        b.onMidiMessageJamming({"data":["148","31","100"],"timeStamp":5254.274999955669})
         const renderer = TestRenderer.create(
             <VideoSelectorContainer 
                 videoSelectorGet={videoSelectorGetMocked} 
@@ -176,7 +191,7 @@ describe("VideoSelectorContainer",() => {
                 "notInWrongChannel": "timestamp",
             }
         }
-        theBoneCollector.onMidiMessageA({"data":["151","31","100"],"timeStamp":5254.274999955669})
+        theBoneCollector.onMidiMessageJamming({"data":["151","31","100"],"timeStamp":5254.274999955669})
         const renderer = TestRenderer.create(
             <VideoSelectorContainer 
                 videoSelectorGet={videoSelectorGetMocked} 
@@ -267,9 +282,9 @@ describe("VideoSelectorContainer",() => {
             {"data":["148","31","100"],"timeStamp":5254.274999955669},
         ]
         const mCollector = new BrowserMidiCollector()
-        mCollector.onMidiMessageA({"data":["148","31","100"],"timeStamp":5254.274999955669})
-        mCollector.onMidiMessageA({"data":["153","31","100"],"timeStamp":5254.274999955669})
-        mCollector.onMidiMessageA({"data":["157","31","100"],"timeStamp":5254.274999955669})
+        mCollector.onMidiMessageJamming({"data":["148","31","100"],"timeStamp":5254.274999955669})
+        mCollector.onMidiMessageJamming({"data":["153","31","100"],"timeStamp":5254.274999955669})
+        mCollector.onMidiMessageJamming({"data":["157","31","100"],"timeStamp":5254.274999955669})
 
 
         const renderer = TestRenderer.create(
@@ -357,51 +372,6 @@ describe("VideoSelectorContainer",() => {
 
 
     })
-
-
-    it("Records midi when user holds down r", () => {
-
-        const innermostPromise = Promise.resolve(['path/to/video1.mp4', 'path/to/video.mp4'])
-
-        const fakeVidFetch = Promise.resolve(
-            {
-                json: () => innermostPromise
-            }
-        )
-    
-        const videoSelectorGetMocked = jest.fn()
-        videoSelectorGetMocked.mockReturnValueOnce(fakeVidFetch)    
-        let mock = [{"data":["148","31","100"],"timeStamp":5254.274999955669}]
-
-        const renderer = TestRenderer.create(
-            <VideoSelectorContainer 
-                midiCollector={new BrowserMidiCollector()}
-                videoSelectorGet={videoSelectorGetMocked} 
-            />
-        )
-
-        let instance = renderer.getInstance() 
-
-        let event = {
-            key: "r"
-        }
-        
-        document.getElementsByClassName = jest.fn() 
-        
-        document.getElementsByClassName.mockReturnValueOnce([{style:{backgroundColor: "white"}}])
-        
-        document.onkeydown(event) 
-
-        expect(instance.state.refreshingMidi).toBe(true)
-        
-        document.getElementsByClassName.mockReturnValueOnce([{style:{backgroundColor: "red"}}])
-
-        document.onkeyup(event) 
-
-        expect(instance.state.refreshingMidi).toBe(false)
-
-    })
-
 
 })
 
