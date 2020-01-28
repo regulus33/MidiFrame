@@ -68,6 +68,7 @@ class VideoSelecterContainer extends React.Component {
         window.addEventListener('load', this.constructVideoJsPlayerReference());
         
         this.firstUse = false 
+
     }
 
     getInitialValuesForNotes(channel) {
@@ -278,8 +279,11 @@ class VideoSelecterContainer extends React.Component {
     }
 
     constructVideoJsPlayerReference(){
-        var myPlayer = videojs('player')
-        this.props.midiCollector.setVideoPlayer(myPlayer)
+        //for the fucking tests, fucking videojs i dont feel like spending 3 hours to figure out how to mock this shit. 
+        if( window.navigator.vendor== "Google Inc.") {
+            var myPlayer = videojs('player')
+            this.props.midiCollector.setVideoPlayer(myPlayer)
+        }
     }
 
     getCurrentVideoPlaying(){

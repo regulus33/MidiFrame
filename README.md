@@ -545,7 +545,52 @@ Do we need to do something with framerates still?
 
 
 
+Setting with number of frames
+In certain cases it may be useful to set the duration of recording by specifying the number of frames with
+available options:
+audio: -aframes number or -frames:a number
+data: -dframes number or -frames:d number
+video: -vframes number or -frames:v number
+The number of frames is equal to the duration in seconds multiplied by the frame rate. For instance, to set
+the duration of a video.avi file with a 25 fps frame rate to 10 minutes (600 seconds), we can use the
+command:
+ffmpeg -i video.avi -vframes 15000 video_10_minutes.avi
 
+
+
+### Next features 
+
+implement a feature that trims audio from video, autotunes it all to a given key then re-inserts the autotuned audio. 
+
+Cleanup UI 
+
+Fix Tests 
+
+Random filters on every n clips before joining. 
+
+All clips should be perfectly trimmed so that when stitched together they are the exact length of the song itself. 
+
+Join many clips from different sources into 1 then use some simple pixel analysic to group time ranges by percent of R, G, B, or V. 
+
+User can randomize time stamps within a selectable range.
+
+Record audio directly from USB and generate video with a few steps. 
+
+######## LENGTH LONGTH 
+
+user hits record (play)
+
+time in between play hit and first midi note on selected channel is recorded. 
+
+once we reach end we save 
+
+endtime = Time.now.to_integer.milliseconds 
+
+then subtract the timestamp of the last played note from the endclip hit.
+
+now in miditovideo... if starttime is less than first note time, insert black.jpeg as video for duration
+
+if last note is less than stop time, insert black.jpeg as video for that duration. 
 
 
 

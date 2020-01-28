@@ -51,9 +51,6 @@ export default class MidiPlayerLive {
         let int = Math.floor(Math.random() * Math.floor(max))
         let arrayOfMinutesAndThenSeconds = this.getArrayOfMinutesThensseconds(int)
         let seconds = 60 * Number("0." + arrayOfMinutesAndThenSeconds.pop()) 
-        if(arrayOfMinutesAndThenSeconds[0]== undefined){
-            debugger
-        }
         return arrayOfMinutesAndThenSeconds.shift() + ":" + String(seconds).split(".").shift()
     }
 

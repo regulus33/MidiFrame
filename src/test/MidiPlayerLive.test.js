@@ -1,12 +1,5 @@
 import MidiPlayerLive from '../classes/MidiPlayerLive.js'
 
-beforeEach(() => {
-     global.document = {
-        getElementById: (note) => {
-            return {style: {color:'blue'}}
-        }
-    }
-})
 
 it("converts 3:45 style time to a seconds integer", () => {
 
@@ -18,16 +11,16 @@ it("converts 3:45 style time to a seconds integer", () => {
 it("Plays video at time paired to this channel", () => {
     Object.defineProperty(
         global.document, 'getElementById', { 
-            value: ()=>{
-                return {
-                    style: {color: 'blue'
+
+                value: () => {
+                    return {
+
+                        style: {color: 'blue'
+                    } 
                 } 
-            } 
             }
         }
     )
-   
-
 
     let midiEvent = {"data":["148","31","100"],"timeStamp":5254.274999955669}
     let state = {
