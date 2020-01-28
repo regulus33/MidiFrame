@@ -332,3 +332,13 @@ test("data parser narrows down a midi message into its useable parts",()=>{
 })
 
 
+
+test("Update clip duration setter",()=>{
+
+    let bmc = new BrowserMidiCollector()
+    bmc.updateClipDuration(2.33)
+    expect(bmc.clipLength).toBe(2.33)
+
+})
+
+

@@ -61,7 +61,11 @@ export default class BrowserMidiCollector {
         this.clockPulsesSinceRecordStart = 0 
         //need to store the bar count selected by user 
         this.barCountForRecording = 0
-        //TODO DELETE Me
+        /////////////////////////////////////
+        /// How Long should the clip be  ///////////////////////////>>>>>>>
+        //////////////////////////////////
+        this.clipLength = 0.0
+        //TODO Which of the below are we using. 
         this.midiData = {
             "1":{},
             "2":{},
@@ -80,7 +84,7 @@ export default class BrowserMidiCollector {
             "15":{},
             "16":{}
         }
-        //used notes here
+        //TODO: are we using this anymore? 
         this.notesAndChannels = {
           "1": new Set(),
           "2": new Set(),
@@ -267,6 +271,10 @@ export default class BrowserMidiCollector {
       }
       
     }
+
+    updateClipDuration(duration){
+      this.barCountForRecording = duration
+    }
     //need this for the time stamp input
     updateNotesForTimestampOnly(notes) {
       this.midiData[this.activeChannel]["notes"] = Object.assign({}, notes)
@@ -425,7 +433,6 @@ export default class BrowserMidiCollector {
     //stop the op-z after we stop listening for midi, the internal recording is all that really matters here.
     output.send([252])
   }
-
   
 
 }
