@@ -1,4 +1,5 @@
 import React from 'react'
+import MidiCounter from '../classes/MidiCounter'
 
 export default class MidiRecorderContainer extends React.Component  {
    
@@ -8,9 +9,12 @@ export default class MidiRecorderContainer extends React.Component  {
         this.state = {
             lastNotes: [],
             bars: 0, 
+            bpm: 0, 
+            clip_length: 0, 
         }
         
         this.onBarsInput = this.onBarsInput.bind(this)
+        this.onBPMInput = this.onBPMInput.bind(this)
     }
 
     componentDidMount() {
@@ -31,10 +35,23 @@ export default class MidiRecorderContainer extends React.Component  {
     }
 
     onBarsInput(event) {
+        let lengthOfClip = MidiCounter.getLengthInSecondsOfClip(event.target.value, this.state.bpm)
         this.setState({
-            bars: event.target.value
+            bars: event.target.value,
+            clip_length: lengthOfClip
         })
     }
+
+    onBPMInput(event) {
+        let lengthOfClip = MidiCounter.getLengthInSecondsOfClip(this.state.bars, event.target.value)
+
+        this.setState({
+            bpm: event.target.value, 
+            clip_length: lengthOfClip
+        })
+    }
+
+    
 
     render(){
 
@@ -47,6 +64,9 @@ export default class MidiRecorderContainer extends React.Component  {
                 <h1>Midi Recorder</h1>
                  <label>BARS:</label>
                  <input style={{width:"100%"}} type="text" onBlur={this.onBarsInput} ></input>
+                 <label>BPM:</label>
+                 <input style={{width:"100%"}} type="text" onBlur={this.onBPMInput} ></input>
+                 <h1>Clip Length: {this.state.clip_length} </h1>
                  <div id="data-zone" style={{width:"100%"}}>
                     {this.displayNotes()}
                  </div>

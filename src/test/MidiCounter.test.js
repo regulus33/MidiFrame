@@ -14,4 +14,8 @@ test('Calculates length in seconds when supplied with bars and bpm', () => {
     expect(length).toBe(2)
 })
 
+test("calcs the time between the midim  'play' and the first relevant midi note......", () => {
+    expect(MidiCounter.getTimeBetweenStartOfClip(12345, 12346)).toBe(1)
+})
+
 
