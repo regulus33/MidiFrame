@@ -65,7 +65,9 @@ export default class BrowserMidiCollector {
         /// How Long should the clip be  ///////////////////////////>>>>>>>
         //////////////////////////////////
         this.clipLength = 0.0
-        //TODO Which of the below are we using. 
+        //need the below two to calc the above 
+        this.midiRecordingStartedAt = 0.0 
+        this.midiRecordingFirstNoteAt = 0.0 
         this.midiData = {
             "1":{},
             "2":{},
@@ -142,12 +144,11 @@ export default class BrowserMidiCollector {
         const devices = access.inputs.values();
         for (let device of devices ) {
           if (device.name == "OP-Z") {
-            debugger 
             //SET PERMISSIONS TO SEND MIDI DATA TO DEVICE
             ////////////////////////////////////////////
             console.log(device.name)
             this.userMessage = `${device.name} is reconnected!`
-            // device.onmidimessage = this.onMidiMessage //keep
+            // device.onmidimessage = this.onMidiMessage
             device.onmidimessage = this.onMidiMessageRecording 
             device.onstatechange = this.handleOPZChange //change to have msg sent when we hit stop button 
 
@@ -161,7 +162,9 @@ export default class BrowserMidiCollector {
 
     onMidiMessageRecording = (message) => {
       //if you bind the stop and start events to the clock signal, the clipping should be adequately quantized 
-      if(message.data[0]==248 && this.recording){
+      if(message.data[0] == 248 && this.recording){
+        //if it isnt already set then we havent hit the first note yet 
+      
         //so to explain, on each clock pulse, we check if this loop should exit.
         //user sets total bars in midirecordercontainer. 
         this.clockPulsesSinceRecordStart += 1
@@ -173,6 +176,8 @@ export default class BrowserMidiCollector {
       if(message.data[0] == 250) {
         console.log("OPZ LOOP STARTING")
         this.recording = true 
+        //record the beginning stamp of this session 
+        this.midiRecordingStartedAt = Date.now()  
       } 
 
       //THE END OF RECORDING:
@@ -186,8 +191,14 @@ export default class BrowserMidiCollector {
           //this is a callback added to the instance inside midirecordercontainer 
           
           //if this message is from the active channel 
+          console.log("MAMMAMAMAMAMAMAM")
+          console.log(this.activeChannel)
           if(ON_CHANNELS[message.data[0]] == this.activeChannel){
             this.onNoteRecorded(this.processEvent(message))
+            //if this is the channel we selected, this needss to be processed for clip duration detection 
+            if(this.midiRecordingFirstNoteAt == 0.0) {
+              this.midiRecordingFirstNoteAt = Date.now() 
+            }
           }
         }
       }
@@ -272,8 +283,8 @@ export default class BrowserMidiCollector {
       
     }
 
-    updateClipDuration(duration){
-      this.barCountForRecording = duration
+    updateClipDuration(duration) {
+      this.clipLength = duration
     }
     //need this for the time stamp input
     updateNotesForTimestampOnly(notes) {
@@ -407,6 +418,8 @@ export default class BrowserMidiCollector {
 
     const metaData = {}
     metaData[this.activeChannel] = this.midiData[this.activeChannel]
+    metaData["clipLength"] = this.clipLength
+    metaData["idlePeriodDuration"] = this.idlePeriodDuration()
     
     return {
       metaData: metaData,
@@ -432,6 +445,10 @@ export default class BrowserMidiCollector {
     this.completeRecording(this.midiToBeMapped)
     //stop the op-z after we stop listening for midi, the internal recording is all that really matters here.
     output.send([252])
+  }
+
+  idlePeriodDuration(){
+    return this.midiRecordingFirstNoteAt - this.midiRecordingStartedAt
   }
   
 

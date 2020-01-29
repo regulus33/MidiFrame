@@ -342,3 +342,33 @@ test("Update clip duration setter",()=>{
 })
 
 
+test("grabs duration of initial note from beginning of recording", () => {
+
+    let bmc = new BrowserMidiCollector() 
+    let mockPlayMessage = {
+        data: [
+            250,
+            32,
+            120
+        ],
+        timeStamp:333.3445
+    }
+    let mockNote = {
+        data: ["147",32,120],
+        timeStamp: 333.4444
+    }
+    let mockNote2 = {
+        data: ["147",32,120],
+        timeStamp: 334.5444
+    }
+    const mockOnNoteRecordedToAvoidErrorz =  (arg) => {}
+    bmc.onNoteRecorded = mockOnNoteRecordedToAvoidErrorz
+    bmc.activeChannelChange("4")
+    bmc.recording = true 
+    bmc.onMidiMessageRecording(mockPlayMessage)
+    bmc.onMidiMessageRecording(mockNote)
+    bmc.onMidiMessageRecording(mockNote2)
+    expect(bmc.idlePeriodDuration()).toBeGreaterThan(0)
+})
+
+
