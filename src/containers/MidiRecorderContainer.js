@@ -70,7 +70,7 @@ export default class MidiRecorderContainer extends React.Component  {
                  <input style={{width:"100%"}} type="text" onBlur={this.onBarsInput} ></input>
                  <label>BPM:</label>
                  <input style={{width:"100%"}} type="text" onBlur={this.onBPMInput} ></input>
-                 <h1>Clip Length: {this.state.clip_length} </h1>
+                 <h1>Clip Duration: {this.state.clip_length} </h1>
                  <div id="data-zone" style={{width:"100%"}}>
                     {this.displayNotes()}
                  </div>

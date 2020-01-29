@@ -42,7 +42,7 @@ app.post('/midi',(req,res) => {
     console.log('\x1b[36m%s\x1b[0m', 'POST /midi'); 
 
     Object.keys(req.body.metaData).forEach((channelKey)=>{
-      
+      console.log('\x1b[36m%s\x1b[0m', `processing channelkey: ${channelKey}`); 
       const dataObject = req.body.metaData[channelKey]
       
       const v = new MidiToVideo(

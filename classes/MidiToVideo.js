@@ -5,6 +5,7 @@ const fs = require('fs');
 module.exports = class MidiToVideo {
 
     constructor(channel,notes,clip, data){
+        console.log(`MidiToVideoConstructor channel: ${channel}, notes: ${notes}, clip: ${clip}, data: ${data}`)
         this.channel = channel
         this.notes = notes
         this.clip = clip
