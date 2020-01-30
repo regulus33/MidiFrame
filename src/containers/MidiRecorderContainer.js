@@ -35,7 +35,7 @@ export default class MidiRecorderContainer extends React.Component  {
     }
 
     onBarsInput(event) {
-        let lengthOfClip = MidiCounter.getLengthInSecondsOfClip(event.target.value, this.state.bpm)
+        let lengthOfClip = MidiCounter.getLengthInMilSecondsOfClip(event.target.value, this.state.bpm)
         this.setState({
             bars: event.target.value,
             clip_length: lengthOfClip
@@ -45,7 +45,7 @@ export default class MidiRecorderContainer extends React.Component  {
     }
 
     onBPMInput(event) {
-        let lengthOfClip = MidiCounter.getLengthInSecondsOfClip(this.state.bars, event.target.value)
+        let lengthOfClip = MidiCounter.getLengthInMilSecondsOfClip(this.state.bars, event.target.value)
 
         this.setState({
             bpm: event.target.value, 

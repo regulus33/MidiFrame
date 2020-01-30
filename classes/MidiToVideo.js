@@ -4,12 +4,14 @@ const fs = require('fs');
 
 module.exports = class MidiToVideo {
 
-    constructor(channel,notes,clip, data){
+    constructor(channel,notes,clip, data, idlePeriodDuration,patternDuration){
         console.log(`MidiToVideoConstructor channel: ${channel}, notes: ${notes}, clip: ${clip}, data: ${data}`)
+        this.idlePeriodDuration = idlePeriodDuration
+        this.patternDuration = patternDuration //* really is the duration of the PATTERN here clip means midi slice
         this.channel = channel
         this.notes = notes
         this.clip = clip
-        this.processedDataArray = data[this.channel]
+        this.processedDataArray = data
         this.app_root = this.createAppRootString()
         //keep interpolation strings in one place for easey access 
         this.removeStrayVideoString = `rm -rf ${this.app_root}/midi_slices/channel_${this.channel}/./*`
@@ -25,8 +27,14 @@ module.exports = class MidiToVideo {
     generateChannelSliceCommands() {
         //just run an rm -rf in the directory where thiss channel stores video slices
         this.removeOldVideoSlices()
+
+        let firstMidiNoteFiredAt = null 
         //iterate through the reorded midi events
         return this.processedDataArray.map(event => {
+            //need to store the first midi note for later processing clip length 
+            if(firstMidiNoteFiredAt == null){
+                firstMidiNoteFiredAt = event.timeStamp
+            }
             //need to know so we dont get index out of bounds for next
             let weAreAtTheEndOfArray = (this.processedDataArray.indexOf(event)) === (this.processedDataArray.length - 1)
             //we need to look ahead to determin the length of this clip, the length is the distance of time between pressing this key and the next. 
@@ -37,10 +45,13 @@ module.exports = class MidiToVideo {
             let endOfClip
             //cop out out to avoid index out of bounds 
             if(weAreAtTheEndOfArray) {
-                //ZACK this doesnt make sense does it? If we are at the last note in the data array, the length of it should be calculated by subtracting the time from hitting the stop button back to the last midi note trigger. Look for a sys ex message stop, you already look for this in MidiRecorderContainer through BrowserMidiCollector
-                endOfClip = startOfClip + 1
+                //subtract time elapsed from total clip time to get the expected duration of the final note 
+                //this only works if the pattern begins with a midi note!!! Fix this 
+                let endPatternTimestamp = firstMidiNoteFiredAt + this.patternDuration
+                endOfClip = endPatternTimestamp
+                console.log(`endPatternTimestamp: ${endPatternTimestamp}, startOfClip: ${startOfClip}, firstMidiNoteFiredAt: ${firstMidiNoteFiredAt} patternduration: ${this.patternDuration} endofClip: ${endOfClip}`)
             } else {
-                //we arent there yet  
+                //we arent there yet  s
                 endOfClip = nextEvent.timeStamp
             }
             //nothing out of the ordinary here 
