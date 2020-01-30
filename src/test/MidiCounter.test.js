@@ -10,7 +10,7 @@ test('Calculates beats in any group of bars', () => {
 test('Calculates length in seconds when supplied with bars and bpm', () => {
     let bars = 1 
     let bpm = 120 
-    let length = MidiCounter.getLengthInSecondsOfClip(bars,bpm)
+    let length = MidiCounter.getLengthInMilSecondsOfClip(bars,bpm)
     expect(length).toBe(2)
 })
 

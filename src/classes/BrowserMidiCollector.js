@@ -64,7 +64,7 @@ export default class BrowserMidiCollector {
         /////////////////////////////////////
         /// How Long should the clip be  ///////////////////////////>>>>>>>
         //////////////////////////////////
-        this.clipLength = 0.0
+        this.patternDuration = 0.0
         //need the below two to calc the above 
         this.midiRecordingStartedAt = 0.0 
         this.midiRecordingFirstNoteAt = 0.0 
@@ -117,6 +117,7 @@ export default class BrowserMidiCollector {
           // console.log(access.inputs);
           const devices = access.inputs.values();
           for (let device of devices ) {
+            debugger 
             
             if (device.name == "OP-Z") {
               console.log(device.name)
@@ -284,7 +285,7 @@ export default class BrowserMidiCollector {
     }
 
     updateClipDuration(duration) {
-      this.clipLength = duration
+      this.patternDuration = duration
     }
     //need this for the time stamp input
     updateNotesForTimestampOnly(notes) {
@@ -413,17 +414,18 @@ export default class BrowserMidiCollector {
     //en ressults of the blocks below are like 
     //{4: metadatastuff}
     //{4: mididatastuff}
-    const midiNotes = {}
-    midiNotes[this.activeChannel] = data[this.activeChannel]
+    // const midiNotes = {}
+    // midiNotes[this.activeChannel] = data[this.activeChannel]
 
-    const metaData = {}
-    metaData[this.activeChannel] = this.midiData[this.activeChannel]
-    metaData["clipLength"] = this.clipLength
-    metaData["idlePeriodDuration"] = this.idlePeriodDuration()
+    // const metaData = {}
+    // metaData[this.activeChannel] = this.midiData[this.activeChannel]
     
     return {
-      metaData: metaData,
-      data: midiNotes
+      channel: this.activeChannel,
+      metaData:  this.midiData[this.activeChannel], //which notes are connected to which timestamp in which video 
+      data:  data[this.activeChannel], //just the midi data for this channel 
+      patternDuration: this.patternDuration,//length that this midi pattern is in the op-z and its expected output video length
+      idlePeriodDuration: this.idlePeriodDuration()//the period between clip start and the first note played on
     }
     
   }

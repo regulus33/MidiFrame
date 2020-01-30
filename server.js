@@ -40,16 +40,22 @@ app.get('/video', function(req, res) {
 app.post('/midi',(req,res) => {
 
     console.log('\x1b[36m%s\x1b[0m', 'POST /midi'); 
-
-    Object.keys(req.body.metaData).forEach((channelKey)=>{
-      console.log('\x1b[36m%s\x1b[0m', `processing channelkey: ${channelKey}`); 
-      const dataObject = req.body.metaData[channelKey]
+    ///////FOR CLIP DURATION INFO, global, used for all channels 
+    const idlePeriodDuration = req.body.idlePeriodDuration //TODO make the data structure one channel at a time 
+    const patternDuration = req.body.patternDuration
+    const midiChannel = req.body.channel 
+    ///////////////////////////////////////////////////////////
+    // Object.keys(req.body.metaData).forEach((channelKey)=>{
+      console.log('\x1b[36m%s\x1b[0m', `processing channelkey: ${midiChannel}`); 
+      const dataObject = req.body.metaData
       
       const v = new MidiToVideo(
-        channelKey, 
+        midiChannel, 
         dataObject.notes, 
         dataObject.videoPath,
-        req.body.data
+        req.body.data,
+        Number(idlePeriodDuration),
+        Number(patternDuration),
       )
       //here is all that will be sliced 
       console.log(v.generateChannelSliceCommands())
@@ -60,7 +66,7 @@ app.post('/midi',(req,res) => {
       //run the ffmpeg concat command on the split files
       v.createClip()
       
-    })
+    // })
 
     res.end("OK");
 })

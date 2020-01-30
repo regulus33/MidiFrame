@@ -12,11 +12,11 @@ export default class MidiCounter {
         return CLOCK_SIGNALS_IN_1_BAR * barCount
     }
 
-    static getLengthInSecondsOfClip(barCount, BPM){
+    static getLengthInMilSecondsOfClip(barCount, BPM){
         const secondsPerBeat = 60 / Number(BPM) 
         const totalBeats = Number(barCount) * BEATS_IN_1_BAR 
         const seconds_That_Pass_In_This_Clip = secondsPerBeat * totalBeats
-        return seconds_That_Pass_In_This_Clip
+        return seconds_That_Pass_In_This_Clip * 1000
     }
 
     static getTimeBetweenStartOfClip(timeAtStart,timeAtFirstNote){
