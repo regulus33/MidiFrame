@@ -27,10 +27,12 @@ module.exports = class MidiToVideo {
     generateChannelSliceCommands() {
         //just run an rm -rf in the directory where thiss channel stores video slices
         this.removeOldVideoSlices()
-
+        let startsLate = this.idlePeriodDuration > 0
+        let firstIterationOfMap = true 
         let firstMidiNoteFiredAt = null 
+        let idlePeriodClip = null //this will or will not be prepended to the array, usually is present on snare tracks, stuff not coming in on the one 
         //iterate through the reorded midi events
-        return this.processedDataArray.map(event => {
+        let commands =  this.processedDataArray.map(event => {
             //need to store the first midi note for later processing clip length 
             if(firstMidiNoteFiredAt == null){
                 firstMidiNoteFiredAt = event.timeStamp
@@ -43,11 +45,20 @@ module.exports = class MidiToVideo {
             let startOfClip = event.timeStamp 
 
             let endOfClip
+
             //cop out out to avoid index out of bounds 
             if(weAreAtTheEndOfArray) {
+                let endPatternTimestamp
                 //subtract time elapsed from total clip time to get the expected duration of the final note 
                 //this only works if the pattern begins with a midi note!!! Fix this 
-                let endPatternTimestamp = firstMidiNoteFiredAt + this.patternDuration
+                //if we started late, the first clip will not really be the beginning of the sequence
+                if(startsLate) {
+                    let actualFirstMidiNoteFiredAt = firstMidiNoteFiredAt -  this.idlePeriodDuration
+                    endPatternTimestamp = actualFirstMidiNoteFiredAt + this.patternDuration
+                    console.log(`actualFirstMidiNoteFiredAt: ${actualFirstMidiNoteFiredAt} firstMidiNoteFiredAt: ${firstMidiNoteFiredAt}`)
+                } else {
+                    endPatternTimestamp = firstMidiNoteFiredAt + this.patternDuration
+                }
                 endOfClip = endPatternTimestamp
                 console.log(`endPatternTimestamp: ${endPatternTimestamp}, startOfClip: ${startOfClip}, firstMidiNoteFiredAt: ${firstMidiNoteFiredAt} patternduration: ${this.patternDuration} endofClip: ${endOfClip}`)
             } else {
@@ -57,13 +68,31 @@ module.exports = class MidiToVideo {
             //nothing out of the ordinary here 
             let clipLength = this.convertMillisecondsToSeconds(endOfClip - startOfClip)  
             //generate SLICE
+            console.log(event.noteNumber)
             let sliceStart = this.convertTimeStampToSecondsInteger(
                 this.getBeginningOfSlice(event)
             )
+            //we are taking the first clip and copying it, we will prepend to the array to 
+            //give some footage in the idle period duration. This can probably be improved greatly 
+            //but you know. Its just me working on this soooo...... 
+            //sorry not sorry? 
+            if (startsLate && firstIterationOfMap) {
+                firstIterationOfMap = false 
+                console.log("[IDLE_PERIOD DURATION] greater than zero, value is: " + this.idlePeriodDuration + " milliseconds")
+                let idlePeriodAsSeconds = this.convertMillisecondsToSeconds(this.idlePeriodDuration) 
+                idlePeriodClip = `ffmpeg -an -y -ss ${sliceStart} -i ${this.clip} -t ${idlePeriodAsSeconds} -c:v libx264 ${path.join(this.app_root)}/midi_slices/channel_${this.channel}/${0}.mp4`
+            }
 
             return `ffmpeg -an -y -ss ${sliceStart} -i ${this.clip} -t ${clipLength} -c:v libx264 ${path.join(this.app_root)}/midi_slices/channel_${this.channel}/${event.timeStamp}.mp4`
 
         })
+        if(idlePeriodClip) {
+            console.log(commands.length) 
+            console.log("unshift the idlePeriodClip")
+            commands.unshift(idlePeriodClip)  
+            console.log(commands.length)  
+        }
+        return commands 
 
     }
 
