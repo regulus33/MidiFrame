@@ -22,103 +22,188 @@
     strong {
         color: #87af87;
     }
+
+    .slidecontainer {
+        width: 100%;
+    }
+
+    .slider {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 15px;
+        border-radius: 5px;
+        background: #d3d3d3;
+        outline: none;x`
+        opacity: 0.7;
+        -webkit-transition: .2s;
+        transition: opacity .2s;
+    }
+
+    .slider:hover {
+        opacity: 1;
+    }
+
+    .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background: #d75f5f;
+        cursor: pointer;
+    }
+
+    .slider::-moz-range-thumb {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background: #d75f5f;
+        cursor: pointer;
+    }
+
+    .form-label {
+        color: #d75f5f; 
+    }   
+
+    progress#progress {
+        background: white;
+    }
+
 </style>
 
 <body>
     <h3>DAWNSOON'S MIDI SPLITI</h3>
- <a href="#" id="midiConsent">Click Here First Please</a>
-<br/>
-<br/>
- <strong>How to use this program:</strong>
+    <a href="#" id="midiConsent">Click Here First Please</a>
+    <br/>
+    <br/>
+    <strong>How to use this program:</strong>
 
- <p>1. Keep track of the number of bars in your project. Without this, the script has no way of knowing how long your song is. Also add your bpm. I need to know this to figure out when to stop and start recording stems.</p>
- <p>2. Create as many mute groups as you want stems. If you want a stem with only kicks, mute every instrument except kicks. If you want chord and arp together, make another mute group with everything muted but chords and arps</p>
- <p>3. Check each box for each mute group youre using, the numbers are the same as the black keys on your z.</p>
- <p>4. Chain all patterns. Press record</p>
+    <p>1. Keep track of the number of bars in your project. Without this, the script has no way of knowing how long your song is. Also add your bpm. I need to know this to figure out when to stop and start recording stems.</p>
+    <p>2. Create as many mute groups as you want stems. If you want a stem with only kicks, mute every instrument except kicks. If you want chord and arp together, make another mute group with everything muted but chords and arps</p>
+    <p>3. Check each box for each mute group youre using, the numbers are the same as the black keys on your z.</p>
+    <p>4. Chain all patterns. Press record</p>
+
+    <span class="form-label">BAR COUNT:</span> <span id="patternCount"></span>
+    <div class="slidecontainer">
+        <input type="range" min="1" max="128" value="8" class="slider" id="patternCountRange">
+    </div>
+    
+    <a href="#" id="start">start</a>
+
+    Recording progress:
+    <progress id="progress" value="0" max="0"></progress>
+
 </body>
 
 
 <script>
  
+    //////////////////////
+    // GLOBAL VARIABLES//
+    ////////////////////
+    const CLOCK_SIGNALS_IN_1_BAR = 96
+    const BEATS_IN_1_BAR = 4 
+    let deviceId = 0
+    let midiAccess = {}
+    let clockSignalsBeforeDone = 0
+    let clockCount = 0 
+    let recording = false 
+    const MUTE_GROUPS = {
+        kick:   [128, 54, 0],
+        snare:  [128, 56, 0],
+        hat:    [128, 58, 0],
+        sample: [128, 61, 0],
+        bass:   [128, 63, 0],
+        lead:   [128, 66, 0],
+        arp:    [128, 68, 0],
+        chord:  [128, 70, 0],
+        miscA:  [128, 73, 0],
+        miscB:  [128, 75, 0],
+    }
 
-const MUTE_GROUPS = {
-
-    kick:   [128, 54, 0],
-    snare:  [128, 56, 0],
-    hat:    [128, 58, 0],
-    sample: [128, 61, 0],
-    bass:   [128, 63, 0],
-    lead:   [128, 66, 0],
-    arp:    [128, 68, 0],
-    chord:  [128, 70, 0],
-    miscA:  [128, 73, 0],
-    miscB:  [128, 75, 0],
-    // misc1: 
-
-}
-
-let deviceId = 0
-let midiAccess = {}
-
-window.onload = () => {
+    const calcClockSignalsBeforeDone = (barCount) => {
+        return CLOCK_SIGNALS_IN_1_BAR * barCount
+    }
+ 
     console.log('loaded')
-      // patch up prefixes
-    document.getElementById('midiConsent').onclick =  (event) => {
+    // patch up prefixes
+    document.getElementById('midiConsent').onclick = (event) => {
         console.log('requesting to midi access')
         request()
-    }    
+    }  
 
-} 
-
-
-
-const request = () => {
-    return navigator.requestMIDIAccess( {sysex: true }).then( access => {
-        midiAccess = access
-        
-        const inputPorts = access.inputs.values();
-
-        const outputPorts = access.outputs.values();
-
-        for (let out of outputPorts) {
-
-            deviceId = out.id 
-
-        }
-
-        for (let device of inputPorts ) {
-            
-            if (device.name == "OP-Z") {
-                console.log(device.name + " connected")
-
-                device.onmidimessage = handleIncomingMidi 
-                
-                sendMessage(MUTE_GROUPS.kick)
-            } else {
-                alert("Can't find an OP-Z :( Make Sure Your OP-Z is plugged into to the usb port on your device.")
-            }
-            
-
-        }
-    }).catch(console.error);
-
-}
-
-const handleIncomingMidi = (message) => {
-    if(!(message.data.length === 1 && message.data[0] == 248)) {
-        console.log(message)
+    document.getElementById('start').onclick = (event) => {
+        sendMessage([250])
+        recording = true 
     }
-}
 
-const sendMessage = (message) => { 
-    const output = midiAccess.outputs.get(deviceId)
+    /////////////////////
+    //   MIDI SETUP   //
+    ///////////////////
 
-    console.log("SENDING MIDI")
-    //selects  mute group 8 ...///
-    output.send([185,55,7])
+    const patternCountSlider = document.getElementById("patternCountRange");
+    const patternCountSliderOutput = document.getElementById("patternCount");
+    const progressBar = document.getElementById("progress")
+    patternCountSliderOutput.innerHTML = patternCountSlider.value;
+    progressBar.max = calcClockSignalsBeforeDone(patternCountSlider.value)
 
-    
-}
+    patternCountSlider.oninput = () => {
+        const totalBars = patternCountSlider.value
+        patternCountSliderOutput.innerHTML = totalBars
+        clockSignalsBeforeDone = calcClockSignalsBeforeDone(totalBars)
+        progressBar.max = clockSignalsBeforeDone
+    }
+
+
+    const request = () => {
+        return navigator.requestMIDIAccess( {sysex: true }).then( access => {
+            midiAccess = access
+            const inputPorts = access.inputs.values();
+            const outputPorts = access.outputs.values();
+            for (let out of outputPorts) {
+                deviceId = out.id 
+            }
+            for (let device of inputPorts ) {
+                if (device.name == "OP-Z") {
+                    console.log(device.name + " connected")
+                    device.onmidimessage = handleIncomingMidi 
+                    sendMessage(MUTE_GROUPS.kick)
+                } else {
+                    alert("Can't find an OP-Z :( Make Sure Your OP-Z is plugged into to the usb port on your device.")
+                }
+            }
+        }).catch(console.error);
+    }
+
+    const handleIncomingMidi = (message) => {
+        if(recording && message.data[0] == 248) {
+            if(clockCount > 0 && clockCount == clockSignalsBeforeDone){
+                //stop message
+                sendMessage([252])
+            } else {
+                clockCount += 1 
+                progressBar.value = clockCount
+            }
+        }
+    }
+
+    const sendMessage = (message) => { 
+        const output = midiAccess.outputs.get(deviceId)
+        console.log("SENDING MIDI")
+        //selects  mute group 7 ...///
+        // output.send([185,55,6])
+        // output.send([128,54,0])
+        output.send(message)
+    }
+
+    //////////////////////////////////////
+    //      CALCULATIONS AND STUFF     //
+    /////////////////////////////////////
+
+    //  How many clock signals do we need to let pass before we unhook our event listeners? 
+  
+ 
+
 
 </script>
 </html>
