@@ -452,6 +452,8 @@ export default class BrowserMidiCollector {
   idlePeriodDuration(){
     return this.midiRecordingFirstNoteAt - this.midiRecordingStartedAt
   }
+
+  
   
 
 }

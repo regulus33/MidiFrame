@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>DAWNSOONS OPZ MultiTrack Recorder</title>
+</head>
+
+<style>
+    body {
+        color: #EFEFAE;
+        background-color: #3A3A3A;
+        font-family: 'Fira Mono', Monospace;
+    }
+
+    h3 {
+        color: #005F5F;
+    }
+
+    a {
+       color: #d75f5f;
+    }
+
+    strong {
+        color: #87af87;
+    }
+</style>
+
+<body>
+    <h3>DAWNSOON'S MIDI SPLITI</h3>
+ <a href="#" id="midiConsent">Click Here First Please</a>
+<br/>
+<br/>
+ <strong>How to use this program:</strong>
+
+ <p>1. Keep track of the number of bars in your project. Without this, the script has no way of knowing how long your song is. Also add your bpm. I need to know this to figure out when to stop and start recording stems.</p>
+ <p>2. Create as many mute groups as you want stems. If you want a stem with only kicks, mute every instrument except kicks. If you want chord and arp together, make another mute group with everything muted but chords and arps</p>
+ <p>3. Check each box for each mute group youre using, the numbers are the same as the black keys on your z.</p>
+ <p>4. Chain all patterns. Press record</p>
+</body>
+
+
+<script>
+ 
+
+const MUTE_GROUPS = {
+
+    kick:   [128, 54, 0],
+    snare:  [128, 56, 0],
+    hat:    [128, 58, 0],
+    sample: [128, 61, 0],
+    bass:   [128, 63, 0],
+    lead:   [128, 66, 0],
+    arp:    [128, 68, 0],
+    chord:  [128, 70, 0],
+    miscA:  [128, 73, 0],
+    miscB:  [128, 75, 0],
+    // misc1: 
+
+}
+
+let deviceId = 0
+let midiAccess = {}
+
+window.onload = () => {
+    console.log('loaded')
+      // patch up prefixes
+    document.getElementById('midiConsent').onclick =  (event) => {
+        console.log('requesting to midi access')
+        request()
+    }    
+
+} 
+
+
+
+const request = () => {
+    return navigator.requestMIDIAccess( {sysex: true }).then( access => {
+        midiAccess = access
+        
+        const inputPorts = access.inputs.values();
+
+        const outputPorts = access.outputs.values();
+
+        for (let out of outputPorts) {
+
+            deviceId = out.id 
+
+        }
+
+        for (let device of inputPorts ) {
+            
+            if (device.name == "OP-Z") {
+                console.log(device.name + " connected")
+
+                device.onmidimessage = handleIncomingMidi 
+                
+                sendMessage(MUTE_GROUPS.kick)
+            } else {
+                alert("Can't find an OP-Z :( Make Sure Your OP-Z is plugged into to the usb port on your device.")
+            }
+            
+
+        }
+    }).catch(console.error);
+
+}
+
+const handleIncomingMidi = (message) => {
+    if(!(message.data.length === 1 && message.data[0] == 248)) {
+        console.log(message)
+    }
+}
+
+const sendMessage = (message) => { 
+    const output = midiAccess.outputs.get(deviceId)
+
+    console.log("SENDING MIDI")
+    //selects  mute group 8 ...///
+    output.send([185,55,7])
+
+    
+}
+
+</script>
+</html>
