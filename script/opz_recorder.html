@@ -90,8 +90,36 @@
     
     <a href="#" id="start">start</a>
 
+    <br/>
+    <br/>
+    <br/>
+
     Recording progress:
     <progress id="progress" value="0" max="0"></progress>
+
+    <br/>
+    <br/>
+
+    <fieldset>
+        <br />
+        <legend>Click the tracks you want to record:</legend>
+        <input type='checkbox' name='KICK' id='KICK' value='message' /><label for='message'>&nbspkick</label><br /><br />
+        <input type='checkbox' name='SNARE' id='SNARE' value='message' /><label for='message'>&nbspsnare</label><br /><br />
+        <input type='checkbox' name='HAT' id='HAT' value='message' /><label for='message'>&nbsphat</label><br /><br />
+        <input type='checkbox' name='SAMPLE' id='SAMPLE' value='message' /><label for='message'>&nbspsample</label><br /><br />
+        <input type='checkbox' name='BASS' id='BASS' value='message' /><label for='message'>&nbspbass</label><br /><br />
+        <input type='checkbox' name='LEAD' id='LEAD' value='message' /><label for='message'>&nbsplead</label><br /><br />
+        <input type='checkbox' name='ARP' id='ARP' value='message' /><label for='message'>&nbsparp</label><br /><br />
+        <input type='checkbox' name='CHORD' id='CHORD' value='message' /><label for='message'>&nbspchord</label><br /><br />
+        <input type='checkbox' name='EFFECT_1' id='EFFECT_1' value='message' /><label for='message'>&nbspeffect 1</label><br /><br />
+        <input type='checkbox' name='EFFECT_2' id='EFFECT_2' value='message' /><label for='message'>&nbspeffect 2</label><br /><br />
+    </fieldset>
+
+    <br/>
+    <br/>
+    <br/>
+    
+
 
 </body>
 
@@ -108,19 +136,34 @@
     let clockSignalsBeforeDone = 0
     let clockCount = 0 
     let recording = false 
-    const MUTE_GROUPS = {
-        kick:   [128, 54, 0],
-        snare:  [128, 56, 0],
-        hat:    [128, 58, 0],
-        sample: [128, 61, 0],
-        bass:   [128, 63, 0],
-        lead:   [128, 66, 0],
-        arp:    [128, 68, 0],
-        chord:  [128, 70, 0],
-        miscA:  [128, 73, 0],
-        miscB:  [128, 75, 0],
+    // const MUTE_GROUPS = {
+    //     kick:   [128, 54, 0],
+    //     snare:  [128, 56, 0],
+    //     hat:    [128, 58, 0],
+    //     sample: [128, 61, 0],
+    //     bass:   [128, 63, 0],
+    //     lead:   [128, 66, 0],
+    //     arp:    [128, 68, 0],
+    //     chord:  [128, 70, 0],
+    //     miscA:  [128, 73, 0],
+    //     miscB:  [128, 75, 0],
+    // }
+    
+    const MUTE_COMMANDS = {TAPE: [186, 53, 1],
+        EFFECT_2: [185, 53, 1],
+        EFFECT_1: [184, 53, 1],
+        CHORD: [183, 53, 1],
+        ARP: [182, 53, 1],
+        LEAD: [181, 53, 1],
+        BASS: [180, 53, 1],
+        SAMPLE: [179, 53, 1],
+        HAT: [178, 53, 1],
+        SNARE: [177, 53, 1],
+        KICK: [176, 53, 1]
     }
 
+
+  
     const calcClockSignalsBeforeDone = (barCount) => {
         return CLOCK_SIGNALS_IN_1_BAR * barCount
     }
@@ -167,7 +210,7 @@
                 if (device.name == "OP-Z") {
                     console.log(device.name + " connected")
                     device.onmidimessage = handleIncomingMidi 
-                    sendMessage(MUTE_GROUPS.kick)
+                    sendMessage("nothing")
                 } else {
                     alert("Can't find an OP-Z :( Make Sure Your OP-Z is plugged into to the usb port on your device.")
                 }
@@ -191,9 +234,38 @@
         const output = midiAccess.outputs.get(deviceId)
         console.log("SENDING MIDI")
         //selects  mute group 7 ...///
+        //          channel, cc, val 
+        //MUTE GROUPS
         // output.send([185,55,6])
         // output.send([128,54,0])
-        output.send(message)
+        
+        //select pattern, last number is the important part. 0 is 1 
+        //it started working once i used 185, either its the magic number or 
+        //some other reason. It doesnt seem dependednt on current channel
+        // PATTERN CHANGE
+        // output.send([185,103,0])
+        // output.send([185,103,1])
+        // output.send([185,103,2])
+        // output.send([185,103,3])
+        // output.send([185,103,4])
+        // output.send([185,103,5])
+        // output.send(message)
+
+        //INSTRUMENT MUTE 
+
+        // switch(message) {
+        //     case "effect_two": 
+        //         output.send([185,53,1])
+        //         break
+        //     case tape: 
+        //         output.send([186,53,1])
+        //         break 
+        // }
+        Object.keys(MUTE_COMMANDS).forEach((name) => {
+            if(name != "CHORD") {
+                output.send(MUTE_COMMANDS[name])
+            }
+        })
     }
 
     //////////////////////////////////////
@@ -203,7 +275,10 @@
     //  How many clock signals do we need to let pass before we unhook our event listeners? 
   
  
-
+////verify that you can go to next pattern
+// https://recordrtc.org/StereoAudioRecorder.html
+//setup stereo recording plus downloading
+//add checkboxes for mutegroups 
 
 </script>
 </html>
