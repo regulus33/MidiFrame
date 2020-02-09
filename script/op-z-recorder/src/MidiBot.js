@@ -1,125 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>DAWNSOONS OPZ MultiTrack Recorder</title>
-</head>
-
-<style>
-    body {
-        color: #EFEFAE;
-        background-color: #3A3A3A;
-        font-family: 'Fira Mono', Monospace;
-    }
-
-    h3 {
-        color: #005F5F;
-    }
-
-    a {
-       color: #d75f5f;
-    }
-
-    strong {
-        color: #87af87;
-    }
-
-    .slidecontainer {
-        width: 100%;
-    }
-
-    .slider {
-        -webkit-appearance: none;
-        width: 100%;
-        height: 15px;
-        border-radius: 5px;
-        background: #d3d3d3;
-        outline: none;x`
-        opacity: 0.7;
-        -webkit-transition: .2s;
-        transition: opacity .2s;
-    }
-
-    .slider:hover {
-        opacity: 1;
-    }
-
-    .slider::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 25px;
-        height: 25px;
-        border-radius: 50%;
-        background: #d75f5f;
-        cursor: pointer;
-    }
-
-    .slider::-moz-range-thumb {
-        width: 25px;
-        height: 25px;
-        border-radius: 50%;
-        background: #d75f5f;
-        cursor: pointer;
-    }
-
-    .form-label {
-        color: #d75f5f; 
-    }   
-
-    progress#progress {
-        background: white;
-    }
-
-</style>
-
-<body>
-    <h3>DAWNSOON'S MIDI SPLITI</h3>
-    <a href="#" id="midiConsent">Click Here First Please</a>
-    <br/>
-    <br/>
-    <strong>How to use this program:</strong>
-
-    <p>given a project number and a track to be recorded, mute all tracks on all patterns in the given project that are not listed in the tracks to be recorded. </p>
-
-
-    <span class="form-label">BAR COUNT:</span> <span id="patternCount"></span>
-    <div class="slidecontainer">
-        <input type="range" min="1" max="128" value="4" class="slider" id="patternCountRange">
-    </div>
-    <span class="form-label">PROJECT SLOT:</span> <span id="projectSlot"></span>
-    <div class="slidecontainer">
-        <input type="range" min="1" max="10" value="5" class="slider" id="projectSlotRange">
-    </div>
-    <a href="#" id="start">start</a>
-    <br/>
-    <br/>
-    <br/>
-    Recording progress:
-    <progress id="progress" value="0" max="0"></progress>
-    <br/>
-    <br/>
-    <fieldset>
-        <br />
-        <legend>Click the tracks you want to record:</legend>
-        <input class= "tracks" type='checkbox' name='KICK' value='KICK'/><label for='message'>&nbspkick</label><br /><br />
-        <input class= "tracks" type='checkbox' name='SNARE' value='SNARE'/><label for='message'>&nbspsnare</label><br /><br />
-        <input class= "tracks" type='checkbox' name='HAT' value='HAT'/><label for='message'>&nbsphat</label><br /><br />
-        <input class= "tracks" type='checkbox' name='SAMPLE' value='SAMPLE'/><label for='message'>&nbspsample</label><br /><br />
-        <input class= "tracks" type='checkbox' name='BASS' value='BASS'/><label for='message'>&nbspbass</label><br /><br />
-        <input class= "tracks" type='checkbox' name='LEAD' value='LEAD'/><label for='message'>&nbsplead</label><br /><br />
-        <input class= "tracks" type='checkbox' name='ARP' value='ARP'/><label for='message'>&nbsparp</label><br /><br />
-        <input class= "tracks" type='checkbox' name='CHORD' value='CHORD'/><label for='message'>&nbspchord</label><br /><br />
-        <input class= "tracks" type='checkbox' name='EFFECT_1' value='EFFECT_1'/><label for='message'>&nbspeffect 1</label><br /><br />
-        <input class= "tracks" type='checkbox' name='EFFECT_2' value='EFFECT_2'/><label for='message'>&nbspeffect 2</label><br /><br />
-    </fieldset>
-
-    <br/>
-    <br/>
-    <br/>
-</body>
-<script>
     //////////////////////
     // GLOBAL VARIABLES//
     ////////////////////
+
+
+
     const CLOCK_SIGNALS_IN_1_BAR = 96
     const BEATS_IN_1_BAR = 4 
     let deviceId = 0
@@ -158,28 +42,11 @@
         SNARE: [177, 53, 1],
         KICK: [176, 53, 1]
     }
-    //MUTE GROUPS ARENT AS GRANULAR 
-    // const MUTE_GROUPS = {
-    //     kick:   [128, 54, 0],
-    //     snare:  [128, 56, 0],
-    //     hat:    [128, 58, 0],
-    //     sample: [128, 61, 0],
-    //     bass:   [128, 63, 0],
-    //     lead:   [128, 66, 0],
-    //     arp:    [128, 68, 0],
-    //     chord:  [128, 70, 0],
-    //     miscA:  [128, 73, 0],
-    //     miscB:  [128, 75, 0],
-    // }
   
     const calcClockSignalsBeforeDone = (barCount) => {
         return CLOCK_SIGNALS_IN_1_BAR * barCount
     }
  
-    /////////////////////
-    //   sliders      //
-    ///////////////////
-
     const patternCountSlider = document.getElementById("patternCountRange");
     const patternCountSliderOutput = document.getElementById("patternCount");
     const progressBar = document.getElementById("progress")
@@ -222,11 +89,12 @@
        for(let i = 0; i < 15; i++) {
             //go through each pattern and mute tracks
             await sleep(DELAY) 
-            sendMessage([PROJECTS_TO_CODES[selectedProject],103,i])
+            // sendMessage([PROJECTS_TO_CODES[selectedProject],103,i])
+            sendMessage([183,103,16])
             //mute all but current 
             Object.keys(MUTE_COMMANDS).forEach((trackName) => {
                 if( trackName != currentTrackToRecord ) {
-                    sendMuteMessages(trackName)
+                    // sendMuteMessages(trackName)
                 }
             })
 
@@ -250,7 +118,6 @@
         for(let i = 0; i < tracks.length; i++) {
             let element = tracks[i]
             if(element.checked) {
-                debugger 
                 tracksToRecord.push(element.value)
             } 
         }
@@ -299,7 +166,8 @@
                 clockCount += 1 
                 progressBar.value = clockCount
             }
-        }
+        } 
+      
     }
 
     const sendMessage = (message) => { 
@@ -315,8 +183,4 @@
     // document.getElementById('start').onclick = test
     document.getElementById('start').onclick = cycleMidi 
 
-    //////////////////////////////////////
 
-
-</script>
-</html>

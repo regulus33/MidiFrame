@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Jasmine Spec Runner v3.5.0</title>
+
+  <link rel="shortcut icon" type="image/png" href="lib/jasmine-3.5.0/jasmine_favicon.png">
+  <link rel="stylesheet" href="lib/jasmine-3.5.0/jasmine.css">
+
+  <script src="lib/jasmine-3.5.0/jasmine.js"></script>
+  <script src="lib/jasmine-3.5.0/jasmine-html.js"></script>
+  <script src="lib/jasmine-3.5.0/boot.js"></script>
+
+  <!-- include source files here... -->
+
+  <!-- include spec files here... -->
+
+</head>
+
+<body>
+  <div id="domDependency" style="">
+      <h3>DAWNSOON'S MIDI SPLITI</h3>
+      <a href="#" id="midiConsent">Click Here First Please</a>
+      <br/>
+      <br/>
+      <strong>How to use this program:</strong>
+
+      <p>given a project number and a track to be recorded, mute all tracks on all patterns in the given project that are not listed in the tracks to be recorded. </p>
+
+
+      <span class="form-label">BAR COUNT:</span> <span id="patternCount"></span>
+      <div class="slidecontainer">
+          <input type="range" min="1" max="128" value="4" class="slider" id="patternCountRange">
+      </div>
+      <span class="form-label">PROJECT SLOT:</span> <span id="projectSlot"></span>
+      <div class="slidecontainer">
+          <input type="range" min="1" max="10" value="5" class="slider" id="projectSlotRange">
+      </div>
+      <a href="#" id="start">start</a>
+      <br/>
+      <br/>
+      <br/>
+      Recording progress:
+      <progress id="progress" value="0" max="0"></progress>
+      <br/>
+      <br/>
+      <fieldset>
+          <br />
+          <legend>Click the tracks you want to record:</legend>
+          <input class= "tracks" type='checkbox' name='KICK' value='KICK'/><label for='message'>&nbspkick</label><br /><br />
+          <input class= "tracks" type='checkbox' name='SNARE' value='SNARE'/><label for='message'>&nbspsnare</label><br /><br />
+          <input class= "tracks" type='checkbox' name='HAT' value='HAT'/><label for='message'>&nbsphat</label><br /><br />
+          <input class= "tracks" type='checkbox' name='SAMPLE' value='SAMPLE'/><label for='message'>&nbspsample</label><br /><br />
+          <input class= "tracks" type='checkbox' name='BASS' value='BASS'/><label for='message'>&nbspbass</label><br /><br />
+          <input class= "tracks" type='checkbox' name='LEAD' value='LEAD'/><label for='message'>&nbsplead</label><br /><br />
+          <input class= "tracks" type='checkbox' name='ARP' value='ARP'/><label for='message'>&nbsparp</label><br /><br />
+          <input class= "tracks" type='checkbox' name='CHORD' value='CHORD'/><label for='message'>&nbspchord</label><br /><br />
+          <input class= "tracks" type='checkbox' name='EFFECT_1' value='EFFECT_1'/><label for='message'>&nbspeffect 1</label><br /><br />
+          <input class= "tracks" type='checkbox' name='EFFECT_2' value='EFFECT_2'/><label for='message'>&nbspeffect 2</label><br /><br />
+      </fieldset>
+
+      <br/>
+      <br/>
+      <br/>
+  </div>
+</body>
+
+<script src="src/MidiBot.js"></script>
+<script src="spec/MidiBotSpec.js"></script>
+
+
+
+</html>
