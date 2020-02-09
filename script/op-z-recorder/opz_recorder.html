@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>DAWNSOONS OPZ MultiTrack Recorder</title>
+</head>
+
+<style>
+    body {
+        color: #EFEFAE;
+        background-color: #3A3A3A;
+        font-family: 'Fira Mono', Monospace;
+    }
+
+    h3 {
+        color: #005F5F;
+    }
+
+    a {
+       color: #d75f5f;
+    }
+
+    strong {
+        color: #87af87;
+    }
+
+    .slidecontainer {
+        width: 100%;
+    }
+
+    .slider {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 15px;
+        border-radius: 5px;
+        background: #d3d3d3;
+        outline: none;x`
+        opacity: 0.7;
+        -webkit-transition: .2s;
+        transition: opacity .2s;
+    }
+
+    .slider:hover {
+        opacity: 1;
+    }
+
+    .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background: #d75f5f;
+        cursor: pointer;
+    }
+
+    .slider::-moz-range-thumb {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background: #d75f5f;
+        cursor: pointer;
+    }
+
+    .form-label {
+        color: #d75f5f; 
+    }   
+
+    progress#progress {
+        background: white;
+    }
+
+</style>
+
+<body>
+    <h3>DAWNSOON'S MIDI SPLITI</h3>
+    <a href="#" id="midiConsent">Click Here First Please</a>
+    <br/>
+    <br/>
+    <strong>How to use this program:</strong>
+
+    <p>given a project number and a track to be recorded, mute all tracks on all patterns in the given project that are not listed in the tracks to be recorded. </p>
+
+
+    <span class="form-label">BAR COUNT:</span> <span id="patternCount"></span>
+    <div class="slidecontainer">
+        <input type="range" min="1" max="128" value="4" class="slider" id="patternCountRange">
+    </div>
+    <span class="form-label">PROJECT SLOT:</span> <span id="projectSlot"></span>
+    <div class="slidecontainer">
+        <input type="range" min="1" max="10" value="5" class="slider" id="projectSlotRange">
+    </div>
+    <a href="#" id="start">start</a>
+    <br/>
+    <br/>
+    <br/>
+    Recording progress:
+    <progress id="progress" value="0" max="0"></progress>
+    <br/>
+    <br/>
+    <fieldset>
+        <br />
+        <legend>Click the tracks you want to record:</legend>
+        <input class= "tracks" type='checkbox' name='KICK' value='KICK'/><label for='message'>&nbspkick</label><br /><br />
+        <input class= "tracks" type='checkbox' name='SNARE' value='SNARE'/><label for='message'>&nbspsnare</label><br /><br />
+        <input class= "tracks" type='checkbox' name='HAT' value='HAT'/><label for='message'>&nbsphat</label><br /><br />
+        <input class= "tracks" type='checkbox' name='SAMPLE' value='SAMPLE'/><label for='message'>&nbspsample</label><br /><br />
+        <input class= "tracks" type='checkbox' name='BASS' value='BASS'/><label for='message'>&nbspbass</label><br /><br />
+        <input class= "tracks" type='checkbox' name='LEAD' value='LEAD'/><label for='message'>&nbsplead</label><br /><br />
+        <input class= "tracks" type='checkbox' name='ARP' value='ARP'/><label for='message'>&nbsparp</label><br /><br />
+        <input class= "tracks" type='checkbox' name='CHORD' value='CHORD'/><label for='message'>&nbspchord</label><br /><br />
+        <input class= "tracks" type='checkbox' name='EFFECT_1' value='EFFECT_1'/><label for='message'>&nbspeffect 1</label><br /><br />
+        <input class= "tracks" type='checkbox' name='EFFECT_2' value='EFFECT_2'/><label for='message'>&nbspeffect 2</label><br /><br />
+    </fieldset>
+
+    <br/>
+    <br/>
+    <br/>
+</body>
+<script src="src/MidiBot.js"></script>
+<script>
+</script>
+</html>
