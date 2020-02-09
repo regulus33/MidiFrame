@@ -78,64 +78,87 @@
     <br/>
     <strong>How to use this program:</strong>
 
-    <p>1. Keep track of the number of bars in your project. Without this, the script has no way of knowing how long your song is. Also add your bpm. I need to know this to figure out when to stop and start recording stems.</p>
-    <p>2. Create as many mute groups as you want stems. If you want a stem with only kicks, mute every instrument except kicks. If you want chord and arp together, make another mute group with everything muted but chords and arps</p>
-    <p>3. Check each box for each mute group youre using, the numbers are the same as the black keys on your z.</p>
-    <p>4. Chain all patterns. Press record</p>
+    <p>given a project number and a track to be recorded, mute all tracks on all patterns in the given project that are not listed in the tracks to be recorded. </p>
+
 
     <span class="form-label">BAR COUNT:</span> <span id="patternCount"></span>
     <div class="slidecontainer">
-        <input type="range" min="1" max="128" value="8" class="slider" id="patternCountRange">
+        <input type="range" min="1" max="128" value="4" class="slider" id="patternCountRange">
     </div>
-    
+    <span class="form-label">PROJECT SLOT:</span> <span id="projectSlot"></span>
+    <div class="slidecontainer">
+        <input type="range" min="1" max="10" value="5" class="slider" id="projectSlotRange">
+    </div>
     <a href="#" id="start">start</a>
-
     <br/>
     <br/>
     <br/>
-
     Recording progress:
     <progress id="progress" value="0" max="0"></progress>
-
     <br/>
     <br/>
-
     <fieldset>
         <br />
         <legend>Click the tracks you want to record:</legend>
-        <input type='checkbox' name='KICK' id='KICK' value='message' /><label for='message'>&nbspkick</label><br /><br />
-        <input type='checkbox' name='SNARE' id='SNARE' value='message' /><label for='message'>&nbspsnare</label><br /><br />
-        <input type='checkbox' name='HAT' id='HAT' value='message' /><label for='message'>&nbsphat</label><br /><br />
-        <input type='checkbox' name='SAMPLE' id='SAMPLE' value='message' /><label for='message'>&nbspsample</label><br /><br />
-        <input type='checkbox' name='BASS' id='BASS' value='message' /><label for='message'>&nbspbass</label><br /><br />
-        <input type='checkbox' name='LEAD' id='LEAD' value='message' /><label for='message'>&nbsplead</label><br /><br />
-        <input type='checkbox' name='ARP' id='ARP' value='message' /><label for='message'>&nbsparp</label><br /><br />
-        <input type='checkbox' name='CHORD' id='CHORD' value='message' /><label for='message'>&nbspchord</label><br /><br />
-        <input type='checkbox' name='EFFECT_1' id='EFFECT_1' value='message' /><label for='message'>&nbspeffect 1</label><br /><br />
-        <input type='checkbox' name='EFFECT_2' id='EFFECT_2' value='message' /><label for='message'>&nbspeffect 2</label><br /><br />
+        <input class= "tracks" type='checkbox' name='KICK' value='KICK'/><label for='message'>&nbspkick</label><br /><br />
+        <input class= "tracks" type='checkbox' name='SNARE' value='SNARE'/><label for='message'>&nbspsnare</label><br /><br />
+        <input class= "tracks" type='checkbox' name='HAT' value='HAT'/><label for='message'>&nbsphat</label><br /><br />
+        <input class= "tracks" type='checkbox' name='SAMPLE' value='SAMPLE'/><label for='message'>&nbspsample</label><br /><br />
+        <input class= "tracks" type='checkbox' name='BASS' value='BASS'/><label for='message'>&nbspbass</label><br /><br />
+        <input class= "tracks" type='checkbox' name='LEAD' value='LEAD'/><label for='message'>&nbsplead</label><br /><br />
+        <input class= "tracks" type='checkbox' name='ARP' value='ARP'/><label for='message'>&nbsparp</label><br /><br />
+        <input class= "tracks" type='checkbox' name='CHORD' value='CHORD'/><label for='message'>&nbspchord</label><br /><br />
+        <input class= "tracks" type='checkbox' name='EFFECT_1' value='EFFECT_1'/><label for='message'>&nbspeffect 1</label><br /><br />
+        <input class= "tracks" type='checkbox' name='EFFECT_2' value='EFFECT_2'/><label for='message'>&nbspeffect 2</label><br /><br />
     </fieldset>
 
     <br/>
     <br/>
     <br/>
-    
-
-
 </body>
-
-
 <script>
- 
     //////////////////////
     // GLOBAL VARIABLES//
     ////////////////////
     const CLOCK_SIGNALS_IN_1_BAR = 96
     const BEATS_IN_1_BAR = 4 
     let deviceId = 0
-    let midiAccess = {}
-    let clockSignalsBeforeDone = 0
     let clockCount = 0 
+    let clockSignalsBeforeDone = 0
+    let selectedProject = 0 
     let recording = false 
+    let midiAccess = {}
+    let tracksToRecord = []
+
+    const PROJECTS_TO_CODES = {
+        10: 185,
+        9: 184,
+        8: 183,
+        7: 182,
+        6: 181,
+        5: 180,
+        4: 179,
+        3: 178,
+        2: 177,
+        1: 176
+    }
+
+    const DELAY = 1000 
+
+    const MUTE_COMMANDS = {
+        TAPE: [186, 53, 1],
+        EFFECT_2: [185, 53, 1],
+        EFFECT_1: [184, 53, 1],
+        CHORD: [183, 53, 1],
+        ARP: [182, 53, 1],
+        LEAD: [181, 53, 1],
+        BASS: [180, 53, 1],
+        SAMPLE: [179, 53, 1],
+        HAT: [178, 53, 1],
+        SNARE: [177, 53, 1],
+        KICK: [176, 53, 1]
+    }
+    //MUTE GROUPS ARENT AS GRANULAR 
     // const MUTE_GROUPS = {
     //     kick:   [128, 54, 0],
     //     snare:  [128, 56, 0],
@@ -148,40 +171,13 @@
     //     miscA:  [128, 73, 0],
     //     miscB:  [128, 75, 0],
     // }
-    
-    const MUTE_COMMANDS = {TAPE: [186, 53, 1],
-        EFFECT_2: [185, 53, 1],
-        EFFECT_1: [184, 53, 1],
-        CHORD: [183, 53, 1],
-        ARP: [182, 53, 1],
-        LEAD: [181, 53, 1],
-        BASS: [180, 53, 1],
-        SAMPLE: [179, 53, 1],
-        HAT: [178, 53, 1],
-        SNARE: [177, 53, 1],
-        KICK: [176, 53, 1]
-    }
-
-
   
     const calcClockSignalsBeforeDone = (barCount) => {
         return CLOCK_SIGNALS_IN_1_BAR * barCount
     }
  
-    console.log('loaded')
-    // patch up prefixes
-    document.getElementById('midiConsent').onclick = (event) => {
-        console.log('requesting to midi access')
-        request()
-    }  
-
-    document.getElementById('start').onclick = (event) => {
-        sendMessage([250])
-        recording = true 
-    }
-
     /////////////////////
-    //   MIDI SETUP   //
+    //   sliders      //
     ///////////////////
 
     const patternCountSlider = document.getElementById("patternCountRange");
@@ -197,6 +193,73 @@
         progressBar.max = clockSignalsBeforeDone
     }
 
+    /////////project sliders 
+    const projectSlotSlider = document.getElementById("projectSlotRange");
+    const projectSlotSliderOutput = document.getElementById("projectSlot");
+    projectSlotSliderOutput.innerHTML = projectSlotSlider.value;
+    selectedProject = projectSlotSlider.value 
+
+    projectSlotSlider.oninput = () => {
+        const projectSlotValue = projectSlotSlider.value
+        projectSlotSliderOutput.innerHTML = projectSlotValue
+        selectedProject = projectSlotValue
+    }
+
+
+    const midiConsent = (event) => {
+        console.log('requesting to midi access')
+        request()
+    } 
+
+    async function cycleMidi() {
+        //fill the array if it isnt full yet, first time 
+        if(tracksToRecord.length === 0) {
+           assignRecordTracks()
+        }
+
+        let currentTrackToRecord = tracksToRecord.pop() 
+       //iterate through every patthern an mute all but selected
+       for(let i = 0; i < 15; i++) {
+            //go through each pattern and mute tracks
+            await sleep(DELAY) 
+            sendMessage([PROJECTS_TO_CODES[selectedProject],103,i])
+            //mute all but current 
+            Object.keys(MUTE_COMMANDS).forEach((trackName) => {
+                if( trackName != currentTrackToRecord ) {
+                    sendMuteMessages(trackName)
+                }
+            })
+
+       } 
+        //all  mutes have been applied, start at pattern 0 
+        // sendMessage([250])
+        // recording = true 
+        
+    }
+
+    async function sendMuteMessages(trackName){
+        let muteMessage = MUTE_COMMANDS[trackName]
+        console.log("sending: " + muteMessage )
+        await sleep(DELAY)
+        sendMessage(muteMessage)
+    }
+
+    const assignRecordTracks = () => {
+        const tracks = document.getElementsByClassName("tracks")
+
+        for(let i = 0; i < tracks.length; i++) {
+            let element = tracks[i]
+            if(element.checked) {
+                debugger 
+                tracksToRecord.push(element.value)
+            } 
+        }
+      
+        // these and then store them somewhere than iterate through that 
+        // once user hits start 
+        // then record mono and if you can do 2 channels record each chanel of each track 
+    }
+
 
     const request = () => {
         return navigator.requestMIDIAccess( {sysex: true }).then( access => {
@@ -209,8 +272,8 @@
             for (let device of inputPorts ) {
                 if (device.name == "OP-Z") {
                     console.log(device.name + " connected")
-                    device.onmidimessage = handleIncomingMidi 
-                    sendMessage("nothing")
+                    device.onmidimessage = onMidiMessage 
+                    // sendMessage("nothing")
                 } else {
                     alert("Can't find an OP-Z :( Make Sure Your OP-Z is plugged into to the usb port on your device.")
                 }
@@ -218,11 +281,20 @@
         }).catch(console.error);
     }
 
-    const handleIncomingMidi = (message) => {
+    const onMidiMessage = (message) => {
+        //IF THIS IS THE CLOCK SIGNAL AND WE ARE IN RECORDING MODE 
         if(recording && message.data[0] == 248) {
+            //IF WE HAVE REACHED THE END OF THE PROJECT
             if(clockCount > 0 && clockCount == clockSignalsBeforeDone){
-                //stop message
-                sendMessage([252])
+                //stop op-z 
+                alert('length finished')
+                //if there are stil tracks to record we will recall cycleMidi()
+                if(tracksToRecord.length === 0) {
+                    alert('recording is done')
+                    sendMessage([252])
+                } else {
+                    cycleMidi()
+                }
             } else {
                 clockCount += 1 
                 progressBar.value = clockCount
@@ -232,53 +304,19 @@
 
     const sendMessage = (message) => { 
         const output = midiAccess.outputs.get(deviceId)
-        console.log("SENDING MIDI")
-        //selects  mute group 7 ...///
-        //          channel, cc, val 
-        //MUTE GROUPS
-        // output.send([185,55,6])
-        // output.send([128,54,0])
-        
-        //select pattern, last number is the important part. 0 is 1 
-        //it started working once i used 185, either its the magic number or 
-        //some other reason. It doesnt seem dependednt on current channel
-        // PATTERN CHANGE
-        // output.send([185,103,0])
-        // output.send([185,103,1])
-        // output.send([185,103,2])
-        // output.send([185,103,3])
-        // output.send([185,103,4])
-        // output.send([185,103,5])
-        // output.send(message)
-
-        //INSTRUMENT MUTE 
-
-        // switch(message) {
-        //     case "effect_two": 
-        //         output.send([185,53,1])
-        //         break
-        //     case tape: 
-        //         output.send([186,53,1])
-        //         break 
-        // }
-        Object.keys(MUTE_COMMANDS).forEach((name) => {
-            if(name != "CHORD") {
-                output.send(MUTE_COMMANDS[name])
-            }
-        })
+        output.send(message)
     }
 
-    //////////////////////////////////////
-    //      CALCULATIONS AND STUFF     //
-    /////////////////////////////////////
+    const sleep = (ms) => {
+        return new Promise(resolve => setTimeout(resolve, ms))
+    }
 
-    //  How many clock signals do we need to let pass before we unhook our event listeners? 
-  
- 
-////verify that you can go to next pattern
-// https://recordrtc.org/StereoAudioRecorder.html
-//setup stereo recording plus downloading
-//add checkboxes for mutegroups 
+    document.getElementById('midiConsent').onclick = midiConsent 
+    // document.getElementById('start').onclick = test
+    document.getElementById('start').onclick = cycleMidi 
+
+    //////////////////////////////////////
+
 
 </script>
 </html>
