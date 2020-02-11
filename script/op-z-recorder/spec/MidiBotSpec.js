@@ -1,14 +1,28 @@
-describe("MIDI BOT", function() {
-  var player;
-  var song;
+describe("MIDI BOT", function () {
 
-  beforeEach(function() {
-    let newThing = 0 
-  });
+  beforeEach(function () {
+    let newThing = 0
+  })
 
-  it("should be a test", function() {
-    expect(3).toEqual(3);
-  });
+  it("calcClockSignalsBeforeDone, should pass ", function () {
+    expect(calcClockSignalsBeforeDone(1)).toBe(96)
+  })
+
+  it("sendMessage calls the output from midiaccess", function () {
+    let called = false
+    midiAccess = {
+      outputs: {
+        get: (deviceId) => {
+          return {
+            send: (message) => called = true
+          }
+        }
+      }
+    }
+    sendMessage([234])
+
+    expect(called).toBe(true)
+  })
 
   // describe("when song has been paused", function() {
   //   beforeEach(function() {
