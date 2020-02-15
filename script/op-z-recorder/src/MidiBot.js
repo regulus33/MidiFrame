@@ -42,9 +42,122 @@
         SNARE: [177, 53, 1],
         KICK: [176, 53, 1]
     }
-  
-    const calcClockSignalsBeforeDone = (barCount) => {
-        return CLOCK_SIGNALS_IN_1_BAR * barCount
+
+    const setup = () => {
+      
+        const patternCountSlider = document.getElementById("patternCountRange");
+        const patternCountSliderOutput = document.getElementById("patternCount");
+        const progressBar = document.getElementById("progress")
+
+        const bot = new MidiBot({
+            progressBar: progressBar,
+            patternCountSlider: patternCountSlider,
+            patternCountSliderOutput: patternCountSliderOutput
+        })
+        return bot 
+        
+    }
+ 
+    class MidiBot {
+
+        constructor(options){
+            this.patternCountSlider = options.patternCountSlider
+            this.patternCountSliderOutput = options.patternCountSliderOutput
+            this.midiAccess = options.midiAccess 
+            this.progressBar = options.progressBar
+            this.recording = false
+            this.currentTrackToRecord = "ARP"
+            this.clockCount = 0 
+            this.clockSignalsBeforeDone = 0 
+            
+
+        }
+
+        calcClockSignalsBeforeDone = (barCount) => {
+             const sigs = CLOCK_SIGNALS_IN_1_BAR * barCount
+             this.clockSignalsBeforeDone = sigs 
+             return sigs 
+        }
+
+        sendMessage = (message) => { 
+            const output = this.midiAccess.outputs.get(deviceId)
+            output.send(message)
+        }
+
+         //tested
+        record = () => {
+            this.recording = true
+        }
+
+        //tested
+        play = () => {
+            this.sendMessage([250])
+        }
+
+         //tested
+        stop = () => {
+            this.sendMessage([252])
+        }
+
+        initializeUI = () => {
+            this.patternCountSliderOutput.innerHTML = this.patternCountSlider.value
+            this.progressBar.max = this.calcClockSignalsBeforeDone(this.patternCountSlider.value)
+            
+            this.patternCountSlider.oninput = this.onPatternCountSliderInput
+            this.projectSlider.oninput = this.onProjectSliderInput 
+            return this 
+        }
+
+        //HANDLERS HANDLERS HANDLERS HANDLERS HANDLERS HANDLERS HANDLERS HANDLERS HANDLERS
+        //HANDLERS HANDLERS HANDLERS HANDLERS HANDLERS HANDLERS HANDLERS HANDLERS HANDLERS
+        //HANDLERS HANDLERS HANDLERS HANDLERS HANDLERS HANDLERS HANDLERS HANDLERS HANDLERS
+        //HANDLERS HANDLERS HANDLERS HANDLERS HANDLERS HANDLERS HANDLERS HANDLERS HANDLERS
+        //HANDLERS HANDLERS HANDLERS HANDLERS HANDLERS HANDLERS HANDLERS HANDLERS HANDLERS
+        //HANDLERS HANDLERS HANDLERS HANDLERS HANDLERS HANDLERS HANDLERS HANDLERS HANDLERS
+
+        onPatternCountSliderInput = () => {
+            const totalBars = this.patternCountSlider.value
+            this.patternCountSliderOutput.innerHTML = totalBars
+            this.clockSignalsBeforeDone = calcClockSignalsBeforeDone(totalBars)
+            this.progressBar.max = this.clockSignalsBeforeDone
+        }
+
+        //tested
+        onMidiMessage = (message) => {
+
+            if(this.recording && message.data[0] == 248) {
+                
+                Object.keys(MUTE_COMMANDS).forEach((trackName) => {
+                    if( trackName != this.currentTrackToRecord ) {
+                        this.sendMessage(MUTE_COMMANDS[trackName])
+                    }
+                })
+                //for advanced cycling 
+                // if(this.clockCount > 0 && this.clockCount == this.clockSignalsBeforeDone){
+                    
+                    // if(tracksToRecord.length === 0) {
+                    //     alert('recording is done')
+                    //     sendMessage([252])
+                    // } else {
+                    //     cycleMidi()
+                    // }
+                // } else {
+                    this.clockCount += 1 
+                    this.progressBar.value = this.clockCount
+                // }
+            } 
+      
+        }
+
+
+        //slider is changed, the bar count is updated and so is the clock signals before done count 
+        // hit play and recoring begins... 
+        //mute messages are sent on every clock count that are not the selected track. Lets start with the arp track. 
+        //
+
+
+
+
     }
  
     // const patternCountSlider = document.getElementById("patternCountRange");
@@ -183,10 +296,10 @@
       
     // }
 
-    const sendMessage = (message) => { 
-        const output = midiAccess.outputs.get(deviceId)
-        output.send(message)
-    }
+    // const sendMessage = (message) => { 
+    //     const output = midiAccess.outputs.get(deviceId)
+    //     output.send(message)
+    // }
 
     // const sleep = (ms) => {
     //     return new Promise(resolve => setTimeout(resolve, ms))
