@@ -41,7 +41,7 @@ export default class MidiRecorderContainer extends React.Component  {
             clip_length: lengthOfClip
         })
 
-        this.props.midiCollector.updateClipDuration(lengthOfClip)
+        this.props.midiCollector.updatePatternDuration(lengthOfClip)
     }
 
     onBPMInput(event) {
@@ -52,7 +52,7 @@ export default class MidiRecorderContainer extends React.Component  {
             clip_length: lengthOfClip
         })
 
-        this.props.midiCollector.updateClipDuration(lengthOfClip)
+        this.props.midiCollector.updatePatternDuration(lengthOfClip)
     }
 
     
