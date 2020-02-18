@@ -27,9 +27,13 @@ module.exports = class MidiToVideo {
     generateChannelSliceCommands() {
         //just run an rm -rf in the directory where thiss channel stores video slices
         this.removeOldVideoSlices()
+        //this means that the first midi note hit after 0 seconds from pattern start 
         let startsLate = this.idlePeriodDuration > 0
+        //just so we can work with the first note 
         let firstIterationOfMap = true 
-        let firstMidiNoteFiredAt = null 
+        //this is important?
+        let firstMidiNoteFiredAt = null
+        //idle periodClip?  
         let idlePeriodClip = null //this will or will not be prepended to the array, usually is present on snare tracks, stuff not coming in on the one 
         //iterate through the reorded midi events
         let commands =  this.processedDataArray.map(event => {
@@ -43,20 +47,24 @@ module.exports = class MidiToVideo {
             let nextEvent = !weAreAtTheEndOfArray ? (this.processedDataArray[this.processedDataArray.indexOf(event) + 1]) : null 
             //start of clip 
             let startOfClip = event.timeStamp 
-
+            //end of clip  for calcs
             let endOfClip
 
             //cop out out to avoid index out of bounds 
             if(weAreAtTheEndOfArray) {
+                //
                 let endPatternTimestamp
                 //subtract time elapsed from total clip time to get the expected duration of the final note 
                 //this only works if the pattern begins with a midi note!!! Fix this 
                 //if we started late, the first clip will not really be the beginning of the sequence
                 if(startsLate) {
-                    let actualFirstMidiNoteFiredAt = firstMidiNoteFiredAt -  this.idlePeriodDuration
+                    //bad veriable name, this is more like actual midi timestamp 
+                    let actualFirstMidiNoteFiredAt = firstMidiNoteFiredAt - this.idlePeriodDuration
+                    //we need this in order to determine at what point to cut off the final clip  
                     endPatternTimestamp = actualFirstMidiNoteFiredAt + this.patternDuration
                     console.log(`actualFirstMidiNoteFiredAt: ${actualFirstMidiNoteFiredAt} firstMidiNoteFiredAt: ${firstMidiNoteFiredAt}`)
                 } else {
+                    //pattern duration is calculated based on bpm and bar count
                     endPatternTimestamp = firstMidiNoteFiredAt + this.patternDuration
                 }
                 endOfClip = endPatternTimestamp
@@ -77,6 +85,7 @@ module.exports = class MidiToVideo {
             //but you know. Its just me working on this soooo...... 
             //sorry not sorry? 
             if (startsLate && firstIterationOfMap) {
+                //meaning first note 
                 firstIterationOfMap = false 
                 console.log("[IDLE_PERIOD DURATION] greater than zero, value is: " + this.idlePeriodDuration + " milliseconds")
                 let idlePeriodAsSeconds = this.convertMillisecondsToSeconds(this.idlePeriodDuration) 

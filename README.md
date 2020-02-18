@@ -593,4 +593,16 @@ now in miditovideo... if starttime is less than first note time, insert black.jp
 if last note is less than stop time, insert black.jpeg as video for that duration. 
 
 
+## TODO NOW 
 
+we need to figure out why the videos are not exactly the right duration of the patterns. 4 bar videos in 120 bpm should always be the same. 
+
+Maybe the best approach is to think of a way to test this. Integration tests would probably be the most effective. 
+
+Need to sleep on it 
+
+but right now we prepend the "idle period" clip to the beginning of the split commands array which should fill that gap for patterns not starting on the 1 
+
+maybe the offset was actually happening with normal patterns or maybe I imagined it. 
+
+More testing needed. That should be tomorrows task! 
