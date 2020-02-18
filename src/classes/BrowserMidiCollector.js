@@ -284,7 +284,7 @@ export default class BrowserMidiCollector {
       
     }
 
-    updateClipDuration(duration) {
+    updatePatternDuration(duration) {
       this.patternDuration = duration
     }
     //need this for the time stamp input
