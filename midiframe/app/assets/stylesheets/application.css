@@ -21,3 +21,8 @@ h1{
     letter-spacing: 13px;
 }
 
+#newProject {
+    float:right; 
+    margin: 20px;   
+}
+

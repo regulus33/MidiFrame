@@ -1,7 +1,7 @@
 <h1>PROJECT</h1> 
 
     <div class = "card-panel">  
-         <%= form_for @project, url: { action: "create" }, html: {class: "form-group"} do |f| %>
+         <%= form_for @project, url: { action: "update" }, html: {class: "form-group"} do |f| %>
           <label>Name</label>
           <%= f.text_field :name, value: @project.name %>
           <label>BPM</label>
@@ -10,3 +10,5 @@
     </div>  
   
 <% end %>
+
+<%= render 'button' %>
