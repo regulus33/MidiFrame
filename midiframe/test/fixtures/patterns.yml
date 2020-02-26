@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  midi_events: 
+  note_stamps: 
+  bars: 1
+  bpm: 1
+  pattern_length_in_seconds: 
+
+two:
+  midi_events: 
+  note_stamps: 
+  bars: 1
+  bpm: 1
+  pattern_length_in_seconds: 

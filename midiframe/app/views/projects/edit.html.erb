@@ -1,0 +1,12 @@
+<h1>PROJECT</h1> 
+
+    <div class = "card-panel">  
+         <%= form_for @project, url: { action: "create" }, html: {class: "form-group"} do |f| %>
+          <label>Name</label>
+          <%= f.text_field :name, value: @project.name %>
+          <label>BPM</label>
+          <%= f.text_field :bpm %>
+        <%= f.submit "S A V E", class: "waves-effect waves-light btn" %>
+    </div>  
+  
+<% end %>
