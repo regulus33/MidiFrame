@@ -1,10 +1,10 @@
 class ProjectsController < ApplicationController
 
-    before_action :get_project, only: [:edit, :update]
+    before_action :get_project, only: [:edit, :update, :destroy]
 
     def index 
         @projects = current_user.projects 
-        redirect_to projects_new_path if @projects.empty? 
+        redirect_to new_project_path if @projects.empty? 
     end 
 
     def edit 
@@ -23,6 +23,7 @@ class ProjectsController < ApplicationController
             render 'index'
         else 
             #TODO: handle form validation stuff
+            render 'layouts/error'
         end 
     end 
 
@@ -37,7 +38,17 @@ class ProjectsController < ApplicationController
             render 'index'
         else 
             #TODO: handle form validation stuff
+            render 'layouts/error'
         end 
+    end 
+
+    def destroy 
+        @deleted_name = @project.name
+        if(@project.destroy)
+            render 'index'
+        else 
+            render 'layouts/error'
+        end             
     end 
 
     private 
