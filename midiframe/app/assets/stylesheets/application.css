@@ -21,7 +21,7 @@ h1{
     letter-spacing: 13px;
 }
 
-#newProject {
+#newProject, #deleteProject {
     float:right; 
     margin: 20px;   
 }

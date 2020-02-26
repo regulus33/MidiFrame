@@ -1,3 +1,8 @@
 <div class="row">
-    <a id="newProject" class="btn-floating btn-large waves-effect waves-light red" href="<%= new_project_path %>"><i class="material-icons">add</i></a>
+    <a id="newProject" class="btn-floating btn-large waves-effect  teal lighten-2" href="<%= new_project_path %>"><i class="material-icons">add</i></a> 
+    <% if params[:action] == "edit" %>
+        <%= link_to(@project, {method: "DELETE", class: "btn-floating btn-large waves-effect waves-light red", id: "deleteProject"}) do  %>
+            <i class="material-icons">clear</i>
+        <% end %>
+    <% end %>
 </div>
