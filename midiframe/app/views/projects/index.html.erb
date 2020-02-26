@@ -1,0 +1,8 @@
+ <ul class="collection with-header">
+    <li class="collection-header"><h4>PROJECTS</h4></li>
+    <% current_user.projects.each do |project| %>
+        <a href="<%= edit_project_path(project) %>" class="collection-item"><%= project.name %></a>
+    <% end %>
+</ul>
+
+
