@@ -15,12 +15,21 @@ class ProjectsController < ApplicationController
     end 
 
     def update
+        @project.bpm = project_params[:bpm].to_i 
+        @project.name = project_params[:name] 
+
+        if @project.save 
+            flash[:notice] = "Post successfully created"
+            render 'index'
+        else 
+            #TODO: handle form validation stuff
+        end 
     end 
 
     def create 
         @project = Project.new 
         @project.bpm = project_params[:bpm].to_i 
-        @project.name = project_params[:name].to_i 
+        @project.name = project_params[:name] 
         @project.user = current_user
 
         if @project.save 
