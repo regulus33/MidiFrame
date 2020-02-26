@@ -1,5 +1,0 @@
-file '/Users/zack/video-synth/midi_slices/channel_8/0.mp4'
-file '/Users/zack/video-synth/midi_slices/channel_8/43943.04000001284.mp4'
-file '/Users/zack/video-synth/midi_slices/channel_8/44949.00500000222.mp4'
-file '/Users/zack/video-synth/midi_slices/channel_8/45942.69500000519.mp4'
-file '/Users/zack/video-synth/midi_slices/channel_8/46948.609999992186.mp4'

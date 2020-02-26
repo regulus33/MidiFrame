@@ -4,11 +4,11 @@ const fs = require('fs');
 
 module.exports = class MidiToVideo {
 
-    constructor(channel,notes,clip, data, idlePeriodDuration,patternDuration){
+    constructor(channel,notes,clip, data, idlePeriodDuration,patternDuration) {
         console.log(`MidiToVideoConstructor channel: ${channel}, notes: ${notes}, clip: ${clip}, data: ${data}`)
         this.idlePeriodDuration = idlePeriodDuration
         this.patternDuration = patternDuration //* really is the duration of the PATTERN here clip means midi slice
-        this.channel = channel
+        this.channel = channel  
         this.notes = notes
         this.clip = clip
         this.processedDataArray = data
@@ -70,7 +70,7 @@ module.exports = class MidiToVideo {
                 endOfClip = endPatternTimestamp
                 console.log(`endPatternTimestamp: ${endPatternTimestamp}, startOfClip: ${startOfClip}, firstMidiNoteFiredAt: ${firstMidiNoteFiredAt} patternduration: ${this.patternDuration} endofClip: ${endOfClip}`)
             } else {
-                //we arent there yet  s
+                //we arent there yet  
                 endOfClip = nextEvent.timeStamp
             }
             //nothing out of the ordinary here 
