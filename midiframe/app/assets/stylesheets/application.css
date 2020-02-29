@@ -19,6 +19,7 @@ body, a#upload_video_button {
 
 h1{
     letter-spacing: 13px;
+    padding: 0px 10px 0px 10px;
 }
 
 #newProject, #deleteProject {
@@ -35,4 +36,12 @@ a#upload_video_button{
 /* for the project form page, video is too wide */
 video.video_preview{
     width: 100%;
+}
+
+.hidden {
+    display: none; 
+}
+
+.visible {
+    display: inherit; 
 }
