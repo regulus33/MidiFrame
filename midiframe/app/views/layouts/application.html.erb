@@ -11,6 +11,15 @@
   </head>
 
   <body>
-    <%= yield %>
+    <h1><%= params[:controller].upcase %></h1>
+    <div id="page_content">
+      <%= yield %>
+    </div>
+   <%# this div below is meant to replace the "page_content" above when a form is laoding. This really helps for UX in long upload times.%>
+    <div id="loading_bar" class="hidden"> 
+        <div class="progress">
+            <div class="indeterminate"></div>
+        </div>
+    </div>
   </body>
 </html>
