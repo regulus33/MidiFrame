@@ -7,13 +7,12 @@ require("@rails/ujs").start()
 require("turbolinks").start()
 require("@rails/activestorage").start()
 require("channels")
-
+require("../projects.js")
 import "../stylesheets/application"
 import 'materialize-css/dist/js/materialize'
 
 document.addEventListener("turbolinks:load", () => {
-    $('[data-toggle="tooltip"]').tooltip()
-    $('[data-toggle="popover"]').popover()
+    //todo, is this where I'm supposed to put something?
 })
 
 // Uncomment to copy all static images under ../images to the output folder and reference
