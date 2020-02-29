@@ -10,13 +10,17 @@
             <a id="upload_video_button" class="waves-effect waves-light btn">Choose Video</a>
           </label>
           <%# dynamically update the video filename via javascript project.js %>
-          <span id="video_file_name">no file chosen</span>
+          <span id="video_file_name"><%= @project.video ? "Replace video" : "Choose a video" %></span>
           <%#file upload button is hideous, we had to hide it and user label-for instead. Click a tag and file chooser is invoked %>
           <%= f.file_field :video, style: "display:none;"%>
-        <%= f.submit "S A V E", class: "waves-effect waves-light btn" %>
+        <%= f.submit "S A V E", class: "waves-effect waves-light btn"%>
     </div>  
   
 <% end %>
+
+<div class="video_preview">
+    <%= video_tag(url_for(@project.video), class: "video_preview", controls: true) %>
+</div>
 
 <%= render 'button' %>
 

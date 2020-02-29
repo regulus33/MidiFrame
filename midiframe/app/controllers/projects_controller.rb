@@ -17,6 +17,7 @@ class ProjectsController < ApplicationController
     def update
         @project.bpm = project_params[:bpm].to_i 
         @project.name = project_params[:name] 
+        @project.video = project_params[:video] 
 
         if @project.save 
             flash[:notice] = "Post successfully created"
@@ -31,6 +32,7 @@ class ProjectsController < ApplicationController
         @project = Project.new 
         @project.bpm = project_params[:bpm].to_i 
         @project.name = project_params[:name] 
+        @project.video = project_params[:video] 
         @project.user = current_user
 
         if @project.save 
