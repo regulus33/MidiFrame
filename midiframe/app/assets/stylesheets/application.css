@@ -13,35 +13,33 @@
  *= require_tree .
  *= require_self
  */
-body, a#upload_video_button {
-    letter-spacing: 7px !important;
-}
-
-h1{
-    letter-spacing: 13px;
-    padding: 0px 10px 0px 10px;
-}
-
-#newProject, #deleteProject {
-    float:right; 
-    margin: 20px;   
-}
-
-/*unfortunately material UI does not do a great job consistently styling all ranges of tags with class button. 
-we have to brute force black text and letter spacing here*/
-a#upload_video_button{
-    color: black;
-}
-
-/* for the project form page, video is too wide */
-video.video_preview{
-    width: 100%;
-}
-
-.hidden {
-    display: none; 
-}
-
-.visible {
-    display: inherit; 
-}
+ #newProject, #deleteProject,#new_pattern_button
+ {
+     float: right;
+     margin: 20px;
+ }
+ .hidden
+ {
+     display: none;
+ }
+ .visible
+ {
+     display: inherit;
+ }
+ a#upload_video_button
+ {
+     color: black;
+ }
+ body, a#upload_video_button
+ {
+     letter-spacing: 7px !important;
+ }
+ h1
+ {
+     letter-spacing: 13px;
+     padding: 0px 10px 0px 10px;
+ }
+ video.video_preview
+ {
+     width: 100%;
+ }
