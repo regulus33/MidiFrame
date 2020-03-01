@@ -6,9 +6,9 @@
             <i class="material-icons">clear</i>
         <% end %>
     <% end %>
-    <% if params[:controller] == "Project" %>
-        <%= link_to(@project, {method: "DELETE", class: "btn-floating btn-large waves-effect waves-light red", id: "deleteProject"}) do  %>
-            <i class="material-icons">clear</i>
+    <% if params[:action] == "edit" %>
+        <%= link_to(new_project_pattern_path(@project), class: "btn-floating btn-large waves-effect waves-light red", id: "new_pattern_button") do  %>
+            <i class="material-icons">apps</i>
         <% end %>
     <% end %>
 </div>
