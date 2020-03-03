@@ -11,15 +11,38 @@ require("channels")
 require("../projects.js")
 //ALL REUSABLE FUNCTIONS IMPORTED HERE
 const {
-    show_loader_when_submit_form, 
+  showLoaderWhenSubmitForm, 
 } = require("../shared.js")
 import "../stylesheets/application"
 import 'materialize-css/dist/js/materialize'
 
+// l = (message, model) => {
+  
+//   color = color || "black";
+//   switch (color) {
+//       case "projects.js":  
+//            color = "Orange"; 
+//            break;
+//       case "patterns.js":     
+//               color = "Blue";  
+//            break;
+//       case "shared.js":   
+//            color = "Green";     
+//            break;
+//       case "application.js":  
+//            color = "Pink";   
+//            break;
+//       default: 
+//            color = color;
+//   }
+
+//   console.log("%c" + message, "color:" + color);
+// }
+
 document.addEventListener("turbolinks:load", () => {
     //todo, is this where I'm supposed to put something?
     if( document.getElementsByTagName("form").length) {
-        show_loader_when_submit_form(document.getElementsByTagName("form")[0])
+      showLoaderWhenSubmitForm(document.getElementsByTagName("form")[0])
     }
 })
 
