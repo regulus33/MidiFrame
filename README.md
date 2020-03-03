@@ -592,6 +592,11 @@ now in miditovideo... if starttime is less than first note time, insert black.jp
 
 if last note is less than stop time, insert black.jpeg as video for that duration. 
 
+Also sometimes you'll see me taking liberties with the casing if my function names. Like this `set_Callback_For_On_MidiMessage`
+
+I do this in cases where the readability of the function or var names are particulary important while having a feeling that I will later have trouble reading the names easily. 
+
+If you don't like it you can FUCK OFF. Add some snake into that camel. 
 
 ## TODO NOW 
 
