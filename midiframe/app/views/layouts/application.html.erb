@@ -13,15 +13,18 @@
   </head>
   <%# hide content and replace with loading when submit videos %>
   <body>
-    <h1><%= params[:controller].upcase %></h1>
-    <div id="page_content">
-      <%= yield %>
-    </div>
-   <%# this div below is meant to replace the "page_content" above when a form is laoding. This really helps for UX in long upload times.%>
-    <div id="loading_bar" class="hidden"> 
-        <div class="progress">
-            <div class="indeterminate"></div>
-        </div>
+    <%# data-controller loading, so we can hide form when user is uploading %>
+    <div data-controller="loading">
+      <h1><%= params[:controller].upcase %></h1>
+      <div id="page_content" data-target="loading.hide">
+        <%= yield %>
+      </div>
+    <%# this div below is meant to replace the "page_content" above when a form is laoding. This really helps for UX in long upload times.%>
+      <div id="loading_bar" data-target="loading.show" class="hidden"> 
+          <div class="progress">
+              <div class="indeterminate"></div>
+          </div>
+      </div>
     </div>
   </body>
 </html>

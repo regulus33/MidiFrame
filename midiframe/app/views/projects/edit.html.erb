@@ -1,5 +1,5 @@
 
-<div data-controller="projects--file-input" class = "card-panel">  
+<div data-controller="projects--file-input" class="card-panel">  
         <%= form_for @project, url: { action: "update" }, html: {class: "form-group"} do |f| %>
         
         <label>Name</label>
@@ -12,7 +12,7 @@
         
         <span data-target="projects--file-input.fileDisplayName"><%= @project.video.attached? ? "Replace video" : "Choose a video" %></span>
         <%= f.file_field :video, style: "display:none;", data: { action: "change->projects--file-input#printFileName", target: "projects--file-input.filename"} %>
-    <%= f.submit "S A V E", class: "waves-effect waves-light btn", data: {action: "loading#showLoader" } %>
+    <%= f.submit "S A V E", class: "waves-effect waves-light btn", data: { action: "loading#showLoader" } %>
 </div>  
 
 <% end %>

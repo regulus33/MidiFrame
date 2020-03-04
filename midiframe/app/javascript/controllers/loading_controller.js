@@ -2,11 +2,10 @@ import { Controller } from "stimulus"
 
 export default class extends Controller {
 
-  static targets = [ "hide", "show" ]
+  static targets = [ "show", "hide" ]
 
   showLoader(){
-    hideTarget.className = "hide"
-    showTarget.className = "show"
+      this.showTarget.className = "show" 
+      this.hideTarget.className = "hide"
   }
-
 }
