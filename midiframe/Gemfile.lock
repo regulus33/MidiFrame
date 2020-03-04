@@ -61,10 +61,6 @@ GEM
     ast (2.4.0)
     autoprefixer-rails (9.7.4)
       execjs
-    babel-source (5.8.35)
-    babel-transpiler (0.7.0)
-      babel-source (>= 4.0, < 6)
-      execjs (~> 2.0)
     backport (1.1.2)
     benchmark (0.1.0)
     bindex (0.8.1)
@@ -82,7 +78,6 @@ GEM
     childprocess (3.0.0)
     coderay (1.1.2)
     concurrent-ruby (1.1.6)
-    connection_pool (2.2.2)
     crass (1.0.6)
     e2mmap (0.1.0)
     erubi (1.9.0)
@@ -166,12 +161,6 @@ GEM
     rb-fsevent (0.10.3)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
-    react-rails (2.6.1)
-      babel-transpiler (>= 0.7.0)
-      connection_pool
-      execjs
-      railties (>= 3.2)
-      tilt
     regexp_parser (1.7.0)
     reverse_markdown (1.4.0)
       nokogiri
@@ -200,6 +189,9 @@ GEM
     selenium-webdriver (3.142.7)
       childprocess (>= 0.5, < 4.0)
       rubyzip (>= 1.2.2)
+    slim (4.0.1)
+      temple (>= 0.7.6, < 0.9)
+      tilt (>= 2.0.6, < 2.1)
     solargraph (0.38.5)
       backport (~> 1.1)
       benchmark
@@ -225,6 +217,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    temple (0.8.2)
     thor (1.0.1)
     thread_safe (0.3.6)
     tilt (2.0.10)
@@ -268,10 +261,10 @@ DEPENDENCIES
   pry-rails
   puma (~> 4.1)
   rails (~> 6.0.2, >= 6.0.2.1)
-  react-rails
   rubocop
   sass-rails (>= 6)
   selenium-webdriver
+  slim
   solargraph
   spring
   spring-watcher-listen (~> 2.0.0)
