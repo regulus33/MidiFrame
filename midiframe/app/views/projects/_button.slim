@@ -1,0 +1,20 @@
+div class="row"
+  
+  =link_to(new_project_path, class:"btn-floating btn-large waves-effect  teal lighten-2", id:"newProject") do 
+  
+    i class="material-icons" add 
+  
+  -if params[:action] == "edit" 
+  
+    =link_to(@project, {method: "DELETE", class: "btn-floating btn-large waves-effect waves-light red", id: "deleteProject"}) do 
+  
+      i class="material-icons" clear
+  
+  -if params[:action] == "edit" 
+  
+    =link_to(new_project_pattern_path(@project), class: "btn-floating btn-large waves-effect waves-light red", id: "new_pattern_button", data: { controller: "projects--midi", action: "projects--midi#getPermission" }) do  
+  
+      i class="material-icons" apps
+
+
+    

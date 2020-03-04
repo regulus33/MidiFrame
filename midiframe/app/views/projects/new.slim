@@ -1,0 +1,23 @@
+div data-controller='projects--file-input' class="card-panel"
+  
+  = form_for @project, url: { action: "create" }, html: {class: "form-group"} do |f| 
+      
+    label Name
+
+    = f.text_field :name 
+
+    label BPM
+
+    = f.text_field :bpm 
+
+    label for="project_video"
+      
+      a id="upload_video_button" class="waves-effect waves-light btn" Choose Video
+
+    span data-target="projects--file-input.fileDisplayName" no file chosen
+
+    = f.file_field :video, style: "display:none;", data: { action: "change->projects--file-input#printFileName", target: "projects--file-input.filename" } 
+   
+    = f.submit "C R E A T E", class: "waves-effect waves-light btn"
+  
+= render 'button' 
