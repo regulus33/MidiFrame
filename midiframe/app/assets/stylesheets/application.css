@@ -13,6 +13,12 @@
  *= require_tree .
  *= require_self
  */
+
+ .text-center {
+   text-align: center;
+ }
+
+ /* PROJECTS */
  #newProject, #deleteProject,#new_pattern_button
  {
      float: right;
@@ -43,3 +49,42 @@
  {
      width: 100%;
  }
+
+ /* PATTERN */  
+
+div#pattern-container {
+  height: 100%;
+  width: 100%;
+}
+
+ /* PIANO */
+
+ /* * {
+  box-sizing:border-box
+} */
+/* piano keys */
+ul {
+  height:40em;
+  width:90%;
+  margin: auto;
+  padding:3em 0 0 3em;
+  position:relative;
+}
+
+li {
+  margin:0;
+  padding:0;
+  height: 6em;
+  width: 3em;
+  border-top: 0.1em solid#009688;
+  border-bottom: 0.1em solid#009688;
+  border-left: 0.1em solid#009688;
+  list-style:none;
+  position:relative;
+  float:left
+}
+
+ul li:last-child {
+  border-right: 0.1em solid#009688;
+}
+
