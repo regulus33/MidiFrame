@@ -7,43 +7,18 @@ require("@rails/ujs").start()
 require("turbolinks").start()
 require("@rails/activestorage").start()
 require("channels")
-//CUSTOM 
-require("../projects.js")
-//ALL REUSABLE FUNCTIONS IMPORTED HERE
-const {
-  showLoaderWhenSubmitForm, 
-} = require("../shared.js")
+// require("shared");
+// require("patterns");
+// require("projects");
+
 import "../stylesheets/application"
 import 'materialize-css/dist/js/materialize'
 
-// l = (message, model) => {
-  
-//   color = color || "black";
-//   switch (color) {
-//       case "projects.js":  
-//            color = "Orange"; 
-//            break;
-//       case "patterns.js":     
-//               color = "Blue";  
-//            break;
-//       case "shared.js":   
-//            color = "Green";     
-//            break;
-//       case "application.js":  
-//            color = "Pink";   
-//            break;
-//       default: 
-//            color = color;
-//   }
-
-//   console.log("%c" + message, "color:" + color);
-// }
-
 document.addEventListener("turbolinks:load", () => {
     //todo, is this where I'm supposed to put something?
-    if( document.getElementsByTagName("form").length) {
-      showLoaderWhenSubmitForm(document.getElementsByTagName("form")[0])
-    }
+    // if( document.getElementsByTagName("form").length) {
+    //   showLoaderWhenSubmitForm(document.getElementsByTagName("form")[0])
+    // }
 })
 
 //for globally shared functions we need to register these appwide functions 
@@ -64,3 +39,5 @@ document.addEventListener("turbolinks:load", () => {
 // const imagePath = (name) => images(name, true)
 // Support component names relative to this directory:
 
+
+import "controllers"

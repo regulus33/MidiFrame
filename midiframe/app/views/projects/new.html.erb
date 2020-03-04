@@ -1,4 +1,4 @@
-<div class = "card-panel">  
+<div data-controller='projects' class ="card-panel">  
       <%= form_for @project, url: { action: "create" }, html: {class: "form-group"} do |f| %>
       <label>Name</label>
       <%= f.text_field :name %>
@@ -7,11 +7,11 @@
       <label for="project_video">
         <a id="upload_video_button" class="waves-effect waves-light btn">Choose Video</a>
       </label>
-        <%# dynamically update the video filename via javascript project.js %>
-    <span id="video_file_name">no file chosen</span>
+
+    <span data-target="projects.fileDisplayName">no file chosen</span>
       <%#file upload button is hideous, we had to hide it and user label-for instead. Click a tag and file chooser is invoked %>
-      <%= f.file_field :video, style: "display:none;"%>
-    <%= f.submit "C R E A T E", class: "waves-effect waves-light btn" %>
+      <%= f.file_field :video, style: "display:none;", data: { action: "change->projects#printFileName", target: "projects.filename" } %>
+    <%= f.submit "C R E A T E", class: "waves-effect waves-light btn"%>
 </div>  
   
 <% end %>
