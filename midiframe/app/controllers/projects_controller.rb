@@ -14,7 +14,6 @@ class ProjectsController < ApplicationController
     @project.bpm = project_params[:bpm].to_i
     @project.name = project_params[:name]
     @project.video = project_params[:video]
-
     if @project.save
       flash[:notice] = 'Post successfully created'
       render 'index'
