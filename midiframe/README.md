@@ -1,12 +1,18 @@
 # README
-## FUCKING Javascript, THESE ARE THE LAWS DO NOT FUCKING BREAK THEM! DO NOT CREATE UNNECCESSARY SHITTY FLATULENT ASS JAVASCRIPT, JAVASCRIPT LOOKS LIKE A TAPEWORM TOOK A SHIT.
-
-Each screen has its own 1 to 1 JS file, no more. Ideally many screens will not even need one of these. You can put whatever the fuck you want in here as long as the functions are light and testable. Oh yeah and DONT FUCKING USE CLASSES. 
-
-Each file needs to have unit tests for each function.    
-
-The only other place where you will ever find Javascript is in the Shared.js file. This only holds shared, generic functions useable accross files and screens. 
+## We Use Stimulus
 ------
+
+the three main concepts are :
+
+Controller declarations for READ (this gives you read access to the element)
+this is done with attribute `data-controller="hello"`
+
+Data targets for WRITE, this looks like `data-target="hello.name"`
+
+Actions to trigger functions declared like `data-action="click->hello#greet"`
+thats called an action descriptor. Click is the event name , hello is the controller identifier, greet is the name of the method to invoke.
+
+
 
 SETUP TIDBITS
 
@@ -21,4 +27,13 @@ Webpacker setup stuff and rails 6 helpful tips
 
 https://dev.to/vvo/a-rails-6-setup-guide-for-2019-and-2020-hf5
 
+
+
+--------
+
+## Seting Up Local    
+
+rails db:create 
+
+rails db:migrate 
 
