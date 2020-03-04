@@ -1,10 +1,16 @@
 ul class="collection"
+
   -current_user.projects.each do |project| 
+
     =link_to( edit_project_path( project ), class:"collection-item") do 
+
       =project.name 
 
 -if @deleted_name 
+
   javascript:
+
     M.toast( { html: 'deleted' } )
+    
 =render 'button' 
 

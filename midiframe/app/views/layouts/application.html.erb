@@ -15,7 +15,7 @@
   <body>
     <%# data-controller loading, so we can hide form when user is uploading %>
     <div data-controller="loading">
-      <h1><%= params[:controller].upcase %></h1>
+      <h1><%= params[:controller].upcase unless %w(patterns).include?(params[:controller]) %></h1>
       <div id="page_content" data-target="loading.hide">
         <%= yield %>
       </div>
