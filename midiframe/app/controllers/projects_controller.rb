@@ -11,7 +11,6 @@ class ProjectsController < ApplicationController
   end
 
   def update
-    binding.pry 
     @project.bpm = project_params[:bpm].to_i
     @project.name = project_params[:name]
     @project.video = project_params[:video]
