@@ -1,3 +1,5 @@
+ <%= javascript_pack_tag 'patterns', 'data-turbolinks-track': 'reload' %>
+
 <div class = "card-panel">  
         <%= form_for @project, url: { action: "update" }, html: {class: "form-group"} do |f| %>
         <label>Name</label>
