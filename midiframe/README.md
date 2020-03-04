@@ -27,8 +27,6 @@ Webpacker setup stuff and rails 6 helpful tips
 
 https://dev.to/vvo/a-rails-6-setup-guide-for-2019-and-2020-hf5
 
-
-
 --------
 
 ## Seting Up Local    
@@ -37,3 +35,9 @@ rails db:create
 
 rails db:migrate 
 
+... more later 
+
+
+## Midi disposable notes 
+
+all we need to do is 

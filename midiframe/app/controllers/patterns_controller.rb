@@ -2,6 +2,7 @@
 
 # recording all the midi here
 class PatternsController < ApplicationController
+  
   def new
     @pattern = Pattern.new(project: Project.find_by(id: params[:project_id]))
   end
