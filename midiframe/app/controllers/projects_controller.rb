@@ -2,7 +2,11 @@
 
 # Nest all patterns associated with a single video here
 class ProjectsController < ApplicationController
-  before_action :get_project, only: %i[edit update destroy]
+  before_action :get_project, only: %i[edit update destroy show]
+
+  def show
+    redirect_to edit_project_path @project
+  end     
 
   def edit; end
 
@@ -11,41 +15,38 @@ class ProjectsController < ApplicationController
   end
 
   def update
-    @project.bpm = project_params[:bpm].to_i
-    @project.name = project_params[:name]
-    @project.video = project_params[:video]
+    insert_params
     if @project.save
-      flash[:notice] = 'Post successfully created'
+      @toast = "#{@project.name} updated"
       render 'index'
     else
-      # TODO: handle form validation
-      render 'layouts/error'
+      # this is a last resort, validations will be client side. 
+      toast "something went wrong, project not updated"
+      redirect_to projects_path 
     end
   end
 
   def create
     @project = Project.new
-    @project.bpm = project_params[:bpm].to_i
-    @project.name = project_params[:name]
-    @project.video = project_params[:video]
+    insert_params
     @project.user = current_user
 
     if @project.save
-      flash[:notice] = 'Post successfully created'
+      @toast = "#{@project.name} created"
       render 'index'
     else
-      # TODO: handle form validation stuff
-      render 'layouts/error'
+      toast "something went wrong, project not created"
+      redirect_to projects_path 
     end
   end
 
   def destroy
-    @deleted_name = @project.name
     if @project.destroy
-      render 'index'
+       toast "deleted #{@project.name}"
     else
-      render 'layouts/error'
+      error_toast "error deleting project"
     end
+    redirect_to projects_path
   end
 
   private
@@ -57,4 +58,28 @@ class ProjectsController < ApplicationController
   def get_project
     @project = Project.find_by(id: params[:id])
   end
+
+  def insert_params 
+    @project.bpm = project_params[:bpm].to_i
+    @project.name = project_params[:name]
+    @project.video = project_params[:video]
+  end 
+
 end
+
+# ["project_patterns_path",
+#  "new_project_pattern_path",
+#  "edit_project_pattern_path",
+#  "project_pattern_path",
+#  "projects_path",
+#  "new_project_path",
+#  "edit_project_path",
+#  "project_path",
+#  "project_patterns_url",
+#  "new_project_pattern_url",
+#  "edit_project_pattern_url",
+#  "project_pattern_url",
+#  "projects_url",
+#  "new_project_url",
+#  "edit_project_url",
+#  "project_url"]
