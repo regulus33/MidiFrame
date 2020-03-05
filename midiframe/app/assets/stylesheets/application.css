@@ -45,15 +45,14 @@
      letter-spacing: 13px;
      padding: 0px 10px 0px 10px;
  }
- video.video_preview
- {
+ video.video_preview {
      width: 100%;
  }
 
  /* PATTERN */  
 
 div#pattern-container {
-  height: 100%;
+  height: 60%;
   width: 100%;
 }
 
@@ -64,25 +63,56 @@ div#pattern-container {
 } */
 /* piano keys */
 ul {
-  height:40em;
-  width:90%;
-  margin: auto;
-  padding:3em 0 0 3em;
-  position:relative;
+  padding: 0;
+  width: 100%;
+  display: table;
+  table-layout: fixed; /* optional */
 }
 
-li {
-  margin:0;
-  padding:0;
-  height: 6em;
-  width: 3em;
-  border-left: 0.1em solid #c5cae9;
-  list-style:none;
-  position:relative;
-  float:left
+ul li {
+  display: table-cell;
+  width: auto;
+  text-align: center;
+  border-left: 1px solid#009688;
+  border-top: 1px solid#009688;
+  border-bottom: 1px solid#009688;
 }
 
-ul li:last-child {
-  border-right: 0.1em solid #c5cae9;
+li.teal input[type='text'] {
+  color: white !important;
 }
+
+li.white input[type='text'] {
+  color: #009688 !important;
+}
+
+li input[type='text'] {
+  font-size: 10px !important;
+  text-align: center;
+  margin-bottom: 0px !important;
+}
+
+li:last-child {
+  border-right: 1px solid#009688;
+}
+
+li.teal {
+  color: white !important;
+}
+
+
+li.white {
+  color: #009688 !important;
+}
+
+#octave-minus{
+  float: left;
+  margin:10px;
+}
+
+#octave-plus{
+  float: right;
+  margin:10px;
+}
+
 
