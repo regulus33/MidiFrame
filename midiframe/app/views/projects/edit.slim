@@ -1,7 +1,7 @@
 
 div data-controller="projects--file-input" class="card-panel"
   
-  = form_for @project, url: { action: "update" }, html: {class: "form-group"} do |f|
+  = form_for @project, url: { action: "update" }, html: { class: "form-group" } do |f|
         
     label Name
     = f.text_field :name, value: @project.name 

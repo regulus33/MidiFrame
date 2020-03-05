@@ -76,15 +76,13 @@ li {
   padding:0;
   height: 6em;
   width: 3em;
-  border-top: 0.1em solid#009688;
-  border-bottom: 0.1em solid#009688;
-  border-left: 0.1em solid#009688;
+  border-left: 0.1em solid #c5cae9;
   list-style:none;
   position:relative;
   float:left
 }
 
 ul li:last-child {
-  border-right: 0.1em solid#009688;
+  border-right: 0.1em solid #c5cae9;
 }
 
