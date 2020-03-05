@@ -3,9 +3,8 @@ import { Controller } from "stimulus"
 import { requestMidiAccessFromChrome } from "midi"
 
 export default class extends Controller {
-    connect(){
-        debugger 
-    }
+   
+  //TODO this is most likely not working, needs testing 
   getPermission() {
     this.requestMidiAccessFromChrome() 
   }
