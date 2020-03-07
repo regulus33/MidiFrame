@@ -13,6 +13,7 @@ html
   
   body
     div data-controller="loading"
+      /print the title of the controller as the heading, should be improved after user flow is more defined
       h1 =params[:controller].upcase unless %w(patterns).include?(params[:controller]) 
       div id="page_content" data-target="loading.hide"
         = yield 

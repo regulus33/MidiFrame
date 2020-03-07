@@ -1,10 +1,8 @@
-// src/controllers/slideshow_controller.js
 import { Controller } from "stimulus"
 
 export default class extends Controller {
 
   static targets = ["keyBoardKey"]
-
 
   next() {
     // avoid index out of bounds 
