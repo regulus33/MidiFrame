@@ -1,4 +1,4 @@
-div data-controller="patterns--midi" data-patterns--midi-notes=@midi_notes.to_json data-patterns--midi-position=@current_index_in_notes_array data-patterns--midi-final-index=@final_index
+div data-controller="patterns--keyboard" data-patterns--keyboard-notes=@midi_notes.to_json data-patterns--keyboard-position=@current_index_in_notes_array data-patterns--keyboard-final-index=@final_index
   ul class="set"
 
     -@midi_notes.each_with_index do |array_of_notes, index|
@@ -6,51 +6,51 @@ div data-controller="patterns--midi" data-patterns--midi-notes=@midi_notes.to_js
       / if the note is in the default index, add nothing otherwise ass hide 
       - display_class = @current_index_in_notes_array == index ? "" : "hide"
 
-      li data-target="patterns--midi.keyBoardKey" class=[display_class, "white"] midi-note-number=array_of_notes[0]
+      li data-target="patterns--keyboard.keyBoardKey" class=[display_class, "white"] midi-note-number=array_of_notes[0]
         span class="note-title" =array_of_notes[0]
         input type="text" class="key" value="0:00"
       
-      li data-target="patterns--midi.keyBoardKey" class=[display_class, "teal"] midi-note-number=array_of_notes[1]
+      li data-target="patterns--keyboard.keyBoardKey" class=[display_class, "teal"] midi-note-number=array_of_notes[1]
         span class="note-title" =array_of_notes[1]
         input type="text" class="key" value="0:00"
       
-      li data-target="patterns--midi.keyBoardKey" class=[display_class, "white"] midi-note-number=array_of_notes[2]
+      li data-target="patterns--keyboard.keyBoardKey" class=[display_class, "white"] midi-note-number=array_of_notes[2]
         span class="note-title" =array_of_notes[2]
         input type="text" class="key" value="0:00"
       
-      li data-target="patterns--midi.keyBoardKey" class=[display_class, "teal"] midi-note-number=array_of_notes[3]
+      li data-target="patterns--keyboard.keyBoardKey" class=[display_class, "teal"] midi-note-number=array_of_notes[3]
         span class="note-title" =array_of_notes[3]
         input type="text" class="key" value="0:00"
       
-      li data-target="patterns--midi.keyBoardKey" class=[display_class, "white"] midi-note-number=array_of_notes[4]
+      li data-target="patterns--keyboard.keyBoardKey" class=[display_class, "white"] midi-note-number=array_of_notes[4]
         span class="note-title" =array_of_notes[4]
         input type="text" class="key" value="0:00"
             
-      li data-target="patterns--midi.keyBoardKey" class=[display_class, "white"] midi-note-number=array_of_notes[5]
+      li data-target="patterns--keyboard.keyBoardKey" class=[display_class, "white"] midi-note-number=array_of_notes[5]
         span class="note-title" =array_of_notes[5]
         input type="text" class="key" value="0:00"
       
-      li data-target="patterns--midi.keyBoardKey" class=[display_class, "teal"] midi-note-number=array_of_notes[6]
+      li data-target="patterns--keyboard.keyBoardKey" class=[display_class, "teal"] midi-note-number=array_of_notes[6]
         span class="note-title" =array_of_notes[6]
         input type="text" class="key" value="0:00"
       
-      li data-target="patterns--midi.keyBoardKey" class=[display_class, "white"] midi-note-number=array_of_notes[7]
+      li data-target="patterns--keyboard.keyBoardKey" class=[display_class, "white"] midi-note-number=array_of_notes[7]
         span class="note-title" =array_of_notes[7]
         input type="text" class="key" value="0:00"
       
-      li data-target="patterns--midi.keyBoardKey" class=[display_class, "teal"] midi-note-number=array_of_notes[8]
+      li data-target="patterns--keyboard.keyBoardKey" class=[display_class, "teal"] midi-note-number=array_of_notes[8]
         span class="note-title" =array_of_notes[8]
         input type="text" class="key" value="0:00"
       
-      li data-target="patterns--midi.keyBoardKey" class=[display_class, "white"] midi-note-number=array_of_notes[9]
+      li data-target="patterns--keyboard.keyBoardKey" class=[display_class, "white"] midi-note-number=array_of_notes[9]
         span class="note-title" =array_of_notes[9]
         input type="text" class="key" value="0:00"
       
-      li data-target="patterns--midi.keyBoardKey" class=[display_class, "teal"] midi-note-number=array_of_notes[10]
+      li data-target="patterns--keyboard.keyBoardKey" class=[display_class, "teal"] midi-note-number=array_of_notes[10]
         span class="note-title" =array_of_notes[10]
         input type="text" class="key" value="0:00"
       
-      li data-target="patterns--midi.keyBoardKey" class=[display_class, "white"] midi-note-number=array_of_notes[11]
+      li data-target="patterns--keyboard.keyBoardKey" class=[display_class, "white"] midi-note-number=array_of_notes[11]
         span class="note-title" =array_of_notes[11]
         input type="text" class="key" value="0:00"
       

@@ -1,6 +1,6 @@
 import { Controller } from "stimulus"
 
-import { requestMidiAccessFromChrome } from "midi"
+import { requestMidiAccessFromChrome } from "shared_midi_utilities"
 
 export default class extends Controller {
    
