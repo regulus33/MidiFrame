@@ -1,0 +1,14 @@
+
+<video 
+  id="midi-video" 
+  class="video-js vjs-fluid" 
+  preload="auto" 
+  width="1000" 
+  data-target="patterns--video-load.video"
+  controls
+>
+<source 
+  src="<%=url_for(@project.video)%>" 
+  type="video/mp4"
+/>
+</video>
