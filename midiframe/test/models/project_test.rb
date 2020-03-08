@@ -8,7 +8,6 @@ class ProjectTest < ActiveSupport::TestCase
     pro = Project.new(name: "sandra", bpm: 120, user: user)
     pro.save 
     assert_equal "project must have a video!",  pro.errors.full_messages.first 
-
   end
 
   test "Validates name" do
@@ -17,7 +16,6 @@ class ProjectTest < ActiveSupport::TestCase
     pro.save 
     assert pro.errors.full_messages.include?("Name can't be blank") 
   end
-
 
   test "Validates bpm" do
     user = users(:zack)

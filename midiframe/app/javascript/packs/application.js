@@ -7,7 +7,6 @@ require("@rails/ujs").start()
 require("turbolinks").start()
 require("@rails/activestorage").start()
 require("channels")
-require("shared_midi_utilities")
 
 import "../stylesheets/application"
 import 'materialize-css/dist/js/materialize'
