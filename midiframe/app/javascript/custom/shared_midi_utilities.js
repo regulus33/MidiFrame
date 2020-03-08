@@ -4,11 +4,10 @@ export const requestMidiAccessFromChrome = () => {
 
     const devices = access.inputs.values();
     for (let device of devices ) {
-
         device.onmidimessage = (message) => { message.data[0] != 248 ? console.log(message.data) : "dump" } 
     }
-  }).then((response)=>{
-    alert('this happens later')
+  }).catch((r)=>{
+    alert("no midi access given, maybe this is not chrome or user canceled")
   })
 }
 
