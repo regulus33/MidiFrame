@@ -2,16 +2,18 @@ import { Controller } from "stimulus"
 import { waitForVideoToLoad } from "custom/video_loader"
 export default class extends Controller {
 
-  static targets = ["video"]
+  static targets = ["video", "loadingBar"]
 
   connect(){
 
-   waitForVideoToLoad(this.element.id, this.onVideoDownloaded) 
+   waitForVideoToLoad(this.videoTarget.id, this.onVideoDownloaded.bind(this)) 
 
   }
 
-  onVideoDownloaded(){
-    alert('video dl')
+  onVideoDownloaded(buffered){
+    let percent = buffered * 100
+    debugger
+    this.loadingBarTarget.style.width = `${percent}%`
   }
   
 }
