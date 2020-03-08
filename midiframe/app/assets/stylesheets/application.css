@@ -83,7 +83,7 @@ li.teal input[type='text'] {
 }
 
 li.white input[type='text'] {
-  color: #009688 !important;
+color: #009688 !important;
 }
 
 li input[type='text'] {
@@ -114,5 +114,8 @@ li.white {
   float: right;
   margin:10px;
 }
+
+
+
 
 

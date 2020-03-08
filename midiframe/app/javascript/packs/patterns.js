@@ -1,1 +1,1 @@
-require("patterns/video_handler")
+require('custom/video_loader')
