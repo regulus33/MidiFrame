@@ -1,20 +1,4 @@
-# README
-## We Use Stimulus
-------
-
-the three main concepts are :
-
-Controller declarations for READ (this gives you read access to the element)
-this is done with attribute `data-controller="hello"`
-
-Data targets for WRITE, this looks like `data-target="hello.name"`
-
-Actions to trigger functions declared like `data-action="click->hello#greet"`
-thats called an action descriptor. Click is the event name , hello is the controller identifier, greet is the name of the method to invoke.
-
-
-
-SETUP TIDBITS
+## SETUP NOTES 
 
 We use overmind to integrate webpacker dev server and rails. This webpacker server thing that we call in the Procfile is insanely fast at hot reloading your JS wowowo yayayaya.
 
@@ -29,15 +13,17 @@ https://dev.to/vvo/a-rails-6-setup-guide-for-2019-and-2020-hf5
 
 --------
 
-## Seting Up Local    
+## Video dl cache etc 
 
-rails db:create 
+SW OLD VIDEO EXAMPLE
+https://googlechrome.github.io/samples/service-worker/prefetch-video/
 
-rails db:migrate 
+CACHE VIDEO WITH SERVICE WORKER? 
+https://stackoverflow.com/questions/41916875/is-it-possible-to-cache-an-entire-html5-video-using-the-service-worker-api-for-o
 
-... more later 
+A THOROUGH EXPLANATION OF WEB VIDEO INCLUDING BUFFERS AND OBJECT URL 
+https://medium.com/canal-tech/how-video-streaming-works-on-the-web-an-introduction-7919739f7e1
 
+PRELOADING PREFETCHING ETC 
 
-## Midi disposable notes 
-
-all we need to do is 
+https://developers.google.com/web/fundamentals/media/fast-playback-with-video-preload#manual_buffering
