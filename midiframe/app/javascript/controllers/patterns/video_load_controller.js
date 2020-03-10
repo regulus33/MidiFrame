@@ -1,16 +1,16 @@
 import { Controller } from "stimulus"
-import { waitForVideoToLoad } from "custom/video_loader"
+import { fetchVideoBlob } from "custom/video_loader"
 export default class extends Controller {
 
   static targets = ["video", "loadingBar"]
 
   connect(){
 
-   waitForVideoToLoad(this.videoTarget.id, this.onVideoDownloaded.bind(this)) 
+   fetchVideoBlob(this.videoTarget.id, this.onDownloadProgress.bind(this)) 
 
   }
 
-  onVideoDownloaded(bufferedPercent){
+  onDownloadProgress(bufferedPercent){
     this.loadingBarTarget.style.width = `${bufferedPercent}%`
   }
   
