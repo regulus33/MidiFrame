@@ -23,7 +23,6 @@ export default class extends Controller {
       
       let isInCurrentArr = this.notes[this.position].includes(parseInt(el.getAttribute('midi-note-number')))
       //remove hide class if li is in range 
-      debugger 
       el.classList.toggle("hide", !isInCurrentArr)
     })
   }

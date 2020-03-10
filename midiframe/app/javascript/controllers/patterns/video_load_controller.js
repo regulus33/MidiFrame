@@ -12,7 +12,6 @@ export default class extends Controller {
 
   onVideoDownloaded(buffered){
     let percent = buffered * 100
-    debugger
     this.loadingBarTarget.style.width = `${percent}%`
   }
   
