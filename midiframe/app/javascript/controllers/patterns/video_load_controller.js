@@ -4,9 +4,9 @@ export default class extends Controller {
 
   static targets = ["video", "loadingBar"]
 
-  connect(){
-
-   fetchVideoBlob(this.videoTarget.id, this.onDownloadProgress.bind(this)) 
+  connect() { 
+    // replace URL with BLOB:URL after downloading, load bar is updated as well. 
+    fetchVideoBlob(this.videoTarget.id, this.onDownloadProgress.bind(this)) 
 
   }
 

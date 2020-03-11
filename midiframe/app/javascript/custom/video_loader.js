@@ -46,7 +46,5 @@ export const fetchVideoBlob = async (videoTagId, onDownloadProgress) => {
   /////////////////////////////////////////////////////////////
   myPlayer.src({ src: blobURL, type: "video/mp4" })
 
-  
-
 }
 
