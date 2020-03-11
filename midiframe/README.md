@@ -27,3 +27,13 @@ https://medium.com/canal-tech/how-video-streaming-works-on-the-web-an-introducti
 PRELOADING PREFETCHING ETC 
 
 https://developers.google.com/web/fundamentals/media/fast-playback-with-video-preload#manual_buffering
+
+
+## Future Features    
+
+Definitely need to use a service worker to cache the videos and work offline, redownloading is so annoying!
+
+A simple flutter? and or hybrid app that has the same live tweak functionality.
+
+Becomes a simple way to port your sessions for live to your phone 
+
