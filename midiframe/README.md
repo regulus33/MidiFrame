@@ -37,3 +37,8 @@ A simple flutter? and or hybrid app that has the same live tweak functionality.
 
 Becomes a simple way to port your sessions for live to your phone 
 
+## List of Browser dependencies
+
+Midi API 
+
+Caches API 
