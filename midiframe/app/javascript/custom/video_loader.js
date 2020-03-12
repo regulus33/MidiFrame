@@ -6,9 +6,7 @@ import { requestFromCache } from './cache_manager'
 /////////////////////////////////////////////////////////////////////
 
 export const fetchVideoBlob = async ({onDownloadProgress, downloadUrl}) => {
-  /////////////////////////////////////////////////
-  /// CHECK THE CACHE BEFORE DOWNLOADING        //
-  ////////////////////////////////////////////////
+
   const response      = await fetch(downloadUrl)
   const reader        = response.body.getReader();
   const contentLength = +response.headers.get('Content-Length');

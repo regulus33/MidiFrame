@@ -20,7 +20,7 @@ export default class extends Controller {
     myPlayer.src({ src: blobURL, type: MIME_MP4 })
   }
 
-  onDownloadProgress(bufferedPercent){
+  onDownloadProgress(bufferedPercent) {
     this.loadingBarTarget.style.width = `${bufferedPercent}%`
   }
 
@@ -28,9 +28,8 @@ export default class extends Controller {
     let cachedBlob  = await requestFromCache(downloadUrl)
     if(cachedBlob) {
       return cachedBlob.blob()
-    
+
     } else {
-    
       let blob = await fetchVideoBlob({ downloadUrl: downloadUrl, onDownloadProgress: this.onDownloadProgress.bind(this)})
     
       saveResponseInCache(downloadUrl, blob)
