@@ -15,8 +15,8 @@ export default class extends Controller {
    
     let blob = await this.getVideoBlob(downloadUrl)
    
-    const blobURL   = URL.createObjectURL(blob)
-   
+    const blobURL = URL.createObjectURL(blob)
+    
     myPlayer.src({ src: blobURL, type: MIME_MP4 })
   }
 
@@ -26,10 +26,8 @@ export default class extends Controller {
 
   async getVideoBlob(downloadUrl){ 
     let cachedBlob  = await requestFromCache(downloadUrl)
-    debugger 
     if(cachedBlob) {
-    
-      return cachedBlob
+      return cachedBlob.blob()
     
     } else {
     
