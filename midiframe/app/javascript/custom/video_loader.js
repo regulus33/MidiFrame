@@ -1,50 +1,42 @@
-import videojs from 'video.js'
+
+import { requestFromCache } from './cache_manager'
 // https://javascript.info/fetch-progress
 /////////////////////////////////////////////////////////////////////
 /// SUMMARY: this function downloads vid and updates progress bar /// 
 /////////////////////////////////////////////////////////////////////
 
-export const fetchVideoBlob = async (videoTagId, onDownloadProgress) => {
-  // vjsr reference 
-  let myPlayer = videojs(videoTagId)
+export const fetchVideoBlob = async ({onDownloadProgress, downloadUrl}) => {
   /////////////////////////////////////////////////
-  /// REMINDER:  this url might change with cdn //
+  /// CHECK THE CACHE BEFORE DOWNLOADING        //
   ////////////////////////////////////////////////
-  let source = myPlayer.src()
-  
-  const response = await fetch(source)
-
-  const reader = response.body.getReader();
-
+  const response      = await fetch(downloadUrl)
+  const reader        = response.body.getReader();
   const contentLength = +response.headers.get('Content-Length');
-
-  let chunks = []
-
-  let receivedLength = 0; // received that many bytes at the moment
+  let chunks          = []
+  let receivedLength  = 0 // received that many bytes at the moment
   
   while(true) {
-
     const {done, value} = await reader.read()
-    
-    if (done) break
-    
+
     chunks.push(value)
-    
+
+    if (done) break
+
+    // notify UI of percent downloaded on each 
     receivedLength += value.length;
-    
+
     let percentDownloaded = Math.floor(( receivedLength / contentLength ) * 100 )
-    
+
+    console.log(percentDownloaded)
+
     onDownloadProgress(percentDownloaded)
   
   }
 
-  let blob = new Blob(chunks)
-
-  const blobURL = URL.createObjectURL(blob)
-  /////////////////////////////////////////////////////////////
-  /// REMINDER: hour video mime type needs to be restricted ///
-  /////////////////////////////////////////////////////////////
-  myPlayer.src({ src: blobURL, type: "video/mp4" })
-
+  return new Blob(chunks)
 }
+
+
+
+
 
