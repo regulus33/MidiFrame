@@ -1,6 +1,5 @@
 import {CACHE_NAME} from './constants'
 
-
 export const myCache = () => caches.open( CACHE_NAME )
 
 export const requestObject = ( uri ) => {
