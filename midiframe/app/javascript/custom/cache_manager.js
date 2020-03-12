@@ -4,7 +4,7 @@ import {CACHE_NAME} from './constants'
 export const myCache = () => caches.open( CACHE_NAME )
 
 export const requestObject = ( uri ) => {
-  return uri
+  return new Request( uri )
 }
 
 export const responseObject = ( blob ) => {
@@ -19,9 +19,8 @@ export const requestFromCache = async( request ) => {
 
 export const saveResponseInCache = async( requestString, blob ) => {
   let cache = await myCache()
-  debugger 
   cache.put(
-    responseObject( requestString ),
+    requestObject( requestString ),
     responseObject( blob )
   )
 }
