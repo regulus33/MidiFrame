@@ -1,43 +1,52 @@
 import { Controller } from "stimulus"
-import  { requestFromCache, saveResponseInCache }  from '../../custom/cache_manager'
-import { MIME_MP4 } from '../../custom/constants'
+import  { requestFromCache, saveResponseInCache }  from '../../helpers/cacheing'
+import { MIME_MP4 } from '../../helpers/constants'
 import videojs from 'video.js'
-import { ENABLE_CACHE } from '../../custom/constants'
+import { ENABLE_CACHE } from '../../helpers/constants'
+
 export default class extends Controller {
 
   static targets = ["video", "loadingBar"]
 
   async connect() { 
     // replace URL with BLOB:URL after downloading, load bar is updated as well.
-    let downloadUrl = this.src 
-    console.log(this.src)
-    let cachedBlob = await requestFromCache(downloadUrl)
-    let blob 
-
-    if(cachedBlob) {
-      blob = await cachedBlob.blob()
-    } else {
-      blob = await this.fetchVideoBlob({ downloadUrl: downloadUrl})
-      saveResponseInCache(downloadUrl, blob)
-    }
+    let blob = await this.blob()
     const blobURL = URL.createObjectURL(blob)
     this.src = { src: blobURL, type: MIME_MP4 }
   }
 
-  get src(){
+  get src() {
     return videojs(this.videoTarget.id).src()
   }
 
-  set src(sourc){
-    return videojs(this.videoTarget.id).src(sourc)
+  set src(source) {
+    return videojs(this.videoTarget.id).src(source)
+  }
+
+  async cachedVideo() {
+    let v = requestFromCache(this.src)
+    if(v){
+      return v 
+    }
+    return await requestFromCache(this.src) && await requestFromCache(this.src).blob()
   }
 
   onDownloadProgress(bufferedPercent) {
     this.loadingBarTarget.style.width = `${bufferedPercent}%`
   }
 
-  async fetchVideoBlob({downloadUrl}){
-
+  async blob() {
+    let b 
+    if(this.cachedVideoBlob){
+        b = this.cachedVideoBlob
+    } else {
+      b = this.fetchVideoBlob({ downloadUrl: this.src}) 
+      saveResponseInCache(this.src, b)
+    }
+    return b 
+  }
+ 
+  async fetchVideoBlob({downloadUrl}) {
     const response      = await fetch(downloadUrl)
     const reader        = response.body.getReader();
     const contentLength = +response.headers.get('Content-Length');
