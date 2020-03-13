@@ -18,6 +18,11 @@
    text-align: center;
  }
 
+ span {
+   padding-left: 10px;
+   padding-right: 10px; 
+ }
+
  /* PROJECTS */
  #newProject, #deleteProject,#new_pattern_button
  {
