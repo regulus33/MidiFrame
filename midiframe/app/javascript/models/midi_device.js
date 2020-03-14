@@ -3,35 +3,33 @@ import M from 'materialize-css'
 
 export default class MidiDevice {
   
-  constructor(){
+  constructor() {
     this.connectToDevice()
   }
 
-  get input(){
+  get input() {
    return WebMidi.inputs[0]
   }
 
-  connectToDevice() {
-    return WebMidi.enable(function (err) {
-      if (err) {  
-        
-        
-      } else {
-        
-        let input = WebMidi.inputs[0]
-        input.addListener('noteon', "all",
-        function (e) {
-          console.log( "'" + e.note.name + e.note.octave + "'" + ",");
-        })
-
-        console.log("Sysex is enabled!");
-      }
-    }, true);
+  onNotePress(e) {
+    debugger
   }
 
-  logAllNoteOn() {
-   
+  connectToDevice(channel) {
+    return WebMidi.enable(error=>this.setup({channel, error}),true);
   }
+
+  setup({channel, error}) {
+    if (error) {  
+      alert('Could not connect to device')
+    } else {
+      this.input.addListener('noteon', channel, event=>this.onNotePress(event))
+      console.log("Sysex is enabled!");
+    }
+  }
+
+
+
  
 
 
