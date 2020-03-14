@@ -21,10 +21,14 @@ export default class extends Controller {
   showCurrentkeyRange() {
     this.keyBoardKeyTargets.forEach((el, i) => {
       
-      let isInCurrentArr = this.notes[this.position].includes(el.getAttribute('midi-note-number'))
+      let isInCurrentArr = this.visibleOnKeyboard.includes(parseInt(el.getAttribute('midi-note-number')))
       //remove hide class if li is in range 
       el.classList.toggle("hide", !isInCurrentArr)
     })
+  }
+
+  get visibleOnKeyboard(){
+    return this.notes[this.position].map(arr=>parseInt(arr[0]))
   }
 
   get position() {
