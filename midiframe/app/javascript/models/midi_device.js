@@ -5,24 +5,32 @@ export default class MidiDevice {
   
   constructor(){
     this.connectToDevice()
-    this.logAllNoteOn()
+  }
+
+  get input(){
+   return WebMidi.inputs[0]
   }
 
   connectToDevice() {
-    WebMidi.enable(function (err) {
+    return WebMidi.enable(function (err) {
       if (err) {  
-        M.toast( { html:'yup'} )
+        
+        
       } else {
+        
+        let input = WebMidi.inputs[0]
+        input.addListener('noteon', "all",
+        function (e) {
+          console.log( "'" + e.note.name + e.note.octave + "'" + ",");
+        })
+
         console.log("Sysex is enabled!");
       }
     }, true);
   }
 
   logAllNoteOn() {
-    input.addListener('noteon', "all",
-    function (e) {
-      console.log("Received 'noteon' message (" + e.note.name + e.note.octave + ").");
-    })
+   
   }
  
 
