@@ -9,10 +9,12 @@ export default class extends Controller {
   static targets = ["video", "loadingBar"]
 
   async connect() { 
-    // replace URL with BLOB:URL after downloading, load bar is updated as well.
-    let blob = await this.blob()
-    const blobURL = URL.createObjectURL(blob)
-    this.src = { src: blobURL, type: MIME_MP4 }
+    //DELETE BELOW LINE 
+    this.src 
+    // UNCOMMENT TO BRING BACK DL 
+    // let blob = await this.blob()
+    // const blobURL = URL.createObjectURL(blob)
+    // this.src = { src: blobURL, type: MIME_MP4 }
   }
 
   get src() {
