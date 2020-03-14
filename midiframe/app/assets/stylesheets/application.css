@@ -23,6 +23,12 @@
    padding-right: 10px; 
  }
 
+ /* for keyboard */
+ span.note-title {
+  padding: 0px;
+  letter-spacing:1;
+}
+
  /* PROJECTS */
  #newProject, #deleteProject,#new_pattern_button
  {
