@@ -1,4 +1,4 @@
-div data-controller="patterns--keyboard" data-patterns--keyboard-notes=@midi_notes.to_json data-patterns--keyboard-position=@current_index_in_notes_array data-patterns--keyboard-final-index=@final_index
+div data-controller="patterns--keyboard patterns--midi-device" data-patterns--keyboard-notes=@midi_notes.to_json data-patterns--keyboard-position=@current_index_in_notes_array data-patterns--keyboard-final-index=@final_index
   ul class="set"
 
     -@midi_notes.each_with_index do |array_of_notes, index|

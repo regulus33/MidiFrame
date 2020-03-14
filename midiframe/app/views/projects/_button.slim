@@ -12,7 +12,7 @@ div class="row"
   
   -if params[:action] == "edit" 
   
-    =link_to(new_project_pattern_path(@project), class: "btn-floating btn-large waves-effect waves-light red", id: "new_pattern_button", data: { controller: "projects--midi", action: "projects--midi#getPermission" }) do  
+    =link_to(new_project_pattern_path(@project), class: "btn-floating btn-large waves-effect waves-light red", id: "new_pattern_button") do  
   
       i class="material-icons" apps
 
