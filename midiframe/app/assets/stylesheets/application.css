@@ -73,6 +73,11 @@ div#pattern-container {
   box-sizing:border-box
 } */
 /* piano keys */
+
+li.active {
+  background-color: #ff7033 !important;
+}
+
 ul {
   padding: 0;
   width: 100%;
