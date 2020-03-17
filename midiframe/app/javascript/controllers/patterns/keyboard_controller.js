@@ -4,48 +4,59 @@ export default class extends Controller {
 
   static targets = ["keyBoardKey"]
 
+  ///////////////////////////////////////////
+  ///               PUBLIC                ///
+  ///////////////////////////////////////////
   next() {
-    // avoid index out of bounds 
-    if(( this.position + 1 ) <= this.finalIndex) {
-      this.position++
+    if( ( this._position + 1 ) <= this.finalIndex ) {
+      this._position++
     }
   }
 
   prev() {
-    // avoid index out of bounds 
-    if( this.position != 0) {
-      this.position--
+    if( this._position != 0) {
+      this._position--
     }
   }
 
-  showCurrentkeyRange() {
-    this.keyBoardKeyTargets.forEach((el, i) => {
-      
-      let isInCurrentArr = this.visibleOnKeyboard.includes(parseInt(el.getAttribute('midi-note-number')))
-      //remove hide class if li is in range 
-      el.classList.toggle("hide", !isInCurrentArr)
-    })
+  ///////////////////////////////////////////
+  ///              PRIVATE                ///
+  ///////////////////////////////////////////
+  get _visible_on_keyboard(){
+    return this._notes[this._position].map( arr => parseInt(arr[0]) )
   }
-
-  get visibleOnKeyboard(){
-    return this.notes[this.position].map(arr=>parseInt(arr[0]))
-  }
-
-  get position() {
+  
+  get _position() {
     return parseInt(this.data.get("position"))
   }
-
-  set position(value) {
-    this.data.set("position", value)
-    this.showCurrentkeyRange()
-  }
-
-  get notes() {
+  
+  get _notes() {
     return JSON.parse(this.data.get("notes"))
   }
-
+  
   get finalIndex() {
     return parseInt(this.data.get("final-index"))
   }
   
+  set _position(value) {
+    this.data.set("position", value)
+    this._refresh_keyboard()
+  }
+
+  _get_note_number(keyElement){
+    return parseInt(keyElement.getAttribute('midi-note-number'))
+  }
+
+  _refresh_keyboard(){
+    this.keyBoardKeyTargets.forEach( key => this._show_key_if_visible(key, this._get_note_number(key))) 
+  }
+
+  _show_key_if_visible(keyElement, noteNumber) {
+    let is_in_current_array = this._visible_on_keyboard.includes(noteNumber)
+    keyElement.classList.toggle("hide", !is_in_current_array)
+  }
+  
 }
+
+
+      

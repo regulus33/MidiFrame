@@ -1,32 +1,31 @@
 import WebMidi from 'webmidi'
-import M from 'materialize-css'
+import Keyboard from './keyboard'
 
 export default class MidiDevice {
   
-  constructor() {
-    this.connectToDevice()
+  // singleton
+  constructor({channel, eventHandler}) {
+    this._connectToDevice({channel: channel, eventHandler: eventHandler})
+
+    if(this.instance) {
+      return this.instance
+    }
+    this.instance = this
   }
 
+  get keyboard() {
+    this.keyboard
+  }
+  // this will change when we let the user select their device 
   get input() {
    return WebMidi.inputs[0]
   }
 
-  onNotePress(e) {
-    debugger
+  _connectToDevice({channel, eventHandler}) {
+    return WebMidi.enable( error=> this._onRequestConnectionResponse({ error, eventHandler, channel }), true)
   }
 
-  connectToDevice(channel) {
-    return WebMidi.enable(error=>this.setup({channel, error}),true);
-  }
 
-  setup({channel, error}) {
-    if (error) {  
-      alert('Could not connect to device')
-    } else {
-      this.input.addListener('noteon', channel, event=>this.onNotePress(event))
-      console.log("Sysex is enabled!");
-    }
-  }
 
 
 

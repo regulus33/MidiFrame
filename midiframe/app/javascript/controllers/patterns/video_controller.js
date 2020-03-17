@@ -1,5 +1,5 @@
 import { Controller } from "stimulus"
-import  { requestFromCache, saveResponseInCache }  from '../../helpers/cacheing'
+import  { requestFromCache, saveResponseInCache }  from '../../helpers/cacheing_functions'
 import { MIME_MP4 } from '../../helpers/constants'
 import videojs from 'video.js'
 import { ENABLE_CACHE } from '../../helpers/constants'
