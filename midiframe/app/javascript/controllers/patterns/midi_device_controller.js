@@ -20,6 +20,10 @@ export default class extends Controller {
     this._play_video()
   }
 
+  //////////////////////////////////////////
+  /// PUBLIC/EVENT LISTENERS 
+  ///////////////////////////////////////////
+
   onMessageNoteOn(msg) {
     this._play_note(msg)
     this._play_video(msg)
@@ -30,10 +34,21 @@ export default class extends Controller {
   }
 
   onPianoKeyClick(event){
-    this._selectedKey = event.target 
+    if(this._shouldSelectNote(event.target)){
+      this._selectedKey = event.target 
+    } else {
+      this._deactivatePianoKey(this._selectedKey)
+    }
   }
 
-  
+  ///////////////////////////////////////////
+  /// PRIVATE 
+  ///////////////////////////////////////////
+
+  _shouldSelectNote(element){
+    return this.selectedKey && this.selectedKey.id == element.id ? false : true 
+  }
+
   _play_note(msg) {
     let key = this._get_piano_key(this._get_msg_note_number(msg))
     key.classList.toggle("active", true)
@@ -70,6 +85,7 @@ export default class extends Controller {
 
   _deactivatePianoKey(element){
     this.selectedKey.parentElement.classList.remove("selected")
+    this.selectedKey = null 
   }
 
   
