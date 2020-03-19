@@ -131,6 +131,10 @@ li.white {
   margin:10px;
 }
 
+li.selected {
+  background-color: yellow !important;
+}
+
 
 
 

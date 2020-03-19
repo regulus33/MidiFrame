@@ -1,14 +1,23 @@
 import { Controller } from "stimulus"
 import WebMidi from 'webmidi'
+import videojs from 'video.js'
 
 export default class extends Controller {
 
-  static targets = ["keyBoardKey"]
+  static targets = ["keyBoardKey", "video"]
 
   connect() {
     this.piano = {}
+    
+    this.video = videojs(this.videoTarget.id)
+
+    this.selectedKey = null 
+
     this._observe_all_keys()
-    this._enable_midi()
+   
+    this._enable_midi() 
+   
+    this._play_video()
   }
 
   onMessageNoteOn(msg) {
@@ -20,6 +29,11 @@ export default class extends Controller {
     this._unplay_note(msg)
   }
 
+  onPianoKeyClick(event){
+    this._selectedKey = event.target 
+  }
+
+  
   _play_note(msg) {
     let key = this._get_piano_key(this._get_msg_note_number(msg))
     key.classList.toggle("active", true)
@@ -31,8 +45,34 @@ export default class extends Controller {
   }
 
   _play_video(msg) {
-    //video......... coming soon 
+    this.video.on('seeking', function(e){
+
+      //this.selectedKey.updateInput(34)
+
+    })
   }
+
+  set _selectedKey(element){
+    if(this.selectedKey) {
+      this._deactivatePianoKey(this.selectedKey)
+    } 
+    this._activatePianoKey(element)
+    this.selectedKey = element
+  }
+
+  get _selectedKey() {
+    return this.selectedKey
+  }
+
+  _activatePianoKey(element){
+    element.parentElement.classList.add("selected")
+  }
+
+  _deactivatePianoKey(element){
+    this.selectedKey.parentElement.classList.remove("selected")
+  }
+
+  
 
   ////////////////////////////////////////////////////////////////////////////////////
   /// REMINDER: this should be pulled from local storage or something user-settable //
@@ -83,8 +123,8 @@ export default class extends Controller {
 
   _on_success(channel="all") {
     console.log("Sysex is enabled!");
-    this._midiInput.addListener('noteon', channel, msg => this.onMessageNoteOn(msg))
-    this._midiInput.addListener('noteoff', channel, msg => this.onMessageNoteOff(msg))
+    // this._midiInput.addListener('noteon', channel, msg => this.onMessageNoteOn(msg))
+    // this._midiInput.addListener('noteoff', channel, msg => this.onMessageNoteOff(msg))
   }
  
 }
