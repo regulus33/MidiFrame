@@ -1,6 +1,8 @@
 import { Controller } from "stimulus"
 import WebMidi from 'webmidi'
 import videojs from 'video.js'
+import { toTheNearestThousandth, randoMize } from '../../helpers/math'
+import { NUDGE_AMOUNT } from '../../helpers/constants'
 
 export default class extends Controller {
 
@@ -17,7 +19,8 @@ export default class extends Controller {
    
     this._enable_midi() 
    
-    this._play_video()
+    this._onVideoSeek = this.updateSelectedNoteTime.bind(this)
+
   }
 
   //////////////////////////////////////////
@@ -34,19 +37,71 @@ export default class extends Controller {
   }
 
   onPianoKeyClick(event){
-    if(this._shouldSelectNote(event.target)){
-      this._selectedKey = event.target 
-    } else {
-      this._deactivatePianoKey(this._selectedKey)
+    this._shouldSelectNote(event.target) ? this._selectNote() : this._unselectNote()
+  }
+
+  updateSelectedNoteTime(event){
+    if(this._selectedKey) {
+      this._selectedKey.value = event.target.player.currentTime()
     }
+  }
+
+  onKeyDown(e) {
+      e.preventDefault()
+      switch(e.key) {
+        case "]":
+          this._nudgeTimeRight(e.target)
+          break
+        case "[":
+          this._nudgeTimeLeft(e.target)
+          break
+        case "r":
+          this._randomize(e.target) 
+      }
   }
 
   ///////////////////////////////////////////
   /// PRIVATE 
   ///////////////////////////////////////////
 
+  _nudgeTimeRight(element){
+    debugger 
+    let time = this._numericalValue(element.value)
+    time += NUDGE_AMOUNT
+    element.value = toTheNearestThousandth(time) 
+  }
+
+  _nudgeTimeLeft(element) {
+    let time = this._numericalValue(element.value)
+    time -= NUDGE_AMOUNT
+    element.value = toTheNearestThousandth(time) 
+  }
+
+  _randomize(element){
+    let newVal = randoMize(this._videoLength)
+    element.value = newVal 
+  } 
+
+  get _videoLength(){
+    return this._video.duration()
+  }
+
+  _numericalValue(str) {
+    return toTheNearestThousandth( parseFloat(str) )
+  }
+
   _shouldSelectNote(element){
-    return this.selectedKey && this.selectedKey.id == element.id ? false : true 
+    return this._selectedKey && this._selectedKey.id == element.id ? false : true 
+  }
+
+  _selectNote(){
+    this._selectedKey = event.target 
+    this._selectedKey.addEventListener('keydown', (e) => { this.onKeyDown(e) })
+  }
+
+  _unselectNote(){
+    this._deactivatePianoKey(this._selectedKey)
+    this._deletePianoKey()
   }
 
   _play_note(msg) {
@@ -60,11 +115,11 @@ export default class extends Controller {
   }
 
   _play_video(msg) {
-    this.video.on('seeking', function(e){
+    //jump to time 
+  }
 
-      //this.selectedKey.updateInput(34)
-
-    })
+  set _onVideoSeek(fun){
+    this._video.on('seeking', (e) => fun(e))
   }
 
   set _selectedKey(element){
@@ -79,15 +134,21 @@ export default class extends Controller {
     return this.selectedKey
   }
 
+  get _video(){
+    return this.video 
+  }
+
   _activatePianoKey(element){
     element.parentElement.classList.add("selected")
   }
 
   _deactivatePianoKey(element){
     this.selectedKey.parentElement.classList.remove("selected")
-    this.selectedKey = null 
   }
 
+  _deletePianoKey(){
+    this.selectedKey = null 
+  }
   
 
   ////////////////////////////////////////////////////////////////////////////////////
@@ -142,6 +203,7 @@ export default class extends Controller {
     // this._midiInput.addListener('noteon', channel, msg => this.onMessageNoteOn(msg))
     // this._midiInput.addListener('noteoff', channel, msg => this.onMessageNoteOff(msg))
   }
+
  
 }
 
