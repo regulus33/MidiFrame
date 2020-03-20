@@ -9,7 +9,12 @@ export default class extends Controller {
   static targets = ["keyBoardKey", "video"]
 
   connect() {
+    // * a slimmed down version of piano { 35: <PianoKeyHtml/> }
+    // ? primary used to store references of the keys to update with highlights, avoiding re-queries 
     this.piano = {}
+    // * a slimmed down version of piano { 35: 3456 }
+    // ? just the data 
+    this.pianoData = {}
     
     this.video = videojs(this.videoTarget.id)
 
@@ -23,8 +28,8 @@ export default class extends Controller {
 
   }
 
-  //////////////////////////////////////////
-  /// PUBLIC/EVENT LISTENERS 
+  ///////////////////////////////////////////
+  // *PUBLIC Event Listener Callbacks  
   ///////////////////////////////////////////
 
   onMessageNoteOn(msg) {
@@ -40,10 +45,23 @@ export default class extends Controller {
     this._shouldSelectNote(event.target) ? this._selectNote() : this._unselectNote()
   }
 
-  updateSelectedNoteTime(event){
+  updateSelectedNoteTime(event) {
     if(this._selectedKey) {
+      this.onTimeStampChange({time: event.target.player.currentTime(), number: event.target.id})
       this._selectedKey.value = event.target.player.currentTime()
     }
+  }
+  
+  // ? needs to be refactored 
+  // 1. from seeking in the video 
+  // 2. nudging the timestamp back  
+  // 3. nudging the timestamp fourth   
+  // 4. randomizing   
+  // TODO find a way to simplify this duplication  
+  onTimeStampChange({time, number}){
+    this.pianoData[number] = time 
+    console.log(this.pianoData)
+    console.log(this.piano)
   }
 
   onKeyDown(e) {
@@ -63,32 +81,32 @@ export default class extends Controller {
   ///////////////////////////////////////////
   /// PRIVATE 
   ///////////////////////////////////////////
+  _numericalValue(str) {
+    return toTheNearestThousandth( parseFloat(str) )
+  }
 
   _nudgeTimeRight(element){
-    debugger 
     let time = this._numericalValue(element.value)
     time += NUDGE_AMOUNT
+    // ! FIX ME 
+    this.onTimeStampChange({time: time, number: element.id})
     element.value = toTheNearestThousandth(time) 
   }
 
   _nudgeTimeLeft(element) {
     let time = this._numericalValue(element.value)
     time -= NUDGE_AMOUNT
+    // ! FIX ME 
+    this.onTimeStampChange({time: time, number: element.id})
     element.value = toTheNearestThousandth(time) 
   }
 
   _randomize(element){
-    let newVal = randoMize(this._videoLength)
-    element.value = newVal 
+    let randomValue = randoMize(this._videoLength)
+    // ! Fix ME 
+    this.onTimeStampChange({time: randomValue, number: element.id})
+    element.value = randomValue 
   } 
-
-  get _videoLength(){
-    return this._video.duration()
-  }
-
-  _numericalValue(str) {
-    return toTheNearestThousandth( parseFloat(str) )
-  }
 
   _shouldSelectNote(element){
     return this._selectedKey && this._selectedKey.id == element.id ? false : true 
@@ -138,12 +156,28 @@ export default class extends Controller {
     return this.video 
   }
 
+  get _midiInput(){
+    return WebMidi.inputs[0]
+  }
+
+  get _piano(){
+    return this.piano
+  }
+
+
+  get _videoLength(){
+    return this._video.duration()
+  }
+
+
+
   _activatePianoKey(element){
     element.parentElement.classList.add("selected")
   }
 
   _deactivatePianoKey(element){
     this.selectedKey.parentElement.classList.remove("selected")
+    
   }
 
   _deletePianoKey(){
@@ -154,13 +188,6 @@ export default class extends Controller {
   ////////////////////////////////////////////////////////////////////////////////////
   /// REMINDER: this should be pulled from local storage or something user-settable //
   ////////////////////////////////////////////////////////////////////////////////////
-  get _midiInput(){
-    return WebMidi.inputs[0]
-  }
-
-  get _piano(){
-    return this.piano
-  }
 
   _get_piano_key(number){
     return this._piano[number]
@@ -204,11 +231,6 @@ export default class extends Controller {
     // this._midiInput.addListener('noteoff', channel, msg => this.onMessageNoteOff(msg))
   }
 
- 
 }
-
-
-
-
 
 
