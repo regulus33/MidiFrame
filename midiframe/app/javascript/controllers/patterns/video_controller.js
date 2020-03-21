@@ -10,11 +10,11 @@ export default class extends Controller {
 
   async connect() { 
     //DELETE BELOW LINE 
-    this.src 
+    // this.src 
     // UNCOMMENT TO BRING BACK DL 
-    // let blob = await this.blob()
-    // const blobURL = URL.createObjectURL(blob)
-    // this.src = { src: blobURL, type: MIME_MP4 }
+    let blob = await this.blob()
+    const blobURL = URL.createObjectURL(blob)
+    this.src = { src: blobURL, type: MIME_MP4 }
   }
 
   get src() {
@@ -39,7 +39,8 @@ export default class extends Controller {
 
   async blob() {
     let b 
-    if(this.cachedVideoBlob){
+    // if(this.cachedVideoBlob){
+    if(false){
         b = this.cachedVideoBlob
     } else {
       b = this.fetchVideoBlob({ downloadUrl: this.src}) 
