@@ -33,6 +33,7 @@ export default class extends Controller {
   ///////////////////////////////////////////
 
   onMessageNoteOn(msg) {
+    console.log(msg)
     this._play_note(msg)
     this._play_video(msg)
   }
@@ -163,8 +164,12 @@ export default class extends Controller {
   }
 
   _play_video(msg) {
-    //jump to time 
+    debugger 
+    if(this.pianoData[msg.note.number]){
+      this._video.currentTime(this.pianoData[msg.note.number])
+    }
   }
+
 
   _activatePianoKey(element){
     element.parentElement.classList.add("selected")
@@ -215,8 +220,8 @@ export default class extends Controller {
 
   _on_success(channel="all") {
     console.log("Sysex is enabled!");
-    // this._midiInput.addListener('noteon', channel, msg => this.onMessageNoteOn(msg))
-    // this._midiInput.addListener('noteoff', channel, msg => this.onMessageNoteOff(msg))
+    this._midiInput.addListener('noteon', channel, msg => this.onMessageNoteOn(msg))
+    this._midiInput.addListener('noteoff', channel, msg => this.onMessageNoteOff(msg))
   }
 
 }
