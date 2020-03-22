@@ -1,16 +1,15 @@
 
-div data-controller="projects--file-input" class="card-panel"
+div data-controller="projects--file-input" class="card-panel z-depth-5"
   
   = form_for @project, url: { action: "update" }, html: { class: "form-group" } do |f|
-        
-    label Name
-    = f.text_field :name, value: @project.name 
-
-    label BPM
-    = f.text_field :bpm 
+    div class="input-field"    
+      = f.text_field :name, placeholder: @project.name
+      label Name
+    div class="input-field"   
+      = f.text_field :bpm, placeholder: @project.name
+      label BPM
 
     label for="project_video"
-    
       a id="upload_video_button" class="waves-effect waves-light btn grey darken-3" Choose Video
 
     span data-target="projects--file-input.fileDisplayName" = @project.video.attached? ? "Replace video" : "Choose a video" 
