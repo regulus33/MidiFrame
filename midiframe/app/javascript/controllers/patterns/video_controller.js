@@ -12,9 +12,9 @@ export default class extends Controller {
     //DELETE BELOW LINE 
     // this.src 
     // UNCOMMENT TO BRING BACK DL 
-    let blob = await this.blob()
-    const blobURL = URL.createObjectURL(blob)
-    this.src = { src: blobURL, type: MIME_MP4 }
+    // let blob = await this.blob()
+    // const blobURL = URL.createObjectURL(blob)
+    // this.src = { src: blobURL, type: MIME_MP4 }
   }
 
   get src() {
