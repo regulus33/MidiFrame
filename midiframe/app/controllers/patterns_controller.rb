@@ -11,6 +11,7 @@ class PatternsController < ApplicationController
     @midi_notes = Pattern::NOTES_GROUPED_IN_OCTAVES
     @final_index = ( @midi_notes.length - 1 )
     @pattern = Pattern.new(project: @project)
+    @channel = 5 # TODO: pattern.channel , 1 default 
   end
 
   private
