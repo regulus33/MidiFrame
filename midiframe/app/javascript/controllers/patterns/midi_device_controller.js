@@ -134,7 +134,7 @@ export default class extends Controller {
 
   _changeChannel(channel){
     this._channel = channel
-    this._enable_midi(parseInt(channel))
+    this._resetMidiListeners(parseInt(channel))
   }
 
   _keyCodeIsNumber(code){
@@ -250,8 +250,12 @@ export default class extends Controller {
     this._midiInput.removeListener('noteoff')
   }
 
-  _on_success(channel) {
+  _resetMidiListeners(channel) {
     this._wipeListeners()
+    this._on_success(channel)
+  }
+
+  _on_success(channel) {
     this._midiInput.addListener('noteon', channel, msg => this.onMessageNoteOn(msg))
     this._midiInput.addListener('noteoff', channel, msg => this.onMessageNoteOff(msg))
   }
