@@ -198,20 +198,20 @@ export default class extends Controller {
   }
 
 
-  _activatePianoKey(element){
+  _activatePianoKey(element) {
     element.parentElement.classList.add("selected")
   }
 
-  _deactivatePianoKey(element){
+  _deactivatePianoKey() {
     this.selectedKey.parentElement.classList.remove("selected")
     
   }
 
-  _deletePianoKey(){
+  _deletePianoKey() {
     this.selectedKey = null 
   }
 
-  _get_piano_key(number){
+  _get_piano_key(number) {
     return this._piano[number]
   }
 
@@ -236,7 +236,7 @@ export default class extends Controller {
   //////////////////////////////////////////
   /// WEB MIDI SETUP:                     //
   //////////////////////////////////////////
-  _enable_midi(channel){
+  _enable_midi(channel) {
     WebMidi.enable(error => { error ? this._on_error(error) : this._on_success(channel)  })
   }
 
@@ -245,8 +245,13 @@ export default class extends Controller {
     alert('Could not connect to device ☹️')
   }
 
+  _wipeListeners() {
+    this._midiInput.removeListener('noteon')
+    this._midiInput.removeListener('noteoff')
+  }
+
   _on_success(channel) {
-    console.log("Sysex is enabled!");
+    this._wipeListeners()
     this._midiInput.addListener('noteon', channel, msg => this.onMessageNoteOn(msg))
     this._midiInput.addListener('noteoff', channel, msg => this.onMessageNoteOff(msg))
   }
