@@ -1,5 +1,6 @@
 div id="page-container" data-controller="patterns--midi-device"  
   h1 =@project.name
+  h1 data-controller="patterns-midi-controller" data-target="patterns--midi-device.channel" data-patterns--midi-device-channel=@channel =@channel
   div class="video-preview" data-controller="patterns--video" 
     div class="progress"
       div class="determinate" data-target="patterns--video.loadingBar"

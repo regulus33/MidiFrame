@@ -6,7 +6,7 @@ import { NUDGE_AMOUNT } from '../../helpers/constants'
 
 export default class extends Controller {
 
-  static targets = ["keyBoardKey", "video"]
+  static targets = ["keyBoardKey", "video", "channel"]
 
   connect() {
     // * a slimmed down version of piano { 35: <PianoKeyHtml/> }
@@ -25,6 +25,8 @@ export default class extends Controller {
     this._enable_midi() 
    
     this._onVideoSeek = this.updateSelectedNoteTime.bind(this)
+
+    this._addKeyDownChannelListener()
 
   }
 
@@ -61,12 +63,16 @@ export default class extends Controller {
   // 3. nudging the timestamp fourth   
   // 4. randomizing   
   // TODO find a way to simplify this duplication  
-  updateData({time, number}){
+  updateData({time, number}) {
     this.pianoData[number] = time 
     console.log(this.pianoData)
   }
 
-  onKeyDown(e) {
+  onDocumentKeyDown(e) {
+    if(this._keyCodeIsNumber(e.key))  this._changeChannel(e.key)
+  }
+
+  onFormKeyDown(e) {
       e.preventDefault()
       switch(e.key) {
         case "]":
@@ -113,6 +119,28 @@ export default class extends Controller {
     return this._video.duration()
   }
 
+  get _channel(){
+    return parseInt(this.data.get("channel"))
+  }
+
+  set _channel(channel) {
+    this.channelTarget.innerHTML = channel 
+    this.data.set("channel", channel)
+  }
+
+  _addKeyDownChannelListener(){
+    window.addEventListener('keydown', this.onDocumentKeyDown.bind(this))
+  }
+
+  _changeChannel(channel){
+    this._channel = channel
+    this._enable_midi(parseInt(channel))
+  }
+
+  _keyCodeIsNumber(code){
+    return [1,2,3,4,5,6,7,8,9].includes(parseInt(code))
+  }
+
   _numericalValue(str) {
     return toTheNearestThousandth( parseFloat(str) )
   }
@@ -145,7 +173,7 @@ export default class extends Controller {
 
   _selectNote(){
     this._selectedKey = event.target 
-    this._selectedKey.addEventListener('keydown', (e) => { this.onKeyDown(e) })
+    this._selectedKey.addEventListener('keydown', (e) => { this.onFormKeyDown(e) })
   }
 
   _unselectNote(){
@@ -164,7 +192,6 @@ export default class extends Controller {
   }
 
   _play_video(msg) {
-    debugger 
     if(this.pianoData[msg.note.number]){
       this._video.currentTime(this.pianoData[msg.note.number])
     }
@@ -218,7 +245,7 @@ export default class extends Controller {
     alert('Could not connect to device ☹️')
   }
 
-  _on_success(channel="all") {
+  _on_success(channel) {
     console.log("Sysex is enabled!");
     this._midiInput.addListener('noteon', channel, msg => this.onMessageNoteOn(msg))
     this._midiInput.addListener('noteoff', channel, msg => this.onMessageNoteOff(msg))
