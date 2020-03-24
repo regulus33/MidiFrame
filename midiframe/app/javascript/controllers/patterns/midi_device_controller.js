@@ -49,10 +49,12 @@ export default class extends Controller {
   }
 
   updateSelectedNoteTime(event) {
-
+    // ?exit immediately if we are playing midi, user is not allowed to timestamp drag in that state. 
+    if(this._playing) return 
     let filteredTime = toTheNearestThousandth( event.target.player.currentTime() )
     if(this._selectedKey) {
-      this.updateData({time: filteredTime, number: event.target.id})
+     
+      this.updateData({time: filteredTime, number: this._selectedKey.id })
       this._selectedKey.value = filteredTime
     }
   }
@@ -205,7 +207,6 @@ export default class extends Controller {
       this._video.currentTime(this.pianoData[msg.note.number])
     }
   }
-
 
   _activatePianoKey(element) {
     element.parentElement.classList.add("selected")
