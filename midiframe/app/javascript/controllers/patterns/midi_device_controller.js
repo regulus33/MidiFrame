@@ -30,10 +30,10 @@ export default class extends Controller {
 
   }
 
-  ///////////////////////////////////////////
-  // *PUBLIC Event Listener Callbacks  
-  ///////////////////////////////////////////
-
+  /*
+  * @param web midi message api object
+  * runs whatever needs ot happen on midi message
+  */
   onMessageNoteOn(msg) {
     console.log(msg)
     this._play_note(msg)
@@ -85,6 +85,15 @@ export default class extends Controller {
           this._randomize(e.target) 
       }
   }
+
+  get _playing(){
+    return this.playing
+  }
+
+  set _playing(playing){
+    this.playing = playing
+  }
+
 
   set _onVideoSeek(fun){
     this._video.on('seeking', (e) => fun(e))
@@ -255,7 +264,37 @@ export default class extends Controller {
     this._on_success(channel)
   }
 
+  _setPlaying(){
+    this.channelTarget.style.color = "#f3ff85"
+    this._hideControlBar()
+    this._playing = true 
+  }
+
+  _setStopping(){
+    this.channelTarget.style.color = "white"
+    this._showControlBar()
+    this._playing = false
+  }
+
+  _hideControlBar(){
+    this._video.controlBar.hide()
+  }
+
+  _showControlBar(){
+    this._video.controlBar.show()
+  }
+
+
+
+  _setPlayAndStopListeners(){
+    this._midiInput.addListener('stop', 'all', this._setStopping.bind(this))
+    this._midiInput.addListener('start', 'all', this._setPlaying.bind(this))
+  }
+
   _on_success(channel) {
+    // ? just for knowing if midi is being received or not
+    this._setPlayAndStopListeners()
+    ///////
     this._midiInput.addListener('noteon', channel, msg => this.onMessageNoteOn(msg))
     this._midiInput.addListener('noteoff', channel, msg => this.onMessageNoteOff(msg))
   }
