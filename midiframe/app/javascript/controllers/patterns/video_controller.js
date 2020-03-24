@@ -12,18 +12,23 @@ export default class extends Controller {
     //DELETE BELOW LINE 
     // this.src 
     // UNCOMMENT TO BRING BACK DL 
-    // TODO:  video.hide() til DL then video.show()
-    // let blob = await this.blob()
-    // const blobURL = URL.createObjectURL(blob)
-    // this.src = { src: blobURL, type: MIME_MP4 }
+    this._video.hide()
+    let blob = await this.blob()
+    const blobURL = URL.createObjectURL(blob)
+    this.src = { src: blobURL, type: MIME_MP4 }
+    this._video.show()
   }
 
   get src() {
-    return videojs(this.videoTarget.id).src()
+    return this._video.src()
   }
 
   set src(source) {
-    return videojs(this.videoTarget.id).src(source)
+    return this._video.src(source)
+  }
+
+  get _video(){
+    return videojs(this.videoTarget.id)
   }
 
   async cachedVideo() {
