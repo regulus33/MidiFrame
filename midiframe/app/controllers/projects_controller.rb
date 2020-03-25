@@ -60,9 +60,9 @@ class ProjectsController < ApplicationController
   end
 
   def insert_params 
-    @project.bpm = project_params[:bpm].to_i
-    @project.name = project_params[:name]
-    @project.video = project_params[:video]
+    @project.bpm = project_params[:bpm].to_i if project_params[:bpm]
+    @project.name = project_params[:name] if project_params[:name]
+    @project.video = project_params[:video] if project_params[:video]
   end 
 
 end
