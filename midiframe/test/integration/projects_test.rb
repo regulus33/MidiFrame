@@ -3,10 +3,7 @@ require 'test_helper'
 class ProjectsTest < ActionDispatch::IntegrationTest
   TEST_FILE_NAME = 'test.mp4'
   TEST_FILE_PATH = Rails.root + 'test/fixtures/files/' + TEST_FILE_NAME
-  setup do
-    Capybara.current_driver = Capybara.javascript_driver # :selenium by default
-  end
-
+  SLEEP_TIME = 1
 
   test "CRUD projects" do 
 
@@ -31,6 +28,8 @@ class ProjectsTest < ActionDispatch::IntegrationTest
     assert_equal page.has_content?(PROJECT_NAME), true, "CREATED project should be saved and displayed in projects/index!"  #? make sure project exists in index 
     
     click_link PROJECT_NAME #? Go to edit project 
+
+    sleep SLEEP_TIME
 
     video_file_name = page.evaluate_script("document.getElementsByTagName('video')[0].src.split('/').pop()")
 
