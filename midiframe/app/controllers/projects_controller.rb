@@ -7,7 +7,7 @@ class ProjectsController < ApplicationController
   def show
     redirect_to edit_project_path @project
   end     
-
+  
   def edit; end
 
   def new
