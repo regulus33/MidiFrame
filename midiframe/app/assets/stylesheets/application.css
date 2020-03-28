@@ -186,6 +186,13 @@ input[type="text"]{
   color: white !important;
 }
 
+/* record and complete in octave button */
+
+a#record , a#complete, a#save{
+  margin-right: 10px;
+  top: 9px;
+}
+
 
 /* !hovering and selected  */
 

@@ -15,7 +15,9 @@ export default class extends Controller {
     // * a slimmed down version of piano { 35: 3456 }
     // ? just the data 
     this.pianoData = {}
-    
+    // ? keep track of the notes that come out of the device. 
+    this.usedNotes = {}
+
     this.video = videojs(this.videoTarget.id)
 
     this.selectedKey = null 
@@ -284,8 +286,6 @@ export default class extends Controller {
   _showControlBar(){
     this._video.controlBar.show()
   }
-
-
 
   _setPlayAndStopListeners(){
     this._midiInput.addListener('stop', 'all', this._setStopping.bind(this))
