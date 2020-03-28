@@ -300,6 +300,12 @@ export default class extends Controller {
     this._midiInput.addListener('noteoff', channel, msg => this.onMessageNoteOff(msg))
   }
 
+  //SAVE BUTTON 
+  save(){
+    alert('sacve')
+  }
+
+
 }
 
 
