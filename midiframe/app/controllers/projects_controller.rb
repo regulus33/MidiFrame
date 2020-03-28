@@ -3,12 +3,14 @@
 # Nest all patterns associated with a single video here
 class ProjectsController < ApplicationController
   before_action :get_project, only: %i[edit update destroy show]
-
+  
   def show
     redirect_to edit_project_path @project
   end     
   
-  def edit; end
+  def edit
+    # binding.pry 
+  end
 
   def new
     @project = Project.new(user: current_user, bpm: 120)
