@@ -2,6 +2,9 @@
 
 class Pattern < ApplicationRecord
   belongs_to :project
+
+  before_create :set_channel
+
   # all note numbers that we will support, normally there are 0-128 but Id rather keep things as simple as possible and ,ake the end result evenly divisible by twelve, which is how many notes we keep in our on screen keyboard 
   NOTES_GROUPED_IN_OCTAVES = 
   [
@@ -15,6 +18,11 @@ class Pattern < ApplicationRecord
     [[84, "C7"], [85, "C#7"], [86, "D7"], [87, "D#7"], [88, "E7"], [89, "F7"], [90, "F#7"], [91, "G7"], [92, "G#7"], [93, "A7"], [94, "A#7"], [95, "B7"]],
     [[96, "C8"], [97, "C#8"], [98, "D8"], [99, "D#8"], [100, "E8"], [101, "F8"], [102, "F#8"], [103, "G8"], [104, "G#8"], [105, "A8"], [106, "A#8"], [107, "B8"]]
   ]
+
+
+  def set_channel 
+    self.channel = 1  
+  end
 
 
    
