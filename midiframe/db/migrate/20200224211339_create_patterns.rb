@@ -7,7 +7,7 @@ class CreatePatterns < ActiveRecord::Migration[6.0]
       t.jsonb :note_stamps
       t.belongs_to :project
       t.float :pattern_length_in_seconds
-
+      
       t.timestamps
     end
   end

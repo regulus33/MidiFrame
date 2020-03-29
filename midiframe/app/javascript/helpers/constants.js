@@ -6,4 +6,3 @@ export const NUDGE_AMOUNT = 0.001
 
 //NETWORK many
 export const baseUrl = 'http://localhost:3000'
-export const patternsUrl = `${baseUrl}/patterns`

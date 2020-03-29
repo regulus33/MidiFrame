@@ -20,7 +20,10 @@ class PatternsController < ApplicationController
   
 
   def update
-    json_response(@todo, :created)
+    binding.pry 
+    # @pattern.midi_events = 
+    # @pattern.update()
+    json_response(@pattern, :created)
   end
 
   private
