@@ -3,10 +3,11 @@ import WebMidi from 'webmidi'
 import videojs from 'video.js'
 import { toTheNearestThousandth, randoMize } from '../../helpers/math'
 import { NUDGE_AMOUNT } from '../../helpers/constants'
+import { saveProject } from '../../helpers/network'
 
 export default class extends Controller {
 
-  static targets = ["keyBoardKey", "video", "channel"]
+  static targets = ["keyBoardKey", "video", "channel", "patternId", "projectId"]
 
   connect() {
     // * a slimmed down version of piano { 35: <PianoKeyHtml/> }
@@ -16,7 +17,6 @@ export default class extends Controller {
     // ? just the data 
     this.pianoData = {}
     // ? keep track of the notes that come out of the device. 
-    this.usedNotes = {}
 
     this.video = videojs(this.videoTarget.id)
 
@@ -267,27 +267,27 @@ export default class extends Controller {
     this._on_success(channel)
   }
 
-  _setPlaying(){
+  _setPlaying() {
     this.channelTarget.style.color = "#f3ff85"
     this._hideControlBar()
     this._playing = true 
   }
 
-  _setStopping(){
+  _setStopping() {
     this.channelTarget.style.color = "white"
     this._showControlBar()
     this._playing = false
   }
 
-  _hideControlBar(){
+  _hideControlBar() {
     this._video.controlBar.hide()
   }
 
-  _showControlBar(){
+  _showControlBar() {
     this._video.controlBar.show()
   }
 
-  _setPlayAndStopListeners(){
+  _setPlayAndStopListeners() {
     this._midiInput.addListener('stop', 'all', this._setStopping.bind(this))
     this._midiInput.addListener('start', 'all', this._setPlaying.bind(this))
   }
@@ -301,8 +301,16 @@ export default class extends Controller {
   }
 
   //SAVE BUTTON 
-  save(){
-    alert('sacve')
+  save() {
+    saveProject(this.pianoData, this._getPatternId(), this._getProjectId())
+  }
+
+  _getPatternId() {
+    return this.patternIdTarget.getAttribute("pattern-id")
+  }
+
+  _getProjectId() {
+    return this.projectIdTarget.getAttribute("project-id")
   }
 
 
