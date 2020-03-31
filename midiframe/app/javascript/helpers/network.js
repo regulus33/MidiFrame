@@ -2,7 +2,7 @@ import { baseUrl } from "./constants";
 
 export const patternsUrl = (projectId, patternId) => `${baseUrl}/projects/${projectId}/patterns/${patternId}`
 
-export const saveProject = async(data = {}, patternId, projectId) => {
+export const saveProject = async({data, patternId, projectId}) => {
   // Default options are marked with *
   const response = await fetch( patternsUrl(projectId, patternId), {
     method: 'PUT',
