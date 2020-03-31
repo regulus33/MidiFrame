@@ -26,4 +26,8 @@ class Project < ApplicationRecord
     # end
   end
 
+  def auto_name 
+    self.name = "new pattern"
+  end
+
 end

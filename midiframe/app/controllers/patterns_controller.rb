@@ -20,6 +20,9 @@ class PatternsController < ApplicationController
     end
   end
 
+  def pattern_settings 
+  end
+
   def edit 
     #Eventually for edit, we can calculate this based on prefs, but very much not a priority
     @current_index_in_notes_array = 4
@@ -28,9 +31,12 @@ class PatternsController < ApplicationController
   end 
 
   def update
-    @pattern.note_stamps = request.body.to_json
-    # @pattern.update()
-    json_response(@pattern, :created)
+    msg = { :status => "ok", :message => "Success!", :html => "<b>...</b>" }
+    # TODO actually save stuff here
+    respond_to do |format|
+      @pattern.note_stamps = request.body.to_json
+      format.json  { render :json => msg } # don't do msg.to_json
+    end
   end
 
   private
