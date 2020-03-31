@@ -188,7 +188,7 @@ input[type="text"]{
 
 /* record and complete in octave button */
 
-a#record , a#complete, a#save{
+a#record , a#complete, a#save, a#settings{
   margin-right: 10px;
   top: 9px;
 }

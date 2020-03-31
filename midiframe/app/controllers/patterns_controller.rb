@@ -6,10 +6,18 @@ class PatternsController < ApplicationController
   before_action :find_project
   before_action :find_pattern, only: ['edit', 'update']
   protect_from_forgery with: :null_session, only: ['update']
+
+  def index 
+    @patterns = @project.patterns 
+  end
   
   def new
-    @pattern = Pattern.create(project: @project)
-    redirect_to edit_project_pattern_path(@project, @pattern)
+    if @project.patterns.any?
+      redirect_to project_patterns_path()
+    else 
+      @pattern = Pattern.create(project: @project)
+      redirect_to edit_project_pattern_path(@project, @pattern)
+    end
   end
 
   def edit 
@@ -18,7 +26,6 @@ class PatternsController < ApplicationController
     @midi_notes = Pattern::NOTES_GROUPED_IN_OCTAVES
     @final_index = ( @midi_notes.length - 1 )
   end 
-  
 
   def update
     @pattern.note_stamps = request.body.to_json
