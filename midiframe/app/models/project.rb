@@ -10,6 +10,9 @@ class Project < ApplicationRecord
 
   validate :video_validation
 
+  has_many :patterns
+
+
   def video_validation
     errors[:base] << "project must have a video!" unless video.attached? 
     # if video.attached?

@@ -35,7 +35,6 @@ class PatternsTest < ActionDispatch::IntegrationTest
 
     # ? assert that on play, number lights up  
     # ? assert that on stop number light goes away 
-    # ? 
 
 
 
