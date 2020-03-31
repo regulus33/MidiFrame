@@ -5,6 +5,7 @@ class PatternsController < ApplicationController
 
   before_action :find_project
   before_action :find_pattern, only: ['edit', 'update']
+  protect_from_forgery with: :null_session, only: ['update']
   
   def new
     @pattern = Pattern.create(project: @project)
@@ -20,8 +21,7 @@ class PatternsController < ApplicationController
   
 
   def update
-    binding.pry 
-    # @pattern.midi_events = 
+    @pattern.note_stamps = request.body.to_json
     # @pattern.update()
     json_response(@pattern, :created)
   end
@@ -37,7 +37,7 @@ class PatternsController < ApplicationController
   end
 
   def find_pattern
-    @pattern = Pattern.find_by(id: params[:project_id])
+    @pattern = Pattern.find_by(id: params[:id])
   end
 
 end
