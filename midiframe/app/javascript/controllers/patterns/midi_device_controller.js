@@ -2,12 +2,12 @@ import { Controller } from "stimulus"
 import WebMidi from 'webmidi'
 import videojs from 'video.js'
 import { toTheNearestThousandth, randoMize } from '../../helpers/math'
-import { NUDGE_AMOUNT } from '../../helpers/constants'
+import { NUDGE_AMOUNT, baseUrl } from '../../helpers/constants'
 import { saveProject } from '../../helpers/network'
 
 export default class extends Controller {
 
-  static targets = ["keyBoardKey", "video", "channel", "patternId", "projectId"]
+  static targets = ["keyBoardKey", "video", "channel", "patternId", "projectId", "settings"]
 
   connect() {
     // * a slimmed down version of piano { 35: <PianoKeyHtml/> }
@@ -27,6 +27,7 @@ export default class extends Controller {
     this._enable_midi() 
    
     this._onVideoSeek = this.updateSelectedNoteTime.bind(this)
+    this.saveAndNavigate = this.saveAndNavigate.bind(this)
 
     this._addKeyDownChannelListener()
 
@@ -304,11 +305,23 @@ export default class extends Controller {
   save() {
     console.log(this._getPatternId())
     console.log(this._getProjectId())
-    saveProject({data: this.pianoData, patternId: this._getPatternId(), projectId: this._getProjectId()})
+    return saveProject({data: this.pianoData, patternId: this._getPatternId(), projectId: this._getProjectId()})
+  }
+
+  saveAndNavigate() {
+    console.log(this.settingsUrl)
+    this.save().then(() => { 
+      window.location.href = baseUrl + this.settingsUrl
+    })
+  }
+
+
+
+  get settingsUrl(){
+    return this.settingsTarget.getAttribute("nav-url")
   }
 
   _getPatternId() {
-    debugger 
     return this.patternIdTarget.getAttribute("pattern-id")
   }
 
