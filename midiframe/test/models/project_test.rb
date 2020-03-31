@@ -24,4 +24,8 @@ class ProjectTest < ActiveSupport::TestCase
     assert pro.errors.full_messages.include?("Bpm can't be blank") 
   end
 
+  test "Has many patterns" do 
+    binding.pry 
+  end
+
 end

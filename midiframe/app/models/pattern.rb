@@ -5,6 +5,7 @@ class Pattern < ApplicationRecord
 
   before_create :set_channel
 
+
   # all note numbers that we will support, normally there are 0-128 but Id rather keep things as simple as possible and ,ake the end result evenly divisible by twelve, which is how many notes we keep in our on screen keyboard 
   NOTES_GROUPED_IN_OCTAVES = 
   [
