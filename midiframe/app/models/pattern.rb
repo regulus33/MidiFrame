@@ -3,7 +3,7 @@
 class Pattern < ApplicationRecord
   belongs_to :project
 
-  before_create :set_channel
+  before_create :set_channel, :set_name, :set_step_length
 
 
   # all note numbers that we will support, normally there are 0-128 but Id rather keep things as simple as possible and ,ake the end result evenly divisible by twelve, which is how many notes we keep in our on screen keyboard 
@@ -20,10 +20,18 @@ class Pattern < ApplicationRecord
     [[96, "C8"], [97, "C#8"], [98, "D8"], [99, "D#8"], [100, "E8"], [101, "F8"], [102, "F#8"], [103, "G8"], [104, "G#8"], [105, "A8"], [106, "A#8"], [107, "B8"]]
   ]
 
-
   def set_channel 
     self.channel = 1  
   end
+
+  def set_name 
+    self.name = "new pattern"
+  end
+
+  def set_step_length 
+    self.step_length = 4 
+  end
+
 
 
    
