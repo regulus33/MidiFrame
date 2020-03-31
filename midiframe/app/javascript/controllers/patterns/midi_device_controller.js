@@ -302,10 +302,13 @@ export default class extends Controller {
 
   //SAVE BUTTON 
   save() {
-    saveProject(this.pianoData, this._getPatternId(), this._getProjectId())
+    console.log(this._getPatternId())
+    console.log(this._getProjectId())
+    saveProject({data: this.pianoData, patternId: this._getPatternId(), projectId: this._getProjectId()})
   }
 
   _getPatternId() {
+    debugger 
     return this.patternIdTarget.getAttribute("pattern-id")
   }
 
