@@ -1,4 +1,5 @@
 
+-binding.pry 
 div class="card-panel z-depth-5"
  = form_for @pattern, url: { action: 'update' },  html: { class: 'form-group'} do |f|
    = f.text_field :name, placeholder: @pattern.name
@@ -8,4 +9,4 @@ div class="card-panel z-depth-5"
    = f.text_field :channel, placeholder: @pattern.channel 
    label channel
    = f.text_field :step_length, placeholder: @pattern.step_length 
-   label channel
+   label step length
