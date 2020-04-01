@@ -311,6 +311,7 @@ export default class extends Controller {
   saveAndNavigate() {
     console.log(this.settingsUrl)
     this.save().then(() => { 
+      console.log(this.settingsUrl)
       window.location.href = baseUrl + this.settingsUrl
     })
   }
