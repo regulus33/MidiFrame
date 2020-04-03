@@ -34,15 +34,26 @@ class PatternsController < ApplicationController
     msg = { :status => "ok", :message => "Success!", :html => "<b>...</b>" }
     # TODO actually save stuff here
     respond_to do |format|
-      @pattern.note_stamps = request.body.to_json
-      format.json  { render :json => msg } # don't do msg.to_json
+      format.json  do 
+        @pattern.note_stamps = request.body.to_json
+        @pattern.save! 
+        render :json => msg 
+      end# don't do msg.to_json
+      format.html do
+         @pattern.name = pattern_params[:name]
+         @pattern.order_in_sequence = pattern_params[:order_in_sequence]
+         @pattern.channel = pattern_params[:channel]
+         @pattern.step_length = pattern_params[:step_length]
+         toast "#{@pattern.name} updated" if @pattern.save! 
+         redirect_to edit_project_pattern_path(@project, @pattern) 
+      end
     end
   end
 
   private
 
   def pattern_params
-    params.require(:pattern).permit(:data, :used_notes)
+    params.require(:pattern).permit(:data, :used_notes, :name, :order_in_sequence, :channel, :step_length)
   end
 
   def find_project 

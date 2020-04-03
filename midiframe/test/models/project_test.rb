@@ -25,7 +25,6 @@ class ProjectTest < ActiveSupport::TestCase
   end
 
   test "Has many patterns" do 
-    binding.pry 
   end
 
 end
