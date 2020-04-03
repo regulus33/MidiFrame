@@ -1,10 +1,11 @@
 ul class="collection"
 
-  -@patterns.each do |pattern| 
+  -@patterns.sort{|p|p.order_in_sequence}.each do |pattern| 
 
     =link_to( edit_project_pattern_path(@project, pattern), class:"collection-item pattern-item") do 
 
-      =pattern.id 
+      =pattern.name
+      span class="badge" ="#{pattern.order_in_sequence}"
 
 / =render 'button' 
 
