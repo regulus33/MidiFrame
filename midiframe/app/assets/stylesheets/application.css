@@ -168,13 +168,13 @@ li.white.active {
   background-color: black !important;
 }
 
-a.project-item, a.pattern-item {
+a.project-item, li.pattern-item {
   color: white !important;
   background-color: #636363 !important;
   transition: background-color 1s;
 }
 
-a.project-item:hover, a.pattern-item:hover {
+a.project-item:hover, li.pattern-item:hover {
   background-color: #444444 !important;
 }
 
@@ -191,6 +191,10 @@ input[type="text"]{
 a#record , a#complete, a#save, a#settings{
   margin-right: 10px;
   top: 9px;
+}
+
+a.pattern-link {
+  color: white;
 }
 
 
