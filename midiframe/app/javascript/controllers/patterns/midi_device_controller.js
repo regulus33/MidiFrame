@@ -7,16 +7,26 @@ import { saveProject } from '../../helpers/network'
 
 export default class extends Controller {
 
-  static targets = ["keyBoardKey", "video", "channel", "patternId", "projectId", "settings"]
+  static targets = ["keyBoardKey", "video", "channel", "patternId", "projectId", "settings", "recordButton"]
 
   connect() {
+    
     // * a slimmed down version of piano { 35: <PianoKeyHtml/> }
     // ? primary used to store references of the keys to update with highlights, avoiding re-queries 
+    // * {35: <pianokey alt="derk"/> } 
     this.piano = {}
     // * a slimmed down version of piano { 35: 3456 }
-    // ? just the data 
+    // ? just the notes used and the timestamps they should trigger in the video 
+    // * {36: 5666} (note number: video timestamp)
     this.pianoData = {}
+    
     // ? keep track of the notes that come out of the device. 
+    // * [{note: 60, timestamp: 3}]
+    this.midiEvents= [] 
+
+    this.recording = false 
+
+    this.clockSignalsPassedSinceRecordStart = 0 
 
     this.video = videojs(this.videoTarget.id)
 
@@ -38,9 +48,10 @@ export default class extends Controller {
   * runs whatever needs ot happen on midi message
   */
   onMessageNoteOn(msg) {
-    console.log(msg)
     this._play_note(msg)
     this._play_video(msg)
+    this._addMidiEvent(msg)
+
   }
 
   onMessageNoteOff(msg) {
@@ -70,7 +81,7 @@ export default class extends Controller {
   // TODO find a way to simplify this duplication  
   updateData({time, number}) {
     this.pianoData[number] = time 
-    console.log(this.pianoData)
+    // console.log(this.pianoData)
   }
 
   onDocumentKeyDown(e) {
@@ -122,6 +133,10 @@ export default class extends Controller {
 
   get _midiInput(){
     return WebMidi.inputs[0]
+  }
+
+  get _midiOutput(){
+    return WebMidi.outputs[0]
   }
 
   get _piano(){
@@ -217,7 +232,6 @@ export default class extends Controller {
 
   _deactivatePianoKey() {
     this.selectedKey.parentElement.classList.remove("selected")
-    
   }
 
   _deletePianoKey() {
@@ -254,7 +268,7 @@ export default class extends Controller {
   }
 
   _on_error(error) {
-    console.log(error)
+    // console.log(error)
     alert('Could not connect to device ☹️')
   }
 
@@ -299,24 +313,23 @@ export default class extends Controller {
     ///////
     this._midiInput.addListener('noteon', channel, msg => this.onMessageNoteOn(msg))
     this._midiInput.addListener('noteoff', channel, msg => this.onMessageNoteOff(msg))
+    this._midiInput.addListener('clock', "all", this.onMessageClock.bind(this))
   }
 
   //SAVE BUTTON 
   save() {
-    console.log(this._getPatternId())
-    console.log(this._getProjectId())
+    // console.log(this._getPatternId())
+    // console.log(this._getProjectId())
     return saveProject({data: this.pianoData, patternId: this._getPatternId(), projectId: this._getProjectId()})
   }
 
   saveAndNavigate() {
-    console.log(this.settingsUrl)
+    // console.log(this.settingsUrl)
     this.save().then(() => { 
-      console.log(this.settingsUrl)
+      // console.log(this.settingsUrl)
       window.location.href = baseUrl + this.settingsUrl
     })
   }
-
-
 
   get settingsUrl(){
     return this.settingsTarget.getAttribute("nav-url")
@@ -330,6 +343,80 @@ export default class extends Controller {
     return this.projectIdTarget.getAttribute("project-id")
   }
 
+  //Midi Event Collection  Methods 
+  // setter and getter methods for midi events collection
+  
+  get _midiEvents() {
+    return this.midiEvents
+  }
+
+  startRecordingMidiNotes() {
+    // ? start playing
+    // * turn recording on 
+    // * increment clock signals in another process 
+    // * soon as clock signals reaches this.data.get("total-clock-signals") hits, exit by setting recording to false and
+    // * meanwhile, we only push data into array if recording is true    
+    //! recording also starts the midi when set to true
+    this._recording = true 
+
+  }
+
+  // ? you need to increment the clock signals count(clock signals passed since record start), dont worry! It will be reset when recording stops 
+  onMessageClock() {
+    // ? only count clock signals if recording 
+    if(this._recording) {
+      this.clockSignalsPassedSinceRecordStart++
+      console.log(`clock signal passed: ${this.clockSignalsPassedSinceRecordStart} total clock signals: ${this._totaClockSignals}`)
+      this.clockSignalsPassedSinceRecordStart == this._totaClockSignals ? this._recording = false : null
+    } 
+  }
+
+  // ? set recording AND also stop or start midi based on value of 'recording'
+  set _recording(recording) {
+    if(recording) {
+      this.recording = true
+      this._startMidi()
+    } else {
+      this.recording = false 
+      this._stopMidi()
+    }
+  }
+
+  get _recording() {
+    return this.recording 
+  }
+
+  _startMidi(){
+    this._midiOutput.sendStart()
+  }
+
+  _stopMidi(){
+    this._midiOutput.sendStop()
+  }
+
+  _calibrateTiming(event, startingTime) {
+    return event.timestamp - startingTime 
+  }
+
+  get _totaClockSignals() {
+    return parseInt(this.recordButtonTarget.getAttribute("total-clock-signals"))
+  }
+  
+  _addMidiEvent(event) {
+    let startingTime
+    let calibratedTimeStamp 
+    // ? first you need to get the amount of time to subtract from each timestamp so that the first evetn starts at 0:00
+    if(this._midiEvents.length == 0) {
+      startingTime = event.timestamp
+    }
+    // ? set the timing in the new event  
+    calibratedTimeStamp = this._calibrateTiming(event, startingTime)
+    if(this._recoring) {
+      let processeableEvent = { note: event.note.number, timestamp: calibratedTimeStamp }
+      this._midiEvents.push(processeableEvent)
+    }
+  }
+  
 
 }
 
