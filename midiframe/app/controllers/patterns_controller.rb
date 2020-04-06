@@ -37,7 +37,6 @@ class PatternsController < ApplicationController
         # *note_stamps
         # *channel
 
-        # binding.pry 
         @pattern.channel = pattern_params[:channel].to_i 
         @pattern.note_stamps = note_stamps_params
         @pattern.midi_events = midi_events_params
