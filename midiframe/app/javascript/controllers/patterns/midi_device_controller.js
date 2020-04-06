@@ -26,6 +26,8 @@ export default class extends Controller {
 
     this.recording = false 
 
+    this.startingTime = null 
+
     this.clockSignalsPassedSinceRecordStart = 0 
 
     this.video = videojs(this.videoTarget.id)
@@ -319,7 +321,7 @@ export default class extends Controller {
   save() {
     // console.log(this._getPatternId())
     // console.log(this._getProjectId())
-    return saveProject({pianoData: this.pianoData, midiEvents: this.midiEvents, patternId: this._getPatternId(), projectId: this._getProjectId()})
+    return saveProject({channel: this._channel, pianoData: this.pianoData, midiEvents: this.midiEvents, patternId: this._getPatternId(), projectId: this._getProjectId()})
   }
 
   saveAndNavigate() {
@@ -360,8 +362,10 @@ export default class extends Controller {
 
   }
 
+  // ! HEADS UP:::::: there are two parts to this process, this only determines when to end recording time........
+  // ! SEE ON MESSAGE NOTE ON for the bit that saves data into an array to send to server  
   // ? you need to increment the clock signals count(clock signals passed since record start), dont worry! It will be reset when recording stops 
-  onMessageClock() {
+  onMessageClock(message) {
     // ? only count clock signals if recording 
     if(this._recording) {
       this.clockSignalsPassedSinceRecordStart++
@@ -378,6 +382,7 @@ export default class extends Controller {
     } else {
       this.recording = false 
       this._stopMidi()
+      this._resetStartTime()
     }
   }
 
@@ -393,8 +398,8 @@ export default class extends Controller {
     this._midiOutput.sendStop()
   }
 
-  _calibrateTiming(event, startingTime) {
-    return event.timestamp - startingTime 
+  _calibrateTiming(timestamp, startingTime) {
+    return timestamp - startingTime 
   }
 
   get _totaClockSignals() {
@@ -402,18 +407,32 @@ export default class extends Controller {
   }
   
   _addMidiEvent(event) {
-    let startingTime
+
     let calibratedTimeStamp 
     // ? first you need to get the amount of time to subtract from each timestamp so that the first evetn starts at 0:00
     if(this._midiEvents.length == 0) {
-      startingTime = event.timestamp
+      this._startingTime = event.timestamp
     }
     // ? set the timing in the new event  
-    calibratedTimeStamp = this._calibrateTiming(event, startingTime)
-    if(this._recoring) {
+    calibratedTimeStamp = this._calibrateTiming(event.timestamp, this._startingTime)
+    
+    if(this._recording) {
       let processeableEvent = { note: event.note.number, timestamp: calibratedTimeStamp }
       this._midiEvents.push(processeableEvent)
     }
+  }
+
+  get _startingTime(){
+    return this.startingTime 
+  }
+
+  set _startingTime(time){
+    this.startingTime = time
+  }
+
+  // ? this isnt necessary but clarifies that a new start time will be created for every new recording session
+  resetStartTime() {
+    this.startingTime = 0 
   }
   
 
