@@ -12,12 +12,8 @@ class PatternsController < ApplicationController
   end
   
   def new
-    if @project.patterns.any?
-      redirect_to project_patterns_path()
-    else 
-      @pattern = Pattern.create(project: @project)
-      redirect_to edit_project_pattern_path(@project, @pattern)
-    end
+    @pattern = Pattern.create(project: @project)
+    redirect_to edit_project_pattern_path(@project, @pattern)
   end
 
   def pattern_settings 
@@ -41,7 +37,7 @@ class PatternsController < ApplicationController
         # *note_stamps
         # *channel
 
-        binding.pry 
+        # binding.pry 
         @pattern.channel = pattern_params[:channel].to_i 
         @pattern.note_stamps = note_stamps_params
         @pattern.midi_events = midi_events_params
