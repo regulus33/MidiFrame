@@ -33,13 +33,17 @@ class PatternsController < ApplicationController
   def update
     msg = { :status => "ok", :message => "Success!", :html => "<b>...</b>" }
     # TODO actually save stuff here
-    
+
     respond_to do |format|
       format.json  do 
-
+        # ? in this screen (the edit pattern screen) there are only 3 editable fields
+        # midi_events,
+        # note_stamps
+        # channel
+        binding.pry 
         @pattern.note_stamps = request.body.to_json
         @pattern.save! 
-
+        "[\"{\\\"midiEvents\\\":[],\\\"pianoData\\\":{\\\"51\\\":2.565,\\\"52\\\":3.43,\\\"54\\\":1.583}}\"]"
         render :json => msg 
       end# don't do msg.to_json
       format.html do
