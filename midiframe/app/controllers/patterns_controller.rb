@@ -65,7 +65,7 @@ class PatternsController < ApplicationController
   def pattern_params
     params.require(:pattern).permit(:data, :used_notes, :name, :order_in_sequence, :channel, :step_length)
   end
-
+  # TODO: fix me before production
   # !Security 
   def midi_events_params  
     # params.require(:midiEvents).permit(:timestamp, :note)
@@ -73,6 +73,7 @@ class PatternsController < ApplicationController
     params[:midiEvents]
   end
   
+  # TODO: fix me before production
   # ! ALERT THIS COULD BE EXTREMELY DANGEROUS IN PRODUCTION. DO NOT FORGET TO SCRUB THESE PARAMS
   # ! all manner of keys can be added here which will be injected directly into the DB! 
   # !Security
