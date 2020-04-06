@@ -6,7 +6,7 @@ class Pattern < ApplicationRecord
 
   belongs_to :project
 
-  before_create :set_channel, :set_name, :set_step_length
+  before_create :set_channel, :set_name, :set_step_length, :set_note_stamps, :set_order_in_sequence
 
   # ? after create since the values set above must be present 
   after_create :set_channel, :set_name
@@ -39,6 +39,16 @@ class Pattern < ApplicationRecord
 
   def set_step_length 
     self.step_length = 4 
+  end
+
+  # ? set empty object to initialize @pattern with an object when on NEW. Otherwise nil errors for EDIT form reuse 
+  def set_note_stamps
+    self.note_stamps = {}
+  end
+
+  # ? as above, avoiding nil errors in patterns/index for newly created with no val set yet, sort will fail
+  def set_order_in_sequence  
+    self.order_in_sequence = 1
   end
 
 end
