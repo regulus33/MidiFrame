@@ -10,7 +10,7 @@ export default class extends Controller {
   static targets = ["keyBoardKey", "video", "channel", "patternId", "projectId", "settings", "recordButton"]
 
   connect() {
-    
+
     // * a slimmed down version of piano { 35: <PianoKeyHtml/> }
     // ? primary used to store references of the keys to update with highlights, avoiding re-queries 
     // * {35: <pianokey alt="derk"/> } 
@@ -77,11 +77,10 @@ export default class extends Controller {
   // 1. from seeking in the video 
   // 2. nudging the timestamp back  
   // 3. nudging the timestamp fourth   
-  // 4. randomizing   
+  // 4. randomizing
   // TODO find a way to simplify this duplication  
   updateData({time, number}) {
     this.pianoData[number] = time 
-    // console.log(this.pianoData)
   }
 
   onDocumentKeyDown(e) {
@@ -320,7 +319,7 @@ export default class extends Controller {
   save() {
     // console.log(this._getPatternId())
     // console.log(this._getProjectId())
-    return saveProject({data: this.pianoData, patternId: this._getPatternId(), projectId: this._getProjectId()})
+    return saveProject({pianoData: this.pianoData, midiEvents: this.midiEvents, patternId: this._getPatternId(), projectId: this._getProjectId()})
   }
 
   saveAndNavigate() {

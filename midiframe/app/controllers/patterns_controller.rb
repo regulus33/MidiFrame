@@ -33,10 +33,13 @@ class PatternsController < ApplicationController
   def update
     msg = { :status => "ok", :message => "Success!", :html => "<b>...</b>" }
     # TODO actually save stuff here
+    
     respond_to do |format|
       format.json  do 
+
         @pattern.note_stamps = request.body.to_json
         @pattern.save! 
+
         render :json => msg 
       end# don't do msg.to_json
       format.html do
