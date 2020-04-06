@@ -37,13 +37,16 @@ class PatternsController < ApplicationController
     respond_to do |format|
       format.json  do 
         # ? in this screen (the edit pattern screen) there are only 3 editable fields
-        # midi_events,
-        # note_stamps
-        # channel
+        # *midi_events,
+        # *note_stamps
+        # *channel
+
         binding.pry 
-        @pattern.note_stamps = request.body.to_json
-        @pattern.save! 
-        "[\"{\\\"midiEvents\\\":[],\\\"pianoData\\\":{\\\"51\\\":2.565,\\\"52\\\":3.43,\\\"54\\\":1.583}}\"]"
+        @pattern.channel = pattern_params[:channel].to_i 
+        @pattern.note_stamps = note_stamps_params
+        @pattern.midi_events = midi_events_params
+        @pattern.save!
+
         render :json => msg 
       end# don't do msg.to_json
       format.html do
@@ -61,6 +64,21 @@ class PatternsController < ApplicationController
 
   def pattern_params
     params.require(:pattern).permit(:data, :used_notes, :name, :order_in_sequence, :channel, :step_length)
+  end
+
+  # !Security 
+  def midi_events_params  
+    # params.require(:midiEvents).permit(:timestamp, :note)
+    # params.require(:midiEvents).permit!
+    params[:midiEvents]
+  end
+  
+  # ! ALERT THIS COULD BE EXTREMELY DANGEROUS IN PRODUCTION. DO NOT FORGET TO SCRUB THESE PARAMS
+  # ! all manner of keys can be added here which will be injected directly into the DB! 
+  # !Security
+  def note_stamps_params 
+    # params.require(:piandData).permit!
+    params[:pianoData]
   end
 
   def find_project 
