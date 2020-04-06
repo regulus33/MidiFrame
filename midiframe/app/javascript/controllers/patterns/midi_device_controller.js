@@ -7,7 +7,7 @@ import { saveProject } from '../../helpers/network'
 
 export default class extends Controller {
 
-  static targets = ["keyBoardKey", "video", "channel", "patternId", "projectId", "settings", "recordButton"]
+  static targets = ["keyBoardKey", "video", "channel", "patternId", "projectId", "settings", "recordButton", "noteStamps"]
 
   connect() {
 
@@ -39,9 +39,13 @@ export default class extends Controller {
     this._enable_midi() 
    
     this._onVideoSeek = this.updateSelectedNoteTime.bind(this)
+
     this.saveAndNavigate = this.saveAndNavigate.bind(this)
 
     this._addKeyDownChannelListener()
+
+    // * INITIALIZING PIANO DATA IF IN THE DOM 
+    this._initializePianoData()
 
   }
 
@@ -103,6 +107,15 @@ export default class extends Controller {
       }
   }
 
+  // TODO: i think the object may need data to be converted i.e. integers 
+  _initializePianoData(){
+    let noteStamps = JSON.parse(this.noteStampsTarget.getAttribute("note-stamps"))
+    if(noteStamps){
+      this.pianoData = noteStamps
+    }
+
+  }
+
   get _playing(){
     return this.playing
   }
@@ -150,12 +163,12 @@ export default class extends Controller {
   }
 
   get _channel(){
-    return parseInt(this.data.get("channel"))
+    return parseInt(this.channelTarget.getAttribute('device-channel'))
   }
 
   set _channel(channel) {
     this.channelTarget.innerHTML = channel 
-    this.data.set("channel", channel)
+    this.channelTarget.setAttribute('device-channel', channel)
   }
 
   _addKeyDownChannelListener(){
