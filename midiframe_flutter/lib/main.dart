@@ -5,9 +5,7 @@ import './widgets/project_list_tab.dart';
 import './widgets/settings_tab.dart';
 import './widgets/player_tab.dart';
 import 'package:provider/provider.dart';
-
 import 'model/app_state_model.dart';   
-
 
 void main() {
    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
@@ -71,16 +69,16 @@ class MidiFrameHomePage extends StatelessWidget {
       tabBar: CupertinoTabBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.home),
-            title: Text('Products'),
+            icon: Icon(CupertinoIcons.folder),
+            title: Text('Projects'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.search),
-            title: Text('Search'),
+            icon: Icon(CupertinoIcons.play_arrow),
+            title: Text('Midi Frame'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.shopping_cart),
-            title: Text('Cart'),
+            icon: Icon(CupertinoIcons.settings),
+            title: Text('Settings'),
           ),
         ],
       ),
@@ -102,7 +100,7 @@ class MidiFrameHomePage extends StatelessWidget {
             return CupertinoTabView(builder: (context) {
               return CupertinoPageScaffold(
                 child: SettingsTab(),
-              );
+              );  
             });
         }
       },
