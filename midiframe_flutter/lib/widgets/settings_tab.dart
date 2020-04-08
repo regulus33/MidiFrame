@@ -11,7 +11,7 @@ class SettingsTab extends StatelessWidget {
         return CustomScrollView(
           slivers: const <Widget>[
             CupertinoSliverNavigationBar(
-              largeTitle: Text('Cupertino Store'),
+              largeTitle: Text('Settings'),
             ),
           ],
         );
