@@ -4,7 +4,7 @@
 class PatternsController < ApplicationController
 
   before_action :find_project
-  before_action :find_pattern, only: ['edit', 'update', 'pattern_settings']
+  before_action :find_pattern, only: ['edit', 'update', 'pattern_settings', 'destroy']
   protect_from_forgery with: :null_session, only: ['update']
 
   def index 
@@ -53,6 +53,13 @@ class PatternsController < ApplicationController
          redirect_to edit_project_pattern_path(@project, @pattern) 
       end
     end
+  end
+
+  def destroy
+   if @pattern.destroy!
+    toast "#{@pattern.name} deleted"
+    redirect_to project_patterns_path(@project)
+   end 
   end
 
   private

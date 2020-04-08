@@ -1,6 +1,6 @@
 
 div data-controller="projects--file-input" class="card-panel z-depth-5"
-  
+
   = form_for @project, url: { action: "update" }, html: { class: "form-group" } do |f|
     div class="input-field"    
       = f.text_field :name, placeholder: @project.name
@@ -23,7 +23,6 @@ div data-controller="projects--file-input" class="card-panel z-depth-5"
   div class="video_preview"
   
     = video_tag(url_for(@project.video), class: "video_preview", controls: true) 
-
 
 = render 'project_action_buttons' 
 
