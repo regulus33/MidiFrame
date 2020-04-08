@@ -11,7 +11,7 @@ class ProjectListTab extends StatelessWidget {
         return CustomScrollView(
           slivers: const <Widget>[
             CupertinoSliverNavigationBar(
-              largeTitle: Text('Cupertino Store'),
+              largeTitle: Text('Projects'),
             ),
           ],
         );

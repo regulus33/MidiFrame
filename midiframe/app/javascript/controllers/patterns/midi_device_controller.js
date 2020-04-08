@@ -335,6 +335,7 @@ export default class extends Controller {
     // console.log(this._getPatternId())
     // console.log(this._getProjectId())
     return saveProject({channel: this._channel, pianoData: this.pianoData, midiEvents: this.midiEvents, patternId: this._getPatternId(), projectId: this._getProjectId()})
+    .then(() =>  M.toast( { html:'Pattern Saved'} ) )
   }
 
   saveAndNavigate() {
