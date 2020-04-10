@@ -4,7 +4,7 @@
 class PatternsController < ApplicationController
 
   before_action :find_project
-  before_action :find_pattern, only: ['edit', 'update', 'pattern_settings', 'destroy']
+  before_action :find_pattern, only: ['edit', 'update', 'pattern_settings', 'destroy', 'generate_pattern_clip']
   protect_from_forgery with: :null_session, only: ['update']
 
   def index 
@@ -43,16 +43,24 @@ class PatternsController < ApplicationController
         @pattern.save!
 
         render :json => msg 
-      end# don't do msg.to_json
+      end
+      # ? currently this request originates only from pattern_settings, else it will be a JSON from pattern edit 
       format.html do
          @pattern.name = pattern_params[:name]
          @pattern.order_in_sequence = pattern_params[:order_in_sequence]
          @pattern.channel = pattern_params[:channel]
-         @pattern.step_length = pattern_params[:step_length]
+         @pattern.step_length_integer = pattern_params[:step_length].to_i 
          toast "#{@pattern.name} updated" if @pattern.save! 
          redirect_to edit_project_pattern_path(@project, @pattern) 
       end
     end
+  end
+
+
+  # ? POST: this will generate the clips for a single pattern
+  def generate_pattern_clip 
+    binding.pry 
+
   end
 
   def destroy
