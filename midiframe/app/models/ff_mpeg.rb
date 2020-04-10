@@ -1,0 +1,2 @@
+class FfMpeg < ApplicationRecord
+end

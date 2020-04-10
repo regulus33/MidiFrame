@@ -3,7 +3,7 @@ import WebMidi from 'webmidi'
 import videojs from 'video.js'
 import { toTheNearestThousandth, randoMize } from '../../helpers/math'
 import { NUDGE_AMOUNT, baseUrl } from '../../helpers/constants'
-import { saveProject } from '../../helpers/network'
+import { saveProject, generatePatternClip } from '../../helpers/network'
 
 export default class extends Controller {
 
@@ -447,6 +447,18 @@ export default class extends Controller {
   // ? this isnt necessary but clarifies that a new start time will be created for every new recording session
   resetStartTime() {
     this.startingTime = 0 
+  }
+
+
+  //? submitting data to be converted into a video 
+  generatePatternClip(){
+    // ! save before we tell controller to generate 
+    this.save().then((e) => {
+      debugger
+      generatePatternClip({patternId: this._getPatternId(), projectId: this._getProjectId()}).then(()=> {
+        debugger 
+      })
+    })
   }
   
 
