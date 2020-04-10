@@ -1,15 +1,17 @@
 # frozen_string_literal: true
-
 class Pattern < ApplicationRecord
 
   CLOCK_SIGNALS_IN_1_BAR = 96 
 
+  # ? To be joined as one entire project 
+  has_one_attached :video
+
   belongs_to :project
 
-  before_create :set_channel, :set_name, :set_step_length, :set_note_stamps, :set_order_in_sequence
+  before_create :set_channel, :initialize_name , :initialize_step_length , :initialize_note_stamps , :initialize_order_in_sequence
 
   # ? after create since the values set above must be present 
-  after_create :set_channel, :set_name
+  after_create :set_channel, :initialize_name 
  
   # all note numbers that we will support, normally there are 0-128 but Id rather keep things as simple as possible and ,ake the end result evenly divisible by twelve, which is how many notes we keep in our on screen keyboard 
   NOTES_GROUPED_IN_OCTAVES = 
@@ -25,30 +27,49 @@ class Pattern < ApplicationRecord
     [[96, "C8"], [97, "C#8"], [98, "D8"], [99, "D#8"], [100, "E8"],[101, "F8"],[102, "F#8"],[103, "G8"],[104, "G#8"],[105, "A8"],[106, "A#8"],[107, "B8"]]
   ]
 
-  def step_length=(length)
+  def step_length_integer=(length)
     self.total_clock_signals = CLOCK_SIGNALS_IN_1_BAR * length.to_i  
+    self.step_length = length
   end
 
   def set_channel 
     self.channel = 1  
   end
 
-  def set_name 
+  def initialize_name  
     self.name = "new pattern"
   end
 
-  def set_step_length 
-    self.step_length = 4 
+  def initialize_step_length  
+    self.step_length_integer = 4 
   end
 
   # ? set empty object to initialize @pattern with an object when on NEW. Otherwise nil errors for EDIT form reuse 
-  def set_note_stamps
+  def initialize_note_stamps 
     self.note_stamps = {}
   end
 
   # ? as above, avoiding nil errors in patterns/index for newly created with no val set yet, sort will fail
-  def set_order_in_sequence  
+  def initialize_order_in_sequence  
     self.order_in_sequence = 1
+  end
+
+
+  def create_clip 
+    # create an ffmpeg  table 
+    # it bleongs to a pattern and stores the instructions to create a clip 
+    # 
+    # send events and note_stamps to backend for parsing 
+    # for each event, make a string that will execute as a command    
+    # ? how to temporarily store references to a file, at some point we will need to split and put the clips to be concated somewhere 
+    # * pdf_ok = Tempfile.new(['invoice-without-last-page', '.pdf']) 
+    # https://github.com/wikilane/invoicehome/blob/master/app/helpers/converter_helper.rb
+    # https://ruby-doc.org/stdlib-2.5.3/libdoc/tempfile/rdoc/Tempfile.html
+    #  
+    #   
+    #
+    # 
+    
   end
 
 end

@@ -2,14 +2,14 @@
 div class="card-panel z-depth-5"
  = form_for @pattern, url: { action: 'update' },  html: { class: 'form-group'} do |f|
    
-   = f.text_field :name, placeholder: @pattern.name
    label Name
-   = f.text_field :order_in_sequence, placeholder: @pattern.order_in_sequence
+   = f.text_field :name, placeholder: @pattern.name
    label order in sequence
-   = f.text_field :channel, placeholder: @pattern.channel 
+   = f.text_field :order_in_sequence, placeholder: @pattern.order_in_sequence
    label channel
-   = f.text_field :step_length, placeholder: @pattern.step_length 
+   = f.text_field :channel, placeholder: @pattern.channel 
    label step length
+   = f.text_field :step_length, placeholder: @pattern.step_length 
    
    = f.submit "S A V E", class: "waves-effect waves-light btn grey darken-3 submit"
 

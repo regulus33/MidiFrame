@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_04_224607) do
+ActiveRecord::Schema.define(version: 2020_04_10_125826) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -34,6 +34,26 @@ ActiveRecord::Schema.define(version: 2020_04_04_224607) do
     t.string "checksum", null: false
     t.datetime "created_at", null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "ff_mpeg_slices", force: :cascade do |t|
+    t.bigint "ff_mpeg_id"
+    t.float "start_time"
+    t.float "end_time"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.integer "order_in_sequence"
+    t.index ["ff_mpeg_id"], name: "index_ff_mpeg_slices_on_ff_mpeg_id"
+  end
+
+  create_table "ff_mpegs", force: :cascade do |t|
+    t.bigint "pattern_id"
+    t.jsonb "pattern_blueprints"
+    t.boolean "failed"
+    t.jsonb "erros"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["pattern_id"], name: "index_ff_mpegs_on_pattern_id"
   end
 
   create_table "pattern_clips", force: :cascade do |t|

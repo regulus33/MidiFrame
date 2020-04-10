@@ -2,19 +2,19 @@ div class="row"
     a id="octave-minus" class="btn-floating btn-large waves-effect waves-light grey darken-4 z-depth-5" data-action="patterns--keyboard#prev"
        i class="material-icons"  keyboard_arrow_left
     
-    a id="record" total-clock-signals=@pattern.total_clock_signals class="btn-floating btn-large waves-effect waves-light red darken-1 z-depth-5"  data-action="patterns--midi-device#startRecordingMidiNotes" data-target="patterns--midi-device.recordButton"
+    a id="record" total-clock-signals=@pattern.total_clock_signals class="btn-floating btn-large waves-effect waves-light black darken-1 z-depth-5"  data-action="patterns--midi-device#startRecordingMidiNotes" data-target="patterns--midi-device.recordButton"
        i class="material-icons"  panorama_fish_eye
 
-    a id="complete" class="btn-floating btn-large waves-effect waves-light  blue lighten-2 z-depth-5" 
+    a id="complete" class="btn-floating btn-large waves-effect waves-light black lighten-2 z-depth-5"  data-action="patterns--midi-device#generatePatternClip"
       i class="material-icons"  launch
 
-    a id="save" class="btn-floating btn-large waves-effect waves-light  teal lighten-2 z-depth-5" data-action="patterns--midi-device#save" 
+    a id="save" class="btn-floating btn-large waves-effect waves-light black lighten-2 z-depth-5" data-action="patterns--midi-device#save" 
       i class="material-icons"  save
 
     a id="octave-plus" class="btn-floating btn-large waves-effect waves-light grey darken-4 z-depth-5" data-action="patterns--keyboard#next"
        i class="material-icons"  keyboard_arrow_right
 
-    a id="settings" class="btn-floating btn-large waves-effect waves-light orange lighten-2 z-depth-5" data-action="patterns--midi-device#saveAndNavigate" data-target="patterns--midi-device.settings" nav-url="/pattern-settings/#{@pattern.id}/#{@project.id}"
+    a id="settings" class="btn-floating btn-large waves-effect waves-light black lighten-2 z-depth-5" data-action="patterns--midi-device#saveAndNavigate" data-target="patterns--midi-device.settings" nav-url="/pattern-settings/#{@pattern.id}/#{@project.id}"
       i class="material-icons"  settings
 
 
