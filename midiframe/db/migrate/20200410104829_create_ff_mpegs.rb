@@ -5,7 +5,7 @@ class CreateFfMpegs < ActiveRecord::Migration[6.0]
       t.jsonb :pattern_blueprints 
       t.boolean :failed     
       t.jsonb :erros 
-
+      
       t.timestamps
     end
   end
