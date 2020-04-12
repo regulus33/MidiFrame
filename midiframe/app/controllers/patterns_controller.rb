@@ -56,18 +56,23 @@ class PatternsController < ApplicationController
     end
   end
 
-
-  # ? POST: this will generate the clips for a single pattern
-  def generate_pattern_clip 
-    binding.pry 
-
-  end
-
   def destroy
    if @pattern.destroy!
     toast "#{@pattern.name} deleted"
     redirect_to project_patterns_path(@project)
    end 
+  end
+
+  # * END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE
+  # * END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE
+  # * END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE
+  # * END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE
+  # * END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE
+  # * END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE
+  # * END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE
+  # ? POST: this will generate the clips for a single pattern
+  def generate_pattern_clip 
+    @pattern.create_clip 
   end
 
   private

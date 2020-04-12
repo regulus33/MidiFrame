@@ -56,19 +56,36 @@ class Pattern < ApplicationRecord
 
 
   def create_clip 
-    # create an ffmpeg  table 
-    # it bleongs to a pattern and stores the instructions to create a clip 
-    # 
-    # send events and note_stamps to backend for parsing 
-    # for each event, make a string that will execute as a command    
-    # ? how to temporarily store references to a file, at some point we will need to split and put the clips to be concated somewhere 
-    # * pdf_ok = Tempfile.new(['invoice-without-last-page', '.pdf']) 
-    # https://github.com/wikilane/invoicehome/blob/master/app/helpers/converter_helper.rb
-    # https://ruby-doc.org/stdlib-2.5.3/libdoc/tempfile/rdoc/Tempfile.html
-    #  
-    #   
-    #
-    # 
+  
+    active_storage_video = @project.video
+    # ! heads up, this 
+    # ? construct a unique URL in the Temp Dir, based on the blob.key + filename, its a unique string we get for free
+    project_video = Tempfile.new([active_storage_video.blob.filename, '.mp4'])
+    # ? the final output url for the end result video, just using @pattern.id to ensure uniqueness event though Tempfile
+    # .new already generates a unique url
+    processed_video = Tempfile.new([active_storage_video.blob.filename + @pattern.id, '.mp4'])
+    # ? open empty file url and insert downloaded file into the shell 
+    File.open(project_video, 'wb') do |f|
+      f.write(active_storage_video.download)
+    end
+
+    # ? oncreate ffmpeg instance will loop through its parent patterns recorded midi events and save them 
+    ffmpeg = FfMpeg.new(pattern: self)
+    # ? now we need to hydrate each command with the intended location of the processed video clip, but first we need 
+    # ? to make the tempfiles where those will be, so lets create each one based on the pattern event names 
+    # ? to do this we need to generate a bunch of tempfiles and make sure each reference will stay in memory? 
+     # or we could self generate the urls and save themmmm. hmmmmm. Yes lets do that. 
+    ffmpeg.
+    
+    self.video.attach(
+      io: File.open(processed_video),
+      filename: "#{video.blob.filename.base}.mp4",
+      content_type: 'video/mp4'
+    )
+
+    File.delete(orig_video_tmpfile)
+    File.delete(processed_video)
+  
     
   end
 

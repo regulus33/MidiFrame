@@ -2,6 +2,68 @@
 
 one:
   project: full_house 
+  channel: 4 
+  name: "pattern 1" 
+  step_length: 4 
+  order_in_sequence: 1
+  total_clock_signals: 384
+  midi_events: >
+   [
+    {"note":53, "timestamp":0},
+    {"note":57, "timestamp":0}, 
+    {"note":62, "timestamp":8.390000002691522}, 
+    {"note":65, "timestamp":8.390000002691522}, 
+    {"note":72, "timestamp":8.390000002691522}, 
+    {"note":81, "timestamp":8.390000002691522}, 
+    {"note":57, "timestamp":471.1200000019744}, 
+    {"note":59, "timestamp":497.2600000037346}, 
+    {"note":57, "timestamp":971.7800000216812}, 
+    {"note":53, "timestamp":997.9699999967124}, 
+    {"note":57, "timestamp":1460.8250000164844}, 
+    {"note":60, "timestamp":1497.2650000127032}, 
+    {"note":54, "timestamp":1595.91500001261}, 
+    {"note":62, "timestamp":1732.43000000366}, 
+    {"note":69, "timestamp":1732.43000000366}, 
+    {"note":74, "timestamp":1732.43000000366},
+     {"note":77, "timestamp":1732.43000000366},
+     {"note":57, "timestamp":1981.9200000201818},
+     {"note":57, "timestamp":1991.9499999959953},
+     {"note":53, "timestamp":1997.800000011921},
+     {"note":57, "timestamp":2470.755000016652},
+     {"note":59, "timestamp":2496.9250000140164},
+     {"note":57, "timestamp":2971.400000009453},
+     {"note":53, "timestamp":2997.625000018161},
+     {"note":65, "timestamp":3231.325000000652},
+     {"note":72, "timestamp":3231.325000000652},
+     {"note":53, "timestamp":3367.6850000047125},
+     {"note":57, "timestamp":3460.480000008829},
+     {"note":60, "timestamp":3496.8600000138395},
+     {"note":57, "timestamp":3981.5250000101514},
+     {"note":53, "timestamp":3997.5050000066403},
+     {"note":57, "timestamp":3997.5050000066403},
+     {"note":59, "timestamp":4013.4350000007544},
+     {"note":62, "timestamp":4013.4350000007544},
+     {"note":67, "timestamp":4013.4350000007544},
+     {"note":57, "timestamp":4470.4750000091735},
+     {"note":59, "timestamp":4496.610000001965},
+     {"note":57, "timestamp":4971.034999995027},
+     {"note":53, "timestamp":4997.369999997318},
+     {"note":57, "timestamp":5460.084999998799},
+     {"note":60, "timestamp":5496.420000010403},
+     {"note":54, "timestamp":5596.619999996619},
+     {"note":57, "timestamp":5981.0900000156835},
+     {"note":57, "timestamp":5991.215000016382},
+     {"note":53, "timestamp":5997.070000012172},
+     {"note":57, "timestamp":6470.120000012685},
+     {"note":59, "timestamp":6496.370000008028},
+     {"note":57, "timestamp":6970.679999998538},
+     {"note":53, "timestamp":6996.870000002673},
+     {"note":53, "timestamp":7366.850000020349},
+     {"note":57, "timestamp":7459.789999993518},
+     {"note":54, "timestamp":7491.659999999683},
+     {"note":60, "timestamp":7496.140000002924},
+     {"note":54, "timestamp":7731.285000016214}
+    ]
 
 # two:
 #   midi_events: 

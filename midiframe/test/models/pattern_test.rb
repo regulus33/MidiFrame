@@ -12,4 +12,10 @@ class PatternTest < ActiveSupport::TestCase
     pat = Pattern.create!(project: projects(:full_house))
     assert_equal 384, pat.total_clock_signals
   end
+
+
+  test "creates a pattern clip" do 
+    
+  end
+
 end
