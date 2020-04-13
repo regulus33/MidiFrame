@@ -56,35 +56,43 @@ class Pattern < ApplicationRecord
 
 
   def create_clip 
-  
-    active_storage_video = @project.video
-    # ! heads up, this 
+    # ? get a reference to the parent video of this whole project 
+    active_storage_video = self.project.video
     # ? construct a unique URL in the Temp Dir, based on the blob.key + filename, its a unique string we get for free
-    project_video = Tempfile.new([active_storage_video.blob.filename, '.mp4'])
+    project_video = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_#{active_storage_video.name.to_s}.mp4"
+
+    
     # ? the final output url for the end result video, just using @pattern.id to ensure uniqueness event though Tempfile
     # .new already generates a unique url
-    processed_video = Tempfile.new([active_storage_video.blob.filename + @pattern.id, '.mp4'])
+    processed_video = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_#{self.project.id.to_s}-#{self.id.to_s}.mp4"
     # ? open empty file url and insert downloaded file into the shell 
     File.open(project_video, 'wb') do |f|
       f.write(active_storage_video.download)
     end
-
     # ? oncreate ffmpeg instance will loop through its parent patterns recorded midi events and save them 
-    ffmpeg = FfMpeg.new(pattern: self)
-    # ? now we need to hydrate each command with the intended location of the processed video clip, but first we need 
-    # ? to make the tempfiles where those will be, so lets create each one based on the pattern event names 
-    # ? to do this we need to generate a bunch of tempfiles and make sure each reference will stay in memory? 
-     # or we could self generate the urls and save themmmm. hmmmmm. Yes lets do that. 
-    ffmpeg.
-    
-    self.video.attach(
-      io: File.open(processed_video),
-      filename: "#{video.blob.filename.base}.mp4",
-      content_type: 'video/mp4'
+    # *
+    # *
+    # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+    # !-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=!
+    # !-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=!
+    # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+    # *
+    ffmpeg = FfMpeg.create(
+      pattern: self, 
+      project_tempfile_url: project_video, 
+      processed_tempfile_url: processed_video
     )
+    ffmpeg.create_blueprints_for_slices
+    ffmpeg.create_slices 
+    # binding.pry 
+    # self.video.attach(
+    #   io: File.open(processed_video),
+    #   filename: "#{video.blob.filename.base}.mp4",
+    #   content_type: 'video/mp4'
+    # )
 
-    File.delete(orig_video_tmpfile)
-    File.delete(processed_video)
+    # File.delete(orig_video_tmpfile)
+    # File.delete(processed_video)
   
     
   end

@@ -39,7 +39,7 @@ class PatternsController < ApplicationController
 
         @pattern.channel = pattern_params[:channel].to_i 
         @pattern.note_stamps = note_stamps_params
-        @pattern.midi_events = midi_events_params
+        @pattern.midi_events = midi_events_params if midi_events_params.any?  
         @pattern.save!
 
         render :json => msg 
