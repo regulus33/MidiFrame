@@ -8,7 +8,7 @@ import { saveProject, generatePatternClip } from '../../helpers/network'
 export default class extends Controller {
 
   static targets = ["keyBoardKey", "video", "channel", "patternId", "projectId", "settings", "recordButton", "noteStamps"]
-
+  
   connect() {
 
     // * a slimmed down version of piano { 35: <PianoKeyHtml/> }
@@ -22,9 +22,11 @@ export default class extends Controller {
     
     // ? keep track of the notes that come out of the device. 
     // * [{note: 60, timestamp: 3}]
-    this.midiEvents= [] 
+    this.midiEvents = [] 
 
     this.recording = false 
+
+    this.actualStartingTime = null 
 
     this.startingTime = null 
 
@@ -53,11 +55,11 @@ export default class extends Controller {
   * @param web midi message api object
   * runs whatever needs ot happen on midi message
   */
+
   onMessageNoteOn(msg) {
     this._play_note(msg)
     this._play_video(msg)
     this._addMidiEvent(msg)
-
   }
 
   onMessageNoteOff(msg) {
@@ -108,28 +110,26 @@ export default class extends Controller {
   }
 
   // TODO: i think the object may need data to be converted i.e. integers 
-  _initializePianoData(){
+  _initializePianoData() {
     let noteStamps = JSON.parse(this.noteStampsTarget.getAttribute("note-stamps"))
-    if(noteStamps){
+    if(noteStamps) {
       this.pianoData = noteStamps
     }
-
   }
 
-  get _playing(){
+  get _playing() {
     return this.playing
   }
 
-  set _playing(playing){
+  set _playing(playing) {
     this.playing = playing
   }
 
-
-  set _onVideoSeek(fun){
+  set _onVideoSeek(fun) {
     this._video.on('seeking', (e) => fun(e))
   }
 
-  set _selectedKey(element){
+  set _selectedKey(element) {
     if(this.selectedKey) {
       this._deactivatePianoKey(this.selectedKey)
     } 
@@ -156,7 +156,6 @@ export default class extends Controller {
   get _piano(){
     return this.piano
   }
-
 
   get _videoLength(){
     return this._video.duration()
@@ -302,6 +301,9 @@ export default class extends Controller {
     this._playing = true 
   }
 
+  // ! important distinction with these event handlers, they only 
+  // ! get called if the user explicitly presses start or stop
+  // ! to actually set the stopping time in a recording session see SET_STOP_TIME
   _setStopping() {
     this.channelTarget.style.color = "white"
     this._showControlBar()
@@ -316,13 +318,15 @@ export default class extends Controller {
     this._video.controlBar.show()
   }
 
+  // TODO: probably delete me, i don't really need to exist 
   _setPlayAndStopListeners() {
     this._midiInput.addListener('stop', 'all', this._setStopping.bind(this))
     this._midiInput.addListener('start', 'all', this._setPlaying.bind(this))
   }
 
   _on_success(channel) {
-    // ? just for knowing if midi is being received or not
+    // ? just for knowing if midi is being received or not, when in compose mode, the channel 
+    // ? h1 changes color, maybe delete this, not really necessary anymore
     this._setPlayAndStopListeners()
     ///////
     this._midiInput.addListener('noteon', channel, msg => this.onMessageNoteOn(msg))
@@ -360,7 +364,6 @@ export default class extends Controller {
 
   //Midi Event Collection  Methods 
   // setter and getter methods for midi events collection
-  
   get _midiEvents() {
     return this.midiEvents
   }
@@ -373,7 +376,6 @@ export default class extends Controller {
     // * meanwhile, we only push data into array if recording is true    
     //! recording also starts the midi when set to true
     this._recording = true 
-
   }
 
   // ! HEADS UP:::::: there are two parts to this process, this only determines when to end recording time........
@@ -382,10 +384,44 @@ export default class extends Controller {
   onMessageClock(message) {
     // ? only count clock signals if recording 
     if(this._recording) {
+      // ? conditionally sets the STARTING time if it has not already been set 
+      //// ***********************************************
+      this._setStartingTimeIfNotSetYet(message.timestamp) // ********
+      //// ***********************************************
       this.clockSignalsPassedSinceRecordStart++
       console.log(`clock signal passed: ${this.clockSignalsPassedSinceRecordStart} total clock signals: ${this._totaClockSignals}`)
       this.clockSignalsPassedSinceRecordStart == this._totaClockSignals ? this._recording = false : null
     } 
+  }
+
+  _setStartingTimeIfNotSetYet(timestamp) {
+    if(this._startingTime === null) {
+      this._startingTime = timestamp
+      // ???? we only need ACTUALSTARTING TIME to know what time STOP() is called in 
+      // ???? context of the time the recording starts as 00000000000
+      this._actualStartingTime = Date.now() 
+      this._addStartingTimeToMidiEvents()
+    }
+  }
+
+  _addStartingTimeToMidiEvents() {
+      this._addMidiEvent(
+        this._startEvent(this._startingTime)
+      )
+  }
+
+  _setStopTime() {
+    // ? we need to set the stoping time which we will use to subtract 
+    // ? from each midi stamp timestamp to callibrate everything so 34048 would become 13 for the first midi note 
+      let timestamp = this._calculateStopTime()
+      this._addMidiEvent(
+        this._stopEvent(timestamp)
+      )
+  }
+
+  // ! this is only correct if it is called at the INTENDED STOPPING POINT!!!  
+  _calculateStopTime() {
+    return Date.now() - this._actualStartingTime
   }
 
   // ? set recording AND also stop or start midi based on value of 'recording'
@@ -394,10 +430,43 @@ export default class extends Controller {
       this.recording = true
       this._startMidi()
     } else {
+      // ? we are about to end the recording, quickly get 
+      // ? stop time into the midi events array before recording === false 
+      this._setStopTime()
       this.recording = false 
       this._stopMidi()
+      this._calibrateAllMidi()
       this._resetStartTime()
     }
+  }
+
+  _calibrateAllMidi() {
+    // ? FIRST CALIBRATE ALL EVENTS
+    const newMidi = this._midiEvents.map((event) => {
+      return this._calibrateSingleEvent(event)  
+    })
+    // ? for readability, sort based on timestamp 
+    // TODO: either remove this or simplify
+    newMidi.sort((a,b) => {
+      if(a.timestamp > b.timestamp) {
+        return 1 
+      } else if(a.timestamp < b.timestamp) {
+        return -1 
+      } else {
+        return 0 
+      }
+    })
+  }
+
+  _calibrateSingleEvent(event) {
+    // ? "stop" is already calibrated 
+    if(event.note != "stop") {
+      debugger 
+      // ? for example: start = 345 we need to get it to 0 so 345 - 345 === 0
+      return { timestamp: event.timestamp - this._startingTime }
+    }
+    //? otherwise its stop and we don't need to mess with it 
+    return event 
   }
 
   get _recording() {
@@ -413,7 +482,7 @@ export default class extends Controller {
   }
 
   _calibrateTiming(timestamp, startingTime) {
-    return timestamp - startingTime 
+    return timestamp -  startingTime
   }
 
   get _totaClockSignals() {
@@ -421,46 +490,56 @@ export default class extends Controller {
   }
   
   _addMidiEvent(event) {
-
-    let calibratedTimeStamp 
-    // ? first you need to get the amount of time to subtract from each timestamp so that the first evetn starts at 0:00
-    if(this._midiEvents.length == 0) {
-      this._startingTime = event.timestamp
-    }
-    // ? set the timing in the new event  
-    calibratedTimeStamp = this._calibrateTiming(event.timestamp, this._startingTime)
-    
-    if(this._recording) {
-      let processeableEvent = { note: event.note.number, timestamp: calibratedTimeStamp }
+    if(this._recording || event.note.number === "stop") {
+      let processeableEvent = { note: event.note.number, timestamp: event.timestamp }
       this._midiEvents.push(processeableEvent)
-    }
+    } 
+  }
+
+  get _actualStartingTime() {
+    return this.actualStartingTime 
+  }
+
+  set _actualStartingTime(time) {
+    this.actualStartingTime = time 
   }
 
   get _startingTime(){
     return this.startingTime 
   }
 
-  set _startingTime(time){
+  set _startingTime(time) {
     this.startingTime = time
   }
 
-  // ? this isnt necessary but clarifies that a new start time will be created for every new recording session
-  resetStartTime() {
-    this.startingTime = 0 
+  // ? this is very important, when we stop recording, 
+  // ? if we hit record again, we need to know that the clock signal we are receiving 
+  // ? is the first clock signal in the recording session. 
+  // ? we verify this by checking whether this member is null 
+  // ? of course it is null at first but we need to reset it to null when the session ends
+  _resetStartTime() {
+    this.startingTime = null 
   }
 
+  // ?create the last event in the array so we know where the last note ends 
+  _stopEvent(timestamp) {
+   return { note: { number: "stop"}, timestamp }
+  }
+
+  _startEvent(timestamp) {
+    return { note: { number: "start"}, timestamp }
+  }
 
   //? submitting data to be converted into a video 
   generatePatternClip(){
     // ! save before we tell controller to generate 
     this.save().then((e) => {
-      debugger
+      console.log("pattern: " + this._getPatternId()) 
+      console.log("project: " + this._getProjectId()) 
       generatePatternClip({patternId: this._getPatternId(), projectId: this._getProjectId()}).then(()=> {
-        debugger 
       })
     })
   }
-  
 
 }
 
