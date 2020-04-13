@@ -1,15 +1,19 @@
 class FfMpeg < ApplicationRecord
 
   PROJECT_TEMPFILE_PLACEHOLDER = "PROJECT_TEMPFILE_PLACEHOLDER"
-  before_create :on_create 
 
-  def on_create 
-    events = self.pattern.events    
-    loop_through_events_and_process_them(events)
+  belongs_to :pattern 
+ 
+  # ? before insert record into db, we loop through the parent pattern's
+  # ? events array and process the events into string instructions 
+  def create_blueprints_for_slices  
+    events = self.pattern.midi_events  
+    # ? add to self.pattern_blueprints
+    loop_through_events_and_process_them(events: events)
   end
 
-  def prepare_clip_generation(project_path_tempfile:, processed_path_tempfile:)
-    hydrate_blueprint_commands_with_tempfile_file_paths(project_path_tempfile, processed_path_tempfile)
+  # ? events. 
+  def prepare_clip_generation(project_path_tempfile)
   end
 
   def create_slices
@@ -21,20 +25,17 @@ class FfMpeg < ApplicationRecord
 
   private 
 
-  def hydrate_blueprint_commands_with_tempfile_file_paths(project_path_tempfile:, processed_path_tempfile:)
-    new_blue_prints = self.pattern_blueprints.map { |b| b.gsub(PROJECT_TEMPFILE_PLACEHOLDER, project_path_tempfile).gsub(PROCESSED_TEMPFILE_PLACEHOLDER, processed_path_tempfile) }
-    self.pattern_blueprints = new_blue_prints 
-    self.save! 
-  end
-
   # ? for each event in the @pattern.note_stamps array, this method is fed an event   
   # ? the method will output a string that is meant to be executed as a system command 
   # ? which invokes the FFMPEG binary for clip slicing. 
   def generate_blue_print(event:, next_event:)
-    slice_duration = next_event.timeStamp - event.timeStamp
-    "ffmpeg -an -y -ss #{event.timeStamp} -i #{PROJECT_TEMPFILE_PLACEHOLDER} -t #{slice_duration} -c:v libx264 #{generate_unique_tempfile_clip_location_url(event.timeStamp)}"
+    
+    slice_duration = next_event["timestamp"] - event["timestamp"]
+    "ffmpeg -an -y -ss #{event["timestamp"]} -i #{self.project_tempfile_url} -t #{slice_duration} -c:v libx264 #{generate_unique_tempfile_clip_location_url(event["timestamp"])}"
   end
 
+  # ? we need to create a unique but recallable url to extract these clips to, each slice command will export the
+  # ? results of the command to a location in the slices
   def generate_unique_tempfile_clip_location_url(time_stamp)
     pattern = self.pattern.id
     project = self.pattern.project.id 
@@ -46,10 +47,8 @@ class FfMpeg < ApplicationRecord
   # ? add the command to the blueprints array, we save it in this table to make it possible to run it 
   # ? in separate process for flexibility 
   def add_a_command_to_pattern_blue_prints_array(blue_print) 
-    # blue_prints = self.pattern_blueprints.dup
-    # blue_prints << command 
-    # self.pattern_blueprints = blue_prints
-    self.blue_prints << blue_print
+    self.pattern_blueprints = [] if self.pattern_blueprints.nil?   
+    self.pattern_blueprints << blue_print
     self.save!
   end
 
@@ -58,13 +57,13 @@ class FfMpeg < ApplicationRecord
   def loop_through_events_and_process_them(events:)     
     # ? for each event, get the start time and end time of a note by finding the event's timestamp
     events.each_with_index do |event, index|
-      
+      # ? calculate the end time of the note by searching starttime of next note 
       next_event = events[index + 1] unless reached_the_last_event? current_index: index, array_length: events.length
-      
+      # ? build the string to be run / insertted in out blueprints collection 
       blue_print_to_add = generate_blue_print(event: event, next_event: next_event)
-      
+      # insert the command 
       add_a_command_to_pattern_blue_prints_array(blue_print_to_add)
-    
+      
     end
   end 
 
