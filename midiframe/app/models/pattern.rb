@@ -54,6 +54,18 @@ class Pattern < ApplicationRecord
     self.order_in_sequence = 1
   end
 
+  def midi_events_array=(events)
+    self.midi_events = calibrate_midi_event_time_stamps(events)
+  end
+
+  # ? make start = 0 and subsequent events be something like 1,2,3 rather than 1111, 222, 3333
+  def calibrate_midi_event_time_stamps(events) 
+    start_time = events.find{|e|e["note"] == "start"}["timestamp"]
+    events.map do |event|
+      { note: event["note"], timestamp: event["timestamp"] - start_time }
+    end
+  end
+
 
   def create_clip 
     # ? get a reference to the parent video of this whole project 
