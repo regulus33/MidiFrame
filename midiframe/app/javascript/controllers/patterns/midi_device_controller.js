@@ -10,17 +10,9 @@ export default class extends Controller {
   static targets = ["keyBoardKey", "video", "channel", "patternId", "projectId", "settings", "recordButton", "noteStamps"]
 
   connect() {
-
-    // * a slimmed down version of piano { 35: <PianoKeyHtml/> }
-    // ? primary used to store references of the keys to update with highlights, avoiding re-queries 
-    // * {35: <pianokey alt="derk"/> } 
     this.piano = {}
-    // * a slimmed down version of piano { 35: 3456 }
-    // ? just the notes used and the timestamps they should trigger in the video 
-    // * {36: 5666} (note number: video timestamp)
     this.pianoData = {}
-    // ? keep track of the notes that come out of the device. 
-    // * [{note: 60, timestamp: 3}]
+    this.recordingSessionOpen = false 
     this.recording = false 
     this.midiEvents = [] 
     this.startingTime = null 
@@ -32,9 +24,7 @@ export default class extends Controller {
     this._onVideoSeek = this.updateSelectedNoteTime.bind(this)
     this.saveAndNavigate = this.saveAndNavigate.bind(this)
     this._addKeyDownChannelListener()
-    // * INITIALIZING PIANO DATA IF IN THE DOM 
     this._initializePianoData()
-
   }
 
   //SAVE BUTTON 
@@ -71,11 +61,11 @@ export default class extends Controller {
         case this._totaClockSignals:
           this._addStopTime(message.timestamp)
           this._recording = false 
+          this.toggleRecordingSession()
           break;
       }
     } 
   }
-
 
   onMessageNoteOn(msg) {
     this._play_note(msg)
@@ -125,6 +115,11 @@ export default class extends Controller {
       }
   }
 
+  toggleRecordingSession() {
+    this._recordingSessionOpen = !this._recordingSessionOpen 
+    M.toast( { html: `recording session ${this._recordingSessionOpen ? 'open' : 'closed'}`} ) 
+  }
+  
   // **************************************************
   // ! PRIVATE METHODS PRIVATE METHODS PRIVATE METHODS
   // *************************************************
@@ -138,24 +133,23 @@ export default class extends Controller {
   }
 
   // TODO: i think the object may need data to be converted i.e. integers 
-  _initializePianoData(){
+  _initializePianoData() {
     let noteStamps = JSON.parse(this.noteStampsTarget.getAttribute("note-stamps"))
     if(noteStamps){
       this.pianoData = noteStamps
     }
-
   }
 
-  _addKeyDownChannelListener(){
+  _addKeyDownChannelListener() {
     window.addEventListener('keydown', this.onDocumentKeyDown.bind(this))
   }
 
-  _changeChannel(channel){
+  _changeChannel(channel) {
     this._channel = channel
     this._resetMidiListeners(parseInt(channel))
   }
 
-  _keyCodeIsNumber(code){
+  _keyCodeIsNumber(code) {
     return [1,2,3,4,5,6,7,8,9].includes(parseInt(code))
   }
 
@@ -177,6 +171,16 @@ export default class extends Controller {
     time = nextTime < 0 ? 0 : nextTime
     this._updateData({time: time, number: element.id})
     element.value = time 
+  }
+
+  // ? RECORDING SESSION 
+  get _recordingSessionOpen() {
+    return this.recordingSessionOpen
+  }
+
+  set _recordingSessionOpen(isOpen) {
+    this.recordingSessionOpen = isOpen
+    this.recordButtonTarget.classList.toggle('open-recording-session')
   }
 
   _randomize(element){
@@ -354,7 +358,6 @@ export default class extends Controller {
     this.channelTarget.innerHTML = channel 
     this.channelTarget.setAttribute('device-channel', channel)
   }
-  ////////////////////////////
   ///////////////////////////
   get _midiEvents() {
     return this.midiEvents
