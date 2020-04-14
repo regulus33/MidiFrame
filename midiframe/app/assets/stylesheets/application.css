@@ -197,8 +197,10 @@ a.pattern-link {
   color: white;
 }
 
+a#record.open-recording-session i {
+  color: red;
+}
 
-/* !hovering and selected  */
 
 
 
