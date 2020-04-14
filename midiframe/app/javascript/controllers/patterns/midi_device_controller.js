@@ -57,7 +57,6 @@ export default class extends Controller {
     this._play_note(msg)
     this._play_video(msg)
     this._addMidiEvent(msg)
-
   }
 
   onMessageNoteOff(msg) {
@@ -382,9 +381,23 @@ export default class extends Controller {
   onMessageClock(message) {
     // ? only count clock signals if recording 
     if(this._recording) {
+
       this.clockSignalsPassedSinceRecordStart++
       console.log(`clock signal passed: ${this.clockSignalsPassedSinceRecordStart} total clock signals: ${this._totaClockSignals}`)
-      this.clockSignalsPassedSinceRecordStart == this._totaClockSignals ? this._recording = false : null
+      
+      switch(this.clockSignalsPassedSinceRecordStart) {
+        // ! end is reached! exit recording loop
+        case this._totaClockSignals:
+          this._addStopTime(message.timestamp)
+          this._recording = false 
+          break;
+        case 1:
+          this._addStartEventAndSetStartTime(message.timestamp)
+          break;
+      }
+
+   
+
     } 
   }
 
@@ -396,7 +409,7 @@ export default class extends Controller {
     } else {
       this.recording = false 
       this._stopMidi()
-      this._resetStartTime()
+      // this._resetStartTime()
     }
   }
 
@@ -419,19 +432,32 @@ export default class extends Controller {
   get _totaClockSignals() {
     return parseInt(this.recordButtonTarget.getAttribute("total-clock-signals"))
   }
+
+  _addStartEventAndSetStartTime(timestamp) {
+    // ? on first clock signal of recording session we get the received time of the 
+    // ? first note 
+   
+    this._startingTime = timestamp
+    let processeableEvent = { note: "start", timestamp: timestamp }
+    this._midiEvents.push(processeableEvent)
+  }
+
+  _addStopTime(timestamp) {
+    let processeableEvent = { note: "stop", timestamp: timestamp }
+    this._midiEvents.push(processeableEvent)
+  }
   
   _addMidiEvent(event) {
-
     let calibratedTimeStamp 
     // ? first you need to get the amount of time to subtract from each timestamp so that the first evetn starts at 0:00
-    if(this._midiEvents.length == 0) {
-      this._startingTime = event.timestamp
-    }
+    // if(this._midiEvents.length == 0) {
+    //   this._startingTime = event.timestamp
+    // }
     // ? set the timing in the new event  
-    calibratedTimeStamp = this._calibrateTiming(event.timestamp, this._startingTime)
+    // calibratedTimeStamp = this._calibrateTiming(event.timestamp, this._startingTime)
     
     if(this._recording) {
-      let processeableEvent = { note: event.note.number, timestamp: calibratedTimeStamp }
+      let processeableEvent = { note: event.note.number, timestamp: event.timestamp }
       this._midiEvents.push(processeableEvent)
     }
   }
