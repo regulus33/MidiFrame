@@ -30,7 +30,12 @@ export default class extends Controller {
   //SAVE BUTTON 
   save() {
     return saveProject({channel: this._channel, pianoData: this.pianoData, midiEvents: this.midiEvents, patternId: this._getPatternId(), projectId: this._getProjectId()})
-    .then(() =>  M.toast( { html:'Pattern Saved'} ) )
+    .then(() => { 
+      M.toast( { html:'Pattern Saved'})
+      // ? if the midi events are at the server, there is no reason for them to 
+      // ? hang around in memory, clear the array in preparation for new recordings 
+      this._clearMidiEvents()
+    })
   }
 
   saveAndNavigate() {
@@ -61,6 +66,7 @@ export default class extends Controller {
         case this._totaClockSignals:
           this._addStopTime(message.timestamp)
           this._recording = false 
+          this._resetClock()
           this.toggleRecordingSession()
           break;
       }
@@ -123,6 +129,14 @@ export default class extends Controller {
   // **************************************************
   // ! PRIVATE METHODS PRIVATE METHODS PRIVATE METHODS
   // *************************************************
+
+  _clearMidiEvents() {
+    this._midiEvents = []
+  }
+
+  _resetClock() {
+    this.clockSignalsPassedSinceRecordStart = 0 
+  }
 
   _startRecordingMidiNotes() {
     this._recording = true 
