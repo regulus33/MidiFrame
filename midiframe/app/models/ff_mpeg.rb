@@ -29,7 +29,6 @@ class FfMpeg < ApplicationRecord
   # ? the method will output a string that is meant to be executed as a system command 
   # ? which invokes the FFMPEG binary for clip slicing. 
   def generate_blue_print(event:, next_event:)
-    
     slice_duration = next_event["timestamp"] - event["timestamp"]
     "ffmpeg -an -y -ss #{event["timestamp"]} -i #{self.project_tempfile_url} -t #{slice_duration} -c:v libx264 #{generate_unique_tempfile_clip_location_url(event["timestamp"])}"
   end
