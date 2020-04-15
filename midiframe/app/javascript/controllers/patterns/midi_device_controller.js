@@ -376,6 +376,10 @@ export default class extends Controller {
   get _midiEvents() {
     return this.midiEvents
   }
+
+  set _midiEvents(events) {
+    this.midiEvents = events
+  }
   ///////////////////////////
   get _midiInput(){
     return WebMidi.inputs[0]

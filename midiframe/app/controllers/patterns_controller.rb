@@ -38,6 +38,9 @@ class PatternsController < ApplicationController
         # *channel
         @pattern.channel = pattern_params[:channel].to_i 
         @pattern.note_stamps = note_stamps_params
+        # ? we reset array of midi events to empty if user submits a collection of events
+        # ? because of that and just common sense in general, we never save "empty" values 
+        # ? if user wants to clear midi events they can just delete the pattern 
         @pattern.midi_events_array = midi_events_params if midi_events_params.any?  
         @pattern.save!
 
