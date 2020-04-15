@@ -29,8 +29,17 @@ class FfMpeg < ApplicationRecord
   # ? the method will output a string that is meant to be executed as a system command 
   # ? which invokes the FFMPEG binary for clip slicing. 
   def generate_blue_print(event:, next_event:)
-    slice_duration = next_event["timestamp"] - event["timestamp"]
-    "ffmpeg -an -y -ss #{event["timestamp"]} -i #{self.project_tempfile_url} -t #{slice_duration} -c:v libx264 #{generate_unique_tempfile_clip_location_url(event["timestamp"])}"
+    # ?              ffmpeg -t requires seconds, its still very precise so we just convert 
+    slice_duration = milliseconds_to_seconds(next_event["timestamp"] - event["timestamp"])
+    "ffmpeg -an -y -ss #{timestamp_to_play_in_video event: event} -i #{self.project_tempfile_url} -t #{slice_duration} -c:v libx264 #{generate_unique_tempfile_clip_location_url(event["timestamp"])}"
+  end
+
+  def timestamp_to_play_in_video(event:)
+    self.pattern.note_stamps[event["note"].to_s]
+  end
+
+  def milliseconds_to_seconds(milliseconds)
+    milliseconds / 1000 
   end
 
   # ? we need to create a unique but recallable url to extract these clips to, each slice command will export the
@@ -56,6 +65,8 @@ class FfMpeg < ApplicationRecord
   def loop_through_events_and_process_them(events:)     
     # ? for each event, get the start time and end time of a note by finding the event's timestamp
     events.each_with_index do |event, index|
+      # ? stop is the last event, there is not command for this event, it only serves as a sign when the last note should terminate
+      break if event["note"] == "stop"
       # ? calculate the end time of the note by searching starttime of next note 
       next_event = events[index + 1] unless reached_the_last_event? current_index: index, array_length: events.length
       # ? build the string to be run / insertted in out blueprints collection 
