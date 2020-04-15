@@ -2,6 +2,10 @@
 class Pattern < ApplicationRecord
 
   CLOCK_SIGNALS_IN_1_BAR = 96 
+  # ? name of midi notes signaling absolute beginning and end of a clip 
+  START = "start"
+  STOP = "stop"
+
 
   # ? To be joined as one entire project 
   has_one_attached :video
@@ -55,7 +59,11 @@ class Pattern < ApplicationRecord
   end
 
   def midi_events_array=(events)
-    self.midi_events = calibrate_midi_event_time_stamps(events)
+    self.midi_events = remove_events_not_selected_by_user(calibrate_midi_event_time_stamps(events))
+  end
+
+  def remove_events_not_selected_by_user(events) 
+    events.select{|e| self.note_stamps.keys.include?(e[:note].to_s) || [ START, STOP ].include?(e[:note])}
   end
 
   # ? make start = 0 and subsequent events be something like 1,2,3 rather than 1111, 222, 3333
@@ -96,7 +104,7 @@ class Pattern < ApplicationRecord
     )
     ffmpeg.create_blueprints_for_slices
     ffmpeg.create_slices 
-    # binding.pry 
+    binding.pry 
     # self.video.attach(
     #   io: File.open(processed_video),
     #   filename: "#{video.blob.filename.base}.mp4",
