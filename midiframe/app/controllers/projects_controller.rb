@@ -18,6 +18,8 @@ class ProjectsController < ApplicationController
   def update
     insert_params
     if @project.save
+      #TODO: delegate to a job like sideqik
+      process_video
       @toast = "#{@project.name} updated"
       render 'index'
     else
@@ -31,8 +33,9 @@ class ProjectsController < ApplicationController
     @project = Project.new
     insert_params
     @project.user = current_user
-
     if @project.save
+      #TODO: delegate to delayed_job
+      process_video
       @toast = "#{@project.name} created"
       render 'index'
     else
@@ -61,10 +64,22 @@ class ProjectsController < ApplicationController
   end
 
   def insert_params 
+    
     @project.bpm = project_params[:bpm].to_i if project_params[:bpm]
     @project.name = project_params[:name] if project_params[:name]
     @project.video = project_params[:video] if project_params[:video]
   end 
+
+  # TODO: will this false positive sometimes?
+  # ? IF VIDEO IS NEW STRIP SOUND ETC 
+  def process_video 
+    if project_params[:video]
+      # if video is ever changed by user it will always pass through this controller (it must!)
+      # so we must reset this to false if part of the params is a video
+      # ? this ensures that we will always strip sound for new videos 
+      @project.sound_stripped = false 
+    end
+  end
 
 end
 
