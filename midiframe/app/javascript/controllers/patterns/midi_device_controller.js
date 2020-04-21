@@ -59,6 +59,7 @@ export default class extends Controller {
   onMessageClock(message) {
     // ? only count clock signals if recording 
     if(this._recording) {
+      debugger 
       this.clockSignalsPassedSinceRecordStart++
       console.log(`clock signal passed: ${this.clockSignalsPassedSinceRecordStart} total clock signals: ${this._totaClockSignals}`)
       switch(this.clockSignalsPassedSinceRecordStart) {
@@ -85,7 +86,9 @@ export default class extends Controller {
 
   onMessageStart(msg) {
     this._addStartEvent(msg.timestamp)
-    this._startRecordingMidiNotes()
+    if(this._recordingSessionOpen) {
+      this._startRecordingMidiNotes()
+    }
   }
 
   onPianoKeyClick(event){
