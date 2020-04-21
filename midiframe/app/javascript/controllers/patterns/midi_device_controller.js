@@ -59,7 +59,6 @@ export default class extends Controller {
   onMessageClock(message) {
     // ? only count clock signals if recording 
     if(this._recording) {
-      debugger 
       this.clockSignalsPassedSinceRecordStart++
       console.log(`clock signal passed: ${this.clockSignalsPassedSinceRecordStart} total clock signals: ${this._totaClockSignals}`)
       switch(this.clockSignalsPassedSinceRecordStart) {
@@ -84,9 +83,11 @@ export default class extends Controller {
     this._unplay_note(msg)
   }
 
+  //? this method adds the starting timestamp (its the most precise way)
+  //? and begins adding new midi events to the collection  
   onMessageStart(msg) {
-    this._addStartEvent(msg.timestamp)
     if(this._recordingSessionOpen) {
+      this._addStartEvent(msg.timestamp)
       this._startRecordingMidiNotes()
     }
   }
@@ -312,14 +313,14 @@ export default class extends Controller {
     this._video.controlBar.show()
   }
 
-  _setPlayAndStopListeners() {
-    this._midiInput.addListener('stop', 'all', this._setStopping.bind(this))
-    this._midiInput.addListener('start', 'all', this._setPlaying.bind(this))
-  }
+  // _setPlayAndStopListeners() {
+  //   this._midiInput.addListener('stop', 'all', this._setStopping.bind(this))
+  //   this._midiInput.addListener('start', 'all', this._setPlaying.bind(this))
+  // }
 
   _on_success(channel) {
     // ? just for knowing if midi is being received or not
-    this._setPlayAndStopListeners()
+    // this._setPlayAndStopListeners()
     ///////
     this._midiInput.addListener('noteon', channel, msg => this.onMessageNoteOn(msg))
     this._midiInput.addListener('noteoff', channel, msg => this.onMessageNoteOff(msg))

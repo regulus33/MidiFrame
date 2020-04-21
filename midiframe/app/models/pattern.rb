@@ -80,9 +80,7 @@ class Pattern < ApplicationRecord
     active_storage_video = self.project.video
     # ? construct a unique URL in the Temp Dir, based on the blob.key + filename, its a unique string we get for free
     project_video = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_#{active_storage_video.name.to_s}.mp4"
-
-    
-    # ? the final output url for the end result video, just using @pattern.id to ensure uniqueness event though Tempfile
+    # ? the final output url for the end result video, just using @pattern.id to ensure uniqueness nerve and talent 
     # .new already generates a unique url
     processed_video = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_#{self.project.id.to_s}-#{self.id.to_s}.mp4"
     # ? open empty file url and insert downloaded file into the shell 
@@ -90,31 +88,58 @@ class Pattern < ApplicationRecord
       f.write(active_storage_video.download)
     end
     # ? oncreate ffmpeg instance will loop through its parent patterns recorded midi events and save them 
-    # *
-    # *
-    # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-    # !-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=!
-    # !-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=!
-    # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-    # *
+    # ? FFMPEG object 
+    #  pattern_blueprints:
+    #   [
+    #     "ffmpeg -an -y -ss  -i /Users/zack/video-synth/midiframe/tmp/zge279vkj7sd6ku27aqjm8txzim7_video.mp4 -t 0.00034500000765547156 -c:v libx264 /Users/zack/video-synth/midiframe/tmp/56-176-0.0.mp4"
+    #   ]
+    # ? the pattern blueprints describe the action of chopping the video into little pieces 
+    # ? we will also need to save pattern blueprints join 
     ffmpeg = FfMpeg.create(
       pattern: self, 
       project_tempfile_url: project_video, 
       processed_tempfile_url: processed_video
     )
+    # ? create the slice commands then slice the video 
     ffmpeg.create_blueprints_for_slices
     ffmpeg.create_slices 
+    # ? at this point because we have the slices made and existing in the temp directory
+    # ? we also saved the absolute paths to these files into a jsonb field called pattern_concat_blueprints
+    # ? we need to simply cat a txt file with a unique name specific to this pattern 
+    processed_video = generate_new_video_concat_file_path
+    create_concat_file(name: generate_new_text_concat_file_path, concat_blue_prints: ffmpeg.pattern_concat_blueprints)
+    concatenate_clips(path_to_input_text_file: generate_new_text_concat_file_path, processed_video: processed_video )
     binding.pry 
-    # self.video.attach(
-    #   io: File.open(processed_video),
-    #   filename: "#{video.blob.filename.base}.mp4",
-    #   content_type: 'video/mp4'
-    # )
+    self.video.attach(
+      io: File.open(processed_video),
+      filename: "#{self.video.blob.filename.base}.mp4",
+      content_type: 'video/mp4'
+    )
 
     # File.delete(orig_video_tmpfile)
     # File.delete(processed_video)
-  
-    
   end
+
+  private 
+
+  def concatenate_clips(path_to_input_text_file:, processed_video:) 
+    `ffmpeg -an -f concat -safe 0 -i #{path_to_input_text_file} -c copy #{processed_video}.mp4`
+  end
+
+  def generate_new_video_concat_file_path
+    name = "joined_clips_#{self.id.to_s}"
+    "#{Rails.root}/tmp/#{name}.mp4"
+  end
+
+  def create_concat_file(name:, concat_blue_prints:)  
+    File.open(name, 'wb') do |f|
+      f.write(concat_blue_prints)
+    end
+  end
+
+  def generate_new_text_concat_file_path
+   file_name = "concat_file" + self.id.to_s 
+   "#{Rails.root}/tmp/#{file_name}.txt"
+  end 
 
 end
