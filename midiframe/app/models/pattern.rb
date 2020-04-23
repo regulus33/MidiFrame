@@ -108,22 +108,21 @@ class Pattern < ApplicationRecord
     # ? we need to simply cat a txt file with a unique name specific to this pattern 
     processed_video = generate_new_video_concat_file_path
     create_concat_file(name: generate_new_text_concat_file_path, concat_blue_prints: ffmpeg.pattern_concat_blueprints)
-    concatenate_clips(path_to_input_text_file: generate_new_text_concat_file_path, processed_video: processed_video )
-    binding.pry 
+    concatenate_clips(path_to_input_text_file: generate_new_text_concat_file_path, processed_video: processed_video)
     self.video.attach(
       io: File.open(processed_video),
-      filename: "#{self.video.blob.filename.base}.mp4",
+      filename: "#{self.id.to_s}.mp4",
       content_type: 'video/mp4'
     )
-
-    # File.delete(orig_video_tmpfile)
-    # File.delete(processed_video)
+    File.delete(project_video)
+    File.delete(processed_video)
+    ffmpeg.remove_clips_from_tempfile()
   end
 
   private 
 
   def concatenate_clips(path_to_input_text_file:, processed_video:) 
-    `ffmpeg -an -f concat -safe 0 -i #{path_to_input_text_file} -c copy #{processed_video}.mp4`
+    `ffmpeg -an -f concat -safe 0 -i #{path_to_input_text_file} -c copy #{processed_video}`
   end
 
   def generate_new_video_concat_file_path

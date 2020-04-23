@@ -28,7 +28,6 @@ class Project < ApplicationRecord
     strip_sound_command original_video: original_video, soundless_video: soundless_video
     # ! this is a lie since we don't really have the video attached yet   
     self.sound_stripped = true
-    binding.pry 
     self.video.attach(
       io: File.open(soundless_video),
       filename: "#{active_storage_video.blob.filename.base}.mp4",
