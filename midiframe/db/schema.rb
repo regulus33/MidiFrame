@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_21_185148) do
+ActiveRecord::Schema.define(version: 2020_04_23_212039) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,6 +56,7 @@ ActiveRecord::Schema.define(version: 2020_04_21_185148) do
     t.string "project_tempfile_url"
     t.string "processed_tempfile_url"
     t.jsonb "pattern_concat_blueprints"
+    t.jsonb "clip_filenames"
     t.index ["pattern_id"], name: "index_ff_mpegs_on_pattern_id"
   end
 

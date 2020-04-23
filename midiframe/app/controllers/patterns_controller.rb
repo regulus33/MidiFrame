@@ -36,7 +36,6 @@ class PatternsController < ApplicationController
         # *midi_events,
         # *note_stamps
         # *channel
-        binding.pry 
         @pattern.channel = pattern_params[:channel].to_i 
         @pattern.note_stamps = note_stamps_params
         # ? we reset array of midi events to empty if user submits a collection of events
