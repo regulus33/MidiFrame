@@ -12,10 +12,8 @@ class FfMpeg < ApplicationRecord
     loop_through_events_and_process_them(events: events)
   end
 
-  # ? events. 
-  def prepare_clip_generation(project_path_tempfile)
-  end
-
+  # * execute all ffmpeg slice commands (seeking)
+  # ? https://trac.ffmpeg.org/wiki/Seeking
   def create_slices
     self.pattern_blueprints.each do |command|
       result = `#{command}`
@@ -23,14 +21,13 @@ class FfMpeg < ApplicationRecord
     end
   end 
 
-
   def remove_clips_from_tempfile 
     self.clip_filenames.each do |filename|
       puts "[ff_mpeg] deleting #{filename}"
       File.delete(filename)
     end
   end
-
+  # ffmpeg -i port.mp4 -i palette.png -lavfi paletteuse=dither=bayer:bayer_scale=1 -c:v libx264 -pix_fmt yuv420p jdhfjdsfkjf.mp4
   private 
 
   # ? for each event in the @pattern.note_stamps array, this method is fed an event   
@@ -38,7 +35,7 @@ class FfMpeg < ApplicationRecord
   # ? which invokes the FFMPEG binary for clip slicing. 
   def generate_slice_blue_print(event:, next_event:)
     # ? ffmpeg -t requires seconds, its still very precise so we just convert 
-    slice_duration = milliseconds_to_seconds(next_event["timestamp"] - event["timestamp"])
+    slice_duration = convert_seconds_to_milliseconds_and_convert_scientific_notation_to_strings(next_event["timestamp"] - event["timestamp"])
     "ffmpeg -an -y -ss #{timestamp_to_play_in_video(event: event)} -i #{self.project_tempfile_url} -t #{slice_duration} -c:v libx264 #{generate_unique_tempfile_clip_location_url(event["timestamp"])}"
   end
 
@@ -52,8 +49,12 @@ class FfMpeg < ApplicationRecord
     self.pattern.note_stamps[note.to_s]
   end
 
-  def milliseconds_to_seconds(milliseconds)
-    milliseconds / 1000 
+  # ?  sometimes x / 1000 gives you this: 0.8999998681247234e-4 and you need this:  "0.00008999998681247234"
+  # ? its scientific notation and needs to be converted to a readbale string by ffmpeg 
+  # https://stackoverflow.com/questions/8586357/how-to-convert-a-scientific-notation-string-to-decimal-notation
+  def convert_seconds_to_milliseconds_and_convert_scientific_notation_to_strings(milliseconds)
+    seconds = milliseconds / 1000 
+    BigDecimal(seconds.to_s).to_s # ? returns a big decimal as a string 
   end
 
   # ? we need to create a unique but recallable url to extract these clips to, each slice command will export the
@@ -63,7 +64,8 @@ class FfMpeg < ApplicationRecord
     project = self.pattern.project.id 
     # ! TODO: security/stability make this below hash thing based on user email to ensure uniqueness
     # project-id--pattern-id--event-time should be unique enough so just don't forget to check this/test before production
-    "#{Rails.root}/tmp/#{project}#{pattern}#{remove_dots(time_stamp)}.mp4"
+    # "#{Rails.root}/tmp/#{project}#{pattern}#{remove_dots(time_stamp)}.mp4"
+    "#{Rails.root}/tmp/#{project}_#{pattern}_#{time_stamp}.mp4"
   end 
 
   # ? add the command to the blueprints array, we save it in this table to make it possible to run it 
@@ -96,7 +98,6 @@ class FfMpeg < ApplicationRecord
       # ? calculate the end time of the note by searching starttime of next note 
       next_event = events[index + 1] unless reached_the_last_event? current_index: index, array_length: events.length
       # ? build the string to be run / insertted in out blueprints collection 
-      # ! save all the important stuff 
       blue_print_to_add = generate_slice_blue_print(event: event, next_event: next_event)
       concat_blue_print_to_add = generate_concat_blueprint(event)
       # ? COLLECT BLUEPRINTS FOR SLICE AND CONCAT 
@@ -106,6 +107,11 @@ class FfMpeg < ApplicationRecord
       clip_filenames << generate_unique_tempfile_clip_location_url(event["timestamp"])
       # insert the command 
     end
+    # *
+    # *
+    #      EVERYTHING YOU NEED TO SLICE CONCAT AND DELETE CLIPS  
+    # *
+    # *
     save_and_add_commands_to_pattern_blue_prints(pattern_blueprints)
     save_and_add_commands_to_pattern_concat_blue_prints(pattern_concat_blueprints)
     save_and_add_clip_file_names_to_clip_filenames(clip_filenames)

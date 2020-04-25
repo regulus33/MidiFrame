@@ -19,7 +19,7 @@ class ProjectsController < ApplicationController
     insert_params
     if @project.save
       #TODO: delegate to a job like sideqik
-      process_video
+      set_video_process_flags_false
       @toast = "#{@project.name} updated"
       render 'index'
     else
@@ -35,7 +35,7 @@ class ProjectsController < ApplicationController
     @project.user = current_user
     if @project.save
       #TODO: delegate to delayed_job
-      process_video
+      set_video_process_flags_false
       @toast = "#{@project.name} created"
       render 'index'
     else
@@ -56,7 +56,7 @@ class ProjectsController < ApplicationController
   private
 
   def project_params
-    params.require(:project).permit(:name, :bpm, :video)
+    params.require(:project).permit(:name, :bpm, :video, :lofi_amount)
   end
 
   def get_project
@@ -64,20 +64,21 @@ class ProjectsController < ApplicationController
   end
 
   def insert_params 
-    
     @project.bpm = project_params[:bpm].to_i if project_params[:bpm]
     @project.name = project_params[:name] if project_params[:name]
     @project.video = project_params[:video] if project_params[:video]
+    @project.lofi_amount = project_params[:lofi_amount] if project_params[:lofi_amount]
   end 
 
   # TODO: will this false positive sometimes?
   # ? IF VIDEO IS NEW STRIP SOUND ETC 
-  def process_video 
+  def set_video_process_flags_false 
     if project_params[:video]
-      # if video is ever changed by user it will always pass through this controller (it must!)
+      # ! if video is ever changed by user it will always pass through this controller (it must!)
       # so we must reset this to false if part of the params is a video
       # ? this ensures that we will always strip sound for new videos 
       @project.sound_stripped = false 
+      @project.lofi_processed = false 
     end
   end
 
