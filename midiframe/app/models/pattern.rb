@@ -6,7 +6,6 @@ class Pattern < ApplicationRecord
   START = "start"
   STOP = "stop"
 
-
   # ? To be joined as one entire project 
   has_one_attached :video
 

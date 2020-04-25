@@ -7,6 +7,9 @@ div data-controller='projects--file-input' class="card-panel z-depth-5"
     div class="input-field"  
       = f.text_field :bpm, html: { id: "bpm_new"} 
       label for="bpm_new" BPM
+    div class="input-field"
+      
+      = render partial: 'lofi', locals: {f: f}
 
     label for="project_video"
       
