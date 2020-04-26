@@ -12,7 +12,7 @@ class ProjectsController < ApplicationController
   end
 
   def new
-    @project = Project.new(user: current_user, bpm: 120)
+    @project = Project.new(user: current_user, bpm: 120, lofi_amount: 0)
   end
 
   def update
