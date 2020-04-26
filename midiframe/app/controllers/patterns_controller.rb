@@ -19,6 +19,10 @@ class PatternsController < ApplicationController
   def pattern_settings 
   end
 
+  def pattern_preview 
+    
+  end
+
   def edit 
     #Eventually for edit, we can calculate this based on prefs, but very much not a priority
     @current_index_in_notes_array = 4

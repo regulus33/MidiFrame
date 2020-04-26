@@ -37,7 +37,7 @@ span.note-title {
 
 /* PROJECTS */
 
-#newProject, #deleteProject, #new_pattern_button, #create_new_pattern {
+#newProject, #deleteProject, #new_pattern_button, #create_new_pattern, #previewProject {
   float: right;
   margin: 20px;
 }
