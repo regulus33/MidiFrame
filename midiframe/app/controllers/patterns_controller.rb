@@ -4,7 +4,7 @@
 class PatternsController < ApplicationController
 
   before_action :find_project
-  before_action :find_pattern, only: ['edit', 'update', 'pattern_settings', 'destroy', 'generate_pattern_clip']
+  before_action :find_pattern, only: ['edit', 'update', 'pattern_settings', 'destroy', 'generate_pattern_clip', 'pattern_preview']
   protect_from_forgery with: :null_session, only: ['update']
 
   def index 
@@ -20,7 +20,6 @@ class PatternsController < ApplicationController
   end
 
   def pattern_preview 
-    
   end
 
   def edit 
