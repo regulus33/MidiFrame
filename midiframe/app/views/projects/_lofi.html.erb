@@ -1,24 +1,24 @@
     <p>
       <label>
-        <%= f.radio_button :lofi_amount, 0, checked: true %>
+        <%= f.radio_button :lofi_amount, 0, checked: @project.lofi_amount == 0  %>
         <span>none</span>
       </label>
     </p>
     <p>
       <label>
-        <%= f.radio_button :lofi_amount, 1, checked: false %>
+        <%= f.radio_button :lofi_amount, 1, checked: @project.lofi_amount == 1 %>
         <span>min</span>
       </label>
     </p>
     <p>
       <label>
-        <%= f.radio_button :lofi_amount, 2, checked: false %>
+        <%= f.radio_button :lofi_amount, 2, checked: @project.lofi_amount == 2  %>
         <span>medium</span>
       </label>
     </p>
     <p>
       <label>
-        <%= f.radio_button :lofi_amount, 3, checked: false %>
+        <%= f.radio_button :lofi_amount, 3, checked: @project.lofi_amount == 3 %>
         <span>max</span>
       </label>
     </p>
