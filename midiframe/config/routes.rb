@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   resources :projects do
     resources :patterns
   end
-
+  
 
   get 'pattern-preview/:id/:project_id', to: 'patterns#pattern_preview', as: 'pattern_preview'
 
