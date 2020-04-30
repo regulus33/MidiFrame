@@ -4,6 +4,21 @@
 class ProjectsController < ApplicationController
   before_action :get_project, only: %i[edit update destroy show]
   
+  def index 
+    # !API:
+    respond_to do |format|
+      format.json  do 
+        # ! todo, authentication and projects need to be for signed in user 
+        projects = User.last.projects
+        render :json =>  {projects: projects}.to_json
+      end
+      format.html do 
+        render 'index'
+      end
+      
+    end
+  end
+
   def show
     redirect_to edit_project_path @project
   end     
