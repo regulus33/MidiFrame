@@ -10,7 +10,7 @@ class ProjectsController < ApplicationController
       format.json  do 
         # ! todo, authentication and projects need to be for signed in user 
         projects = User.last.projects
-        render :json => projects.to_json
+        render :json =>  {projects: projects}.to_json
       end
       format.html do 
         render 'index'
@@ -27,7 +27,7 @@ class ProjectsController < ApplicationController
   end
 
   def new
-    @project = Project.new(user: current_user, bpm: 120, lofi_amount: 0)
+    @project = Project.new(user: current_user, bpm: 120)
   end
 
   def update
@@ -71,7 +71,7 @@ class ProjectsController < ApplicationController
   private
 
   def project_params
-    params.require(:project).permit(:name, :bpm, :video, :lofi_amount)
+    params.require(:project).permit(:name, :bpm, :video)
   end
 
   def get_project
@@ -82,7 +82,6 @@ class ProjectsController < ApplicationController
     @project.bpm = project_params[:bpm].to_i if project_params[:bpm]
     @project.name = project_params[:name] if project_params[:name]
     @project.video = project_params[:video] if project_params[:video]
-    @project.lofi_amount = project_params[:lofi_amount] if project_params[:lofi_amount]
   end 
 
   # TODO: will this false positive sometimes?
@@ -93,7 +92,6 @@ class ProjectsController < ApplicationController
       # so we must reset this to false if part of the params is a video
       # ? this ensures that we will always strip sound for new videos 
       @project.sound_stripped = false 
-      @project.lofi_processed = false 
     end
   end
 

@@ -280,7 +280,7 @@ export default class extends Controller {
 
   _on_error(error) {
     // console.log(error)
-    alert('Could not connect to device ☹️')
+    alert(error);
   }
 
   _wipeListeners() {
