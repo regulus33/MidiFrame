@@ -3,22 +3,22 @@ div data-controller='projects--file-input' class="card-panel z-depth-5"
   = form_for @project, url: { action: "create" }, html: {class: "form-group"} do |f| 
     div class="input-field"    
       = f.text_field :name, html: { id: "project_name_new"} 
-      label for="project_name_new" Name
+      label for="project_name_new" class="active" Name
     div class="input-field"  
       = f.text_field :bpm, html: { id: "bpm_new"} 
-      label for="bpm_new" BPM
+      label for="bpm_new" class="active" BPM
     div class="input-field"
       
       = render partial: 'lofi', locals: {f: f}
 
     label for="project_video"
       
-      a id="upload_video_button" class="waves-effect waves-light btn grey darken-3"Choose Video
+      a id="upload_video_button" class="waves-effect waves-light btn grey darken-4"Choose Video
 
     span data-target="projects--file-input.fileDisplayName" no file chosen
 
     = f.file_field :video, style: "display:none;", data: { action: "change->projects--file-input#printFileName", target: "projects--file-input.filename" } 
    
-    = f.submit "C R E A T E", class: "waves-effect waves-light btn grey darken-3 submit"
+    = f.submit "C R E A T E", class: "waves-effect waves-light btn grey darken-4 submit"
   
 = render 'project_action_buttons' 

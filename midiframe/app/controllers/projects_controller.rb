@@ -10,7 +10,7 @@ class ProjectsController < ApplicationController
       format.json  do 
         # ! todo, authentication and projects need to be for signed in user 
         projects = User.last.projects
-        render :json =>  {projects: projects}.to_json
+        render :json => projects.to_json
       end
       format.html do 
         render 'index'
