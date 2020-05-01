@@ -19,7 +19,7 @@
 }
 
 html {
-  background-color: #636363;
+  background-color: #3e3f40;
   color: white !important;
 }
 
@@ -168,9 +168,9 @@ li.white.active {
   background-color: black !important;
 }
 
-a.project-item, li.pattern-item {
+a.project-item, div.pattern-item {
   color: white !important;
-  background-color: #636363 !important;
+  background-color: #3e3f40 !important;
   transition: background-color 1s;
 }
 
@@ -179,7 +179,7 @@ a.project-item:hover, li.pattern-item:hover {
 }
 
 div.card-panel {
-  background-color: #636363 !important;
+  background-color: #3e3f40 !important;
 }
 
 input[type="text"]{
@@ -199,6 +199,11 @@ a.pattern-link {
 
 a#record.open-recording-session i {
   color: red;
+}
+
+.pattern-settings-link {
+  color: white;
+  font-style: italic;
 }
 
 

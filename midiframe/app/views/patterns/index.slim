@@ -2,10 +2,9 @@ ul class="collection"
 
   -@patterns.sort{|p|p.order_in_sequence}.each do |pattern| 
 
-      li class="collection-item pattern-item"
-        div 
-          a class="pattern-link" href="#{edit_project_pattern_path(@project, pattern)}" =pattern.name 
-          a href="/pattern-settings/#{pattern.id}/#{@project.id}" class="secondary-content"
-            i class="material-icons" settings
+      div class="collection-item pattern-item"
+        a class="pattern-link" href="#{edit_project_pattern_path(@project, pattern)}" =pattern.name 
+        a href="/pattern-settings/#{pattern.id}/#{@project.id}" class="secondary-content"
+          span class="pattern-settings-link" settings
 
 =render 'new_pattern_button' 
