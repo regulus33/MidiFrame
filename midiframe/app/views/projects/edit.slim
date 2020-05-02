@@ -13,9 +13,7 @@ div data-controller="projects--file-input" class="card-panel z-depth-5"
       a id="upload_video_button" class="waves-effect waves-light btn grey darken-4" Choose Video
 
     span data-target="projects--file-input.fileDisplayName" = @project.video.attached? ? "Replace video" : "Choose a video" 
-   
     = f.file_field :video, style: "display:none;", data: { action: "change->projects--file-input#printFileName", target: "projects--file-input.filename"} 
-    
     = f.submit "S A V E", class: "waves-effect waves-light btn submit grey darken-4 ", data: { action: "loading#showLoader" } 
 
 - if @project.video.attached? 
