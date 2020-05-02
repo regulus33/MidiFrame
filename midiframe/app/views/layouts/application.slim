@@ -15,6 +15,7 @@ html
       h1 = determine_appropriate_heading controller: params[:controller], action: params[:action]
       div id="page_content" data-target="loading.hide"
         = yield 
+      / See loading contoller, this gets shown in a controller action 
       div id="loading_bar" data-target="loading.show" class="hidden"
           div class="progress"
             div class="indeterminate"
