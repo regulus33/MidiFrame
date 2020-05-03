@@ -126,7 +126,7 @@ li.grey {
 }
 
 li.white {
-  box-shadow:-1px -1px 2px rgba(123, 123, 123, 0.2) inset,0 -2px 2px 3px rgba(84, 84, 84, 0.6) inset,0 1px 2px rgba(92, 92, 92, 0.5);
+  box-shadow: -1px -1px 2px rgba(125, 125, 125, 0.2) inset, 0 -2px 2px 3px rgba(148, 138, 127, 0.6) inset, 0 1px 2px rgba(0, 0, 0, 0.5);
   background: linear-gradient(90deg, rgba(226,226,226,1) 0%, rgba(251,251,251,1) 48%, rgba(230,230,230,1) 100%);
   color: #656565 !important;
   border:1px solid rgb(77, 76, 76);
