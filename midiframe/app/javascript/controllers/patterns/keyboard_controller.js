@@ -55,7 +55,8 @@ export default class extends Controller {
     let is_in_current_array = this._visible_on_keyboard.includes(noteNumber)
     keyElement.classList.toggle("hide", !is_in_current_array)
   }
-  
+
+    
 }
 
 

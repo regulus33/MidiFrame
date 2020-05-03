@@ -24,6 +24,7 @@ class PatternsController < ApplicationController
 
   def edit 
     #Eventually for edit, we can calculate this based on prefs, but very much not a priority
+    @notes_in_which_octave_identifier = Pattern::NOTES_IN_WHICH_OCTAVE_IDENTIFIER.to_json
     @current_index_in_notes_array = 4
     @midi_notes = Pattern::NOTES_GROUPED_IN_OCTAVES
     @final_index = ( @midi_notes.length - 1 )

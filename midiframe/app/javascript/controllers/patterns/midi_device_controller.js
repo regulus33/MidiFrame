@@ -7,7 +7,18 @@ import { saveProject, generatePatternClip } from '../../helpers/network'
 
 export default class extends Controller {
 
-  static targets = ["keyBoardKey", "video", "channel", "patternId", "projectId", "settings", "recordButton", "noteStamps"]
+  static targets = [
+  "keyBoardKey",
+   "video",
+   "channel",
+   "patternId",
+   "projectId",
+   "settings",
+   "recordButton",
+   "noteStamps",
+   "buttonMinus",
+   "buttonPlus"
+  ]
 
   connect() {
     this.piano = {}
@@ -25,6 +36,7 @@ export default class extends Controller {
     this.saveAndNavigate = this.saveAndNavigate.bind(this)
     this._addKeyDownChannelListener()
     this._initializePianoData()
+    debugger 
   }
 
   //SAVE BUTTON 
@@ -77,10 +89,12 @@ export default class extends Controller {
     this._play_note(msg)
     this._play_video(msg)
     this._addMidiEvent(msg)
+    this.onOnHighlightingRelevantOctaveButton(msg)
   }
 
   onMessageNoteOff(msg) {
     this._unplay_note(msg)
+    this.onOffHighlightingRelevantOctaveButton(msg)
   }
 
   //? this method adds the starting timestamp (its the most precise way)
@@ -220,6 +234,71 @@ export default class extends Controller {
     this._deactivatePianoKey(this._selectedKey)
     this._deletePianoKey()
   }
+  // * Midi Information 
+  // * Midi Information 
+  // * Midi Information 
+  // * Midi Information 
+  // * Midi Information 
+  // * Midi Information 
+  // * Midi Information 
+  // * Midi Information 
+  // * Midi Information 
+  _informUserOfLocationOfIncomingMidiMessages(){
+    
+  }
+  // ? need this to knwo if a note that is played is in the current visual range 
+  get currentMidiPosition() {
+    return parseInt(this.noteStampsTarget.getAttribute("data-patterns--keyboard-position"));
+  }
+
+  get notesLegend(){
+   return JSON.parse(this.noteStampsTarget.getAttribute("data-notes-in-which-octave-identifier"));
+  }
+
+  // make button green if the played notes are higher than the current octave
+  onOnHighlightingRelevantOctaveButton(msg){
+    let noteNumber = msg.note.number
+     if(this.notesLegend[noteNumber] < this.currentMidiPosition) {
+       //? removing black means default to teal
+       this.buttonMinusTarget.classList.remove("black");
+      } else if(this.notesLegend[noteNumber] > this.currentMidiPosition) {
+        //? removing black means default to teal
+      this.buttonPlusTarget.classList.remove("black");
+    } else {
+      this.buttonPlusTarget.classList.add("black");
+    }
+  }
+
+  // make button green if the played notes are lower than the current octave
+  onOffHighlightingRelevantOctaveButton(msg){
+    let noteNumber = msg.note.number
+     if(this.notesLegend[noteNumber] < this.currentMidiPosition) {
+      this.buttonMinusTarget.classList.add("black");
+    } else if(this.notesLegend[noteNumber] > this.currentMidiPosition) {
+      this.buttonPlusTarget.classList.add("black");
+    } 
+  }
+  
+  // this.buttonMinusTarget.classList.remove("grey");
+  // this.buttonMinusTarget.classList.add("grey");
+
+
+  // * Midi Information 
+  // * Midi Information 
+  // * Midi Information 
+  // * Midi Information 
+  // * Midi Information 
+  // * Midi Information 
+  // * Midi Information 
+  // * Midi Information 
+  // * Midi Information 
+  // * Midi Information 
+  // * Midi Information 
+  // * Midi Information 
+  // * Midi Information 
+  // * Midi Information 
+  // * Midi Information 
+  // * Midi Information 
 
   _play_note(msg) {
     let key = this._get_piano_key(this._get_msg_note_number(msg))
@@ -465,6 +544,7 @@ export default class extends Controller {
   set _onVideoSeek(fun){
     this._video.on('seeking', (e) => fun(e))
   }
+
 
 }
 

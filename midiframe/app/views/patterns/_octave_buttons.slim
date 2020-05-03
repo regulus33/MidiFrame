@@ -1,5 +1,5 @@
 div class="row"
-    a id="octave-minus" class="btn-floating btn-large waves-effect waves-light grey darken-4 z-depth-5" data-action="patterns--keyboard#prev"
+    a id="octave-minus" class="btn-floating btn-large waves-effect waves-light black darken-4 z-depth-5" data-action="patterns--keyboard#prev" data-target="patterns--midi-device.buttonMinus"
        i class="material-icons"  keyboard_arrow_left
     
     a id="record" total-clock-signals=@pattern.total_clock_signals class="btn-floating btn-large waves-effect waves-light black darken-1 z-depth-5"  data-action="patterns--midi-device#toggleRecordingSession" data-target="patterns--midi-device.recordButton"
@@ -11,7 +11,7 @@ div class="row"
     a id="save" class="btn-floating btn-large waves-effect waves-light black lighten-2 z-depth-5" data-action="patterns--midi-device#save" 
       i class="material-icons"  save
 
-    a id="octave-plus" class="btn-floating btn-large waves-effect waves-light grey darken-4 z-depth-5" data-action="patterns--keyboard#next"
+    a id="octave-plus" class="btn-floating btn-large waves-effect waves-light black darken-4 z-depth-5" data-action="patterns--keyboard#next" data-target="patterns--midi-device.buttonPlus"
        i class="material-icons"  keyboard_arrow_right
 
     a id="settings" class="btn-floating btn-large waves-effect waves-light black lighten-2 z-depth-5" data-action="patterns--midi-device#saveAndNavigate" data-target="patterns--midi-device.settings" nav-url="/pattern-settings/#{@pattern.id}/#{@project.id}"
