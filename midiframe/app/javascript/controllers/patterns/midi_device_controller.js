@@ -125,7 +125,7 @@ export default class extends Controller {
   onPianoKeyClick(event){
     this._shouldSelectNote(event.target) ? this._selectNote() : this._unselectNote()
   }
-
+  
   updateSelectedNoteTime(event) {
     // ?exit immediately if we are playing midi, user is not allowed to timestamp drag in that state. 
     if(this._playing) return 
