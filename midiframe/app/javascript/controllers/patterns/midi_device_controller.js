@@ -36,7 +36,9 @@ export default class extends Controller {
     this.saveAndNavigate = this.saveAndNavigate.bind(this)
     this._addKeyDownChannelListener()
     this._initializePianoData()
-    debugger 
+    //everytime a new notes comes in we will add it 
+    this.playedNotes = new Set()
+    
   }
 
   //SAVE BUTTON 
@@ -90,6 +92,7 @@ export default class extends Controller {
     this._play_video(msg)
     this._addMidiEvent(msg)
     this.onOnHighlightingRelevantOctaveButton(msg)
+    this._addMidiNoteToPlayedNotes(msg) // ? save the notes for global randomize 
   }
 
   onMessageNoteOff(msg) {
@@ -122,7 +125,9 @@ export default class extends Controller {
   }
   
   onDocumentKeyDown(e) {
-    if(this._keyCodeIsNumber(e.key))  this._changeChannel(e.key)
+    if(this._keyCodeIsNumber(e.key))  this._changeChannel(e.key);
+    if(e.key === "t") this._randomizeAll();
+    if(e.key === "c") this._clearAll();
   }
 
   onFormKeyDown(e) {
@@ -178,6 +183,7 @@ export default class extends Controller {
 
   _changeChannel(channel) {
     this._channel = channel
+    this._resetPlayedNotes();
     this._resetMidiListeners(parseInt(channel))
   }
 
@@ -221,6 +227,33 @@ export default class extends Controller {
     element.value = randomValue 
   } 
 
+  // !plural RANDOM 
+
+  _addMidiNoteToPlayedNotes(msg){
+    this.playedNotes.add(msg.note.number);
+    console.log(this.playedNotes);
+  }
+
+  // ? if we change midid channels, played notes will need to change 
+  _resetPlayedNotes() {
+    this.playedNotes = new Set();
+  }
+
+  _randomizeAll() {
+    for (let [key, value] of this.playedNotes.entries()) {
+      //! WARNING this lasElementChild method shakily depends on the input being the last child so be careful when changing list items for keyboard.slim
+      this.piano[key].lastElementChild.value = randoMize(this._videoLength);
+    }
+    M.toast( { html:'Randomized all midi notes played'});
+  }
+
+  _clearAll() {
+    Object.keys(this.piano).forEach(pianoKeyKey => {
+      this.piano[pianoKeyKey].lastElementChild.value = "";
+    });
+    M.toast( { html:'Midi Form Cleared'});
+  }
+
   _shouldSelectNote(element){
     return this._selectedKey && this._selectedKey.id == element.id ? false : true 
   }
@@ -234,18 +267,7 @@ export default class extends Controller {
     this._deactivatePianoKey(this._selectedKey)
     this._deletePianoKey()
   }
-  // * Midi Information 
-  // * Midi Information 
-  // * Midi Information 
-  // * Midi Information 
-  // * Midi Information 
-  // * Midi Information 
-  // * Midi Information 
-  // * Midi Information 
-  // * Midi Information 
-  _informUserOfLocationOfIncomingMidiMessages(){
-    
-  }
+  // !Midi Information 
   // ? need this to knwo if a note that is played is in the current visual range 
   get currentMidiPosition() {
     return parseInt(this.noteStampsTarget.getAttribute("data-patterns--keyboard-position"));
@@ -279,26 +301,9 @@ export default class extends Controller {
     } 
   }
   
-  // this.buttonMinusTarget.classList.remove("grey");
-  // this.buttonMinusTarget.classList.add("grey");
+  // * Midi Information 
+  // * Midi Information 
 
-
-  // * Midi Information 
-  // * Midi Information 
-  // * Midi Information 
-  // * Midi Information 
-  // * Midi Information 
-  // * Midi Information 
-  // * Midi Information 
-  // * Midi Information 
-  // * Midi Information 
-  // * Midi Information 
-  // * Midi Information 
-  // * Midi Information 
-  // * Midi Information 
-  // * Midi Information 
-  // * Midi Information 
-  // * Midi Information 
 
   _play_note(msg) {
     let key = this._get_piano_key(this._get_msg_note_number(msg))
