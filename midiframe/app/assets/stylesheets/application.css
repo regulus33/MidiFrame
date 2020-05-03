@@ -137,7 +137,7 @@ li.grey.active {
   /* this gives you those definition lines on the piano keys  */
   box-shadow:-1px -1px 2px rgba(255,255,255,0.2) inset,0 -2px 2px 3px rgba(0,0,0,0.6) inset,0 1px 2px rgba(0,0,0,0.5);
   background-color: #6666;
-  background:linear-gradient(to top,rgb(255, 77, 125) 0%,#222 100%);
+  background:linear-gradient(to top,rgb(0,128,128) 0%,#222 100%);
 }
 
 /* @keyframes toPink {
@@ -171,7 +171,7 @@ li.white.active {
   border-top:1px solid #777 !important;
   border-left:1px solid rgb(116, 116, 116) !important;
   border-bottom:1px solid rgb(87, 87, 87) !important;
-  background:linear-gradient(to top,rgb(23, 223, 245) 0%,rgb(255, 255, 255) 100%);
+  background:linear-gradient(to top,rgb(0,128,128) 0%,rgb(255, 255, 255) 100%);
   transition: background-color 5s;
 }
 
