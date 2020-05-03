@@ -107,6 +107,19 @@ export default class extends Controller {
       this._addStartEvent(msg.timestamp)
       this._startRecordingMidiNotes()
     }
+    this.playVideo();
+  }
+
+  onMessageStop(){
+    this.stopVideo();
+  }
+
+  playVideo(){
+    this._video.play();
+  }
+
+  stopVideo(){
+    this._video.pause();
   }
 
   onPianoKeyClick(event){
@@ -242,7 +255,9 @@ export default class extends Controller {
   _randomizeAll() {
     for (let [key, value] of this.playedNotes.entries()) {
       //! WARNING this lasElementChild method shakily depends on the input being the last child so be careful when changing list items for keyboard.slim
-      this.piano[key].lastElementChild.value = randoMize(this._videoLength);
+      const randTime = randoMize(this._videoLength);
+      this.piano[key].lastElementChild.value = randTime;
+      this._updateData({time: randTime, number: key});
     }
     M.toast( { html:'Randomized all midi notes played'});
   }
@@ -251,6 +266,7 @@ export default class extends Controller {
     Object.keys(this.piano).forEach(pianoKeyKey => {
       this.piano[pianoKeyKey].lastElementChild.value = "";
     });
+    this.pianoData = {};
     M.toast( { html:'Midi Form Cleared'});
   }
 
@@ -410,6 +426,7 @@ export default class extends Controller {
     this._midiInput.addListener('noteoff', channel, msg => this.onMessageNoteOff(msg))
     this._midiInput.addListener('clock', "all", this.onMessageClock.bind(this))
     this._midiInput.addListener('start', "all", this.onMessageStart.bind(this))
+    this._midiInput.addListener('stop', "all", this.onMessageStop.bind(this))
   }
 
   _getPatternId() {
