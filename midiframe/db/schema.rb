@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_25_101022) do
+ActiveRecord::Schema.define(version: 2020_05_04_205307) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -81,6 +81,7 @@ ActiveRecord::Schema.define(version: 2020_04_25_101022) do
     t.integer "step_length"
     t.integer "order_in_sequence"
     t.integer "total_clock_signals"
+    t.jsonb "note_texts"
     t.index ["project_id"], name: "index_patterns_on_project_id"
   end
 

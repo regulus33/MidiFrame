@@ -20,28 +20,28 @@ export default class extends Controller {
    "buttonPlus",
    "saveCurrentTime",
    "addTextButton",
-   "textModal"
+   "textModalTitle"
   ]
 
   connect() {
-    this.piano = {}
-    this.pianoData = {}
-    this.recordingSessionOpen = false 
-    this.recording = false 
-    this.midiEvents = [] 
-    this.startingTime = null 
-    this.clockSignalsPassedSinceRecordStart = 0 
-    this.video = videojs(this.videoTarget.id)
-    this.selectedKey = null 
-    this._observe_all_keys()
-    this._enable_midi() 
-    this.saveAndNavigate = this.saveAndNavigate.bind(this)
-    this._addKeyDownChannelListener()
-    this._initializePianoData()
+    this.piano = {};
+    this.pianoData = {};
+    this.pianoTextData = {};
+    this.recordingSessionOpen = false; 
+    this.recording = false; 
+    this.midiEvents = []; 
+    this.startingTime = null; 
+    this.clockSignalsPassedSinceRecordStart = 0; 
+    this.video = videojs(this.videoTarget.id);
+    this.selectedKey = null;
+    this._observe_all_keys();
+    this._enable_midi();
+    this.saveAndNavigate = this.saveAndNavigate.bind(this);
+    this._addKeyDownChannelListener();
+    this._initializePianoData();
     //everytime a new notes comes in we will add it 
-    this.playedNotes = new Set()
+    this.playedNotes = new Set();
     this.isSeeking = false;
-    
   }
 
   //SAVE BUTTON 
@@ -186,6 +186,11 @@ export default class extends Controller {
 
   _updateData({time, number}) {
     this.pianoData[number] = time 
+  }
+
+  _updateTextData({string, number}) {
+    this.pianoTextData[number] = string; 
+    console.log(this.pianoTextData)
   }
 
   // TODO: i think the object may need data to be converted i.e. integers 
@@ -585,12 +590,19 @@ export default class extends Controller {
   }
 
   addText() {
+    // if we havent selected a note, dont show modal
+    if(!this._selectedKey) return 
     var elems = document.querySelectorAll('.modal');
-    var instances = M.Modal.init(elems, {});
+    var instances = M.Modal.init(elems, {title: "whatever"});
+    this.textModalTitleTarget.innerHTML = `Text for midi: ${this.selectedKey.id}`
     instances[0].open();
   }
 
-
+  onTextType(e){
+    let number = this.selectedKey.id;
+    let string = e.target.value; 
+    this._updateTextData({ number: number, string: string })
+  }
 
 }
 
