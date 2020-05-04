@@ -8,84 +8,84 @@ div data-controller="patterns--keyboard" data-target="patterns--midi-device.note
         span class="note-title" =array_of_notes[0].last
         br
         br
-        input type="text" class="key" value=@pattern.note_stamps[c.to_s] data-action="click->patterns--midi-device#onPianoKeyClick change->patterns--midi-device#onTimeStampChange" id=c
+        input type="text" class="key" value=@pattern.note_stamps[c.to_s] data-action="click->patterns--midi-device#onPianoKeyClick" id=c
       
       -c_sharp = array_of_notes[1].first
       li data-target="patterns--keyboard.keyBoardKey patterns--midi-device.keyBoardKey" class=[display_class, "grey darken-4"] midi-note-number=c_sharp
         span class="note-title" =array_of_notes[1].last
         br
         br
-        input type="text" class="key" value=@pattern.note_stamps[c_sharp.to_s] data-action="click->patterns--midi-device#onPianoKeyClick change->patterns--midi-device#onTimeStampChange"  id=c_sharp
+        input type="text" class="key" value=@pattern.note_stamps[c_sharp.to_s] data-action="click->patterns--midi-device#onPianoKeyClick"  id=c_sharp
       
       -d = array_of_notes[2].first
       li data-target="patterns--keyboard.keyBoardKey patterns--midi-device.keyBoardKey" class=[display_class, "white"] midi-note-number=d
         span class="note-title" =array_of_notes[2].last
         br
         br
-        input type="text" class="key" value=@pattern.note_stamps[d.to_s] data-action="click->patterns--midi-device#onPianoKeyClick change->patterns--midi-device#onTimeStampChange" id=d
+        input type="text" class="key" value=@pattern.note_stamps[d.to_s] data-action="click->patterns--midi-device#onPianoKeyClick" id=d
       
       -d_sharp = array_of_notes[3].first
       li data-target="patterns--keyboard.keyBoardKey patterns--midi-device.keyBoardKey" class=[display_class, "grey darken-4"] midi-note-number= d_sharp
         span class="note-title" =array_of_notes[3].last
         br
         br
-        input type="text" class="key" value=@pattern.note_stamps[d_sharp.to_s] data-action="click->patterns--midi-device#onPianoKeyClick change->patterns--midi-device#onTimeStampChange"   id=d_sharp
+        input type="text" class="key" value=@pattern.note_stamps[d_sharp.to_s] data-action="click->patterns--midi-device#onPianoKeyClick"   id=d_sharp
       
       -e = array_of_notes[4].first
       li data-target="patterns--keyboard.keyBoardKey patterns--midi-device.keyBoardKey" class=[display_class, "white"] midi-note-number=e
         span class="note-title" =array_of_notes[4].last
         br
         br
-        input type="text" class="key" value=@pattern.note_stamps[e.to_s] data-action="click->patterns--midi-device#onPianoKeyClick change->patterns--midi-device#onTimeStampChange"   id=e
+        input type="text" class="key" value=@pattern.note_stamps[e.to_s] data-action="click->patterns--midi-device#onPianoKeyClick"   id=e
 
       -f = array_of_notes[5].first      
       li data-target="patterns--keyboard.keyBoardKey patterns--midi-device.keyBoardKey" class=[display_class, "white"] midi-note-number=f
         span class="note-title" =array_of_notes[5].last
         br
         br
-        input type="text" class="key" value=@pattern.note_stamps[f.to_s]  data-action="click->patterns--midi-device#onPianoKeyClick change->patterns--midi-device#onTimeStampChange"   id=f
+        input type="text" class="key" value=@pattern.note_stamps[f.to_s]  data-action="click->patterns--midi-device#onPianoKeyClick"   id=f
       
       -f_sharp = array_of_notes[6].first 
       li data-target="patterns--keyboard.keyBoardKey patterns--midi-device.keyBoardKey" class=[display_class, "grey darken-4"] midi-note-number=f_sharp
         span class="note-title" =array_of_notes[6].last
         br
         br
-        input type="text" class="key" value=@pattern.note_stamps[f_sharp.to_s]  data-action="click->patterns--midi-device#onPianoKeyClick change->patterns--midi-device#onTimeStampChange"   id=f_sharp
+        input type="text" class="key" value=@pattern.note_stamps[f_sharp.to_s]  data-action="click->patterns--midi-device#onPianoKeyClick"   id=f_sharp
       
       -g = array_of_notes[7].first 
       li data-target="patterns--keyboard.keyBoardKey patterns--midi-device.keyBoardKey" class=[display_class, "white"] midi-note-number=array_of_notes[7].first
         span class="note-title" =array_of_notes[7].last
         br
         br
-        input type="text" class="key" value=@pattern.note_stamps[g.to_s]  data-action="click->patterns--midi-device#onPianoKeyClick change->patterns--midi-device#onTimeStampChange"   id=g
+        input type="text" class="key" value=@pattern.note_stamps[g.to_s]  data-action="click->patterns--midi-device#onPianoKeyClick"   id=g
            
       -g_sharp = array_of_notes[8].first 
       li data-target="patterns--keyboard.keyBoardKey patterns--midi-device.keyBoardKey" class=[display_class, "grey darken-4"] midi-note-number=g_sharp
         span class="note-title" =array_of_notes[8].last
         br
         br
-        input type="text" class="key" value=@pattern.note_stamps[g_sharp.to_s]  data-action="click->patterns--midi-device#onPianoKeyClick change->patterns--midi-device#onTimeStampChange"   id=g_sharp
+        input type="text" class="key" value=@pattern.note_stamps[g_sharp.to_s]  data-action="click->patterns--midi-device#onPianoKeyClick"   id=g_sharp
       
       -a = array_of_notes[9].first 
       li data-target="patterns--keyboard.keyBoardKey patterns--midi-device.keyBoardKey" class=[display_class, "white"] midi-note-number=array_of_notes[9].first
         span class="note-title" =array_of_notes[9].last
         br
         br
-        input type="text" class="key" value=@pattern.note_stamps[a.to_s] data-action="click->patterns--midi-device#onPianoKeyClick change->patterns--midi-device#onTimeStampChange"   id=a
+        input type="text" class="key" value=@pattern.note_stamps[a.to_s] data-action="click->patterns--midi-device#onPianoKeyClick"   id=a
       
       -a_sharp = array_of_notes[10].first 
       li data-target="patterns--keyboard.keyBoardKey patterns--midi-device.keyBoardKey" class=[display_class, "grey darken-4"] midi-note-number=array_of_notes[10].first
         span class="note-title" =array_of_notes[10].last
         br
         br
-        input type="text" class="key" value=@pattern.note_stamps[a_sharp.to_s]  data-action="click->patterns--midi-device#onPianoKeyClick change->patterns--midi-device#onTimeStampChange"   id=a_sharp
+        input type="text" class="key" value=@pattern.note_stamps[a_sharp.to_s]  data-action="click->patterns--midi-device#onPianoKeyClick"   id=a_sharp
 
       -b = array_of_notes[11].first      
       li data-target="patterns--keyboard.keyBoardKey patterns--midi-device.keyBoardKey" class=[display_class, "white"] midi-note-number=b
         span class="note-title" =array_of_notes[11].last
         br
         br
-        input type="text" class="key" value=@pattern.note_stamps[b.to_s] data-action="click->patterns--midi-device#onPianoKeyClick change->patterns--midi-device#onTimeStampChange"   id=b
+        input type="text" class="key" value=@pattern.note_stamps[b.to_s] data-action="click->patterns--midi-device#onPianoKeyClick"   id=b
       
   =render 'octave_buttons'
 
