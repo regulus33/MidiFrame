@@ -17,7 +17,8 @@ export default class extends Controller {
    "recordButton",
    "noteStamps",
    "buttonMinus",
-   "buttonPlus"
+   "buttonPlus",
+   "saveCurrentTime"
   ]
 
   connect() {
@@ -32,12 +33,12 @@ export default class extends Controller {
     this.selectedKey = null 
     this._observe_all_keys()
     this._enable_midi() 
-    this._onVideoSeek = this.updateSelectedNoteTime.bind(this)
     this.saveAndNavigate = this.saveAndNavigate.bind(this)
     this._addKeyDownChannelListener()
     this._initializePianoData()
     //everytime a new notes comes in we will add it 
     this.playedNotes = new Set()
+    this.isSeeking = false;
     
   }
 
@@ -125,10 +126,13 @@ export default class extends Controller {
   onPianoKeyClick(event){
     this._shouldSelectNote(event.target) ? this._selectNote() : this._unselectNote()
   }
-  
+
   updateSelectedNoteTime(event) {
     // ?exit immediately if we are playing midi, user is not allowed to timestamp drag in that state. 
-    if(this._playing) return 
+    // if(this._playing) return 
+    // if user is not actively seeking return, we are just playing midi notes and calling this because seeking is 
+    // triggered when currentTime = is used 
+    if(!this._isSeeking) return 
     let filteredTime = toTheNearestThousandth( event.target.player.currentTime() )
     if(this._selectedKey) {
      
@@ -136,7 +140,7 @@ export default class extends Controller {
       this._selectedKey.value = filteredTime
     }
   }
-  
+
   onDocumentKeyDown(e) {
     if(this._keyCodeIsNumber(e.key))  this._changeChannel(e.key);
     if(e.key === "t") this._randomizeAll();
@@ -322,13 +326,11 @@ export default class extends Controller {
 
 
   _play_note(msg) {
-    let key = this._get_piano_key(this._get_msg_note_number(msg))
-    key.classList.toggle("active", true)
+    this._get_piano_key(this._get_msg_note_number(msg)).classList.toggle("active", true)
   }
 
   _unplay_note(msg) {
-    let key = this._get_piano_key(this._get_msg_note_number(msg))
-    key.classList.toggle("active", false)
+    this._get_piano_key(this._get_msg_note_number(msg)).classList.toggle("active", false)
   }
 
   _play_video(msg) {
@@ -338,6 +340,8 @@ export default class extends Controller {
   }
 
   _activatePianoKey(element) {
+    // the button that changes time should light up to indicate activity
+    this.saveCurrentTimeTarget.classList.toggle("black", false); // teal by default 
     element.parentElement.classList.add("selected")
   }
 
@@ -346,6 +350,8 @@ export default class extends Controller {
   }
 
   _deletePianoKey() {
+    // the button that changes time should go back to black
+    this.saveCurrentTimeTarget.classList.toggle("black", true);
     this.selectedKey = null 
   }
 
@@ -419,6 +425,7 @@ export default class extends Controller {
   // }
 
   _on_success(channel) {
+    console.log("setting listeners for channel: " + channel)
     // ? just for knowing if midi is being received or not
     // this._setPlayAndStopListeners()
     ///////
@@ -562,11 +569,14 @@ export default class extends Controller {
     return this._video.duration()
   }
 
-  // ? set the function that will run on video seek, right now it updates the form 
-  set _onVideoSeek(fun){
-    this._video.on('seeking', (e) => fun(e))
+  //? set the currently selected input to the current video time 
+  //? then unfocus the selcted note 
+  saveCurrentTime(){
+    console.log("save current time");
+    let time = this._video.currentTime();
+    this._selectedKey.value = time; 
+    this._unselectNote()
   }
-
 
 }
 
