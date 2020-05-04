@@ -98,6 +98,7 @@ export default class extends Controller {
     this._addMidiEvent(msg)
     this.onOnHighlightingRelevantOctaveButton(msg)
     this._addMidiNoteToPlayedNotes(msg) // ? save the notes for global randomize 
+    this._playText(msg)
   }
 
   onMessageNoteOff(msg) {
@@ -604,6 +605,12 @@ export default class extends Controller {
     let number = this.selectedKey.id;
     let string = e.target.value; 
     this._updateTextData({ number: number, string: string })
+  }
+
+  _playText(msg) {
+    let num = msg.note.number;
+    let textToDisplay = this.pianoTextData[num];
+    this.noteTextTarget.innerHTML = textToDisplay
   }
 
   positionTextForVideo(){
