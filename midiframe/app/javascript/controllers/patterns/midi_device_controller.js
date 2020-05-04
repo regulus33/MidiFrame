@@ -20,7 +20,8 @@ export default class extends Controller {
    "buttonPlus",
    "saveCurrentTime",
    "addTextButton",
-   "textModalTitle"
+   "textModalTitle",
+   "noteText"
   ]
 
   connect() {
@@ -42,6 +43,7 @@ export default class extends Controller {
     //everytime a new notes comes in we will add it 
     this.playedNotes = new Set();
     this.isSeeking = false;
+    this.positionTextForVideo();
   }
 
   //SAVE BUTTON 
@@ -602,6 +604,17 @@ export default class extends Controller {
     let number = this.selectedKey.id;
     let string = e.target.value; 
     this._updateTextData({ number: number, string: string })
+  }
+
+  positionTextForVideo(){
+    let textToPosition = this.noteTextTarget;
+    let video = document.getElementsByTagName('video')[0]
+    var customMessage = textToPosition
+    // ! TODO THIS IS STILL NOT WORKED OUT YET
+    var customMessageTop = (-1)*(video.offsetHeight / 2 - customMessage.offsetHeight / 4);
+    var customMessageLeft = (video.offsetWidth / 2 - customMessage.offsetWidth  / 4);
+    customMessage.style.left = customMessageLeft + 'px';
+    customMessage.style.top = customMessageTop + 'px';
   }
 
 }
