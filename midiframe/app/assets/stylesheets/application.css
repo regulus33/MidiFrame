@@ -214,6 +214,14 @@ a#record.open-recording-session i {
   font-style: italic;
 }
 
+#note-text {
+  position: relative;
+  display: inline-block;
+  height:10%;
+  width:50%;
+  z-index: 10;
+}
+
 
 
 
