@@ -122,7 +122,6 @@ li.grey {
   background-color: black;
   border:1px solid #000;
   border-radius:0 0 3px 3px;
-  border-radius:0 0 5px 5px;
 }
 
 li.white {
@@ -133,47 +132,25 @@ li.white {
   border-radius:0 0 5px 5px;
 }
 
-li.grey.active {
+li.grey.active, li.grey.selected {
   /* this gives you those definition lines on the piano keys  */
   box-shadow:-1px -1px 2px rgba(255,255,255,0.2) inset,0 -2px 2px 3px rgba(0,0,0,0.6) inset,0 1px 2px rgba(0,0,0,0.5);
   background-color: #6666;
   background:linear-gradient(to top,rgb(0,128,128) 0%,#222 100%);
 }
 
-/* @keyframes toPink {
-  from {
-    background:linear-gradient(to top,#444 0%,#222 100%);
-  }
-  75% {
-    background:linear-gradient(to top,rgb(250, 102, 142) 0%,#222 100%);
-  }
-
-  to {
-    background:linear-gradient(to top,rgb(255, 77, 125) 0%,#222 100%);
-  }
-} */
-/* 
-@keyframes fromPink {
-  from {
-    background:linear-gradient(to top,rgb(249, 93, 134) 0%,#222 100%);
-  }
-  75% {
-    background:linear-gradient(to top,rgb(250, 102, 142) 0%,#222 100%);
-  }
-  
-  to {
-    background:linear-gradient(to top,#444 0%,#222 100%);
-  }
-} */
-
-li.white.active {
-  box-shadow:-1px -1px 2px rgba(123, 123, 123, 0.2) inset,0 -2px 2px 3px rgba(84, 84, 84, 0.6) inset,0 1px 2px rgba(92, 92, 92, 0.5);
+li.white.active, li.white.selected {
+  box-shadow:-1px -1px 2px rgba(66, 115, 134, 0.2) inset,0 -2px 2px 3px rgba(84, 84, 84, 0.6) inset,0 1px 2px rgba(92, 92, 92, 0.5);
   border-top:1px solid #777 !important;
   border-left:1px solid rgb(116, 116, 116) !important;
   border-bottom:1px solid rgb(87, 87, 87) !important;
   background:linear-gradient(to top,rgb(0,128,128) 0%,rgb(255, 255, 255) 100%);
-  transition: background-color 5s;
 }
+
+li.white.selected input[type="text"]:focus {
+  color: white !important;
+}
+
 
 #octave-minus {
   float: left;
@@ -236,6 +213,8 @@ a#record.open-recording-session i {
   color: white;
   font-style: italic;
 }
+
+
 
 
 
