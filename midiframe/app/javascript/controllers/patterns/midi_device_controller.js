@@ -21,7 +21,8 @@ export default class extends Controller {
    "saveCurrentTime",
    "addTextButton",
    "textModalTitle",
-   "noteText"
+   "noteText",
+   "inputValue"
   ]
 
   connect() {
@@ -595,11 +596,16 @@ export default class extends Controller {
   addText() {
     // if we havent selected a note, dont show modal
     if(!this._selectedKey) return 
-    var elems = document.querySelectorAll('.modal');
-    var instances = M.Modal.init(elems, {title: "whatever"});
-    this.textModalTitleTarget.innerHTML = `Text for midi: ${this.selectedKey.id}`
+    const currentKey = this.selectedKey.id;
+    const elems = document.querySelectorAll('.modal');
+    const instances = M.Modal.init(elems, {title: "whatever"});
+    //? if there is presaved data, show it in the input field 
+    this.inputValueTarget.value = this.pianoTextData[currentKey] ? this.pianoTextData[currentKey]  : ""
+    this.textModalTitleTarget.innerHTML = `Text for midi: ${currentKey}`
     instances[0].open();
   }
+
+  
 
   onTextType(e){
     let number = this.selectedKey.id;
