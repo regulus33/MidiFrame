@@ -18,7 +18,9 @@ export default class extends Controller {
    "noteStamps",
    "buttonMinus",
    "buttonPlus",
-   "saveCurrentTime"
+   "saveCurrentTime",
+   "addTextButton",
+   "textModal"
   ]
 
   connect() {
@@ -342,6 +344,8 @@ export default class extends Controller {
   _activatePianoKey(element) {
     // the button that changes time should light up to indicate activity
     this.saveCurrentTimeTarget.classList.toggle("black", false); // teal by default 
+    // add text button 
+    this.addTextButtonTarget.classList.toggle("black", false);
     element.parentElement.classList.add("selected")
   }
 
@@ -352,6 +356,8 @@ export default class extends Controller {
   _deletePianoKey() {
     // the button that changes time should go back to black
     this.saveCurrentTimeTarget.classList.toggle("black", true);
+    // add text button 
+    this.addTextButtonTarget.classList.toggle("black", true);
     this.selectedKey = null 
   }
 
@@ -570,13 +576,21 @@ export default class extends Controller {
   }
 
   //? set the currently selected input to the current video time 
-  //? then unfocus the selcted note 
+  //? then unfocus the selcted note to
   saveCurrentTime(){
     console.log("save current time");
     let time = this._video.currentTime();
     this._selectedKey.value = time; 
     this._unselectNote()
   }
+
+  addText() {
+    var elems = document.querySelectorAll('.modal');
+    var instances = M.Modal.init(elems, {});
+    instances[0].open();
+  }
+
+
 
 }
 
