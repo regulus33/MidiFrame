@@ -605,8 +605,6 @@ export default class extends Controller {
     instances[0].open();
   }
 
-  
-
   onTextType(e){
     let number = this.selectedKey.id;
     let string = e.target.value; 
@@ -620,14 +618,14 @@ export default class extends Controller {
   }
 
   positionTextForVideo(){
-    let textToPosition = this.noteTextTarget;
+    let textPosition = this.noteTextTarget;
     let video = document.getElementsByTagName('video')[0]
-    var customMessage = textToPosition
     // ! TODO THIS IS STILL NOT WORKED OUT YET
-    var customMessageTop = (-1)*(video.offsetHeight / 2 - customMessage.offsetHeight / 4);
-    var customMessageLeft = (video.offsetWidth / 2 - customMessage.offsetWidth  / 4);
-    customMessage.style.left = customMessageLeft + 'px';
-    customMessage.style.top = customMessageTop + 'px';
+    // debugger 
+    var textPositionTop = video.offsetHeight/2;
+    var textPositionLeft = (video.offsetWidth/2 - textPosition.width)
+    textPosition.style.left = textPositionLeft + 'px';
+    textPosition.style.top = textPositionTop + 'px';
   }
 
 }
