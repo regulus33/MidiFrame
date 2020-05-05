@@ -217,10 +217,13 @@ a#record.open-recording-session i {
 #note-text {
   position: relative;
   display: inline-block;
-  height:10%;
-  width:50%;
+  height:20px;
+  width:100%;
   z-index: 10;
+  text-align: center;
 }
+
+
 
 
 
