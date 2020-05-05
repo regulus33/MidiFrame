@@ -44,7 +44,9 @@ export default class extends Controller {
     //everytime a new notes comes in we will add it 
     this.playedNotes = new Set();
     this.isSeeking = false;
+    //? text styling
     this.positionTextForVideo();
+    this.positionTextOnWindowResize();
   }
 
   //SAVE BUTTON 
@@ -626,6 +628,7 @@ export default class extends Controller {
     this.noteTextTarget.innerHTML = textToDisplay
   }
 
+  // ? js centering of optional video text 
   positionTextForVideo() {
     let textPosition = this.noteTextTarget;
     let video = document.getElementsByTagName('video')[0]
@@ -634,6 +637,10 @@ export default class extends Controller {
     var textPositionLeft = (video.offsetWidth/2 - textPosition.width)
     textPosition.style.left = textPositionLeft + 'px';
     textPosition.style.top = textPositionTop + 'px';
+  }
+
+  positionTextOnWindowResize(){
+    window.addEventListener('resize', this.positionTextForVideo.bind(this));
   }
 
 }
