@@ -148,22 +148,31 @@ export default class extends Controller {
   }
 
   onDocumentKeyDown(e) {
-    if(this._keyCodeIsNumber(e.key))  this._changeChannel(e.key);
-    if(e.key === "t") this._randomizeAll();
-    if(e.key === "c") this._clearAll();
+    if(e.metaKey && e.key === "s") {
+      e.preventDefault();
+      this.save();
+    }
+    if(e.ctrlKey) {
+      if(this._keyCodeIsNumber(e.key))  this._changeChannel(e.key);
+      if(e.key === "t") this._randomizeAll();
+      if(e.key === "c") this._clearAll();
+    }
   }
 
   onFormKeyDown(e) {
       e.preventDefault()
-      switch(e.key) {
-        case "]":
-          this._nudgeTimeRight(e.target)
-          break
-        case "[":
-          this._nudgeTimeLeft(e.target)
-          break
-        case "r":
-          this._randomize(e.target) 
+      if(e.ctrlKey) {
+        switch(e.key) {
+          case "]":
+            this._nudgeTimeRight(e.target)
+            break
+          case "[":
+            this._nudgeTimeLeft(e.target)
+            break
+          case "r":
+            // hot key combo so we dont randomize input while typing form input 
+           this._randomize(e.target) 
+        }
       }
   }
 
@@ -617,11 +626,10 @@ export default class extends Controller {
     this.noteTextTarget.innerHTML = textToDisplay
   }
 
-  positionTextForVideo(){
+  positionTextForVideo() {
     let textPosition = this.noteTextTarget;
     let video = document.getElementsByTagName('video')[0]
     // ! TODO THIS IS STILL NOT WORKED OUT YET
-    // debugger 
     var textPositionTop = video.offsetHeight/2;
     var textPositionLeft = (video.offsetWidth/2 - textPosition.width)
     textPosition.style.left = textPositionLeft + 'px';
