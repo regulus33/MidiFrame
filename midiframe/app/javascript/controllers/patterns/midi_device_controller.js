@@ -96,25 +96,27 @@ export default class extends Controller {
   }
 
   onMessageNoteOn(msg) {
-    this._play_note(msg)
-    this._play_video(msg)
-    this._addMidiEvent(msg)
-    this.onOnHighlightingRelevantOctaveButton(msg)
-    this._addMidiNoteToPlayedNotes(msg) // ? save the notes for global randomize 
-    this._playText(msg)
+    const number = this._get_msg_note_number(msg);
+    this._play_note(number);
+    this._play_video(number);
+    this._addMidiEvent(msg);
+    this.onOnHighlightingRelevantOctaveButton(number);
+    this._addMidiNoteToPlayedNotes(number); // ? save the notes for global randomize 
+    this._playText(number);
   }
 
   onMessageNoteOff(msg) {
-    this._unplay_note(msg)
-    this.onOffHighlightingRelevantOctaveButton(msg)
+    let note = msg.note.number;
+    this._unplay_note(note);
+    this.onOffHighlightingRelevantOctaveButton(note);
   }
 
   //? this method adds the starting timestamp (its the most precise way)
   //? and begins adding new midi events to the collection  
   onMessageStart(msg) {
     if(this._recordingSessionOpen) {
-      this._addStartEvent(msg.timestamp)
-      this._startRecordingMidiNotes()
+      this._addStartEvent(msg.timestamp);
+      this._startRecordingMidiNotes();
     }
     this.playVideo();
   }
@@ -132,7 +134,7 @@ export default class extends Controller {
   }
 
   onPianoKeyClick(event){
-    this._shouldSelectNote(event.target) ? this._selectNote() : this._unselectNote()
+    this._shouldSelectNote(event.target) ? this._selectNote() : this._unselectNote();
   }
 
   updateSelectedNoteTime(event) {
@@ -150,12 +152,12 @@ export default class extends Controller {
   }
 
   onDocumentKeyDown(e) {
+    if(this._keyCodeIsNumber(e.key))  this._changeChannel(e.key);
     if(e.metaKey && e.key === "s") {
       e.preventDefault();
       this.save();
     }
     if(e.ctrlKey) {
-      if(this._keyCodeIsNumber(e.key))  this._changeChannel(e.key);
       if(e.key === "t") this._randomizeAll();
       if(e.key === "c") this._clearAll();
     }
@@ -268,8 +270,8 @@ export default class extends Controller {
 
   // !plural RANDOM 
 
-  _addMidiNoteToPlayedNotes(msg){
-    this.playedNotes.add(msg.note.number);
+  _addMidiNoteToPlayedNotes(note){
+    this.playedNotes.add(note);
     console.log(this.playedNotes);
   }
 
@@ -320,8 +322,7 @@ export default class extends Controller {
   }
 
   // make button green if the played notes are higher than the current octave
-  onOnHighlightingRelevantOctaveButton(msg){
-    let noteNumber = msg.note.number
+  onOnHighlightingRelevantOctaveButton(noteNumber){
      if(this.notesLegend[noteNumber] < this.currentMidiPosition) {
        //? removing black means default to teal
        this.buttonMinusTarget.classList.remove("black");
@@ -334,8 +335,7 @@ export default class extends Controller {
   }
 
   // make button green if the played notes are lower than the current octave
-  onOffHighlightingRelevantOctaveButton(msg){
-    let noteNumber = msg.note.number
+  onOffHighlightingRelevantOctaveButton(noteNumber){
      if(this.notesLegend[noteNumber] < this.currentMidiPosition) {
       this.buttonMinusTarget.classList.add("black");
     } else if(this.notesLegend[noteNumber] > this.currentMidiPosition) {
@@ -347,17 +347,17 @@ export default class extends Controller {
   // * Midi Information 
 
 
-  _play_note(msg) {
-    this._get_piano_key(this._get_msg_note_number(msg)).classList.toggle("active", true)
+  _play_note(number) {
+    this._get_piano_key(number).classList.toggle("active", true)
   }
 
-  _unplay_note(msg) {
-    this._get_piano_key(this._get_msg_note_number(msg)).classList.toggle("active", false)
+  _unplay_note(number) {
+    this._get_piano_key(number).classList.toggle("active", false)
   }
 
-  _play_video(msg) {
-    if(this.pianoData[msg.note.number]){
-      this._video.currentTime(this.pianoData[msg.note.number])
+  _play_video(number) {
+    if(this.pianoData[number]){
+      this._video.currentTime(this.pianoData[number])
     }
   }
 
@@ -622,10 +622,15 @@ export default class extends Controller {
     this._updateTextData({ number: number, string: string })
   }
 
-  _playText(msg) {
-    let num = msg.note.number;
-    let textToDisplay = this.pianoTextData[num];
-    this.noteTextTarget.innerHTML = textToDisplay
+  _playText(num) {
+    if(this.pianoTextData[num]) {
+      let textToDisplay = this.pianoTextData[num];
+      this.noteTextTarget.innerHTML = textToDisplay;
+    } 
+  }
+  // data action 
+  clearText() {
+    delete this.pianoTextData[this.selectedKey.id]
   }
 
   // ? js centering of optional video text 
@@ -634,7 +639,7 @@ export default class extends Controller {
     let video = document.getElementsByTagName('video')[0]
     // ! TODO THIS IS STILL NOT WORKED OUT YET
     var textPositionTop = video.offsetHeight/2;
-    var textPositionLeft = (video.offsetWidth/2 - textPosition.width)
+    var textPositionLeft = (video.offsetWidth/2 - textPosition.width);
     textPosition.style.left = textPositionLeft + 'px';
     textPosition.style.top = textPositionTop + 'px';
   }
