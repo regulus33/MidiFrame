@@ -25,3 +25,10 @@ ActiveStorage::Attachment.all.each { |attachment| attachment.purge }
 
 [from here](https://stackoverflow.com/questions/51175944/remove-all-data-from-active-storage)
 
+
+EC2 instance dependencies 
+
+https://sourceforge.net/projects/matroska/files/mkclean/mkclean-0.8.10.tar.bz2/download for webm optimizations 
+
+ffmpeg 
+
