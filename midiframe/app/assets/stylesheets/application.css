@@ -216,6 +216,7 @@ a#record.open-recording-session i {
 
 #note-text {
   position: relative;
+  font-size: 30px;
   display: inline-block;
   height:20px;
   width:100%;
