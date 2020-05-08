@@ -15,7 +15,6 @@ class ProjectsController < ApplicationController
       format.html do 
         render 'index'
       end
-      
     end
   end
 
@@ -31,8 +30,11 @@ class ProjectsController < ApplicationController
   end
 
   def update
+    @video = @project.video 
+    @project.video = @video
+    @video.user = current_user
     insert_params
-    if @project.save
+    if @project.save && @video.save
       #TODO: delegate to a job like sideqik
       set_video_process_flags_false
       @toast = "#{@project.name} updated"
@@ -45,10 +47,17 @@ class ProjectsController < ApplicationController
   end
 
   def create
+    # create new video file and save it as "original"
+    # after save, duplicate it as a soundstripped video and set the soundstripped as "default"
     @project = Project.new
+    @video = Video.new
+    # ? need to create a new empty video if creating project 
     insert_params
+    @project.video = @video 
     @project.user = current_user
-    if @project.save
+    @video.user = current_user
+    binding.pry 
+    if @project.save 
       #TODO: delegate to delayed_job
       set_video_process_flags_false
       @toast = "#{@project.name} created"
@@ -81,7 +90,7 @@ class ProjectsController < ApplicationController
   def insert_params 
     @project.bpm = project_params[:bpm].to_i if project_params[:bpm]
     @project.name = project_params[:name] if project_params[:name]
-    @project.video = project_params[:video] if project_params[:video]
+    @video.clip = project_params[:video] if project_params[:video]
   end 
 
   # TODO: will this false positive sometimes?
@@ -91,9 +100,10 @@ class ProjectsController < ApplicationController
       # ! if video is ever changed by user it will always pass through this controller (it must!)
       # so we must reset this to false if part of the params is a video
       # ? this ensures that we will always strip sound for new videos 
-      @project.sound_stripped = false 
+      @project.video.sound_stripped = false 
     end
   end
+
 
 end
 

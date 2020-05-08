@@ -27,7 +27,6 @@ class FfMpeg < ApplicationRecord
       File.delete(filename)
     end
   end
-  # ffmpeg -i port.mp4 -i palette.png -lavfi paletteuse=dither=bayer:bayer_scale=1 -c:v libx264 -pix_fmt yuv420p jdhfjdsfkjf.mp4
   private 
 
   # ? for each event in the @pattern.note_stamps array, this method is fed an event   
@@ -64,8 +63,7 @@ class FfMpeg < ApplicationRecord
     project = self.pattern.project.id 
     # ! TODO: security/stability make this below hash thing based on user email to ensure uniqueness
     # project-id--pattern-id--event-time should be unique enough so just don't forget to check this/test before production
-    # "#{Rails.root}/tmp/#{project}#{pattern}#{remove_dots(time_stamp)}.mp4"
-    "#{Rails.root}/tmp/#{project}_#{pattern}_#{time_stamp}.mp4"
+    "#{Rails.root}/tmp/#{project}_#{pattern}_#{time_stamp}.#{project.video.file_extension}"
   end 
 
   # ? add the command to the blueprints array, we save it in this table to make it possible to run it 
