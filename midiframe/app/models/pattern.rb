@@ -81,10 +81,10 @@ class Pattern < ApplicationRecord
     # ? get a reference to the parent video of this whole project 
     active_storage_video = self.project.video
     # ? construct a unique URL in the Temp Dir, based on the blob.key + filename, its a unique string we get for free
-    project_video = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_#{active_storage_video.name.to_s}.mp4"
+    project_video = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_#{active_storage_video.name.to_s}.#{self.project.video.file_extension}"
     # ? the final output url for the end result video, just using @pattern.id to ensure uniqueness nerve and talent 
     # .new already generates a unique url
-    processed_video = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_#{self.project.id.to_s}-#{self.id.to_s}.mp4"
+    processed_video = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_#{self.project.id.to_s}-#{self.id.to_s}.#{self.project.video.file_extension}"
     # ? open empty file url and insert downloaded file into the shell 
     File.open(project_video, 'wb') do |f|
       f.write(active_storage_video.download)
@@ -93,7 +93,6 @@ class Pattern < ApplicationRecord
     # ? FFMPEG object 
     #  pattern_blueprints:
     #   [
-    #     "ffmpeg -an -y -ss  -i /Users/zack/video-synth/midiframe/tmp/zge279vkj7sd6ku27aqjm8txzim7_video.mp4 -t 0.00034500000765547156 -c:v libx264 /Users/zack/video-synth/midiframe/tmp/56-176-0.0.mp4"
     #   ]
     # ? the pattern blueprints describe the action of chopping the video into little pieces 
     # ? we will also need to save pattern blueprints join 
@@ -111,10 +110,10 @@ class Pattern < ApplicationRecord
     processed_video = generate_new_video_concat_file_path
     create_concat_file(name: generate_new_text_concat_file_path, concat_blue_prints: ffmpeg.pattern_concat_blueprints)
     concatenate_clips(path_to_input_text_file: generate_new_text_concat_file_path, processed_video: processed_video)
-    self.video.attach(
+    self.clip.attach(
       io: File.open(processed_video),
-      filename: "#{self.id.to_s}.mp4",
-      content_type: 'video/mp4'
+      filename: "#{self.id.to_s}.#{self.file_extension}",
+      content_type: "video/#{self.file_extension}"
     )
     File.delete(project_video)
     File.delete(processed_video)
@@ -129,7 +128,7 @@ class Pattern < ApplicationRecord
 
   def generate_new_video_concat_file_path
     name = "joined_clips_#{self.id.to_s}"
-    "#{Rails.root}/tmp/#{name}.mp4"
+    "#{Rails.root}/tmp/#{name}.#{self..file_extension}"
   end
 
   def create_concat_file(name:, concat_blue_prints:)  
