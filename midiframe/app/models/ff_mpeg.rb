@@ -61,9 +61,9 @@ class FfMpeg < ApplicationRecord
   def generate_unique_tempfile_clip_location_url(time_stamp)
     pattern = self.pattern.id
     project = self.pattern.project.id 
-    # ! TODO: security/stability make this below hash thing based on user email to ensure uniqueness
+    # ! TODO: security/stability make this below hash thing based on user email to ensure uniqueness?
     # project-id--pattern-id--event-time should be unique enough so just don't forget to check this/test before production
-    "#{Rails.root}/tmp/#{project}_#{pattern}_#{time_stamp}.#{project.video.file_extension}"
+    "#{Rails.root}/tmp/#{project}_#{pattern}_#{time_stamp}.#{file_extension}"
   end 
 
   # ? add the command to the blueprints array, we save it in this table to make it possible to run it 
@@ -71,6 +71,10 @@ class FfMpeg < ApplicationRecord
   def save_and_add_commands_to_pattern_blue_prints(blue_prints) 
     self.pattern_blueprints = blue_prints 
     self.save!
+  end
+
+  def file_extension
+    self.pattern.project.video.file_extension
   end
 
   def save_and_add_commands_to_pattern_concat_blue_prints(concat_blue_prints) 

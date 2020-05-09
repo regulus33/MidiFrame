@@ -29,6 +29,9 @@ ActiveStorage::Attachment.all.each { |attachment| attachment.purge }
 EC2 instance dependencies 
 
 https://sourceforge.net/projects/matroska/files/mkclean/mkclean-0.8.10.tar.bz2/download for webm optimizations 
-
+  
 ffmpeg 
+redis
+mcklean
+
 
