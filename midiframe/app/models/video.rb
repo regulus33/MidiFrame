@@ -11,6 +11,9 @@ class Video < ApplicationRecord
   # TODO: validate video types! SECURITY 
   ALLOWED_ROLES = ["original"]
 
+  belongs_to :parent_video, class_name: "Video", :foreign_key => "parent_video_id",  optional: true
+  has_many :videos, :class_name => "Video"
+
   def file_extension 
     return self.clip.content_type.split("/").pop if self.clip.attached?
   end
@@ -27,11 +30,9 @@ class Video < ApplicationRecord
   end
 
   def strip_sound_from_video 
-    binding.pry 
     return if self.sound_stripped 
     # ? get location of actual video 
     active_storage_video = self.clip
-    binding.pry 
     # ? construct a unique URL in the Temp Dir, based on the blob.key + filename, its a unique string we get for free
     original_video = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_original_video.#{self.file_extension}"
     soundless_video = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_soundless_video.#{self.file_extension}"
@@ -52,6 +53,33 @@ class Video < ApplicationRecord
     self.save 
     File.delete(original_video)
     File.delete(soundless_video)
+  end
+
+  def convert_to_webm 
+    # ? get location of actual video 
+    active_storage_video = self.clip
+    # ? construct a unique URL in the Temp Dir, based on the blob.key + filename, its a unique string we get for free
+    original_video = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_original_video.#{self.file_extension}"
+    changed_video = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_#{operation}_webm_video.#{self.file_extension}"
+    # ? open empty file url and insert downloaded file into the shell 
+    File.open(original_video, 'wb') do |f|
+      f.write(active_storage_video.download)
+    end
+    # ? once we've dl'ed the video from the active storage server, we strip the sound 
+    strip_sound_command original_video: original_video, changed_video: changed_video
+    self.clip.attach(
+      io: File.open(changed_video),
+      filename: "#{active_storage_video.blob.filename.base}.webm",
+      content_type: content_type
+    )
+    self.role = "original"
+    self.save 
+    File.delete(original_video)
+    File.delete(changed_video)
+  end
+
+  def convert_to_webm_command
+
   end
 
   def strip_sound_command(original_video:, soundless_video:)
