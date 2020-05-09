@@ -36,7 +36,7 @@ class ProjectsController < ApplicationController
     insert_params
     if @project.save && @video.save
       #TODO: delegate to a job like sideqik
-      set_video_process_flags_false
+      run_video_processing_if_needed
       @toast = "#{@project.name} updated"
       render 'index'
     else
@@ -56,10 +56,9 @@ class ProjectsController < ApplicationController
     @project.video = @video 
     @project.user = current_user
     @video.user = current_user
-    binding.pry 
     if @project.save 
       #TODO: delegate to delayed_job
-      set_video_process_flags_false
+      run_video_processing_if_needed
       @toast = "#{@project.name} created"
       render 'index'
     else
@@ -95,12 +94,11 @@ class ProjectsController < ApplicationController
 
   # TODO: will this false positive sometimes?
   # ? IF VIDEO IS NEW STRIP SOUND ETC 
-  def set_video_process_flags_false 
-    if project_params[:video]
-      # ! if video is ever changed by user it will always pass through this controller (it must!)
-      # so we must reset this to false if part of the params is a video
-      # ? this ensures that we will always strip sound for new videos 
-      @project.video.sound_stripped = false 
+  def run_video_processing_if_needed 
+    if project_params[:video] 
+      # todo  put more params in here, eventually we will add soundful videos 
+      @project.video.strip_sound_from_video
+      ConvertToWebmJob.perform_later(@project.video.id, @project.id)
     end
   end
 

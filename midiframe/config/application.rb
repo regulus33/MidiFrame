@@ -12,6 +12,8 @@ module Midiframe
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
+
+    config.active_job.queue_adapter = :sidekiq
     # !just a workaround to get around cors error for dev
     # ? https://medium.com/@Nicholson85/handling-cors-issues-in-your-rails-api-120dfbcb8a24
     config.middleware.insert_before 0, Rack::Cors do
