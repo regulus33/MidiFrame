@@ -24,9 +24,14 @@ class FfMpeg < ApplicationRecord
   def remove_clips_from_tempfile 
     self.clip_filenames.each do |filename|
       puts "[ff_mpeg] deleting #{filename}"
-      File.delete(filename)
+      begin
+        File.delete(filename)
+      rescue  Errno::ENOENT => er
+        puts "Tempfile already gone, skipping" + er
+      end
     end
-  end
+  end 
+  
   private 
 
   # ? for each event in the @pattern.note_stamps array, this method is fed an event   

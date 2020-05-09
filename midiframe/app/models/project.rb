@@ -9,5 +9,4 @@ class Project < ApplicationRecord
   validates :name, presence: true
   validates :bpm, presence: true
 
-
 end
