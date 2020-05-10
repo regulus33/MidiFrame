@@ -8,21 +8,21 @@ import { saveProject, generatePatternClip } from '../../helpers/network'
 export default class extends Controller {
 
   static targets = [
-  "keyBoardKey",
-   "video",
-   "channel",
-   "patternId",
-   "projectId",
-   "settings",
-   "recordButton",
-   "noteStamps",
-   "buttonMinus",
-   "buttonPlus",
-   "saveCurrentTime",
-   "addTextButton",
-   "textModalTitle",
-   "noteText",
-   "inputValue"
+    "keyBoardKey",
+    "video",
+    "channel",
+    "patternId",
+    "projectId",
+    "settings",
+    "recordButton",
+    "noteStamps",
+    "buttonMinus",
+    "buttonPlus",
+    "saveCurrentTime",
+    "addTextButton",
+    "textModalTitle",
+    "noteText",
+    "inputValue"
   ]
 
   connect() {
@@ -41,6 +41,7 @@ export default class extends Controller {
     this.saveAndNavigate = this.saveAndNavigate.bind(this);
     this._addKeyDownChannelListener();
     this._initializePianoData();
+    this._initializeTextData();
     //everytime a new notes comes in we will add it 
     this.playedNotes = new Set();
     this.isSeeking = false;
@@ -51,7 +52,7 @@ export default class extends Controller {
 
   //SAVE BUTTON 
   save() {
-    return saveProject({channel: this._channel, pianoData: this.pianoData, midiEvents: this.midiEvents, patternId: this._getPatternId(), projectId: this._getProjectId()})
+    return saveProject({channel: this._channel, pianoData: this.pianoData, pianoTextData: this.pianoTextData, midiEvents: this.midiEvents, patternId: this._getPatternId(), projectId: this._getProjectId()})
     .then(() => { 
       M.toast( { html:'Pattern Saved'})
       // ? if the midi events are at the server, there is no reason for them to 
@@ -67,7 +68,6 @@ export default class extends Controller {
       window.location.href = baseUrl + this._settingsUrl
     })
   }
-
 
   //? submitting data to be converted into a video 
   generatePatternClip(){
@@ -215,6 +215,13 @@ export default class extends Controller {
     let noteStamps = JSON.parse(this.noteStampsTarget.getAttribute("note-stamps"))
     if(noteStamps){
       this.pianoData = noteStamps
+    }
+  }
+
+  _initializeTextData() {
+    let textStamps = JSON.parse(this.noteStampsTarget.getAttribute("text-stamps"))
+    if(textStamps){
+      this.pianoTextData = textStamps
     }
   }
 

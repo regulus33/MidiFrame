@@ -86,8 +86,8 @@ class Video < ApplicationRecord
   private
 
   def run_webm_conversions(original_video:, webm_video:, optimized_video:)
-    `ffmpeg -i #{original_video} -c:v libvpx-vp9 -crf 30 -b:v 0 -b:a 128k -c:a libopus #{webm_video}`
-    # optimize the output
+    # `ffmpeg -i #{original_video} -c:v libvpx-vp9 -crf 30 -b:v 0 -b:a 128k -c:a libopus #{webm_video}`
+    `ffmpeg -i #{original_video} -c:v libvpx -crf 10 -b:v 1M -c:a libvorbis #{webm_video}`    # optimize the output
     optimize_webm(webm_video: webm_video, optimized: optimized_video)
   end
 

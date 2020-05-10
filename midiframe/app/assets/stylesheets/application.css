@@ -214,7 +214,7 @@ a#record.open-recording-session i {
   font-style: italic;
 }
 
-#note-text {
+#note-text-text {
   position: relative;
   font-size: 30px;
   display: inline-block;
