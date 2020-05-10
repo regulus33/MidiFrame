@@ -50,7 +50,7 @@ span.note-title {
   display: inherit;
 }
 
-body, a#upload_video_button {
+body, a#upload_video_button, a#upload_font_button {
   letter-spacing: 7px !important;
 }
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_09_130818) do
+ActiveRecord::Schema.define(version: 2020_05_10_091850) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -60,6 +60,11 @@ ActiveRecord::Schema.define(version: 2020_05_09_130818) do
     t.index ["pattern_id"], name: "index_ff_mpegs_on_pattern_id"
   end
 
+  create_table "fonts", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "pattern_clips", force: :cascade do |t|
     t.jsonb "data"
     t.jsonb "used_notes"
@@ -97,6 +102,8 @@ ActiveRecord::Schema.define(version: 2020_05_09_130818) do
     t.integer "lofi_amount"
     t.boolean "lofi_processed"
     t.integer "video_id"
+    t.boolean "text"
+    t.integer "font_id"
     t.index ["user_id"], name: "index_projects_on_user_id"
   end
 
