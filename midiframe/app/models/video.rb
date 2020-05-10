@@ -6,7 +6,7 @@ class Video < ApplicationRecord
   has_one_attached :clip 
   has_one_attached :thumbnail
   belongs_to :user
-  # TODO VALIDATIONS 
+# TODO VALIDATIONS 
   ALLOWED_TYPES = ["mp4", "webm"]
   # TODO: validate video types! SECURITY 
   ALLOWED_ROLES = ["original"]
