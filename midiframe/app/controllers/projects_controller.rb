@@ -101,8 +101,6 @@ class ProjectsController < ApplicationController
       ConvertToWebmJob.perform_later(@project.video.id, @project.id)
     end
   end
-
-
 end
 
 # ["project_patterns_path",

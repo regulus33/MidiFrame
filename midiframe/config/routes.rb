@@ -3,16 +3,12 @@ require 'sidekiq/web'
 
 Rails.application.routes.draw do
   get 'main/index'
-
-  # PROJECTS
-  # PROJECTS
   # PROJECTS
   root to: 'projects#index'
 
   resources :projects do
     resources :patterns
   end
-  
 
   get 'pattern-preview/:id/:project_id', to: 'patterns#pattern_preview', as: 'pattern_preview'
 

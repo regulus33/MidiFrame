@@ -8,12 +8,10 @@ div data-controller='projects--file-input' class="card-panel z-depth-5"
       = f.text_field :bpm, html: { id: "bpm_new"} 
       label for="bpm_new" class="active" BPM
     div class="input-field"
-      
-      / = render partial: 'lofi', locals: {f: f}
-
+    
     label for="project_video"
       
-      a id="upload_video_button" class="waves-effect waves-light btn grey darken-4"Choose Video
+      a id="upload_font_button" class="waves-effect waves-light btn grey darken-4"Choose Video
 
     span data-target="projects--file-input.fileDisplayName" no file chosen
 
