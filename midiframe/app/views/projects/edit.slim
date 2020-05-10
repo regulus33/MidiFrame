@@ -14,7 +14,16 @@ div data-controller="projects--file-input" class="card-panel z-depth-5"
 
     span data-target="projects--file-input.fileDisplayName" = @project.video.clip.attached? ? "Replace video" : "Choose a video" 
     = f.file_field :video, style: "display:none;", data: { action: "change->projects--file-input#printFileName", target: "projects--file-input.filename"} 
+
+    label for="project_font"
+      a id="upload_font_button" class="waves-effect waves-light btn grey darken-4" Choose Font
+
+    span data-target="projects--file-input.fontFileDisplayName" = @project.font ? @project.font.file.blob.filename.to_s : "Choose a font" 
+    = f.file_field :font, style: "display:none;", data: { action: "change->projects--file-input#printFontFileName", target: "projects--file-input.fontFileName"} 
+    
     = f.submit "S A V E", class: "waves-effect waves-light btn submit grey darken-4 ", data: { action: "loading#showLoader" } 
+
+    
 
 - if @project.video.clip.attached? 
   
