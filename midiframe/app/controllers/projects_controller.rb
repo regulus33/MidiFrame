@@ -33,8 +33,10 @@ class ProjectsController < ApplicationController
     @video = @project.video 
     @project.video = @video
     @video.user = current_user
+    @font = Font.new if project_params[:font] 
+    @project.font = @font if @font 
     insert_params
-    if @project.save && @video.save
+    if @project.save && @video.save && (@font ? @font.save : true)
       #TODO: delegate to a job like sideqik
       run_video_processing_if_needed
       @toast = "#{@project.name} updated"
@@ -51,10 +53,12 @@ class ProjectsController < ApplicationController
     # after save, duplicate it as a soundstripped video and set the soundstripped as "default"
     @project = Project.new
     @video = Video.new
+    @font = Font.new
     # ? need to create a new empty video if creating project 
     insert_params
     @project.video = @video 
     @project.user = current_user
+    @project.font = @font if project_params[:font]
     @video.user = current_user
     if @project.save 
       #TODO: delegate to delayed_job
@@ -79,7 +83,7 @@ class ProjectsController < ApplicationController
   private
 
   def project_params
-    params.require(:project).permit(:name, :bpm, :video)
+    params.require(:project).permit(:name, :bpm, :video, :font)
   end
 
   def get_project
@@ -87,9 +91,11 @@ class ProjectsController < ApplicationController
   end
 
   def insert_params 
+    binding.pry
     @project.bpm = project_params[:bpm].to_i if project_params[:bpm]
     @project.name = project_params[:name] if project_params[:name]
     @video.clip = project_params[:video] if project_params[:video]
+    @font.file = project_params[:font] if project_params[:font]
   end 
 
   # TODO: will this false positive sometimes?

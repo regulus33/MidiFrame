@@ -1,3 +1,5 @@
 class Font < ApplicationRecord
-  t.string :name
+  # TODO: security, font file type must be inspected and restricted
+  has_one_attached :file
+
 end
