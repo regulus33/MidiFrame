@@ -1,6 +1,17 @@
-<div data-target="patterns--midi-device.noteText" id="note-text">
-  <span id="note-text-text"></span>
-</div>
+<% if @project.font %>
+  <style> 
+    @font-face {
+      font-family: "<%= @project.font.file.blob.filename %>";
+      src: url("<%= url_for(@project.font.file) %>");
+    }
+    span#note-text-text {
+        font-family: "<%= @project.font.file.blob.filename %>";
+    }
+  </style>
+<% end %>
+
+<span data-target="patterns--midi-device.noteText"  id="note-text-text">Whatever</span>
+
 <video 
   id="midi-video" 
   class="video-js vjs-fluid" 
@@ -10,7 +21,7 @@
   controls
 >
 <source 
-  src="<%=url_for(@project.video.clip)%>" 
+  src="<%= url_for(@project.video.clip) %>" 
   type="video/mp4"
 />
 </video>
