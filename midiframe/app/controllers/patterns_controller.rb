@@ -32,7 +32,6 @@ class PatternsController < ApplicationController
 
   def update
     msg = { :status => "ok", :message => "Success!", :html => "<b>...</b>" }
-    # TODO actually save stuff here
 
     respond_to do |format|
       format.json  do 
@@ -42,6 +41,7 @@ class PatternsController < ApplicationController
         # *channel
         @pattern.channel = pattern_params[:channel].to_i 
         @pattern.note_stamps = note_stamps_params
+        @pattern.text_stamps = text_stamps_params
         # ? we reset array of midi events to empty if user submits a collection of events
         # ? because of that and just common sense in general, we never save "empty" values 
         # ? if user wants to clear midi events they can just delete the pattern 
@@ -56,6 +56,7 @@ class PatternsController < ApplicationController
          @pattern.order_in_sequence = pattern_params[:order_in_sequence]
          @pattern.channel = pattern_params[:channel]
          @pattern.step_length_integer = pattern_params[:step_length].to_i 
+
          toast "#{@pattern.name} updated" if @pattern.save! 
          redirect_to edit_project_pattern_path(@project, @pattern) 
       end
@@ -101,6 +102,10 @@ class PatternsController < ApplicationController
   def note_stamps_params 
     # params.require(:piandData).permit!
     params[:pianoData]
+  end
+
+  def text_stamps_params 
+    params[:pianoTextData]
   end
 
   def find_project 
