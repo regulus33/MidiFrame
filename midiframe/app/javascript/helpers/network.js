@@ -13,8 +13,6 @@ export const saveProject = async({channel, pianoData, pianoTextData, midiEvents,
   return await response.json() // parses JSON response into native JavaScript objects
 }
 
-
-
 export const generatePatternClip = ({patternId, projectId}) => {
   console.log(patternId)
  return fetch(patternGeneratorUrl(patternId, projectId), {

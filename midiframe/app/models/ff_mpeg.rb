@@ -99,20 +99,25 @@ class FfMpeg < ApplicationRecord
     pattern_blueprints = []  
     clip_filenames = []
     pattern_concat_blueprints = ""
+    text_blue_prints = []
+
     events.each_with_index do |event, index|
       # ? stop is the last event, there is not command for this event, it only serves as a sign when the last note should terminate
       break if event["note"] == "stop"
       # ? calculate the end time of the note by searching starttime of next note 
       next_event = events[index + 1] unless reached_the_last_event? current_index: index, array_length: events.length
       # ? build the string to be run / insertted in out blueprints collection 
+      # * slice command: 
+      # * ffmpeg -an -y -ss  -i input.mp4 -t 0.5 -c:v libx264 output.mp4
       blue_print_to_add = generate_slice_blue_print(event: event, next_event: next_event)
       concat_blue_print_to_add = generate_concat_blueprint(event)
       # ? COLLECT BLUEPRINTS FOR SLICE AND CONCAT 
+      text_blue_print_to_add = generate_text_blueprint(event: event, next_event: event)
       pattern_blueprints << blue_print_to_add
       pattern_concat_blueprints << concat_blue_print_to_add
+      text_blue_prints << text_blue_print_to_add 
       # ? need to save clip filenames to delete later 
       clip_filenames << generate_unique_tempfile_clip_location_url(event["timestamp"])
-      # insert the command 
     end
     # *
     # *
@@ -123,6 +128,12 @@ class FfMpeg < ApplicationRecord
     save_and_add_commands_to_pattern_concat_blue_prints(pattern_concat_blueprints)
     save_and_add_clip_file_names_to_clip_filenames(clip_filenames)
   end 
+
+  def generate_text_blueprint(event, next_event) 
+    cmd = <<-FFMPEG
+    ffmpeg -i #{self.clip_tempfile_path} -vf drawtext="fontfile=#{self.font_tempfile_path}:text='#{midi_event_text}':fontsize=70:fontcolor=white:x=(w-text_w)/2: y=(h-text_h-line_h)/2" #{self.processed_tempfile_url}
+    FFMPEG
+  end
 
   def reached_the_last_event?(current_index:, array_length:)
     current_index + 1 == array_length 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_10_091850) do
+ActiveRecord::Schema.define(version: 2020_05_14_192207) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -57,6 +57,8 @@ ActiveRecord::Schema.define(version: 2020_05_10_091850) do
     t.string "processed_tempfile_url"
     t.jsonb "pattern_concat_blueprints"
     t.jsonb "clip_filenames"
+    t.string "font_tempfile_path"
+    t.string "clip_tempfile_path"
     t.index ["pattern_id"], name: "index_ff_mpegs_on_pattern_id"
   end
 
@@ -87,6 +89,7 @@ ActiveRecord::Schema.define(version: 2020_05_10_091850) do
     t.integer "order_in_sequence"
     t.integer "total_clock_signals"
     t.jsonb "note_texts"
+    t.jsonb "text_stamps"
     t.index ["project_id"], name: "index_patterns_on_project_id"
   end
 
