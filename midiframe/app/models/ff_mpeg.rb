@@ -12,6 +12,11 @@ class FfMpeg < ApplicationRecord
     loop_through_events_and_process_them(events: events)
   end
 
+  def create_blueprints_for_text_drawings
+    events = self.pattern.midi_events
+    loop_through_events_and_process_text(events: events)
+  end
+
   # * execute all ffmpeg slice commands (seeking)
   # ? https://trac.ffmpeg.org/wiki/Seeking
   def create_slices
@@ -20,6 +25,12 @@ class FfMpeg < ApplicationRecord
       puts result
     end
   end 
+
+  #process each text fileter command for the pattern clip 
+  def draw_texts
+    binding.pry
+    `#{self.text_blueprints}`
+  end   
 
   def remove_clips_from_tempfile 
     self.clip_filenames.each do |filename|
@@ -78,6 +89,11 @@ class FfMpeg < ApplicationRecord
     self.save!
   end
 
+  def save_and_add_blue_prints_to_text_blueprints(blue_prints)
+    self.text_blueprints = blue_prints.gsub(/\n/,'').strip
+    self.save!
+  end
+
   def file_extension
     self.pattern.project.video.file_extension
   end
@@ -92,6 +108,26 @@ class FfMpeg < ApplicationRecord
     self.save!
   end
 
+
+  def loop_through_events_and_process_text(events:) 
+    # * an array of commands to be run subsequently
+    text_blue_prints = <<-LEADING
+    ffmpeg -y -i #{self.clip_tempfile_path} -vf "
+    LEADING
+    trailing = <<-TRAILING
+    " #{self.processed_tempfile_url}
+    TRAILING
+    events.each_with_index do |event, index|
+      break if event["note"] == "stop"
+      comma = ","
+      comma = "" if (events.length-2) == index
+      next_event = events[index + 1] unless reached_the_last_event? current_index: index, array_length: events.length
+      text_blue_print_to_add = generate_text_blueprint(event: event, next_event: next_event)
+      text_blue_prints << text_blue_print_to_add.strip + comma if text_blue_print_to_add
+    end
+    save_and_add_blue_prints_to_text_blueprints(text_blue_prints + trailing)
+  end
+
   # ? loop through each recorded midi_event and using its data (really all you need to care about is the time it occured)
   # ? we then save each of these commands to be run later 
   def loop_through_events_and_process_them(events:)     
@@ -99,7 +135,6 @@ class FfMpeg < ApplicationRecord
     pattern_blueprints = []  
     clip_filenames = []
     pattern_concat_blueprints = ""
-    text_blue_prints = []
 
     events.each_with_index do |event, index|
       # ? stop is the last event, there is not command for this event, it only serves as a sign when the last note should terminate
@@ -112,27 +147,33 @@ class FfMpeg < ApplicationRecord
       blue_print_to_add = generate_slice_blue_print(event: event, next_event: next_event)
       concat_blue_print_to_add = generate_concat_blueprint(event)
       # ? COLLECT BLUEPRINTS FOR SLICE AND CONCAT 
-      text_blue_print_to_add = generate_text_blueprint(event: event, next_event: event)
       pattern_blueprints << blue_print_to_add
       pattern_concat_blueprints << concat_blue_print_to_add
-      text_blue_prints << text_blue_print_to_add 
       # ? need to save clip filenames to delete later 
       clip_filenames << generate_unique_tempfile_clip_location_url(event["timestamp"])
     end
     # *
-    # *
     #      EVERYTHING YOU NEED TO SLICE CONCAT AND DELETE CLIPS  
-    # *
     # *
     save_and_add_commands_to_pattern_blue_prints(pattern_blueprints)
     save_and_add_commands_to_pattern_concat_blue_prints(pattern_concat_blueprints)
     save_and_add_clip_file_names_to_clip_filenames(clip_filenames)
   end 
 
-  def generate_text_blueprint(event, next_event) 
+  def generate_text_blueprint(event:, next_event:) 
+    # establish beginning and end times, 
+    # ffmpeg -y -i #{self.clip_tempfile_path} -vf 
+    cmd = false 
+    start_time = convert_seconds_to_milliseconds_and_convert_scientific_notation_to_strings(event["timestamp"])
+    end_time = convert_seconds_to_milliseconds_and_convert_scientific_notation_to_strings(next_event["timestamp"])
+    note_number_key = event["note"].to_s
+    text_to_display = self.pattern.text_stamps[note_number_key]
+    if text_to_display.present?
     cmd = <<-FFMPEG
-    ffmpeg -i #{self.clip_tempfile_path} -vf drawtext="fontfile=#{self.font_tempfile_path}:text='#{midi_event_text}':fontsize=70:fontcolor=white:x=(w-text_w)/2: y=(h-text_h-line_h)/2" #{self.processed_tempfile_url}
+      drawtext=enable='between(t,#{start_time},#{end_time})':fontfile=#{self.font_tempfile_path}:text='#{text_to_display}':fontsize=70:fontcolor=white:x=(w-text_w)/2: y=(h-text_h-line_h)/2
     FFMPEG
+    end 
+    cmd 
   end
 
   def reached_the_last_event?(current_index:, array_length:)
