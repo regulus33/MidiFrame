@@ -41,13 +41,13 @@ export default class extends Controller {
     this.saveAndNavigate = this.saveAndNavigate.bind(this);
     this._addKeyDownChannelListener();
     this._initializePianoData();
-    this._initializeTextData();
     //everytime a new notes comes in we will add it 
     this.playedNotes = new Set();
     this.isSeeking = false;
     //? text styling
     this.positionTextForVideo();
     this.positionTextOnWindowResize();
+    this._initializeTextData();
   }
 
   //SAVE BUTTON 

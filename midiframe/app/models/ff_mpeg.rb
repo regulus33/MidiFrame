@@ -38,7 +38,7 @@ class FfMpeg < ApplicationRecord
       begin
         File.delete(filename)
       rescue  Errno::ENOENT => er
-        puts "Tempfile already gone, skipping" + er
+        puts "Tempfile already gone, skipping" + er.to_s
       end
     end
   end 
