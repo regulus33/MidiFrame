@@ -119,7 +119,8 @@ class Pattern < ApplicationRecord
     # =============================================================
     # now its time to draw the text, make blueprints first
     # =============================================================
-    if make_text? 
+    # if make_text? 
+    if false
       # TODO DOWNLOAD FONT
       # TODO loop through text commands and run 
       # TODO attach output 
