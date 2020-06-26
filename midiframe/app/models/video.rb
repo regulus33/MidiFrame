@@ -52,7 +52,7 @@ class Video < ApplicationRecord
   end
   
   # this method assumes that the current video is the main video attached to a project
-  def convert_to_webm(new_project_to_add_output_to:) 
+  def compress(new_project_to_add_output_to:) 
     # ? get location of actual video 
     active_storage_video = self.clip
     # ? construct a unique URL in the Temp Dir, based on the blob.key + filename, its a unique string we get for free
@@ -64,7 +64,7 @@ class Video < ApplicationRecord
       f.write(active_storage_video.download)
     end
     # ? once we've dl'ed the video from the active storage server, we strip the sound 
-    run_webm_conversions original_video: original_video, webm_video: webm_video, optimized_video: optimized_webm
+    run_compress original_video: original_video, webm_video: webm_video, optimized_video: optimized_webm
     
     web_video = Video.create(parent_video: self, role: "web", user: self.user)
     
@@ -85,7 +85,7 @@ class Video < ApplicationRecord
 
   private
 
-  def run_webm_conversions(original_video:, webm_video:, optimized_video:)
+  def run_compress(original_video:, webm_video:, optimized_video:)
     # `ffmpeg -i #{original_video} -c:v libvpx-vp9 -crf 30 -b:v 0 -b:a 128k -c:a libopus #{webm_video}`
     `ffmpeg -i #{original_video} -c:v libvpx -crf 10 -b:v 1M -c:a libvorbis #{webm_video}`    # optimize the output
     optimize_webm(webm_video: webm_video, optimized: optimized_video)
