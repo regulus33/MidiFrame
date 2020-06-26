@@ -82,7 +82,7 @@ export default class extends Controller {
     // ? only count clock signals if recording 
     if(this._recording) {
       this.clockSignalsPassedSinceRecordStart++
-      console.log(`clock signal passed: ${this.clockSignalsPassedSinceRecordStart} total clock signals: ${this._totaClockSignals}`)
+      // console.log(`clock signal passed: ${this.clockSignalsPassedSinceRecordStart} total clock signals: ${this._totaClockSignals}`)
       switch(this.clockSignalsPassedSinceRecordStart) {
         // ! end is reached! exit recording loop
         case this._totaClockSignals:
@@ -279,7 +279,7 @@ export default class extends Controller {
 
   _addMidiNoteToPlayedNotes(note){
     this.playedNotes.add(note);
-    console.log(this.playedNotes);
+    // console.log(this.playedNotes);
   }
 
   // ? if we change midid channels, played notes will need to change 
@@ -414,11 +414,14 @@ export default class extends Controller {
   /// WEB MIDI SETUP:                     //
   //////////////////////////////////////////
   _enable_midi(channel) {
-    WebMidi.enable(error => { error ? this._on_error(error) : this._on_success(channel)  })
+    WebMidi.enable(error => { error ? this._on_error(error) : this._on_success(this.getSavedChannel())  })
+  }
+  
+  getSavedChannel(){
+    return Number(this.channelTarget.getAttribute('device-channel'));
   }
 
   _on_error(error) {
-    // console.log(error)
     alert(error);
   }
 
@@ -494,6 +497,7 @@ export default class extends Controller {
   }
   
   _addMidiEvent(event) {
+    console.log(event);
     let calibratedTimeStamp 
     // ? first you need to get the amount of time to subtract from each timestamp so that the first evetn starts at 0:00
     // ? set the timing in the new event  
