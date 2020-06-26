@@ -60,6 +60,7 @@ class ProjectsController < ApplicationController
     @project.user = current_user
     @project.font = @font if project_params[:font]
     @video.user = current_user
+    binding.pry 
     if @project.save 
       #TODO: delegate to delayed_job
       run_video_processing_if_needed
@@ -91,7 +92,6 @@ class ProjectsController < ApplicationController
   end
 
   def insert_params 
-    binding.pry
     @project.bpm = project_params[:bpm].to_i if project_params[:bpm]
     @project.name = project_params[:name] if project_params[:name]
     @video.clip = project_params[:video] if project_params[:video]
@@ -104,7 +104,7 @@ class ProjectsController < ApplicationController
     if project_params[:video] 
       # todo  put more params in here, eventually we will add soundful videos 
       @project.video.strip_sound_from_video
-      ConvertToWebmJob.perform_later(@project.video.id, @project.id)
+      CompressVideoJob.perform_later(@project.video.id, @project.id)
     end
   end
 end
