@@ -1,23 +1,31 @@
 # frozen_string_literal: true
 
+# Responsible for running level methods crucial to processing every single request.
 class ApplicationController < ActionController::Base
   helper_method :current_user, :toast
 
-  before_action :show_toast 
+  before_action :show_toast
+  before_action :authorize
 
   def current_user
-    User.last
+    @current_user ||= User.find_by_id(session[:user_id]) if session[:user_id]
   end
 
-  #this is necessary only for showing toast after redirect. You can always just set @toast = message in any controller to show a msg
+  # Shows a toast message after redirect
   def toast(msg)
     cookies[:toast] = msg
-  end 
+  end
 
-  def show_toast 
-   cookies[:toast].present? && (@toast = cookies[:toast]) && cookies[:toast] = nil 
-  end 
-  
+  def show_toast
+    cookies[:toast].present? && (@toast = cookies[:toast]) && cookies[:toast] = nil
+  end
 
-    
+  # redirect to login if not logged in
+  def authorize
+    if current_user || %w[sessions users].include?(params[:controller].downcase)
+      return
+    end
+
+    redirect_to login_path
+  end
 end

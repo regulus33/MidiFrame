@@ -2,7 +2,7 @@ div data-controller='projects--file-input' class="card-panel z-depth-5"
   
   = form_for @project, url: { action: "create" }, html: {class: "form-group"} do |f| 
     div class="input-field"    
-      = f.text_field :name, html: { id: "project_name_new"} 
+      = f.text_field :name
       label for="project_name_new" class="active" Name
     div class="input-field"  
       = f.text_field :bpm, html: { id: "bpm_new"} 
