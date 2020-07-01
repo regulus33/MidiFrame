@@ -25,8 +25,47 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test 'update, should pass' do
+    put project_path(projects(:main_one)), params: {
+      project: {
+        bpm: 120,
+        name: 'new project',
+        video: fixture_file_upload('test.mp4')
+      }
+    }
+    assert_response :success
+  end
+
   test 'show should redirect to edit project' do
     get project_path projects(:main_one)
     assert_response :redirect
+  end
+
+  test 'edit project saves font and video' do
+    assert_difference('Font.count', +1, 'Video.count', +1, 'Project.count', 0) do
+      put project_path(projects(:main_one)), params: {
+        project: {
+          bpm: 120,
+          name: 'new project',
+          video: fixture_file_upload('test.mp4'),
+          font: fixture_file_upload('test.TTF')
+        }
+      }
+      assert_response :success
+    end
+  end
+
+  test 'create project saves font and video' do
+    assert_difference('Font.count', +1, 'Video.count', +1, 'Project.count', +1) do
+      post projects_path, params: {
+        project: {
+          bpm: 120,
+          name: 'new project',
+          video: fixture_file_upload('test.mp4'),
+          font: fixture_file_upload('test.TTF')
+        }
+      }
+      assert_response :success
+    end
   end
 end
