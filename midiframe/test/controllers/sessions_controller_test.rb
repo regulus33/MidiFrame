@@ -1,24 +1,29 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class SessionsControllerTest < ActionDispatch::IntegrationTest
-  test "should get new" do
-    get sessions_new_url
+  test 'sign in form should be displayed' do
+    get login_url
     assert_response :success
   end
 
-  test "should get create" do
-    get sessions_create_url
-    assert_response :success
+  test 'loging in should pass' do
+    post login_url, params: { '/login' => { email: users(:main).email, password: TEST_PASSWORD } }
+    assert_response :redirect
+    follow_redirect!
+    assert_select 'h1', 'PROJECTS'
   end
 
-  test "should get login" do
-    get sessions_login_url
-    assert_response :success
+  test 'logout' do
+    # login
+    login_as users(:main)
+    assert_response :redirect
+    follow_redirect!
+    # logout
+    get logout_url
+    assert_response :redirect
+    follow_redirect!
+    assert_select 'h1', 'Sign In'
   end
-
-  test "should get welcome" do
-    get sessions_welcome_url
-    assert_response :success
-  end
-
 end
