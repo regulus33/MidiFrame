@@ -62,6 +62,7 @@ GEM
     autoprefixer-rails (9.7.4)
       execjs
     backport (1.1.2)
+    bcrypt (3.1.13)
     benchmark (0.1.0)
     bindex (0.8.1)
     bootsnap (1.4.6)
@@ -204,9 +205,13 @@ GEM
       rack (~> 2.0)
       rack-protection (>= 2.0.0)
       redis (>= 4.1.0)
-    slim (4.0.1)
+    slim (4.1.0)
       temple (>= 0.7.6, < 0.9)
       tilt (>= 2.0.6, < 2.1)
+    slim-rails (3.2.0)
+      actionpack (>= 3.1)
+      railties (>= 3.1)
+      slim (>= 3.0, < 5.0)
     solargraph (0.38.6)
       backport (~> 1.1)
       benchmark
@@ -267,6 +272,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bcrypt (~> 3.1.7)
   bootsnap (>= 1.4.2)
   capybara (>= 2.15)
   jbuilder (~> 2.7)
@@ -282,7 +288,7 @@ DEPENDENCIES
   sass-rails (>= 6)
   selenium-webdriver
   sidekiq
-  slim
+  slim-rails
   solargraph
   spring
   spring-watcher-listen (~> 2.0.0)

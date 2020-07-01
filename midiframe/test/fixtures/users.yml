@@ -1,6 +1,4 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-zack:
-  email: 'zack@zack.com'
-  password_digest: '678ghjhg776uu-889yjy'
-
+# All passwords are just 'password' copy/paste below pwd for new fixtures
+main:
+  email: something@something.com
+  password_digest: "$2a$12$aFm/r19v8HxtaYzDIyMWsOhajrt3sFc6f4M2bpOLMqRZGAuaK1h4m"

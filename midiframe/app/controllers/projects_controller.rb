@@ -3,16 +3,16 @@
 # Nest all patterns associated with a single video here
 class ProjectsController < ApplicationController
   before_action :get_project, only: %i[edit update destroy show]
-  
-  def index 
+
+  def index
     # !API:
     respond_to do |format|
-      format.json  do 
-        # ! todo, authentication and projects need to be for signed in user 
+      format.json  do
+        # ! todo, authentication and projects need to be for signed in user
         projects = User.last.projects
-        render :json =>  {projects: projects}.to_json
+        render json: { projects: projects }.to_json
       end
-      format.html do 
+      format.html do
         render 'index'
       end
     end
@@ -20,63 +20,63 @@ class ProjectsController < ApplicationController
 
   def show
     redirect_to edit_project_path @project
-  end     
-  
-  def edit
   end
+
+  def edit; end
 
   def new
     @project = Project.new(user: current_user, bpm: 120)
   end
 
   def update
-    @video = @project.video 
+    @video = @project.video
     @project.video = @video
     @video.user = current_user
-    @font = Font.new if project_params[:font] 
-    @project.font = @font if @font 
+    @font = Font.new if project_params[:font]
+    @project.font = @font if @font
     insert_params
     if @project.save && @video.save && (@font ? @font.save : true)
-      #TODO: delegate to a job like sideqik
+      # TODO: delegate to a job like sideqik
       run_video_processing_if_needed
       @toast = "#{@project.name} updated"
       render 'index'
     else
-      # this is a last resort, validations will be client side. 
-      toast "something went wrong, project not updated"
-      redirect_to projects_path 
+      # this is a last resort, validations will be client side.
+      toast 'something went wrong, project not updated'
+      redirect_to projects_path
     end
   end
 
+  # create a new project
   def create
     # create new video file and save it as "original"
     # after save, duplicate it as a soundstripped video and set the soundstripped as "default"
     @project = Project.new
     @video = Video.new
     @font = Font.new
-    # ? need to create a new empty video if creating project 
+    # ? need to create a new empty video if creating project
     insert_params
-    @project.video = @video 
+    @project.video = @video
+    # TODO: make this actual current user
     @project.user = current_user
     @project.font = @font if project_params[:font]
-    @video.user = current_user
-    binding.pry 
-    if @project.save 
-      #TODO: delegate to delayed_job
+    give_user_to_video
+    if @project.save
+      # TODO: delegate to delayed_job
       run_video_processing_if_needed
       @toast = "#{@project.name} created"
       render 'index'
     else
-      toast "something went wrong, project not created"
-      redirect_to projects_path 
+      toast 'something went wrong, project not created'
+      redirect_to projects_path
     end
   end
 
   def destroy
     if @project.destroy
-       toast "deleted #{@project.name}"
+      toast "deleted #{@project.name}"
     else
-      error_toast "error deleting project"
+      error_toast 'error deleting project'
     end
     redirect_to projects_path
   end
@@ -91,18 +91,23 @@ class ProjectsController < ApplicationController
     @project = Project.find_by(id: params[:id])
   end
 
-  def insert_params 
+  def give_user_to_video
+    @video.user = current_user
+  end
+
+  # Sets the relevant instance variables to the value of the relevant parameters
+  def insert_params
     @project.bpm = project_params[:bpm].to_i if project_params[:bpm]
     @project.name = project_params[:name] if project_params[:name]
     @video.clip = project_params[:video] if project_params[:video]
     @font.file = project_params[:font] if project_params[:font]
-  end 
+  end
 
   # TODO: will this false positive sometimes?
-  # ? IF VIDEO IS NEW STRIP SOUND ETC 
-  def run_video_processing_if_needed 
-    if project_params[:video] 
-      # todo  put more params in here, eventually we will add soundful videos 
+  # ? IF VIDEO IS NEW STRIP SOUND ETC
+  def run_video_processing_if_needed
+    if project_params[:video]
+      # TODO: put more params in here, eventually we will add soundful videos
       @project.video.strip_sound_from_video
       CompressVideoJob.perform_later(@project.video.id, @project.id)
     end

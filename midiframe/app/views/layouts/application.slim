@@ -12,7 +12,7 @@ html
   body
     div data-controller="loading"
       /print the title of the controller as the heading, should be improved after user flow is more defined
-      h1 = determine_appropriate_heading controller: params[:controller], action: params[:action]
+      h1 = determine_appropriate_heading controller: params[:controller], title: params[:page_title]
       div id="page_content" data-target="loading.hide"
         = yield 
       / See loading contoller, this gets shown in a controller action 
