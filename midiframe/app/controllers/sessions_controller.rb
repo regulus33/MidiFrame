@@ -7,25 +7,22 @@ class SessionsController < ApplicationController
     params[:page_title] = 'Sign In'
   end
 
-  # Finds email in db and checks hashed pw against pw params (bcrypt).
+  # `post '/login'`
+  # Finds email in db
+  # checks hashed pw against pw params (bcrypt).
   def create
     @user = User.find_by(email: session_params[:email])
-
     if @user&.authenticate(session_params[:password])
       session[:user_id] = @user.id
-
       redirect_to projects_path
-
     else
-
       redirect_to '/login'
-
     end
   end
 
   def delete
     reset_session
-    redirect_to unauthorized_path
+    redirect_to login_path 
   end
 
   # Serves a default page if unauthenticated user trys to access private data.

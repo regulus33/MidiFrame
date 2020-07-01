@@ -9,7 +9,7 @@ class ProjectsController < ApplicationController
     respond_to do |format|
       format.json  do
         # ! todo, authentication and projects need to be for signed in user
-        projects = User.last.projects
+        projects = current_user.projects
         render json: { projects: projects }.to_json
       end
       format.html do
