@@ -4,6 +4,7 @@
 class UsersController < ApplicationController
   # creates an empty user object and displays the signup form
   def new
+    params[:page_title] = 'Sign Up'
     @user = User.new
   end
 
