@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# recording all the midi here
+# CRUD for patterns 
 class PatternsController < ApplicationController
   before_action :find_project
   before_action :find_pattern, only: %w[edit update pattern_settings destroy generate_pattern_clip pattern_preview]
@@ -23,12 +23,16 @@ class PatternsController < ApplicationController
   def edit
     # Eventually for edit, we can calculate this based on prefs, but very much not a priority
     @notes_in_which_octave_identifier = Pattern::NOTES_IN_WHICH_OCTAVE_IDENTIFIER.to_json
+    # TODO: save this somewhere so you dont need to nav to it each time
     @current_index_in_notes_array = 4
     @midi_notes = Pattern::NOTES_GROUPED_IN_OCTAVES
+    # todo, don't calculate num that is always the same
     @final_index = (@midi_notes.length - 1)
   end
-
+  
+  # PUT /projects/:project_id/patterns/:id(.:format)
   def update
+    # for json response 
     msg = { status: 'ok', message: 'Success!', html: '<b>...</b>' }
 
     respond_to do |format|
@@ -43,12 +47,11 @@ class PatternsController < ApplicationController
         # ? we reset array of midi events to empty if user submits a collection of events
         # ? because of that and just common sense in general, we never save "empty" values
         # ? if user wants to clear midi events they can just delete the pattern
-        if midi_events_params.any?
-          @pattern.midi_events_array = midi_events_params
-        end
+        @pattern.midi_events_array = midi_events_params if midi_events_params.any?
         @pattern.save!
 
-        render json: msg
+        #render json: 
+        msg
       end
       # ? currently this request originates only from pattern_settings, else it will be a JSON from pattern edit
       format.html do
@@ -73,10 +76,7 @@ class PatternsController < ApplicationController
   # * END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE
   # * END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE
   # * END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE
-  # * END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE
-  # * END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE
-  # * END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE
-  # * END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE
+
   # ? POST: this will generate the clips for a single pattern
   def generate_pattern_clip
     @pattern.create_clip
