@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# CRUD for patterns 
+# Simple Controller For HTTP CRUD Patterns  
 class PatternsController < ApplicationController
   before_action :find_project
   before_action :find_pattern, only: %w[edit update pattern_settings destroy generate_pattern_clip pattern_preview]
@@ -31,6 +31,7 @@ class PatternsController < ApplicationController
   end
   
   # PUT /projects/:project_id/patterns/:id(.:format)
+  # `params: { pattern: channel: "1",  pianoData: { '13': 345.7778 }, pianoTextData: {'13' : 'Blammo!'}, order_in_sequence: 1, name: 'dope pattern', step_length: 4}`
   def update
     # for json response 
     msg = { status: 'ok', message: 'Success!', html: '<b>...</b>' }

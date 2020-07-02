@@ -35,6 +35,20 @@ class PatternsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'update, should pass' do 
-    
+    insert_video_into_main_one_project
+    put project_pattern_path projects(:main_one), patterns(:main_one), params: { 
+      pattern: {
+        channel: "1",  
+        pianoData: { '13': 345.7778 }, 
+        pianoTextData: {'13': 'Blammo!'}, 
+        order_in_sequence: 1, 
+        name: 'dope pattern', 
+        step_length: 4
+      }
+    }
+    assert_response :redirect 
+    follow_redirect! 
+    patterns(:main_one).reload
+    assert_select 'h3', "updated project/dope pattern"
   end
 end
