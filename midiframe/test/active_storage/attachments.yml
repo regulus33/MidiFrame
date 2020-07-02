@@ -1,0 +1,4 @@
+main_video_one:
+  name: video
+  record: main_one (Project)
+  blob: main_blob_one

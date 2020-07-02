@@ -5,8 +5,7 @@ div id="page-container" data-controller="patterns--midi-device"
     div class="progress"
       div class="determinate" data-target="patterns--video.loadingBar"
     =render '/utility/text_modal'
-    =render '/utility/video'
-
+    =render '/utility/video', project: @project 
   div id="pattern-container"
-    =render 'keyboard' 
+    =render partial: 'keyboard', locals: { midi_notes: @midi_notes, current_index_in_notes_array: @current_index_in_notes_array, pattern: @pattern }
   
