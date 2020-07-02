@@ -66,7 +66,8 @@ class PatternsController < ApplicationController
       end
     end
   end
-
+  
+  # DELETE /projects/:project_id/patterns/:id(.:format)
   def destroy
     if @pattern.destroy!
       toast "#{@pattern.name} deleted"
