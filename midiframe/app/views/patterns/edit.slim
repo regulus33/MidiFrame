@@ -1,6 +1,6 @@
 div id="page-container" data-controller="patterns--midi-device"  
-  h1 =@project.name
-  h1 data-target="patterns--midi-device.channel patterns--midi-device.patternId patterns--midi-device.projectId" pattern-id=@pattern.id project-id=@project.id device-channel=@pattern.channel =@pattern.channel
+  h3 ="#{@project.name}/#{@pattern.name}"
+  h3 data-target="patterns--midi-device.channel patterns--midi-device.patternId patterns--midi-device.projectId" pattern-id=@pattern.id project-id=@project.id device-channel=@pattern.channel =@pattern.channel
   div class="video-preview" data-controller="patterns--video" 
     div class="progress"
       div class="determinate" data-target="patterns--video.loadingBar"
