@@ -1,11 +1,11 @@
-<% if @project.font %>
+<% if project.font && project.font.file.attached? %>
   <style> 
     @font-face {
-      font-family: "<%= @project.font.file.blob.filename %>";
-      src: url("<%= url_for(@project.font.file) %>");
+      font-family: "<%= project.font.file.blob.filename %>";
+      src: url("<%= url_for(project.font.file) %>");
     }
     span#note-text-text {
-        font-family: "<%= @project.font.file.blob.filename %>";
+        font-family: "<%= project.font.file.blob.filename %>";
     }
   </style>
 <% end %>
@@ -21,7 +21,7 @@
   controls
 >
 <source 
-  src="<%= url_for(@project.video.clip) %>" 
+  src="<%= url_for(project.video.clip) %>" 
   type="video/mp4"
 />
 </video>

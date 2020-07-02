@@ -29,11 +29,12 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     put project_path(projects(:main_one)), params: {
       project: {
         bpm: 120,
-        name: 'new project',
+        name: 'updated project 0',
         video: fixture_file_upload('test.mp4')
       }
     }
     assert_response :success
+    assert_equal 'updated project 0', projects(:main_one).reload.name
   end
 
   test 'show should redirect to edit project' do
@@ -41,17 +42,18 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     assert_response :redirect
   end
 
-  test 'edit project saves font and video' do
+  test 'update project saves font and video' do
     assert_difference('Font.count', +1, 'Video.count', +1, 'Project.count', 0) do
       put project_path(projects(:main_one)), params: {
         project: {
           bpm: 120,
-          name: 'new project',
+          name: 'updated project 1',
           video: fixture_file_upload('test.mp4'),
           font: fixture_file_upload('test.TTF')
         }
       }
       assert_response :success
+      assert_equal "test.TTF", projects(:main_one).reload.font.file.filename.to_s
     end
   end
 
