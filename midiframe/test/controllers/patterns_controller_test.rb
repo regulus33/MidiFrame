@@ -51,4 +51,12 @@ class PatternsControllerTest < ActionDispatch::IntegrationTest
     patterns(:main_one).reload
     assert_select 'h3', "updated project/dope pattern"
   end
+
+  test 'delete, should pass' do 
+    assert_difference('Pattern.count', -1) do 
+      delete project_pattern_path projects(:main_one), patterns(:main_one)
+      assert_response :redirect
+    end 
+  end
+
 end
