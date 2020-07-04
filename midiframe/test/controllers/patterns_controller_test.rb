@@ -10,7 +10,7 @@ class PatternsControllerTest < ActionDispatch::IntegrationTest
   test 'index, should pass' do
     get project_patterns_path projects(:main_one)
     assert_response :success
-    assert_select 'span', 'pattern'
+    assert_select 'span', 'dope pattern'
   end
 
   test 'new, should pass' do
