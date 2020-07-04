@@ -59,8 +59,8 @@ class Pattern < ApplicationRecord
   end
 
   # set empty object to initialize @pattern with an object when on NEW. Otherwise nil errors for EDIT form reuse 
-  def initialize_note_stamps 
-    self.note_stamps = {}
+  def initialize_note_stamps
+    self.note_stamps = {} if self.note_stamps.nil?
   end
 
   # avoiding nil errors in patterns/index for newly created with no val set yet, sort will fail
