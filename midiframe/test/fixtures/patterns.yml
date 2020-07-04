@@ -1,4 +1,45 @@
 main_one:
   project: main_one
-  name: "pattern"
-  note_stamps: '{ "63": "367.6666777" }'
+  note_stamps:
+    {
+      "53": 2.119,
+      "55": 2.955,
+      "56": 2.554,
+      "58": 4.566,
+      "62": 1.851,
+      "71": 1.116,
+      "75": 3.298,
+    }
+  midi_events:
+    [
+      { "note": "start", "timestamp": 0.0 },
+      { "note": "start", "timestamp": 0.0 },
+      { "note": "start", "timestamp": 0.0 },
+      { "note": "start", "timestamp": 0.0 },
+      { "note": "start", "timestamp": 0.0 },
+      { "note": "start", "timestamp": 0.0 },
+      { "note": "start", "timestamp": 0.0 },
+      { "note": 56, "timestamp": 0.23999999393709004 },
+      { "note": 58, "timestamp": 226.6599999857135 },
+      { "note": 62, "timestamp": 303.4650000045076 },
+      { "note": 53, "timestamp": 394.9250000005122 },
+      { "note": 53, "timestamp": 407.89499998209067 },
+      { "note": "stop", "timestamp": 928.844999987632 },
+      { "note": "start", "timestamp": 7305.139999982202 },
+      { "note": "start", "timestamp": 7305.139999982202 },
+      { "note": "start", "timestamp": 7305.139999982202 },
+      { "note": "start", "timestamp": 7305.139999982202 },
+      { "note": "start", "timestamp": 7305.139999982202 },
+      { "note": "start", "timestamp": 7305.139999982202 },
+      { "note": "start", "timestamp": 7305.139999982202 },
+      { "note": 56, "timestamp": 7305.464999983087 },
+      { "note": 58, "timestamp": 7531.9000000017695 },
+      { "note": 62, "timestamp": 7610.039999999572 },
+      { "note": 53, "timestamp": 7700.075000000652 },
+      { "note": 53, "timestamp": 7713.1399999780115 },
+      { "note": "stop", "timestamp": 8234.035000001313 },
+    ]
+  name: dope pattern
+  step_length: 4
+  order_in_sequence: 1
+  total_clock_signals: 384
