@@ -1,12 +1,9 @@
-
 import 'dart:convert';
 import 'package:midiframe_frontend/models/User.dart';
 import 'package:flutter/material.dart';
 import 'package:midiframe_frontend/services/api.dart';
 
-
 void main() => runApp(MidiFrame());
-
 
 class MidiFrame extends StatelessWidget {
   @override
@@ -18,9 +15,7 @@ class MidiFrame extends StatelessWidget {
       home: MyListScreen(),
     );
   }
-  
 }
-
 
 class MyListScreen extends StatefulWidget {
   @override
@@ -33,7 +28,7 @@ class _MyListScreenState extends State {
   _getUsers() {
     API.getUsers().then((response) {
       print(response);
-      setState((){
+      setState(() {
         Iterable list = json.decode(response.body);
         users = list.map((model) => User.fromJson((model))).toList();
         print(users);
@@ -45,6 +40,7 @@ class _MyListScreenState extends State {
     super.initState();
     _getUsers();
   }
+
   dispose() {
     super.dispose();
   }
@@ -52,16 +48,11 @@ class _MyListScreenState extends State {
   @override
   build(context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("User List")
-      ),
-      body: ListView.builder(
-        itemCount: users.length,
-        itemBuilder: (context, index) {
-          return ListTile(title: Text(users[index].name));
-        }
-      )
-    );
+        appBar: AppBar(title: Text("User List")),
+        body: ListView.builder(
+            itemCount: users.length,
+            itemBuilder: (context, index) {
+              return ListTile(title: Text(users[index].name));
+            }));
   }
-
 }

@@ -6,8 +6,6 @@ const baseUrl = "http://localhost:3000/";
 class API {
   static Future getUsers() {
     var url = baseUrl + "/projects";
-  
     return http.get(url);
   }
-
 }
