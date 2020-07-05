@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+
 
 # Contains the instuctions with which you need to split and join a video 
 # based on recorded midi events provided by the parent pattern 
