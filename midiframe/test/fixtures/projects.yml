@@ -2,3 +2,4 @@ main_one:
   user: main
   video: main_one
   name: "project"
+  font: main_one

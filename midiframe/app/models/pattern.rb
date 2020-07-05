@@ -78,7 +78,8 @@ class Pattern < ApplicationRecord
     events.select{|e| self.note_stamps.keys.include?(e[:note].to_s) || [ START, STOP ].include?(e[:note])}
   end
 
-  # ? make start = 0 and subsequent events be something like 1,2,3 rather than 1111, 222, 3333
+  # make start time 0 and calibrate each successive event by subtracting original start time from their timestamp value
+  # and saving the result. 
   def calibrate_midi_event_time_stamps(events) 
     start_time = events.find{|e|e["note"] == "start"}["timestamp"]
     events.map do |event|
@@ -86,42 +87,40 @@ class Pattern < ApplicationRecord
     end
   end
 
+  # false if no font attached to parent project
   def make_text?
     self.project.font.present? 
   end
 
-
+  # 1. Download the source video into temp directory 
+  # 2. Create a new FfMpeg and create pattern_blueprints 
+  #```ruby
+  #   [
+  #     "ffmpeg -an -y -ss  -i /Users/zack/video-synth/midiframe/tmp/zge279vkj7sd6ku27aqjm8txzim7_video.mp4 -t 0.00034500000765547156 -c:v libx264 /Users/zack/video-synth/midiframe/tmp/56-176-0.0.mp4"
+  #   ]
+  # ````
+  # loop through each slice command and run it
+  # all sliced files are now in the temp directory 
+  # 3. create a concat txt file and run an ffmpeg command to join the recently created slices into a clip.
+  # attach this concated clip to the pattern's clip (has attached clip)
+  # 4. IF this pattern's project has a font file, draw font text over video (in beta still)
   def create_clip 
-    # ? get a reference to the parent video of this whole project 
+    # * 1.
     active_storage_video = self.project.video.clip
-    # ? construct a unique URL in the Temp Dir, based on the blob.key + filename, its a unique string we get for free
     project_video = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_#{active_storage_video.name.to_s}.#{self.project.video.file_extension}"
-    # ? the final output url for the end result video, just using @pattern.id to ensure uniqueness nerve and talent 
-    # .new already generates a unique url
     processed_video = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_#{self.project.id.to_s}-#{self.id.to_s}.#{self.project.video.file_extension}"
-    # ? open empty file url and insert downloaded file into the shell 
     File.open(project_video, 'wb') do |f|
       f.write(active_storage_video.download)
     end
-    # ? oncreate ffmpeg instance will loop through its parent patterns recorded midi events and save them 
-    # ? FFMPEG object 
-    #  pattern_blueprints:
-    #   [
-    #     "ffmpeg -an -y -ss  -i /Users/zack/video-synth/midiframe/tmp/zge279vkj7sd6ku27aqjm8txzim7_video.mp4 -t 0.00034500000765547156 -c:v libx264 /Users/zack/video-synth/midiframe/tmp/56-176-0.0.mp4"
-    #   ]
-    # ? the pattern blueprints describe the action of chopping the video into little pieces 
-    # ? we will also need to save pattern blueprints join 
+    # * 2. 
     ffmpeg = FfMpeg.create(
       pattern: self, 
       project_tempfile_url: project_video, 
       processed_tempfile_url: processed_video
     )
-    # ? create the slice commands then slice the video 
     ffmpeg.create_blueprints_for_slices
     ffmpeg.create_slices 
-    # ? at this point because we have the slices made and existing in the temp directory
-    # ? we also saved the absolute paths to these files into a jsonb field called pattern_concat_blueprints
-    # ? we need to simply cat a txt file with a unique name specific to this pattern 
+    # * 3.
     processed_video = generate_new_video_concat_file_path
     create_concat_file(name: generate_new_text_concat_file_path, concat_blue_prints: ffmpeg.pattern_concat_blueprints)
     concatenate_clips(path_to_input_text_file: generate_new_text_concat_file_path, processed_video: processed_video)
@@ -132,17 +131,11 @@ class Pattern < ApplicationRecord
     # =============================================================
     # now its time to draw the text, make blueprints first
     # =============================================================
-    # if make_text? 
-    if false
-      # TODO DOWNLOAD FONT
-      # TODO loop through text commands and run 
-      # TODO attach output 
+    if make_text? 
       # clip file is already here
       font_file_extension = self.project.font.file_extension
       active_storage_font = self.project.font.file 
       font_file_temp_path = "#{Rails.root}/tmp/#{active_storage_font.blob.key}_#{active_storage_font.name.to_s}#{font_file_extension}"
-
-      
       # * download the fontfile 
       File.open(font_file_temp_path, 'wb') do |f|
         f.write(active_storage_font.download)
@@ -161,7 +154,7 @@ class Pattern < ApplicationRecord
       # TODO: DELETE - the dl'ed font 
       File.delete(font_file_temp_path)
     end
-
+    # * 4. 
     File.delete(project_video)
     File.delete(processed_video)
     ffmpeg.remove_clips_from_tempfile()
