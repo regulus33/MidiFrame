@@ -8,6 +8,7 @@ class PatternsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'index, should pass' do
+    get project_patterns_path projects(:main_one), patterns(:main_one)
     assert_response :success
     assert_select 'span', 'dope pattern'
   end
