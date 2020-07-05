@@ -157,6 +157,7 @@ class Pattern < ApplicationRecord
     File.delete(project_video)
     File.delete(processed_video)
     ffmpeg.remove_clips_from_tempfile()
+    return true 
   end
 
   private 

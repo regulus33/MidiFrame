@@ -79,7 +79,8 @@ class PatternsController < ApplicationController
   # * END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE
   # * END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE
 
-  # ? POST: this will generate the clips for a single pattern
+  # POST 'pattern-generate/:id/:project_id'
+  # generates the video 
   def generate_pattern_clip
     @pattern.create_clip
   end
