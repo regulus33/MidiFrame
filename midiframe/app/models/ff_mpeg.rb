@@ -15,6 +15,7 @@ class FfMpeg < ApplicationRecord
     loop_through_events_and_process_them(events: events)
   end
 
+  # 
   def create_blueprints_for_text_drawings
     events = pattern.midi_events
     loop_through_events_and_process_text(events: events)
@@ -29,7 +30,7 @@ class FfMpeg < ApplicationRecord
     end
   end
 
-  # process each text fileter command for the pattern clip
+  # process each text filter command for the pattern clip
   def draw_texts
     `#{text_blueprints}`
   end
