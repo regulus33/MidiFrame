@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
+# Contains the instuctions with which you need to split and join a video 
+# based on recorded midi events provided by the parent pattern 
 class FfMpeg < ApplicationRecord
   PROJECT_TEMPFILE_PLACEHOLDER = 'PROJECT_TEMPFILE_PLACEHOLDER'
 
   belongs_to :pattern
 
-  # ? before insert record into db, we loop through the parent pattern's
-  # ? events array and process the events into string instructions
+  # before insert record into db, we loop through the parent pattern's
+  # events array and create an array of ffmpeg commands that will slice the video
   def create_blueprints_for_slices
     events = pattern.midi_events
     # ? add to self.pattern_blueprints
