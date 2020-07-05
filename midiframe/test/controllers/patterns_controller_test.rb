@@ -8,7 +8,6 @@ class PatternsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'index, should pass' do
-    get project_patterns_path projects(:main_one)
     assert_response :success
     assert_select 'span', 'dope pattern'
   end
@@ -57,6 +56,16 @@ class PatternsControllerTest < ActionDispatch::IntegrationTest
       delete project_pattern_path projects(:main_one), patterns(:main_one)
       assert_response :redirect
     end 
+  end
+
+  test 'Full Flow' do 
+    insert_font_and_video_into_main_one_project
+    assert :success
+    projects(:main_one).font.delete
+    post "/pattern-generate/#{patterns(:main_one).id}/#{projects(:main_one).id}"
+    assert :success 
+    get "/pattern-preview/#{patterns(:main_one).id}/#{projects(:main_one).id}"
+    assert_select "video[src]" 
   end
 
 end

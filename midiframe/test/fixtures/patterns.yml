@@ -1,15 +1,6 @@
 main_one:
   project: main_one
-  note_stamps:
-    {
-      "53": 2.119,
-      "55": 2.955,
-      "56": 2.554,
-      "58": 4.566,
-      "62": 1.851,
-      "71": 1.116,
-      "75": 3.298,
-    }
+  note_stamps: { "53": 2.119, "58": 3.298 }
   text_stamps: { "53": "Some Text To Draw For Some Note" }
   midi_events:
     [
