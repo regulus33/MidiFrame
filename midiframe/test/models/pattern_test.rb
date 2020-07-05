@@ -67,4 +67,10 @@ class PatternTest < ActiveSupport::TestCase
         assert_equal (unsaved_midi_events[1]["timestamp"] - unsaved_midi_events[0]["timestamp"]), (some_pattern.midi_events[1]["timestamp"])
     end
 
+    test 'make_text is false if no font attached to project, true if present' do 
+        assert patterns(:main_one).make_text?
+        projects(:main_one).font.delete
+        assert !(patterns(:main_one).reload.make_text?)
+    end
+
 end
