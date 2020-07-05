@@ -36,5 +36,18 @@ class ActiveSupport::TestCase
     }
     assert_response :success
   end
+
+  def insert_font_and_video_into_main_one_project
+    login_as users(:main)
+    put project_path(projects(:main_one)), params: {
+      project: {
+        bpm: 120,
+        name: 'updated project',
+        font: fixture_file_upload('test.TTF'),
+        video: fixture_file_upload('test.mp4'),
+      }
+    }
+    assert_response :success
+  end
   # Add more helper methods to be used by all tests here...
 end
