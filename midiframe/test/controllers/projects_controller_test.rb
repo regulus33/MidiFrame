@@ -43,7 +43,7 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'update project saves font and video' do
-    assert_difference('Font.count', +1, 'Video.count', +1, 'Project.count', 0) do
+    assert_difference('Font.count', 0, 'Video.count', +1, 'Project.count', 0) do
       put project_path(projects(:main_one)), params: {
         project: {
           bpm: 120,
