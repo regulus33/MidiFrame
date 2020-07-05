@@ -16,7 +16,5 @@ class PatternTest < ActiveSupport::TestCase
         assert ff_mpegs(:main_one).reload.text_blueprints['Some Text To Draw For Some Note'].present?
     end
 
-
-
     
 end
