@@ -10,6 +10,7 @@ main_one:
       "71": 1.116,
       "75": 3.298,
     }
+  text_stamps: { "53": "Some Text To Draw For Some Note" }
   midi_events:
     [
       { "note": "start", "timestamp": 0.0 },
