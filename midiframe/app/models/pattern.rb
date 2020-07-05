@@ -143,7 +143,6 @@ class Pattern < ApplicationRecord
       # output will be into the existing pattern video :)
       # ADD fontfile temp path to this ff_mpeg instance 
       ffmpeg.clip_tempfile_path = processed_video # *
-                                      #? clip_tempfile_path is the location of the end result 
       ffmpeg.processed_tempfile_url = "#{Rails.root}/tmp/textified_video_#{active_storage_video.blob.key}_#{self.project.id.to_s}-#{self.id.to_s}.#{self.project.video.file_extension}"
       # * now create an empty file there 
       ffmpeg.font_tempfile_path = font_file_temp_path
