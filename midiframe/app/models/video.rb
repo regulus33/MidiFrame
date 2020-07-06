@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 class Video < ApplicationRecord
+
+  MASTER = "MASTER"
+  AUDIO = 'AUDIO'
+  VISUAL = 'VISUAL'
+
   has_many :projects
   # ! warning this after commit needs to be placed BEFORE the attachment delcarations
   # after_commit :handle_video_processing
@@ -19,45 +24,89 @@ class Video < ApplicationRecord
     return clip.content_type.split('/').pop if clip.attached?
   end
 
+  def master? 
+    self.role == MASTER 
+  end
+
+  def visual 
+    if master?
+      return self.videos.where(role: VISUAL).first
+    end
+    return nil 
+  end
+
+  def audio 
+    if master?
+      return self.videos.where(role: AUDIO).first
+    end
+    return nil 
+  end
+  
   # Separated into a method so we can add more video processing over time
-  # def handle_video_processing
-  #   strip_sound_from_video
-  # end
+
+  def create_video_formats
+    save_master_video 
+    # ? get location of actual video
+    active_storage_video = self.clip
+    # ? construct a unique URL in the Temp Dir, based on the blob.key + filename, its a unique string we get for free
+    original_video = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_original_video.#{self.file_extension}"
+    File.open(original_video, 'wb') do |f|
+      f.write(active_storage_video.download)
+    end
+    # send it the reference to the local download of the original video 
+    save_sound_from_video(original_video: original_video)
+    save_soundless_video(original_video: original_video)
+    # clean up the tempfile 
+    File.delete(original_video)
+  end
+  # save the master video with role = 'master'
+  # copy sound and save it as video of role = 'audio' and parent = master
+  # copy the video without the sound and save it as role = 'visual' 
+  # when playing video, always play video where role = 'master'
+  # when generating clips, always traverse from audio = project.video.video.where(role: 'audio') and video = project.video.video.where(role: 'video')
+  # before attaching the result, merge the audio and video. Attach the result to pattern 
+  # DONE! 
+
+  def save_master_video 
+    self.role = MASTER
+    self.save!
+  end
 
   def content_type
     clip.content_type
   end
 
-  def strip_sound_from_video
-    # ? get location of actual video
-    active_storage_video = clip
-    # ? construct a unique URL in the Temp Dir, based on the blob.key + filename, its a unique string we get for free
-    original_video = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_original_video.#{file_extension}"
-    soundless_video = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_soundless_video.#{file_extension}"
-    # ? open empty file url and insert downloaded file into the shell
-    File.open(original_video, 'wb') do |f|
-      f.write(active_storage_video.download)
-    end
-    # ? once we've dl'ed the video from the active storage server, we strip the sound
-    strip_sound_command original_video: original_video, soundless_video: soundless_video
-    # ! this is a lie since we don't really have the video attached yet
-    clip.attach(
-      io: File.open(soundless_video),
-      filename: "#{active_storage_video.blob.filename.base}.#{file_extension}",
+  def save_sound_from_video(original_video:) 
+    sound_from_video = "#{Rails.root}/tmp/#{self.clip.blob.key}_sound_from_video.wav"
+    save_sound_command(original_video: original_video, sound_file: sound_from_video)
+    sound_record = Video.create!(parent_video: self, user: self.user, role: AUDIO)
+    sound_record.clip.attach(
+      io: File.open(sound_from_video),
+      filename: "#{self.clip.blob.filename.base}-sound.wav",
       content_type: content_type
     )
-    self.sound_stripped = true
-    save
-    File.delete(original_video)
+    File.delete(sound_from_video)
+  end
+
+  def save_soundless_video(original_video:)
+    soundless_video = "#{Rails.root}/tmp/#{self.clip.blob.key}_soundless_video.#{self.file_extension}"
+    strip_sound_command original_video: original_video, soundless_video: soundless_video
+    # ! this is a lie since we don't really have the video attached yet
+    soundless_video_record = Video.create!(parent_video: self, user: self.user, role: VISUAL)
+    soundless_video_record.clip.attach(
+      io: File.open(soundless_video),
+      filename: "#{self.clip.blob.filename.base}-soundless.#{file_extension}",
+      content_type: content_type
+    )
     File.delete(soundless_video)
   end
 
-  # this method assumes that the current video is the main video attached to a project
+  # * not used at the moment 
   def compress(new_project_to_add_output_to:)
     # ? get location of actual video
     active_storage_video = clip
     # ? construct a unique URL in the Temp Dir, based on the blob.key + filename, its a unique string we get for free
-    original_video = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_original_video.#{file_extension}"
+    original_video = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_original_video.#{self.file_extension}"
     webm_video = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_webm_video.webm"
     optimized_webm = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_optimized_webm_video.webm"
     # ? open empty file url and insert downloaded file into the shell
@@ -79,13 +128,13 @@ class Video < ApplicationRecord
     @project.video = web_video
     @project.save!
     # ============ * = * = * = *
-    File.delete(original_video)
     File.delete(webm_video)
     File.delete(optimized_webm)
+    File.delete(original_video)
   end
 
   private
-
+  # * not used at the moment 
   def run_compress(original_video:, webm_video:, optimized_video:)
     # `ffmpeg -i #{original_video} -c:v libvpx-vp9 -crf 30 -b:v 0 -b:a 128k -c:a libopus #{webm_video}`
     `ffmpeg -i #{original_video} -c:v libvpx -crf 10 -b:v 1M -c:a libvorbis #{webm_video}` # OPTIMIZE: the output
@@ -101,28 +150,9 @@ class Video < ApplicationRecord
     `ffmpeg -i #{original_video} -c copy -an #{soundless_video}`
   end
 
-  def color_palette
-    "#{Rails.root}/tmp/palette_#{id}.png"
+  def save_sound_command(original_video:, sound_file:) 
+    
+    `ffmpeg -i #{original_video} -vn -acodec copy #{sound_file}`
   end
 
-  def lofi_amount_string
-    case lofi_amount
-    when 3
-      '8'
-    when 2
-      '32'
-    when 1
-      '64'
-    end
-  end
-
-  # ! NOTE this also removes sound see '-an'
-  # TODO: need to figure out how to downsample efficiently, maybe webm would be better?
-  def lofiify_command(original_video:, lofi_video:)
-    # generate a pallette, this is (256 pixel max) png file that whitelists the hexcodes allowed for use in outuput
-    # * create the palette
-    `ffmpeg -i #{original_video} -vf palettegen=max_colors=#{lofi_amount_string} #{color_palette}`
-    # * user the palette * #
-    `ffmpeg -i #{original_video} -i #{color_palette} -lavfi paletteuse=dither=bayer:bayer_scale=1:diff_mode=rectangle -c:v libx264 -pix_fmt yuv420p -an -movflags faststart -b 600k #{lofi_video}`
-  end
 end
