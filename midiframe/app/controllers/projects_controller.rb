@@ -111,8 +111,8 @@ class ProjectsController < ApplicationController
     if project_params[:video]
       # binding.pry
       # TODO: put more params in here, eventually we will add soundful videos
-      @project.video.strip_sound_from_video
-      CompressVideoJob.perform_later(@project.video.id, @project.id)
+      @project.video.create_video_formats
+      # CompressVideoJob.perform_later(@project.video.id, @project.id)
     end
   end
 end

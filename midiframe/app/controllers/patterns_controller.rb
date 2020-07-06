@@ -82,7 +82,7 @@ class PatternsController < ApplicationController
   # POST 'pattern-generate/:id/:project_id'
   # generates the video 
   def generate_pattern_clip
-    @pattern.create_clip
+    @pattern.assemble_pattern_video
   end
 
   private
