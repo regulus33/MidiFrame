@@ -92,30 +92,36 @@ class Pattern < ApplicationRecord
     self.project.font.present? 
   end
 
-  # 1. Download the source video into temp directory 
-  # 2. Create a new FfMpeg and create pattern_blueprints 
-  #```ruby
-  #   [
-  #     "ffmpeg -an -y -ss  -i /Users/zack/video-synth/midiframe/tmp/zge279vkj7sd6ku27aqjm8txzim7_video.mp4 -t 0.00034500000765547156 -c:v libx264 /Users/zack/video-synth/midiframe/tmp/56-176-0.0.mp4"
-  #   ]
-  # ````
-  # loop through each slice command and run it
-  # all sliced files are now in the temp directory 
-  # 3. create a concat txt file and run an ffmpeg command to join the recently created slices into a clip.
-  # attach this concated clip to the pattern's clip (has attached clip)
-  # 4. IF this pattern's project has a font file, draw font text over video (in beta still)
-  def create_clip 
+  def assemble_pattern_video 
+    master_video = self.project.video
+    video_path = create_clip(type: Video::VISUAL)
+    audio_path = create_clip(type: Video::AUDIO)
+    output_path = "#{Rails.root}/tmp/#{master_video.clip.blob.key}_#{master_video.name.to_s}.#{master_video.file_extension}" 
+    merge_audio_and_video(audio_path: audio_path, video_path: video_path, output_path: output_path)
+    attach_video(processed_video: output_path)
+    File.delete(output_path)
+  end
+
+  # returns the processed video path
+  def create_clip(type:) 
     # * 1.
-    active_storage_video = self.project.video.clip
-    project_video = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_#{active_storage_video.name.to_s}.#{self.project.video.file_extension}"
-    processed_video = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_#{self.project.id.to_s}-#{self.id.to_s}.#{self.project.video.file_extension}"
-    File.open(project_video, 'wb') do |f|
+    if(type == Video::VISUAL)
+      active_storage_video = self.project.video.visual.clip 
+    elsif(type == Video::AUDIO)
+      active_storage_video = self.project.video.audio.clip 
+    else 
+      throw "Argument error, create_clip requires a type, VISUAL or AUDIO"
+    end 
+    
+    source_file = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_#{active_storage_video.name.to_s}_#{type}.#{type == Video::VISUAL ? self.project.video.file_extension : 'wav'}"
+    processed_video = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_#{self.project.id.to_s}-#{self.id.to_s}_#{type}.#{type == Video::VISUAL ? self.project.video.file_extension : 'wav'}"
+    File.open(source_file, 'wb') do |f|
       f.write(active_storage_video.download)
     end
     # * 2. 
     ffmpeg = FfMpeg.create(
       pattern: self, 
-      project_tempfile_url: project_video, 
+      project_tempfile_url: source_file, 
       processed_tempfile_url: processed_video
     )
     ffmpeg.create_blueprints_for_slices
@@ -124,40 +130,33 @@ class Pattern < ApplicationRecord
     processed_video = generate_new_video_concat_file_path
     create_concat_file(name: generate_new_text_concat_file_path, concat_blue_prints: ffmpeg.pattern_concat_blueprints)
     concatenate_clips(path_to_input_text_file: generate_new_text_concat_file_path, processed_video: processed_video)
-    # attach the processed video to the active storage relation
-    attach_video(processed_video: processed_video)
-    # =============================================================
-    # here is the pattern video which has already been generated
-    # =============================================================
-    # now its time to draw the text, make blueprints first
-    # =============================================================
+    
     if make_text? 
-      # clip file is already here
-      font_file_extension = self.project.font.file_extension
-      active_storage_font = self.project.font.file 
-      font_file_temp_path = "#{Rails.root}/tmp/#{active_storage_font.blob.key}_#{active_storage_font.name.to_s}#{font_file_extension}"
-      # * download the fontfile 
-      File.open(font_file_temp_path, 'wb') do |f|
-        f.write(active_storage_font.download)
-      end
-      # output will be into the existing pattern video :)
-      # ADD fontfile temp path to this ff_mpeg instance 
-      ffmpeg.clip_tempfile_path = processed_video # *
-      ffmpeg.processed_tempfile_url = "#{Rails.root}/tmp/textified_video_#{active_storage_video.blob.key}_#{self.project.id.to_s}-#{self.id.to_s}.#{self.project.video.file_extension}"
-      # * now create an empty file there 
-      ffmpeg.font_tempfile_path = font_file_temp_path
-      ffmpeg.create_blueprints_for_text_drawings
-      ffmpeg.draw_texts
-      # TODO: attach the clip to the pattern 
-      attach_video(processed_video: ffmpeg.processed_tempfile_url)
-      # TODO: DELETE - the dl'ed font 
-      File.delete(font_file_temp_path)
+      # # clip file is already here
+      # font_file_extension = self.project.font.file_extension
+      # active_storage_font = self.project.font.file 
+      # font_file_temp_path = "#{Rails.root}/tmp/#{active_storage_font.blob.key}_#{active_storage_font.name.to_s}#{font_file_extension}"
+      # # * download the fontfile 
+      # File.open(font_file_temp_path, 'wb') do |f|
+      #   f.write(active_storage_font.download)
+      # end
+      # # output will be into the existing pattern video :)
+      # # ADD fontfile temp path to this ff_mpeg instance 
+      # ffmpeg.clip_tempfile_path = processed_video # *
+      # ffmpeg.processed_tempfile_url = "#{Rails.root}/tmp/textified_video_#{active_storage_video.blob.key}_#{self.project.id.to_s}-#{self.id.to_s}.#{self.project.video.file_extension}"
+      # # * now create an empty file there 
+      # ffmpeg.font_tempfile_path = font_file_temp_path
+      # ffmpeg.create_blueprints_for_text_drawings
+      # ffmpeg.draw_texts
+      # # TODO: attach the clip to the pattern 
+      # attach_video(processed_video: ffmpeg.processed_tempfile_url)
+      # # TODO: DELETE - the dl'ed font 
+      # File.delete(font_file_temp_path)
     end
-    # * 4. 
-    File.delete(project_video)
-    File.delete(processed_video)
+
     ffmpeg.remove_clips_from_tempfile()
-    return true 
+    File.delete(source_file)
+    return  processed_video
   end
 
   private 
@@ -189,5 +188,9 @@ class Pattern < ApplicationRecord
    file_name = "concat_file" + self.id.to_s 
    "#{Rails.root}/tmp/#{file_name}.txt"
   end 
+
+  def merge_audio_and_video(audio_path:, video_path:, output_path:) 
+    `ffmpeg -i #{video_path} -i #{audio_path} -c:v copy -c:a aac #{output_path}`
+  end
 
 end

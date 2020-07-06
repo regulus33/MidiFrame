@@ -43,7 +43,7 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'update project saves font and video' do
-    assert_difference('Font.count', 0, 'Video.count', +1, 'Project.count', 0) do
+    assert_difference('Font.count', 0, 'Video.count', +3, 'Project.count', 0) do
       put project_path(projects(:main_one)), params: {
         project: {
           bpm: 120,
@@ -58,7 +58,7 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'create project saves font and video' do
-    assert_difference('Font.count', +1, 'Video.count', +1, 'Project.count', +1) do
+    assert_difference('Font.count', +1, 'Video.count', +3, 'Project.count', +1) do
       post projects_path, params: {
         project: {
           bpm: 120,
@@ -68,6 +68,15 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
         }
       }
       assert_response :success
+    end
+  end
+
+  test 'Integration, video should save 3 files where role is: master, audio and visual' do 
+    assert_difference('Video.count', +2) do  
+      insert_font_and_video_into_main_one_project
+      assert projects(:main_one).reload.video.videos.where(role: "AUDIO").present?
+      assert projects(:main_one).reload.video.videos.where(role: "VISUAL").present?
+      assert_equal "MASTER", projects(:main_one).reload.video.role
     end
   end
 end
