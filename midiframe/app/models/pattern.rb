@@ -104,7 +104,6 @@ class Pattern < ApplicationRecord
 
   def determine_file_extension_of_auidio(audio_path)
     output = `ffprobe -v quiet -print_format json -show_streams -select_streams a #{audio_path}`
-    binding.pry 
     output_extensions = {
       'aac' => 'm4a',
       'mp3' => 'mp3',
