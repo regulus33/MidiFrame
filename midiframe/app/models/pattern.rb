@@ -102,6 +102,19 @@ class Pattern < ApplicationRecord
     File.delete(output_path)
   end
 
+  def determine_file_extension_of_auidio(audio_path)
+    output = `ffprobe -v quiet -print_format json -show_streams -select_streams a #{audio_path}`
+    binding.pry 
+    output_extensions = {
+      'aac' => 'm4a',
+      'mp3' => 'mp3',
+      'opus' => 'opus',
+      'vorbis' => 'ogg'
+    }
+    extension_key = JSON.parse(output)["streams"].first["codec_name"]
+    return output_extensions[extension_key]
+  end
+
   # returns the processed video path
   def create_clip(type:) 
     # * 1.
