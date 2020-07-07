@@ -59,12 +59,13 @@ class PatternsControllerTest < ActionDispatch::IntegrationTest
     end 
   end
 
-  test 'Full Flow' do 
+  test 'Full Flow of create clips' do 
     insert_font_and_video_into_main_one_project
     assert :success
     projects(:main_one).font.delete
     post "/pattern-generate/#{patterns(:main_one).id}/#{projects(:main_one).id}"
     assert :success 
+    patterns(:main_one).reload 
     get "/pattern-preview/#{patterns(:main_one).id}/#{projects(:main_one).id}"
     assert_select "video[src]" 
   end

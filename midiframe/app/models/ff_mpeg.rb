@@ -53,7 +53,7 @@ class FfMpeg < ApplicationRecord
   def generate_slice_blue_print(event:, next_event:)
     # ? ffmpeg -t requires seconds, its still very precise so we just convert
     slice_duration = convert_seconds_to_milliseconds_and_convert_scientific_notation_to_strings(next_event['timestamp'] - event['timestamp'])
-    "ffmpeg -an -y -ss #{timestamp_to_play_in_video(event: event)} -i #{project_tempfile_url} -t #{slice_duration} -c:v libx264 #{generate_unique_tempfile_clip_location_url(event['timestamp'])}"
+    "ffmpeg #{self.role == Video::VISUAL ? '-an' : ''} -y -ss #{timestamp_to_play_in_video(event: event)} -i #{project_tempfile_url} -t #{slice_duration} -c:v libx264 #{generate_unique_tempfile_clip_location_url(event['timestamp'])}"
   end
 
   def generate_concat_blueprint(event)
@@ -98,6 +98,7 @@ class FfMpeg < ApplicationRecord
   end
 
   def file_extension
+    return pattern.project.video.audio.file_extension if(self.role == Video::AUDIO)
     pattern.project.video.file_extension
   end
 
