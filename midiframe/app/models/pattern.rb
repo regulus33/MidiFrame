@@ -94,24 +94,12 @@ class Pattern < ApplicationRecord
 
   def assemble_pattern_video 
     master_video = self.project.video
-    video_path = create_clip(type: Video::VISUAL)
     audio_path = create_clip(type: Video::AUDIO)
+    video_path = create_clip(type: Video::VISUAL)
     output_path = "#{Rails.root}/tmp/#{master_video.clip.blob.key}_#{master_video.name.to_s}.#{master_video.file_extension}" 
     merge_audio_and_video(audio_path: audio_path, video_path: video_path, output_path: output_path)
     attach_video(processed_video: output_path)
     File.delete(output_path)
-  end
-
-  def determine_file_extension_of_auidio(audio_path)
-    output = `ffprobe -v quiet -print_format json -show_streams -select_streams a #{audio_path}`
-    output_extensions = {
-      'aac' => 'm4a',
-      'mp3' => 'mp3',
-      'opus' => 'opus',
-      'vorbis' => 'ogg'
-    }
-    extension_key = JSON.parse(output)["streams"].first["codec_name"]
-    return output_extensions[extension_key]
   end
 
   # returns the processed video path
@@ -119,14 +107,16 @@ class Pattern < ApplicationRecord
     # * 1.
     if(type == Video::VISUAL)
       active_storage_video = self.project.video.visual.clip 
+      file_extension = self.project.video.file_extension
     elsif(type == Video::AUDIO)
       active_storage_video = self.project.video.audio.clip 
+      file_extension = self.project.video.audio.file_extension
     else 
       throw "Argument error, create_clip requires a type, VISUAL or AUDIO"
     end 
     
-    source_file = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_#{active_storage_video.name.to_s}_#{type}.#{type == Video::VISUAL ? self.project.video.file_extension : 'wav'}"
-    processed_video = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_#{self.project.id.to_s}-#{self.id.to_s}_#{type}.#{type == Video::VISUAL ? self.project.video.file_extension : 'wav'}"
+    source_file = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_#{active_storage_video.name.to_s}_#{type}.#{file_extension}"
+    processed_video = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_#{self.project.id.to_s}-#{self.id.to_s}_#{type}.#{file_extension}"
     File.open(source_file, 'wb') do |f|
       f.write(active_storage_video.download)
     end
@@ -134,12 +124,14 @@ class Pattern < ApplicationRecord
     ffmpeg = FfMpeg.create(
       pattern: self, 
       project_tempfile_url: source_file, 
-      processed_tempfile_url: processed_video
+      processed_tempfile_url: processed_video,
+      role: type
     )
     ffmpeg.create_blueprints_for_slices
+    binding.pry 
     ffmpeg.create_slices 
     # * 3.
-    processed_video = generate_new_video_concat_file_path
+    processed_video = generate_new_video_concat_file_path(role: type)
     create_concat_file(name: generate_new_text_concat_file_path, concat_blue_prints: ffmpeg.pattern_concat_blueprints)
     concatenate_clips(path_to_input_text_file: generate_new_text_concat_file_path, processed_video: processed_video)
     
@@ -185,9 +177,9 @@ class Pattern < ApplicationRecord
     `ffmpeg -an -f concat -safe 0 -i #{path_to_input_text_file} -c copy #{processed_video}`
   end
 
-  def generate_new_video_concat_file_path
+  def generate_new_video_concat_file_path(role:)
     name = "joined_clips_#{self.id.to_s}"
-    "#{Rails.root}/tmp/#{name}.#{self.project.video.file_extension}"
+    "#{Rails.root}/tmp/#{name}.#{role == Video::AUDIO ? self.project.video.audio.file_extension : self.project.video.file_extension}"
   end
 
   def create_concat_file(name:, concat_blue_prints:)  

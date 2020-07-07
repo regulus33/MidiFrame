@@ -15,12 +15,13 @@ class Video < ApplicationRecord
   # TODO: VALIDATIONS
   ALLOWED_TYPES = %w[mp4 webm].freeze
   # TODO: validate video types! SECURITY
-  ALLOWED_ROLES = ['original'].freeze
+  ALLOWED_ROLES = [MASTER, AUDIO, VISUAL].freeze
 
   belongs_to :parent_video, class_name: 'Video', foreign_key: 'parent_video_id', optional: true
   has_many :videos, class_name: 'Video', foreign_key: 'parent_video_id'
 
   def file_extension
+    return self.file_extension_string if self.file_extension_string.present? 
     return clip.content_type.split('/').pop if clip.attached?
   end
 
@@ -53,8 +54,10 @@ class Video < ApplicationRecord
     File.open(original_video, 'wb') do |f|
       f.write(active_storage_video.download)
     end
+    # we grab the audio file's extension with ffrpobe from the video download above and pass to Video.create ONLY for audio 
+    audio_file_extension = determine_file_extension_of_audio(original_video)
     # send it the reference to the local download of the original video 
-    save_sound_from_video(original_video: original_video)
+    save_sound_from_video(original_video: original_video, file_extension: audio_file_extension)
     save_soundless_video(original_video: original_video)
     # clean up the tempfile 
     File.delete(original_video)
@@ -67,6 +70,18 @@ class Video < ApplicationRecord
   # before attaching the result, merge the audio and video. Attach the result to pattern 
   # DONE! 
 
+  def determine_file_extension_of_audio(audio_path)
+    output = `ffprobe -v quiet -print_format json -show_streams -select_streams a #{audio_path}`
+    output_extensions = {
+      'aac' => 'm4a',
+      'mp3' => 'mp3',
+      'opus' => 'opus',
+      'vorbis' => 'ogg'
+    }
+    extension_key = JSON.parse(output)["streams"].first["codec_name"]
+    return output_extensions[extension_key]
+  end
+
   def save_master_video 
     self.role = MASTER
     self.save!
@@ -76,13 +91,13 @@ class Video < ApplicationRecord
     clip.content_type
   end
 
-  def save_sound_from_video(original_video:) 
-    sound_from_video = "#{Rails.root}/tmp/#{self.clip.blob.key}_sound_from_video.wav"
+  def save_sound_from_video(original_video:, file_extension:) 
+    sound_from_video = "#{Rails.root}/tmp/#{self.clip.blob.key}_sound_from_video.#{file_extension}"
     save_sound_command(original_video: original_video, sound_file: sound_from_video)
-    sound_record = Video.create!(parent_video: self, user: self.user, role: AUDIO)
+    sound_record = Video.create!(parent_video: self, user: self.user, role: AUDIO, file_extension_string: file_extension)
     sound_record.clip.attach(
       io: File.open(sound_from_video),
-      filename: "#{self.clip.blob.filename.base}-sound.wav",
+      filename: "#{self.clip.blob.filename.base}-sound.#{file_extension}",
       content_type: content_type
     )
     File.delete(sound_from_video)
@@ -113,9 +128,8 @@ class Video < ApplicationRecord
     File.open(original_video, 'wb') do |f|
       f.write(active_storage_video.download)
     end
-    # ? once we've dl'ed the video from the active storage server, we strip the sound
+    # once we've dl'ed the video from the active storage server, we strip the sound
     run_compress original_video: original_video, webm_video: webm_video, optimized_video: optimized_webm
-
     web_video = Video.create(parent_video: self, role: 'web', user: user)
 
     web_video.clip.attach(
@@ -127,7 +141,7 @@ class Video < ApplicationRecord
     @project = new_project_to_add_output_to
     @project.video = web_video
     @project.save!
-    # ============ * = * = * = *
+    # =====================================
     File.delete(webm_video)
     File.delete(optimized_webm)
     File.delete(original_video)
@@ -151,7 +165,6 @@ class Video < ApplicationRecord
   end
 
   def save_sound_command(original_video:, sound_file:) 
-    
     `ffmpeg -i #{original_video} -vn -acodec copy #{sound_file}`
   end
 
