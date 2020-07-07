@@ -128,12 +128,12 @@ class Pattern < ApplicationRecord
       role: type
     )
     ffmpeg.create_blueprints_for_slices
-    binding.pry 
     ffmpeg.create_slices 
     # * 3.
     processed_video = generate_new_video_concat_file_path(role: type)
     create_concat_file(name: generate_new_text_concat_file_path, concat_blue_prints: ffmpeg.pattern_concat_blueprints)
-    concatenate_clips(path_to_input_text_file: generate_new_text_concat_file_path, processed_video: processed_video)
+    binding.pry
+    concatenate_clips(path_to_input_text_file: generate_new_text_concat_file_path, processed_video: processed_video, role: type)
     
     if make_text? 
       # # clip file is already here
@@ -173,8 +173,8 @@ class Pattern < ApplicationRecord
     )
   end
 
-  def concatenate_clips(path_to_input_text_file:, processed_video:) 
-    `ffmpeg -an -f concat -safe 0 -i #{path_to_input_text_file} -c copy #{processed_video}`
+  def concatenate_clips(path_to_input_text_file:, processed_video:, role:) 
+    `ffmpeg #{role == Video::VISUAL ? '-an' : ''} -f concat -safe 0 -i #{path_to_input_text_file} -c copy #{processed_video}`
   end
 
   def generate_new_video_concat_file_path(role:)
