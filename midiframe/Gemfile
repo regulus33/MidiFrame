@@ -28,6 +28,8 @@ gem 'materialize-sass'
 # Use Active Model has_secure_password
 gem 'bcrypt', '~> 3.1.7'
 
+gem 'jwt'
+
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
 
@@ -53,6 +55,7 @@ group :development do
 end
 
 group :test do
+  gem 'simplecov', require: false, group: :test
   # Adds support for Capybara system testing and selenium driver
   gem 'capybara', '>= 2.15'
   gem 'selenium-webdriver'
