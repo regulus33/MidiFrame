@@ -415,7 +415,8 @@ export default class extends Controller {
   //////////////////////////////////////////
   /// WEB MIDI SETUP:                     //
   //////////////////////////////////////////
-  _enable_midi(channel) {
+  // basically requests access from browser, only runs if access is enabled 
+  _enable_midi() {
     WebMidi.enable(error => { error ? this._on_error(error) : this._on_success(this.getSavedChannel()) })
   }
 
@@ -610,6 +611,7 @@ export default class extends Controller {
 
   //? set the currently selected input to the current video time 
   //? then unfocus the selcted note to
+  // !broken
   saveCurrentTime() {
     console.log("save current time");
     let time = this._video.currentTime();
