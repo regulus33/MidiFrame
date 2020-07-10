@@ -22,7 +22,8 @@ export default class extends Controller {
     "addTextButton",
     "textModalTitle",
     "noteText",
-    "inputValue"
+    "inputValue",
+    "randomizeOne"
   ]
 
   connect() {
@@ -160,8 +161,16 @@ export default class extends Controller {
       this.save();
     }
     if (e.ctrlKey) {
-      if (e.key === "t") this._randomizeAll();
+      if (e.key === "t") this.randomizeAll();
       if (e.key === "c") this._clearAll();
+    }
+  }
+
+  randomizeOneNote() {
+    let selectedElement = document.getElementsByClassName("selected")
+    debugger
+    if (selectedElement.length > 0) {
+      this._randomize(selectedElement[0].children[3]);
     }
   }
 
@@ -278,7 +287,6 @@ export default class extends Controller {
   }
 
   // !plural RANDOM 
-
   _addMidiNoteToPlayedNotes(note) {
     this.playedNotes.add(note);
     // console.log(this.playedNotes);
@@ -289,7 +297,7 @@ export default class extends Controller {
     this.playedNotes = new Set();
   }
 
-  _randomizeAll() {
+  randomizeAll() {
     for (let [key, value] of this.playedNotes.entries()) {
       //! WARNING this lasElementChild method shakily depends on the input being the last child so be careful when changing list items for keyboard.slim
       const randTime = randoMize(this._videoLength);
@@ -375,11 +383,15 @@ export default class extends Controller {
     this.saveCurrentTimeTarget.classList.toggle("black", false); // teal by default 
     // add text button 
     this.addTextButtonTarget.classList.toggle("black", false);
-    element.parentElement.classList.add("selected")
+
+    this.randomizeOneTarget.classList.toggle("black", false);
+
+    element.parentElement.classList.add("selected");
   }
 
   _deactivatePianoKey() {
     this.selectedKey.parentElement.classList.remove("selected")
+    this.randomizeOneTarget.classList.toggle("black", true);
   }
 
   _deletePianoKey() {
@@ -467,7 +479,6 @@ export default class extends Controller {
     console.log("setting listeners for channel: " + channel)
     // ? just for knowing if midi is being received or not
     // this._setPlayAndStopListeners()
-    ///////
     this._midiInput.addListener('noteon', channel, msg => this.onMessageNoteOn(msg))
     this._midiInput.addListener('noteoff', channel, msg => this.onMessageNoteOff(msg))
     this._midiInput.addListener('clock', "all", this.onMessageClock.bind(this))
