@@ -19,5 +19,12 @@ describe("MidiDeviceController", () => {
                 expect(typeof (WebMidi.inputs[0][e])).toBe("function")
             })
         });
+
+        it("Should set correct callbacks for WebMidi, device", () => {
+            // document.getElementById("save").click();
+            ["noteon", "noteoff", "start", "stop", "clock"].forEach((e) => {
+                expect(typeof (WebMidi.inputs[0][e])).toBe("function")
+            })
+        });
     });
 });
