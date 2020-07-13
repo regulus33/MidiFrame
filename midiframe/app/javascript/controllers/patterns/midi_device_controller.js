@@ -1,6 +1,6 @@
-import { Controller } from "stimulus"
-import WebMidi from 'webmidi'
-import videojs from 'video.js'
+import { Controller } from "stimulus";
+import WebMidi from 'webmidi';
+import videojs from '../../helpers/video.js';
 import { toTheNearestThousandth, randoMize } from '../../helpers/math'
 import { NUDGE_AMOUNT, baseUrl } from '../../helpers/constants'
 import { saveProject, generatePatternClip } from '../../helpers/network'
@@ -24,7 +24,7 @@ export default class extends Controller {
     "noteText",
     "inputValue",
     "randomizeOne"
-  ]
+  ];
 
   connect() {
     this.piano = {};
@@ -137,7 +137,7 @@ export default class extends Controller {
   }
 
   onPianoKeyClick(event) {
-    this._shouldSelectNote(event.target) ? this._selectNote() : this._unselectNote();
+    this._shouldSelectNote(event.target) ? this._selectNote(event) : this._unselectNote();
   }
 
   updateSelectedNoteTime(event) {
@@ -281,6 +281,7 @@ export default class extends Controller {
   }
 
   _randomize(element) {
+    console.log("randomizing video, video length: " + this._videoLength);
     let randomValue = randoMize(this._videoLength)
     this._updateData({ time: randomValue, number: element.id })
     element.value = randomValue
@@ -319,7 +320,7 @@ export default class extends Controller {
     return this._selectedKey && this._selectedKey.id == element.id ? false : true
   }
 
-  _selectNote() {
+  _selectNote(event) {
     this._selectedKey = event.target
     this._selectedKey.addEventListener('keydown', (e) => { this.onFormKeyDown(e) })
   }
@@ -617,7 +618,7 @@ export default class extends Controller {
 
   // ? used to calculate a random timestamp within video length range 
   get _videoLength() {
-    return this._video.duration()
+    return this._video.duration();
   }
 
   //? set the currently selected input to the current video time 
