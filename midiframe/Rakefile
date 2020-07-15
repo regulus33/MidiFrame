@@ -12,3 +12,9 @@ namespace :test do
     sh 'yarn test --coverage'
   end
 end
+
+namespace :purge do 
+  task :media do 
+    ActiveStorage::Attachment.all.each { |attachment| attachment.purge }
+  end
+end
