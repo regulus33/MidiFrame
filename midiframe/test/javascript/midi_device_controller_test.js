@@ -2,23 +2,36 @@ import { Application } from "stimulus";
 import MidiDeviceController from "controllers/patterns/midi_device_controller";
 import { mockDoc } from "./fixtures/edit_pattern_document.js";
 import WebMidi from 'webmidi';
-import { log } from "./helpers.js";
+import { log, VideoJsMock } from "./helpers.js";
+import video from "../../app/javascript/helpers/video.js";
 
+const mockVideojsInstance = new VideoJsMock();
+//return a mocked up class of video js mock 
+jest.mock("helpers/video.js", () => {
+    return jest.fn().mockImplementation((id) => {
+        let isString = (typeof (id) == "string");
+        if (!isString) {
+            throw "invalid argument to videojs constructor, must be a string, id of video"
+        }
+        return mockVideojsInstance;
+    })
+})
 
+const callMidiStart = () => {
+    WebMidi.inputs[0].start();
+}
 
+const callMidiStop = () => {
+    WebMidi.inputs[0].stop();
+}
+
+const playMidiNote = (event) => {
+    WebMidi.inputs[0].noteon(event);
+}
 
 describe("MidiDeviceController", () => {
     describe("#copy", () => {
         beforeEach(() => {
-
-            jest.mock("helpers/video.js", () => {
-                return jest.fn().mockImplementation((id) => {
-                    return {
-                        duration: () => 1000000,
-                        play: jest.fn
-                    }
-                })
-            })
 
             document.body.innerHTML = mockDoc
             const application = Application.start();
@@ -32,21 +45,54 @@ describe("MidiDeviceController", () => {
             })
         });
 
-        it("Clicking randomize one should randomize selected input", () => {
+        it("randomize one button should randomize selected input", () => {
             // document.getElementById("save").click();
             log("Clicking a piano key input, C0");
             let key = document.getElementById("0");
+            let randomimzeOneButton = document.getElementById("random_one");
             key.click();
-            expect(key.classList.contains("black")).not.toBeTruthy()
+            expect(randomimzeOneButton.classList.contains("black")).not.toBeTruthy()
             log("Clicking the randomize one button, expecting input to have a value");
             document.getElementById("random_one").click();
-            log("Value of key after random is:" + key.value);
+            log("Value of key after random is: " + key.value);
             expect(key.value).toBeTruthy();
-            log("So far so good, now unselecting, expecting input to no longer be selected.");
+            log("So far so good, now unselecting, expecting input to no longer be selected and random button to be black again.");
             key.click();
-            expect(key.classList).toEqual(
-                expect.arrayContaining(["black"]),
-            );
+            expect(randomimzeOneButton.classList.contains("black")).toBeTruthy();
         });
+
+        it("Plays the video when you hit play on the OPZ", () => {
+            log("Pressing play on an imaginary opz");
+            expect(mockVideojsInstance.playing).toBe(false)
+            callMidiStart();
+            expect(mockVideojsInstance.playing).toBe(true)
+            log("Pressing stop on our opz, expecting video to stop");
+            callMidiStop();
+            expect(mockVideojsInstance.playing).toBe(false);
+        });
+
+        it("Jerks to a new timestamp on midi note play", () => {
+            let hardCodedInitialMockVideoJSTime = 50;
+            log("About to play some, notes, sanity checking that video's current time is 50");
+
+            expect(mockVideojsInstance.currentTime()).toBe(hardCodedInitialMockVideoJSTime);
+
+            let videoTime = 30;
+
+            const mockMidiNoteOnEvent = {
+                note: 60,
+                timestamp: videoTime
+            }
+
+            playMidiNote(mockMidiNoteOnEvent);
+
+
+
+
+
+        });
+
+
+
     });
 });
