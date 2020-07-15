@@ -1,5 +1,5 @@
-import { Application, Controller } from "stimulus";
-import LoadingController from "loading_controller";
+import { Application } from "stimulus";
+import LoadingController from "controllers/loading_controller";
 
 describe("LoadingController", () => {
     describe("#copy", () => {
