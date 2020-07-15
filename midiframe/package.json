@@ -35,7 +35,7 @@
     ],
     "moduleDirectories": [
       "node_modules",
-      "app/javascript/controllers"
+      "app/javascript"
     ]
   }
 }
