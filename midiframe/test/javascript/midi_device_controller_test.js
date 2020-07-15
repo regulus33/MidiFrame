@@ -1,21 +1,28 @@
-import { Application, Controller } from "stimulus";
-import MidiDeviceController from "patterns/midi_device_controller";
-import { mockDoc } from "../../test/javascript/fixtures/edit_pattern_document";
+import { Application } from "stimulus";
+import MidiDeviceController from "controllers/patterns/midi_device_controller";
+import { mockDoc } from "./fixtures/edit_pattern_document.js";
 import WebMidi from 'webmidi';
-import { log } from "../../test/javascript/helpers.js";
-import videojs from "../../app/javascript/helpers/video.js";
+import { log } from "./helpers.js";
 
-import fuckSHIITITITITIT from '../../app/javascript/helpers/__mocks__/video.js';
+
+
 
 describe("MidiDeviceController", () => {
     describe("#copy", () => {
         beforeEach(() => {
-            jest.mock("../../app/javascript/helpers/video.js");
+
+            jest.mock("helpers/video.js", () => {
+                return jest.fn().mockImplementation((id) => {
+                    return {
+                        duration: () => 1000000,
+                        play: jest.fn
+                    }
+                })
+            })
+
             document.body.innerHTML = mockDoc
             const application = Application.start();
             application.register("patterns--midi-device", MidiDeviceController);
-            videojs.mockReturnValue(fuckSHIITITITITIT(8264267962786286389263963));
-
         });
 
         it("Should set correct callbacks for WebMidi, device", () => {
