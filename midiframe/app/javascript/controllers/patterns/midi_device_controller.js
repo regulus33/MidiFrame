@@ -628,7 +628,8 @@ export default class extends Controller {
     console.log("save current time");
     let time = this._video.currentTime();
     this._selectedKey.value = time;
-    this._unselectNote()
+    this._updateData({ time: time, number: this._selectedKey.id });
+    this._unselectNote();
   }
 
   addText() {

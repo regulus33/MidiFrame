@@ -1,13 +1,6 @@
-## SETUP NOTES 
-
-We use overmind to integrate webpacker dev server and rails. This webpacker server thing that we call in the Procfile is insanely fast at hot reloading your JS wowowo yayayaya.
-
-`OVERMIND_PROCFILE=Procfile`
-
-`overmind start`
 
 
-Webpacker setup stuff and rails 6 helpful tips 
+## Webpacker setup stuff and rails 6 helpful tips 
 
 https://dev.to/vvo/a-rails-6-setup-guide-for-2019-and-2020-hf5
 
@@ -29,16 +22,20 @@ PRELOADING PREFETCHING ETC
 https://developers.google.com/web/fundamentals/media/fast-playback-with-video-preload#manual_buffering
 
 
-## Future Features    
-
-Definitely need to use a service worker to cache the videos and work offline, redownloading is so annoying!
-
-A simple flutter? and or hybrid app that has the same live tweak functionality.
-
-Becomes a simple way to port your sessions for live to your phone 
-
 ## List of Browser dependencies
 
 Midi API 
 
 Caches API 
+
+## Test Coverage 
+
+view `coverage/index.html` after running tests for ruby
+
+javascript tests are automatically outputting test coverage 
+
+js run 
+`rake test:js`
+
+all run 
+`rake`
