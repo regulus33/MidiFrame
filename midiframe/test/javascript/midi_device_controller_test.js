@@ -29,6 +29,14 @@ const playMidiNote = (event) => {
     WebMidi.inputs[0].noteon(event);
 }
 
+const addTimeStampToMidiNote = (number, time) => {
+    mockVideojsInstance.currentTime(time);
+    let key = document.getElementById(number);
+    key.click();
+    document.getElementById("adjust").click();
+    // key.click();
+}
+
 describe("MidiDeviceController", () => {
     describe("#copy", () => {
         beforeEach(() => {
@@ -76,19 +84,22 @@ describe("MidiDeviceController", () => {
             log("About to play some, notes, sanity checking that video's current time is 50");
 
             expect(mockVideojsInstance.currentTime()).toBe(hardCodedInitialMockVideoJSTime);
-
+            log(`changing vide time to 30, now when we play note 60, the video should jump to 30`);
             let videoTime = 30;
 
             const mockMidiNoteOnEvent = {
-                note: 60,
+                note: {
+                    number: 60
+                },
                 timestamp: videoTime
             }
+            addTimeStampToMidiNote(60, 30);
+
+            log("inputed the ote time into the piano key form");
+
+
 
             playMidiNote(mockMidiNoteOnEvent);
-
-
-
-
 
         });
 

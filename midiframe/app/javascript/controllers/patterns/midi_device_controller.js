@@ -37,13 +37,13 @@ export default class extends Controller {
     this.clockSignalsPassedSinceRecordStart = 0;
     this.video = videojs(this.videoTarget.id);
     this.selectedKey = null;
+    this.playedNotes = new Set();
     this._observe_all_keys();
     this._enable_midi();
     this.saveAndNavigate = this.saveAndNavigate.bind(this);
     this._addKeyDownChannelListener();
     this._initializePianoData();
     //everytime a new notes comes in we will add it 
-    this.playedNotes = new Set();
     this.isSeeking = false;
     //? text styling
     this.positionTextForVideo();
@@ -99,6 +99,8 @@ export default class extends Controller {
   }
 
   onMessageNoteOn(msg) {
+    console.log("onMessageNoteOn: " + msg);
+    console.log(msg);
     const number = this._get_msg_note_number(msg);
     this._play_note(number);
     this._play_video(number);
@@ -366,11 +368,11 @@ export default class extends Controller {
 
 
   _play_note(number) {
-    this._get_piano_key(number).classList.toggle("active", true)
+    this._getPianoKey(number).classList.toggle("active", true)
   }
 
   _unplay_note(number) {
-    this._get_piano_key(number).classList.toggle("active", false)
+    this._getPianoKey(number).classList.toggle("active", false)
   }
 
   _play_video(number) {
@@ -403,7 +405,7 @@ export default class extends Controller {
     this.selectedKey = null
   }
 
-  _get_piano_key(number) {
+  _getPianoKey(number) {
     return this._piano[number]
   }
 
@@ -629,6 +631,9 @@ export default class extends Controller {
     let time = this._video.currentTime();
     this._selectedKey.value = time;
     this._updateData({ time: time, number: this._selectedKey.id });
+    console.log(this.pianoData);
+    console.log(this.piano);
+    console.log("video video current time = " + this._video.currentTime())
     this._unselectNote();
   }
 
