@@ -29,6 +29,10 @@ const playMidiNote = (event) => {
     WebMidi.inputs[0].noteon(event);
 }
 
+const unPlayMinidNote = (event) => {
+    WebMidi.inputs[0].noteoff(event)
+}
+
 const addTimeStampToMidiNote = (number, time) => {
     mockVideojsInstance.currentTime(time);
     let key = document.getElementById(number);
@@ -95,13 +99,65 @@ describe("MidiDeviceController", () => {
             }
             addTimeStampToMidiNote(60, 30);
 
-            log("inputed the ote time into the piano key form");
+            log("inputed the note time into the piano key form");
 
+            log("we will advance the video forward.");
 
+            mockVideojsInstance.currentTime(1);
 
             playMidiNote(mockMidiNoteOnEvent);
 
+            expect(mockVideojsInstance.currentTime()).toBe(30);
+
         });
+
+        it("Highlights octave buttons and keys that relate to the note on low notes", () => {
+
+            const mockMidiNoteOnEvent = {
+                note: {
+                    number: 0
+                },
+                timestamp: 13
+            }
+
+
+            let key = document.getElementById("0");
+            let octaveDown = document.getElementById("octave-minus");
+
+            playMidiNote(mockMidiNoteOnEvent);
+            log("making sure that octave forward button has black class removed, which makes it teal");
+            expect(octaveDown.classList.contains("black")).not.toBeTruthy();
+            expect(key.parentElement.classList.contains("active")).toBeTruthy();
+
+            unPlayMinidNote(mockMidiNoteOnEvent);
+
+            expect(octaveDown.classList.contains("black")).toBeTruthy();
+            expect(key.parentElement.classList.contains("active")).not.toBeTruthy();
+
+        });
+
+        it("Highlights octave buttons on high notes", () => {
+
+            const mockMidiNoteOnEvent = {
+                note: {
+                    number: 107
+                },
+                timestamp: 13
+            }
+
+
+            let octaveUp = document.getElementById("octave-plus");
+
+            playMidiNote(mockMidiNoteOnEvent);
+            expect(octaveUp.classList.contains("black")).not.toBeTruthy();
+
+            unPlayMinidNote(mockMidiNoteOnEvent);
+
+            expect(octaveUp.classList.contains("black")).toBeTruthy();
+
+        });
+
+
 
 
 
