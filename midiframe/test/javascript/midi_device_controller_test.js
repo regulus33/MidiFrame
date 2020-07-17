@@ -41,6 +41,8 @@ const addTimeStampToMidiNote = (number, time) => {
     // key.click();
 }
 
+
+
 describe("MidiDeviceController", () => {
     describe("#copy", () => {
         beforeEach(() => {
@@ -156,6 +158,13 @@ describe("MidiDeviceController", () => {
             expect(octaveUp.classList.contains("black")).toBeTruthy();
 
         });
+
+        it("Recordings stop after enough appropriate amount of clock signals passed", () => {
+            let recording = 'open-recording-session';
+            let recordButton = document.getElementById('record');
+            callMidiStart();
+
+        })
 
 
 
