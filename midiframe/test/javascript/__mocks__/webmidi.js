@@ -9,7 +9,7 @@ const input = {
     start: null,
     stop: null,
     addListener: (name, channel, callBack) => {
-        addListenerOne(name, channel, callBack)
+        addListenerOne(name, channel, callBack);
     }
 
 }
@@ -33,9 +33,8 @@ export default class WebMidi {
         input
     ]
 
-    static output = [
+    static outputs = [
         output
     ]
-    // this._midiInput.addListener('noteon', channel, msg => this.onMessageNoteOn(msg))
 
 }
