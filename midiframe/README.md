@@ -39,3 +39,12 @@ js run
 
 all run 
 `rake`
+
+
+## system dependencies:
+
+`ffmpeg` for slicing video 
+
+`sox` for slicing audio 
+
+`faad2` for decoding aac files to a readable output to sox 
