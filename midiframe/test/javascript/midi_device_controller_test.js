@@ -14,11 +14,15 @@ jest.mock("helpers/video.js", () => {
             throw "invalid argument to videojs constructor, must be a string, id of video"
         }
         return mockVideojsInstance;
-    })
+    });
 })
 
+window.M = {
+    toast: jest.fn();
+}
+
 const callMidiStart = () => {
-    WebMidi.inputs[0].start();
+    WebMidi.inputs[0].start({ note: "start", timestamp: Date.now() });
 }
 
 const callMidiStop = () => {
@@ -39,6 +43,10 @@ const addTimeStampToMidiNote = (number, time) => {
     key.click();
     document.getElementById("adjust").click();
     // key.click();
+}
+
+const sendClock = () => {
+    WebMidi.inputs[0].clock({ timestamp: 1 })
 }
 
 
@@ -111,6 +119,8 @@ describe("MidiDeviceController", () => {
 
             expect(mockVideojsInstance.currentTime()).toBe(30);
 
+            unPlayMinidNote(mockMidiNoteOnEvent);
+
         });
 
         it("Highlights octave buttons and keys that relate to the note on low notes", () => {
@@ -151,23 +161,38 @@ describe("MidiDeviceController", () => {
             let octaveUp = document.getElementById("octave-plus");
 
             playMidiNote(mockMidiNoteOnEvent);
-            expect(octaveUp.classList.contains("black")).not.toBeTruthy();
+
+            expect(octaveUp.classList.contains("black")).toBe(false);
 
             unPlayMinidNote(mockMidiNoteOnEvent);
 
-            expect(octaveUp.classList.contains("black")).toBeTruthy();
+            expect(octaveUp.classList.contains("black")).toBe(true);
 
         });
 
         it("Recordings stop after enough appropriate amount of clock signals passed", () => {
             let recording = 'open-recording-session';
             let recordButton = document.getElementById('record');
+            recordButton.click();
             callMidiStart();
-
+            expect(recordButton.classList.contains(recording)).toBe(true);
+            for (let i = 0; i < 384; i++) {
+                sendClock();
+            }
+            expect(recordButton.classList.contains(recording)).toBe(false);
         })
 
-
-
+        it("Recordings stop after enough appropriate amount of clock signals passed", () => {
+            let recording = 'open-recording-session';
+            let recordButton = document.getElementById('record');
+            recordButton.click();
+            callMidiStart();
+            expect(recordButton.classList.contains(recording)).toBe(true);
+            for (let i = 0; i < 384; i++) {
+                sendClock();
+            }
+            expect(recordButton.classList.contains(recording)).toBe(false);
+        })
 
 
     });

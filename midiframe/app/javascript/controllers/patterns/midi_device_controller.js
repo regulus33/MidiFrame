@@ -343,6 +343,7 @@ export default class extends Controller {
 
   // make button green if the played notes are higher than the current octave
   onOnHighlightingRelevantOctaveButton(noteNumber) {
+    console.log(`played note ${this.notesLegend[noteNumber]} current note: ${this.currentMidiPosition}`)
     if (this.notesLegend[noteNumber] < this.currentMidiPosition) {
       //? removing black means default to teal
       this.buttonMinusTarget.classList.remove("black");

@@ -18,4 +18,3 @@ script.textContent = shim;
 
 window.document.body.appendChild(script);
 
-

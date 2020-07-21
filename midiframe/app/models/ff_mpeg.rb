@@ -25,6 +25,7 @@ class FfMpeg < ApplicationRecord
   # ? https://trac.ffmpeg.org/wiki/Seeking
   def create_slices
     pattern_blueprints.each do |command|
+      binding.pry 
       result = `#{command}`
       # puts result
     end
@@ -53,8 +54,23 @@ class FfMpeg < ApplicationRecord
   def generate_slice_blue_print(event:, next_event:)
     # ? ffmpeg -t requires seconds, its still very precise so we just convert
     slice_duration = convert_seconds_to_milliseconds_and_convert_scientific_notation_to_strings(next_event['timestamp'] - event['timestamp'])
-    "ffmpeg #{self.role == Video::VISUAL ? '-an' : ''} -y -ss #{timestamp_to_play_in_video(event: event)} -i #{project_tempfile_url} -t #{slice_duration} -c:v libx264 #{generate_unique_tempfile_clip_location_url(event['timestamp'])}"
+    # "ffmpeg #{self.role == Video::VISUAL ? '-an' : ''} -y -ss #{timestamp_to_play_in_video(event: event)} -i #{project_tempfile_url} -t #{slice_duration} -c:v libx264 #{generate_unique_tempfile_clip_location_url(event['timestamp'])}"
+    if self.role == Video::VISUAL
+      ffmpeg_slice event: event, next_event: next_event, slice_duration: slice_duration
+    else
+    sox_slice event: event, next_event: next_event, slice_duration: slice_duration
+    end 
   end
+
+  def ffmpeg_slice(event:, next_event:, slice_duration:)
+    "ffmpeg -an -y -ss #{timestamp_to_play_in_video(event: event)} -i #{project_tempfile_url} -t #{slice_duration} -c:v libx264 #{generate_unique_tempfile_clip_location_url(event['timestamp'])}"
+  end
+
+  def sox_slice(event:, next_event:, slice_duration:)
+    "faad -w -f 2 #{project_tempfile_url} | sox -t raw -b 32 - #{generate_unique_tempfile_clip_location_url(event['timestamp'])} trim #{timestamp_to_play_in_video(event: event)} #{slice_duration}"
+  end
+
+ 
 
   def generate_concat_blueprint(event)
     "file '#{generate_unique_tempfile_clip_location_url(event['timestamp'])}'\n"
