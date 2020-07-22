@@ -17,6 +17,8 @@ class Video < ApplicationRecord
   # TODO: validate video types! SECURITY
   ALLOWED_ROLES = [MASTER, AUDIO, VISUAL].freeze
 
+  AUDIO_FILE_EXTENSION = "wav"
+
   belongs_to :parent_video, class_name: 'Video', foreign_key: 'parent_video_id', optional: true
   has_many :videos, class_name: 'Video', foreign_key: 'parent_video_id'
 
@@ -55,8 +57,10 @@ class Video < ApplicationRecord
       f.write(active_storage_video.download)
     end
     # we grab the audio file's extension with ffrpobe from the video download above and pass to Video.create ONLY for audio 
-    audio_file_extension = determine_file_extension_of_audio(original_video)
+    # audio_file_extension = determine_file_extension_of_audio(original_video)
     # send it the reference to the local download of the original video 
+    
+    audio_file_extension = AUDIO_FILE_EXTENSION 
     save_sound_from_video(original_video: original_video, file_extension: audio_file_extension)
     save_soundless_video(original_video: original_video)
     # clean up the tempfile 
@@ -70,17 +74,17 @@ class Video < ApplicationRecord
   # before attaching the result, merge the audio and video. Attach the result to pattern 
   # DONE! 
 
-  def determine_file_extension_of_audio(audio_path)
-    output = `ffprobe -v quiet -print_format json -show_streams -select_streams a #{audio_path}`
-    output_extensions = {
-      'aac' => 'm4a',
-      'mp3' => 'mp3',
-      'opus' => 'opus',
-      'vorbis' => 'ogg'
-    }
-    extension_key = JSON.parse(output)["streams"].first["codec_name"]
-    return output_extensions[extension_key]
-  end
+  # def determine_file_extension_of_audio(audio_path)
+  #   output = `ffprobe -v quiet -print_format json -show_streams -select_streams a #{audio_path}`
+  #   output_extensions = {
+  #     'aac' => 'm4a',
+  #     'mp3' => 'mp3',
+  #     'opus' => 'opus',
+  #     'vorbis' => 'ogg'
+  #   }
+  #   extension_key = JSON.parse(output)["streams"].first["codec_name"]
+  #   return output_extensions[extension_key]
+  # end
 
   def save_master_video 
     self.role = MASTER
@@ -165,7 +169,8 @@ class Video < ApplicationRecord
   end
 
   def save_sound_command(original_video:, sound_file:) 
-    `ffmpeg -i #{original_video} -vn -acodec copy #{sound_file}`
+    # `ffmpeg -i #{original_video} -vn -acodec copy #{sound_file}`
+    `ffmpeg -i #{original_video} #{sound_file}`
   end
 
 end

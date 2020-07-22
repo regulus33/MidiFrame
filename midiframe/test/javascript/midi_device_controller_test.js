@@ -18,7 +18,7 @@ jest.mock("helpers/video.js", () => {
 })
 
 window.M = {
-    toast: jest.fn();
+    toast: jest.fn()
 }
 
 const callMidiStart = () => {
