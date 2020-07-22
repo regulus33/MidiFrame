@@ -63,6 +63,10 @@ class _VideoPlayerState extends State<VideoPlayer> {
     super.dispose();
   }
 
+  Future<bool> _connectToMidi(){
+      
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -163,6 +167,19 @@ class _VideoPlayerState extends State<VideoPlayer> {
                     ),
                   ),
                 ),
+                Expanded(
+                  child: FlatButton(
+                    onPressed: () {
+                      _connectToMidi();
+
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16.0),
+                      child: Text("connect to mid"),
+                    ),
+                  ),
+                ),
+                Ex
                 Expanded(
                   child: FlatButton(
                     onPressed: () async {
