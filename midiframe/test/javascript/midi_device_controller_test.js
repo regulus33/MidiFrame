@@ -182,17 +182,6 @@ describe("MidiDeviceController", () => {
             expect(recordButton.classList.contains(recording)).toBe(false);
         })
 
-        it("Recordings stop after enough appropriate amount of clock signals passed", () => {
-            let recording = 'open-recording-session';
-            let recordButton = document.getElementById('record');
-            recordButton.click();
-            callMidiStart();
-            expect(recordButton.classList.contains(recording)).toBe(true);
-            for (let i = 0; i < 384; i++) {
-                sendClock();
-            }
-            expect(recordButton.classList.contains(recording)).toBe(false);
-        })
 
 
     });

@@ -17,7 +17,7 @@ class Video < ApplicationRecord
   # TODO: validate video types! SECURITY
   ALLOWED_ROLES = [MASTER, AUDIO, VISUAL].freeze
 
-  AUDIO_FILE_EXTENSION = "  wav"
+  AUDIO_FILE_EXTENSION = "wav"
 
   belongs_to :parent_video, class_name: 'Video', foreign_key: 'parent_video_id', optional: true
   has_many :videos, class_name: 'Video', foreign_key: 'parent_video_id'
