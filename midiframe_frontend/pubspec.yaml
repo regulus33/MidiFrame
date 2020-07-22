@@ -24,6 +24,7 @@ dependencies:
   file_picker: ^1.13.0
   chewie: 0.9.10
   video_player: 0.10.11+2
+  flutter_midi_command: ^0.1.7
   flutter:
     sdk: flutter
 

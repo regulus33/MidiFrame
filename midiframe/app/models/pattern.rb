@@ -40,7 +40,7 @@ class Pattern < ApplicationRecord
   # purpose being that the JS recorder needs to know how many clock signals should pass before exit.
   def step_length_integer=(length)
     self.total_clock_signals = CLOCK_SIGNALS_IN_1_BAR * length.to_i  
-    self.step_length = length
+  self.step_length = length
   end
  
   # set initial channel on insert so the front end has something to work with at the beginning
