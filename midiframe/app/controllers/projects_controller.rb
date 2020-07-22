@@ -109,7 +109,6 @@ class ProjectsController < ApplicationController
   # ? IF VIDEO IS NEW STRIP SOUND ETC
   def run_video_processing_if_needed
     if project_params[:video]
-      # binding.pry
       # TODO: put more params in here, eventually we will add soundful videos
       @project.video.create_video_formats
       # CompressVideoJob.perform_later(@project.video.id, @project.id)

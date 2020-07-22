@@ -25,7 +25,6 @@ class FfMpeg < ApplicationRecord
   # ? https://trac.ffmpeg.org/wiki/Seeking
   def create_slices
     pattern_blueprints.each do |command|
-      binding.pry 
       result = `#{command}`
       # puts result
     end
