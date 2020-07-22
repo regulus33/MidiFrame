@@ -67,10 +67,8 @@ class FfMpeg < ApplicationRecord
   end
 
   def sox_slice(event:, next_event:, slice_duration:)
-    "faad -w -f 2 #{project_tempfile_url} | sox -t raw -b 32 - #{generate_unique_tempfile_clip_location_url(event['timestamp'])} trim #{timestamp_to_play_in_video(event: event)} #{slice_duration}"
+    "sox #{project_tempfile_url} #{generate_unique_tempfile_clip_location_url(event['timestamp'])} trim #{timestamp_to_play_in_video(event: event)} #{slice_duration}"
   end
-
- 
 
   def generate_concat_blueprint(event)
     "file '#{generate_unique_tempfile_clip_location_url(event['timestamp'])}'\n"
@@ -79,7 +77,6 @@ class FfMpeg < ApplicationRecord
   def timestamp_to_play_in_video(event:)
     note = event['note']
     return 0.0 if note == 'start'
-
     pattern.note_stamps[note.to_s]
   end
 
