@@ -26,17 +26,18 @@
 int main()
 {
 
-	// reference this https://github.com/ederwander/PyAutoTune/blob/master/PyAutoTuner.c
-	// and this https://github.com/ederwander/PyAutoTune/blob/master/ForPy2X/Examples/FromFileAutoTune.py
-	// open a file
-	// read the frames of the audio file in some chunk size 4200 for instance
-	// for each chunk, run processSamples(buffer, FrameSize);
-	// NOW IMPORTaNT, buffer is a pointer, so we should set the bits we consume from the audio stream to this
-	// when we feed it to the processSamples we know that the buffer will be altered inside this function
-	// on completion, we append the buffer to a byte array and eventually write this collection to an mp3 or wav file.
-	//
-	//just
-	float *buffer;
+// reference this https://github.com/ederwander/PyAutoTune/blob/master/PyAutoTuner.c
+// and this https://github.com/ederwander/PyAutoTune/blob/master/ForPy2X/Examples/FromFileAutoTune.py
+// open a file
+// read the frames of the audio file in some chunk size 4200 for instance
+// for each chunk, run processSamples(buffer, FrameSize);
+// NOW IMPORTaNT, buffer is a pointer, so we should set the bits we consume from the audio stream to this
+// when we feed it to the processSamples we know that the buffer will be altered inside this function
+// on completion, we append the buffer to a byte array and eventually write this collection to an mp3 or wav file.
+//
+//just
+#define N 4096
+	float *buffer[N] = {0};
 	float concert_a = 440.0;
 	float fixed_pitch = 2.0;
 	float fixed_pull = 0.1;
@@ -66,22 +67,22 @@ int main()
 	// Read, modify and write one sample at a time
 	// int16_t sample;
 	int count, n = 0;
-	instantiateAutotalentInstance(fs);
+	instantiateAutotalentInstance(22050);
 	initializeAutotalent(&concert_a, "c", &fixed_pitch, &fixed_pull, &corr_str, &corr_smooth, &pitch_shift, &scale_rotate, &lfo_depth, &lfo_rate, &lfo_shape, &lfo_symm, &lfo_quant, &form_corr, &form_warp, &mix);
 
 	while (1)
 	{
-		count = fread(&buffer, 2, 1, pipein);
+		count = fread(&buffer, 2, N, pipein);
 		printf("count is is: %d\n", count);
 		// read one 2-byte sample
-		if (count != 1)
+		if (count != N)
 			break;
 		++n;
 		printf("looping");
 		// ** AUTOTALENT ** //
 		// & assigns the address of concert_a, key, etc to their respective parameters but they are pointers, not values
-		processSamples(&buffer, 2);
-		fwrite(&buffer, 2, 1, pipeout);
+		processSamples(&buffer, N);
+		fwrite(&buffer, 2, N, pipeout);
 		// ** AUTOTALENT ** //
 	}
 
