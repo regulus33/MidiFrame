@@ -51,8 +51,6 @@ stream = pyaud.open(format=pyaudio.paFloat32,
 
 # read the entire array of audio data
 signal = wf.readframes(-1)
-
-
 FS = wf.getframerate()
 # exposes buffer interface if int16 array type thing (not sure how you would read an int as audio?)
 intsignal = np.frombuffer(signal, dtype=np.int16)
@@ -101,6 +99,7 @@ output_file.setparams(out_params)
 # output_file.setparams(wf.getparams())
 # for each sample in the CHUNK
 
+
 for i in range(0, len(floatsignal), CHUNK):
     # Singal = chunk
     SignalChunk = (floatsignal[i:i+CHUNK])
@@ -121,7 +120,7 @@ for i in range(0, len(floatsignal), CHUNK):
         # code.interact(local=dict(globals(), **locals()))
     out = pack("%df" % len(rawfromC), *(rawfromC))
 
-    # stream.write(out)
+    stream.write(out)
     # print(out)
 
     # output_file.writeframesraw(out)
@@ -130,13 +129,10 @@ for i in range(0, len(floatsignal), CHUNK):
 
 array = np.array(NewSignal, np.float32)
 
-# array.dtype = np.int16
+array.dtype = np.int16
 # code.interact(local=dict(globals(), **locals()))
 
 output_file.writeframes(array)
-
-sf.write('myfile.wav', array, FS, format='wav',
-         subtype='FLOAT')
 
 # stop stream (4)
 stream.stop_stream()

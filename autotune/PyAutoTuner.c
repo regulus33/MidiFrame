@@ -16,63 +16,71 @@
 
 */
 
+// https://stackoverflow.com/questions/59278688/compiling-python-3-extension-module-on-mac
+
+#include <Python.h>
+#include <include/numpy/arrayobject.h>
 #include "mayer_fft.h"
 #include "autotalent.h"
 
-#define SCALE_ROTATE 0
-#define FORM_CORR 0
-#define FORM_CORR 0
-#define LFO_QUANT 0
-#define CONCERT_A 440.0
-#define FIXED_PITCH 2.0
-#define FIXED_PULL 0.1
-#define CORR_STR 1.0
-#define CORR_SMOOTH 0.0
-#define PITCH_SHIFT 1.0
-#define LFO_DEPTH 0.1
-#define LFO_RATE 1.0
-#define LFO_SHAPE 0.0
-#define LFO_SYMM 0.0
-#define FORM_WARP 0.0
-#define MIX 1.0
-#define CHUNK 32
+static PyObject *Tuner(PyObject *self, PyObject *args)
 
-main()
 {
-	// reference this https://github.com/ederwander/PyAutoTune/blob/master/PyAutoTuner.c
-	// and this https://github.com/ederwander/PyAutoTune/blob/master/ForPy2X/Examples/FromFileAutoTune.py
-	// open a file
-	// read the frames of the audio file in some chunk size 4200 for instance
-	// for each chunk, run processSamples(buffer, FrameSize);
-	// NOW IMPORTaNT, buffer is a pointer, so we should set the bits we consume from the audio stream to this
-	// when we feed it to the processSamples we know that the buffer will be altered inside this function
-	// on completion, we append the buffer to a byte array and eventually write this collection to an mp3 or wav file.
-	//
-	//just
-	float *buffer;
-	float concert_a = 440.0;
-	float fixed_pitch = 2.0;
-	float fixed_pull = 0.1;
-	float corr_str = 1.0;
-	float corr_smooth = 0.0;
-	float pitch_shift = 1.0;
-	float lfo_depth = 0.1;
-	float lfo_rate = 1.0;
-	float lfo_shape = 0.0;
-	float lfo_symm = 0.0;
-	float form_warp = 0.0;
-	float mix = 1.0;
-	// you need to declare the type of data a pointer will be to allocate memory first
-	// then assign like so
-	// key = &supplied_key
+
+	float *buffer, concert_a, fixed_pitch, fixed_pull, corr_str, corr_smooth, pitch_shift, lfo_depth, lfo_rate, lfo_shape, lfo_symm, form_warp, mix;
 	char *key;
 	int fs, FrameSize, scale_rotate, lfo_quant, form_corr;
+	PyArrayObject *arr;
+	PyObject *In_object;
+
+	if (!PyArg_ParseTuple(args, "Oiiiiiffffffffffffc", &In_object, &fs, &FrameSize, &scale_rotate, &lfo_quant, &form_corr, &concert_a, &fixed_pitch, &fixed_pull, &corr_str, &corr_smooth, &pitch_shift, &lfo_depth, &lfo_rate, &lfo_shape, &lfo_symm, &form_warp, &mix, &key))
+		return NULL;
+
+	npy_intp ArrLen[1] = {FrameSize};
+
+	Py_BEGIN_ALLOW_THREADS;
 
 	instantiateAutotalentInstance(fs);
-	// & assigns the address of concert_a, key, etc to their respective parameters.
-	initializeAutotalent(&concert_a, "c", &fixed_pitch, &fixed_pull, &corr_str, &corr_smooth, &pitch_shift, &scale_rotate, &lfo_depth, &lfo_rate, &lfo_shape, &lfo_symm, &lfo_quant, &form_corr, &form_warp, &mix);
+
+	PyArrayObject *x_array = PyArray_FROM_OTF(In_object, NPY_FLOAT, NPY_IN_ARRAY);
+	if (x_array == NULL)
+	{
+		Py_XDECREF(x_array);
+		return NULL;
+	}
+
+	buffer = (float *)PyArray_DATA(x_array);
+
+	initializeAutotalent(&concert_a, &key, &fixed_pitch, &fixed_pull, &corr_str, &corr_smooth, &pitch_shift, &scale_rotate, &lfo_depth, &lfo_rate, &lfo_shape, &lfo_symm, &lfo_quant, &form_corr, &form_warp, &mix);
 
 	processSamples(buffer, FrameSize);
 
+	arr = (PyArrayObject *)PyArray_SimpleNewFromData(1, ArrLen, NPY_FLOAT, buffer);
+
+	Py_END_ALLOW_THREADS;
+
+	return PyArray_Return(arr);
+
+	*buffer = 0;
+
 	freeAutotalentInstance();
+}
+
+static PyMethodDef Tuner_methods[] = {
+	{"Tuner", Tuner, METH_VARARGS,
+	 "Print 'Tuner Crazy' from a method defined in a C extension."},
+	{NULL, NULL, 0, NULL}};
+
+static struct PyModuleDef Tuner_definition = {
+	PyModuleDef_HEAD_INIT,
+	"Tuner",
+	"A Python module from C code.",
+	-1,
+	Tuner_methods};
+
+PyMODINIT_FUNC PyInit_AutoTune(void)
+{
+	Py_Initialize();
+	import_array();
+	return PyModule_Create(&Tuner_definition);
 }
