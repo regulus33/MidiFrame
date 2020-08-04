@@ -32,28 +32,28 @@ static PyObject *Tuner(PyObject *self, PyObject *args)
 	int fs, FrameSize, scale_rotate, lfo_quant, form_corr;
 	PyArrayObject *arr;
 	PyObject *In_object;
-
+	// args are positional, you take the value at each position and load the pointers up with the values
 	if (!PyArg_ParseTuple(args, "Oiiiiiffffffffffffc", &In_object, &fs, &FrameSize, &scale_rotate, &lfo_quant, &form_corr, &concert_a, &fixed_pitch, &fixed_pull, &corr_str, &corr_smooth, &pitch_shift, &lfo_depth, &lfo_rate, &lfo_shape, &lfo_symm, &form_warp, &mix, &key))
 		return NULL;
-
+	// set frame size inside an array, not sure why?
 	npy_intp ArrLen[1] = {FrameSize};
-
+	// allow multithreading?
 	Py_BEGIN_ALLOW_THREADS;
-
+	// make an instance of autotalent
 	instantiateAutotalentInstance(fs);
-
+	// create some semblance of a c array from the input frames
 	PyArrayObject *x_array = PyArray_FROM_OTF(In_object, NPY_FLOAT, NPY_IN_ARRAY);
 	if (x_array == NULL)
 	{
 		Py_XDECREF(x_array);
 		return NULL;
 	}
-
+	// this is a guess, but... convert the x_array python thingy to a float pointer buffer thing
 	buffer = (float *)PyArray_DATA(x_array);
 
 	initializeAutotalent(&concert_a, &key, &fixed_pitch, &fixed_pull, &corr_str, &corr_smooth, &pitch_shift, &scale_rotate, &lfo_depth, &lfo_rate, &lfo_shape, &lfo_symm, &lfo_quant, &form_corr, &form_warp, &mix);
 
-	processSamples(buffer, FrameSize);
+	processSa]mples(buffer, FrameSize);
 
 	arr = (PyArrayObject *)PyArray_SimpleNewFromData(1, ArrLen, NPY_FLOAT, buffer);
 
