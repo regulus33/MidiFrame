@@ -130,5 +130,38 @@ From Dennis Ritchie
 `pa = &a[0];`
 pa and a have identical values. Since the name of an array is a synonym for the location of the initial element, the assignment `pa=&a[0]` can also be written as `pa = a;`
 
+## Invoicehome 
+
+So today we are reviewing recurring invoices. A pretty massive feature for our users to help automate the process 
+of making an invoice. What it does: automatically creates a copy of a specific template invoice automatically and emails the user a link back to the invoice by email. They can then forward the invoice to the user. 
+
+I have some ideas for how to improve this at the moment, both in terms of performance and UX.
+
+The recurring invoice script takes a long time to run, it is very simple. A cron job calls ruby code which selects
+all recurring invoices for the day and iterates through them all, inserting a new invoice into the db for each. 
+
+The query itself is not very expensive, took 4048 milliseconds to make the query in a table of 1,000,000 rows 
+
+One idea I had was to create a job for each of these invoices instead of creating them on the flay. Then they can
+be asynchronously handled in the background by Redis. This could also do nothing since we are still essentially 
+making a DB insert into a jobs data store. 
+
+**BUT** I've read that redis is this ultra performance optimized thingy written in c... so maybe this is actually the way to go. 
+
+Seems like its just delaying the inevitable slowness of active record's CREATE method. BUT we can run sidekiq concurrently, that's a huge advantage. However...
+will the database server queue our requests even if we have like 3 threads at once making the inserts. 
+
+Anyway we can only create about 1500 invoices per minute. You have 1440 minutes in a day which means you can 
+only process a maximum of 1440 * 1500 which is 2 million, one hundred sixty thousand. 
+
+So! We enqueud about 100,000 invoice copies in about 3 minutes. The jobs run much much faster too. 
+
+Is it possible to store all the textual data in redis somewhere and then do a bulk insert rather than one by one? 
+
+
+
+https://naturaily.com/blog/ruby-on-rails-fast-data-import
+
+
 
 
