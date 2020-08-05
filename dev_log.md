@@ -132,35 +132,89 @@ pa and a have identical values. Since the name of an array is a synonym for the 
 
 ## Invoicehome 
 
-So today we are reviewing recurring invoices. A pretty massive feature for our users to help automate the process 
+So today we are reviewing recurring invoices. A pretty involved feature for our users to help automate the process 
 of making an invoice. What it does: automatically creates a copy of a specific template invoice automatically and emails the user a link back to the invoice by email. They can then forward the invoice to the user. 
 
-I have some ideas for how to improve this at the moment, both in terms of performance and UX.
+I spent a few hours digging for some weak spots in the script. 
 
 The recurring invoice script takes a long time to run, it is very simple. A cron job calls ruby code which selects
 all recurring invoices for the day and iterates through them all, inserting a new invoice into the db for each. 
 
-The query itself is not very expensive, took 4048 milliseconds to make the query in a table of 1,000,000 rows 
+The problem is that the inserting part mentioned above takes ages because we need to reconnect to the database every time we insert a new copy. 
+
+The query itself is not very expensive (the select for processable recurring_invoices), took 4048 milliseconds to make the query in a table of 1,000,000 rows 
 
 One idea I had was to create a job for each of these invoices instead of creating them on the flay. Then they can
-be asynchronously handled in the background by Redis. This could also do nothing since we are still essentially 
-making a DB insert into a jobs data store. 
+be asynchronously handled in the background by Redis.
 
-**BUT** I've read that redis is this ultra performance optimized thingy written in c... so maybe this is actually the way to go. 
+Anyway we can only create about 1500 invoices per minute synchronously with no job. You have 1440 minutes in a day which means you can 
+only process a maximum of 1440 * 1500 which is 2 million, one hundred sixty thousand in a 24 hour period. We will einevitably fall behind....
 
-Seems like its just delaying the inevitable slowness of active record's CREATE method. BUT we can run sidekiq concurrently, that's a huge advantage. However...
-will the database server queue our requests even if we have like 3 threads at once making the inserts. 
+I tested sidekiq...
 
-Anyway we can only create about 1500 invoices per minute. You have 1440 minutes in a day which means you can 
-only process a maximum of 1440 * 1500 which is 2 million, one hundred sixty thousand. 
+When handing these jobs off to sidekiq, the process of storing all 1 million jobs in redis took about 20 minutes. Not terrrible. Much better anyway.
 
-So! We enqueud about 100,000 invoice copies in about 3 minutes. The jobs run much much faster too. 
+At 1:28 we hav 1,000,002 deafult jobs enqueued which is where I stored copy invoice. 
 
-Is it possible to store all the textual data in redis somewhere and then do a bulk insert rather than one by one? 
+By 2:09 we have 954,714 default
 
+45,286 in 41 minutes 
+
+thats about 1 thousand per minute...
+
+My machine is using a half gigabyte to process these jobs, I haven;t tried increasing workers but I'm assuming this could be adjusted
+
+and go much faster on the servers. 
+
+But something is maybe still missing. 
+
+Isn't there a more efficient way to insert a lot of records? 
+
+https://github.com/zdennis/activerecord-import
+
+I peaked at this. It looks like it could help but I'm not sure how we would atomize the copy invoice and update recurring_invoice next_date 
+
+with this bulk insert method. 
+
+Maybe worth trying out. 
 
 
 https://naturaily.com/blog/ruby-on-rails-fast-data-import
+
+# August 5th 2020
+
+
+## Invoicehome 
+
+Today I walked myself through Marketing Emails tool and polished the validations to be a bit more specific. 
+
+we were only telling the marketeers that they were using the wrong language in every possible failed validation which was kind of dumb so I fixed that and updated the tests. 
+
+I also added an inline preview for the marketing email that gets rendered from the markdown, I just render the 
+same url where preview comes from in an iframe next to the edit form for emails. Everytime you hit save you see 
+the updated html. Pretty easy to add in and adds a lot of value to the tool. 
+
+At the end of the day I skimmed some of the new issues assiged to me to sync with android. Still need to check 
+in a bit deeper. 
+
+I'm 99% done with an issue where we need to show a bar to anonymous users asking them to update their email. 
+All that is left is to make sure the bar doesn't hang out if you hit back after updating your email. The data seems to hang around in the widget tree. Hoping I might be able to just override on back pressed somehow. If not I will need to dive into Jiri and Brad's Rube Goldberg machine where they store state in all sorts of fucky ways to make lots of weird nested conditions work properly. I guess I would just store some boolean like USER_UPDATED_EMAIL and make sure to refresh the screen on back pressed if TRUE. 
+
+Waiting on translations for above already. I'm being proactive and shit. 
+
+## MidiFrame 
+
+Still need to deploy this fucking app! And I keep making lame excuses for why I haven't done anything yet. 
+So tonight I will Docker Contain midiframe (follow that docker tutorial: https://docker-curriculum.com/
+Spin up a rails instance there and get my shit deployed boi. 
+
+I guess the best thing to try to accomplish tonight is just getting my rails app to run on a docker instance. 
+
+Python and Rails can easily talk to eachother over http. 
+
+Actually, while its fresh in my mind, I'll just do what I said above but with the autotune container. It will be simpler and more of a clear learning experience. I imagine rails should be much easier to setup after doing the same with a simple Python server. 
+
+
 
 
 
