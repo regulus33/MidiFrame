@@ -53,7 +53,7 @@ static PyObject *Tuner(PyObject *self, PyObject *args)
 
 	initializeAutotalent(&concert_a, &key, &fixed_pitch, &fixed_pull, &corr_str, &corr_smooth, &pitch_shift, &scale_rotate, &lfo_depth, &lfo_rate, &lfo_shape, &lfo_symm, &lfo_quant, &form_corr, &form_warp, &mix);
 
-	processSa]mples(buffer, FrameSize);
+	processSamples(buffer, FrameSize);
 
 	arr = (PyArrayObject *)PyArray_SimpleNewFromData(1, ArrLen, NPY_FLOAT, buffer);
 
