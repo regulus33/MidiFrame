@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory
 import os
 import random
 from tune_file import tune_file
@@ -6,8 +6,8 @@ from werkzeug.utils import secure_filename
 import code
 
 app = Flask(__name__)
-temp = f'{app.root_path}/tmp'
-app.config['UPLOAD_FOLDER'] = temp
+TEMP = f'{app.root_path}/tmp'
+app.config['UPLOAD_FOLDER'] = TEMP
 # app.config['MAX_CONTENT_PATH'] = 10000000000
 
 
@@ -16,12 +16,13 @@ def index():
     if request.method == 'POST':
         f = request.files['file']
         input_file = secure_filename(f.filename)
-        code.interact(local=dict(globals(), **locals()))
-        input_full_path = f'{temp}/{input_file}'
+        # code.interact(local=dict(globals(), **locals()))
+        input_full_path = f'{TEMP}/{input_file}'
         f.save(input_full_path)
         tune_file(input_full_path, "c")
 
-        return 'file uploaded successfully'
+        return send_from_directory(TEMP, input_file, as_attachment=True)
+
     else:
         return render_template("index.html")
 
