@@ -19,7 +19,7 @@
 // https://stackoverflow.com/questions/59278688/compiling-python-3-extension-module-on-mac
 
 #include <Python.h>
-#include <include/numpy/arrayobject.h>
+#include <numpy/arrayobject.h>
 #include "mayer_fft.h"
 #include "autotalent.h"
 
