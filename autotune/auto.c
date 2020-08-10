@@ -22,11 +22,12 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <math.h>
+#include "zuner.c"
 
 int main()
 {
 
-// reference this https://github.com/ederwander/PyAutoTune/blob/master/PyAutoTuner.c
+// reference this https://github.com/ederwander/PyAutoTune/blob/master/PyAutoTunerboi.c
 // and this https://github.com/ederwander/PyAutoTune/blob/master/ForPy2X/Examples/FromFileAutoTune.py
 // open a file
 // read the frames of the audio file in some chunk size 4200 for instance
@@ -37,6 +38,7 @@ int main()
 //
 //just
 #define N 128
+#define FRAME_RATE 22050
     float buffer[N];
     float concert_a = 440.0;
     float fixed_pitch = 2.0;
@@ -53,7 +55,7 @@ int main()
     // you need to declare the type of data a pointer will be to allocate memory first
     // then assign like so
     // key = &supplied_key
-    char *key;
+    // char *key;
     int fs, FrameSize, scale_rotate, lfo_quant, form_corr;
 
     // Launch two instances of FFmpeg, one to read the original WAV
@@ -62,13 +64,13 @@ int main()
     FILE *pipein;
     FILE *pipeout;
     pipein = popen("ffmpeg -i teste.wav -f s16le -ac 1 -", "r");
-    pipeout = popen("ffmpeg -y -f s16le -ar 22050 -ac 1 -i - tuned.wav", "w");
+    pipeout = popen("ffmpeg -y -f s32le -ar 22050 -ac 1 -i - tuned.wav", "w");
 
     // Read, modify and write one sample at a time
     // int16_t sample;
     int count, n = 0;
-    instantiateAutotalentInstance(441177);
-    initializeAutotalent(&concert_a, "c", &fixed_pitch, &fixed_pull, &corr_str, &corr_smooth, &pitch_shift, &scale_rotate, &lfo_depth, &lfo_rate, &lfo_shape, &lfo_symm, &lfo_quant, &form_corr, &form_warp, &mix);
+    // instantiateAutotalentInstance(441177);
+    // initializeAutotalent(&concert_a, "c", &fixed_pitch, &fixed_pull, &corr_str, &corr_smooth, &pitch_shift, &scale_rotate, &lfo_depth, &lfo_rate, &lfo_shape, &lfo_symm, &lfo_quant, &form_corr, &form_warp, &mix);
 
     while (1)
     {
@@ -79,8 +81,10 @@ int main()
         {
             int samples_left = N - count;
             // & assigns the address of concert_a, key, etc to their respective parameters but they are pointers, not values
-            processSamples(buffer, 2);
-            fwrite(&buffer, 2, samples_left, pipeout);
+            // processSamples(buffer, FRAME_RATE);
+            tunerboi(samples_left, FRAME_RATE, scale_rotate, lfo_quant, form_corr, concert_a, fixed_pitch, fixed_pull, corr_str, corr_smooth, pitch_shift, lfo_depth, lfo_rate, lfo_shape, lfo_symm, form_warp, mix, *"c", buffer);
+            fwrite(buffer, 2, samples_left, pipeout);
+            *buffer = 0;
             break;
         }
 
@@ -88,8 +92,9 @@ int main()
         printf("looping");
         // ** AUTOTALENT ** //
         // & assigns the address of concert_a, key, etc to their respective parameters but they are pointers, not values
-        processSamples(buffer, 2);
-        fwrite(&buffer, 2, N, pipeout);
+        tunerboi(N, FRAME_RATE, scale_rotate, lfo_quant, form_corr, concert_a, fixed_pitch, fixed_pull, corr_str, corr_smooth, pitch_shift, lfo_depth, lfo_rate, lfo_shape, lfo_symm, form_warp, mix, *"c", buffer);
+        fwrite(buffer, 2, N, pipeout);
+        *buffer = 0;
 
         // ** AUTOTALENT ** //
     }
