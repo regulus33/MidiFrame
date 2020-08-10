@@ -215,6 +215,31 @@ Python and Rails can easily talk to eachother over http.
 Actually, while its fresh in my mind, I'll just do what I said above but with the autotune container. It will be simpler and more of a clear learning experience. I imagine rails should be much easier to setup after doing the same with a simple Python server. 
 
 
+# August 10th, 2020 
+
+## invoicehome 
+
+### Refresh tokens. 
+So far, the change has made a lot of impact on a lot of files. To list a few areas of the app
+that should be tested:
+
+Contact Service, try to send support an email, looks like the variable names were changed there.
+
+So far everything seems to work fine and I'm not as worried about side effects but still, tomorrow I will 
+test all these integrations thoroughly. The outskirts. 
+
+## MidiFrame 
+
+I've changed my mind again and have decided to dive headfirst into C language, the goal is to read C Programming Language by 
+Dennis Ritchie and do each excercise. Pace myself and absorb everything. It will pay off MASSIVELY in the future to know c. Not only for job interviews and general knowledge of performance, but I will be able to read low level source code for programs like SQL, Bitcoin and Ableton. Will be able to write custom programs to fit into midi frame. C is going to be my Specialty!!! 
+
+Left off on:    
+ 
+
+
+
+
+
 
 
 

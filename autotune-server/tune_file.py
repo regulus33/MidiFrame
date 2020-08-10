@@ -13,7 +13,7 @@ import soundfile as sf
 
 
 def tune_file(input_file, key):
-
+    print("input file : ", input_file)
     FORM_CORR = 0
     SCALE_ROTATE = 0
     LFO_QUANT = 0
@@ -31,7 +31,7 @@ def tune_file(input_file, key):
     MIX = 1.0
     KEY = key.encode()
     CHUNK = 4096
-
+    # code.interact(local=dict(globals(), **locals()))
     wf = open(input_file, 'rb')
     # name = '{time}.wav'
     # output_file = open(name, 'wb')
