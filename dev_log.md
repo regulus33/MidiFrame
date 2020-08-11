@@ -233,7 +233,17 @@ test all these integrations thoroughly. The outskirts.
 I've changed my mind again and have decided to dive headfirst into C language, the goal is to read C Programming Language by 
 Dennis Ritchie and do each excercise. Pace myself and absorb everything. It will pay off MASSIVELY in the future to know c. Not only for job interviews and general knowledge of performance, but I will be able to read low level source code for programs like SQL, Bitcoin and Ableton. Will be able to write custom programs to fit into midi frame. C is going to be my Specialty!!! 
 
-Left off on:    
+Left off on: 17
+
+# August 11th 2020
+
+## MIDIFRAME 
+
+In c, an argument passed to a function that is an array is noth the value of the array (like every other data type) but instead, its the location in memory of the first element of the array. 
+
+
+
+
  
 
 
