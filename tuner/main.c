@@ -20,7 +20,7 @@
 #include <sndfile.h>
 #include "autotalent.h"
 
-#define BUF_SIZE 2048
+#define BUF_SIZE 4098
 #define CONCERT_A 440.0
 #define KEY_C 'c'
 #define FIXED_PITCH 0.0
@@ -30,13 +30,13 @@
 #define PITCH_SHIFT 0.0
 #define SCALE_ROTATE 0
 #define LFO_DEPTH 0.0
-#define LFO_RATE 5.0
+#define LFO_RATE 0.0
 #define LFO_SHAPE 0.0
 #define LFO_SYMM 0.0
 #define LFO_QUANT 0
-#define FORM_CORR 0
+#define FORM_CORR 1
 #define FORM_WARP 0.0
-#define MIX 0.4
+#define MIX 1.0
 
 int main(int argc, char **argv)
 {
