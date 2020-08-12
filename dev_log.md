@@ -241,8 +241,16 @@ Left off on: 17
 
 In c, an argument passed to a function that is an array is noth the value of the array (like every other data type) but instead, its the location in memory of the first element of the array. 
 
+# August 13th 2020 
 
+Today at work I fixed a couple of UI bugs that were bothering me. Missing some borders in payments and needed to add a darker grey to a scaffold. Wow, this is really fucking boring to write and read. 
 
+I checked the icloud sign in service and updated the tests. Tested thoroughly on my phone and updated the autoatic test. 
+So now we are good. 
+
+MidiFrame. 
+
+Thank God! Yesterday I found a CMD line tool to autotune files! I just added a funciton to it to read input from user to whitelist keys. It will always be 12 indexes to 12 semitones. Anyway, I'm shooting for being in production by next weekend. 
 
  
 
