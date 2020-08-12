@@ -19,6 +19,8 @@
 #include <string.h>
 #include <sndfile.h>
 #include "autotalent.h"
+#include <errno.h>  // for errno
+#include <limits.h> // for INT_MAX
 
 #define BUF_SIZE 4098
 #define CONCERT_A 440.0
@@ -37,6 +39,32 @@
 #define FORM_CORR 1
 #define FORM_WARP 0.0
 #define MIX 1.0
+
+// convert argv input to sring for keys
+int string_to_int(char *str)
+{
+  char *p;
+  int num;
+
+  errno = 0;
+  long conv = strtol(str, &p, 10);
+
+  // Check for errors: e.g., the string does not represent an integer
+  // or the integer is larger than int
+  if (errno != 0 || *p != '\0' || conv > INT_MAX)
+  {
+    // Put here the handling of the error, like exiting the program with
+    // an error message
+    exit(1);
+  }
+  else
+  {
+    // No error
+    num = conv;
+    printf("%d\n", num);
+    return num;
+  }
+}
 
 int main(int argc, char **argv)
 {
@@ -58,16 +86,30 @@ int main(int argc, char **argv)
   int form_corr = FORM_CORR;
   float form_warp = FORM_WARP;
   float mix = MIX;
-
-  if (argc != 3)
+  int notes[12];
+  // input file, outputfile plus 12 semitines
+  if (argc != 15)
   {
     /* display not so helpful message */
-    printf("Usage: autotalent <in file> <out file>\n");
+    printf("Usage: autotalent <in file> <out file> 0 0 0 0 0 0 0 0 0 0 0 0\n");
   }
   else
   {
     if (strcmp(argv[1], argv[2]) != 0)
     {
+      // ARGV 0,1,0,1, 0, 1
+      notes[0] = string_to_int(argv[3]);
+      notes[1] = string_to_int(argv[4]);
+      notes[2] = string_to_int(argv[5]);
+      notes[3] = string_to_int(argv[6]);
+      notes[4] = string_to_int(argv[7]);
+      notes[5] = string_to_int(argv[8]);
+      notes[6] = string_to_int(argv[9]);
+      notes[7] = string_to_int(argv[10]);
+      notes[8] = string_to_int(argv[11]);
+      notes[9] = string_to_int(argv[12]);
+      notes[10] = string_to_int(argv[13]);
+      notes[11] = string_to_int(argv[14]);
       /* open input files through libsndfile */
       if_info = (SF_INFO *)calloc(1, sizeof(SF_INFO));
       ifp = sf_open(argv[1], SFM_READ, if_info);
