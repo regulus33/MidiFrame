@@ -133,7 +133,7 @@ int main(int argc, char **argv)
       {
         /* set up autotalent */
         instantiateAutotalentInstance(if_info->samplerate);
-        initializeAutotalent(&concert_a, &key_c, &fixed_pitch, &fixed_pull, &corr_str, &corr_smooth, &pitch_shift, &scale_rotate, &lfo_depth, &lfo_rate, &lfo_shape, &lfo_symm, &lfo_quant, &form_corr, &form_warp, &mix);
+        initializeAutotalent(&concert_a, notes, &fixed_pitch, &fixed_pull, &corr_str, &corr_smooth, &pitch_shift, &scale_rotate, &lfo_depth, &lfo_rate, &lfo_shape, &lfo_symm, &lfo_quant, &form_corr, &form_warp, &mix);
         printf("autotalent initialized with samplerate %d\n", if_info->samplerate);
 
         /* set up buffer we're running through autotalent */
