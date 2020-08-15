@@ -252,6 +252,34 @@ MidiFrame.
 
 Thank God! Yesterday I found a CMD line tool to autotune files! I just added a funciton to it to read input from user to whitelist keys. It will always be 12 indexes to 12 semitones. Anyway, I'm shooting for being in production by next weekend. 
 
+
+# August 14th, 2020 
+
+I just had the image of where midiframe needs to go. 
+
+Imagine a artfully optimized javascript front end, the code is memory aware, memory efficient and 
+utilizes every resource available in the browser. Read up on 
+
+https://developers.google.com/web/tools/chrome-devtools/rendering-tools
+https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers
+
+we have an extensive database of free/open source videos that are available to all users, out of the box, no uploading 
+is necessary. Perhaps its not even possible unless you pay. 
+
+The branding is kind of Punk, rustic. Unapalogetically unsophisticated.
+We have hand drawn logos and art all over the place, even the buttons are hand drawn graphics. 
+
+Its clean but has personality. 
+
+Its simple. 
+
+And its run by a badass who has mastered the tool. 
+
+THATS what we're going for. Think Bastl, think early Teenage Engineering
+
+Keep mind open to artist/engineers who are interested in collabing. 
+
+
  
 
 
