@@ -1,2 +1,243 @@
 @import "materialize-css/dist/css/materialize";
-@import "video.js/dist/video-js.css"
+@import "video.js/dist/video-js.css";
+
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, or any plugin's
+ * vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ *= require_tree .
+ *= require_self
+ */
+
+.text-center {
+  text-align: center;
+}
+
+html {
+  background-color: #3e3f40 !important;
+  color: white !important;
+}
+
+span {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+/* for keyboard */
+
+span.note-title {
+  padding: 0px;
+  letter-spacing: 1;
+}
+
+/* PROJECTS */
+
+#newProject, #deleteProject, #new_pattern_button, #create_new_pattern, #previewProject {
+  float: right;
+  margin: 20px;
+}
+
+.hidden {
+  display: none;
+}
+
+.visible {
+  display: inherit;
+}
+
+body, a#upload_video_button, a#upload_font_button {
+  letter-spacing: 7px !important;
+}
+
+h1 {
+  letter-spacing: 13px;
+  padding: 0px 10px 0px 10px;
+}
+
+video.video_preview {
+  width: 100%;
+}
+
+/* PATTERN */
+
+div#pattern-container {
+  height: 60%;
+  width: 100%;
+}
+
+/* PIANO */
+
+/* * {
+  box-sizing:border-box
+} */
+
+/* piano keys */
+
+ul {
+  padding: 0;
+  width: 100%;
+  display: table;
+  table-layout: fixed;
+  /* optional */
+}
+
+ul li {
+  display: table-cell;
+  width: auto;
+  text-align: center;
+}
+
+li.grey input[type='text'] {
+  color: white !important;
+}
+
+li.white input[type='text'] {
+  color: #8a8a8a !important;
+}
+
+li input[type="text"]:focus, li input[type="text"] {
+  border-bottom: none!important;
+  box-shadow: none!important;
+}
+
+li input[type='text'] {
+  font-size: 10px !important;
+  text-align: center;
+  margin-bottom: 0px !important;
+}
+
+li:last-child {
+  border-right: 1px solid#262626;
+}
+
+li.grey {
+  box-shadow:-1px -1px 2px rgba(255,255,255,0.2) inset,0 -2px 2px 3px rgba(0,0,0,0.6) inset,0 1px 2px rgba(0,0,0,0.5);
+  background:linear-gradient(to top,#444 0%,#222 100%);
+  color: #e0e0e0 !important;
+  background-color: black;
+  border:1px solid #000;
+  border-radius:0 0 3px 3px;
+}
+
+li.white {
+  box-shadow: -1px -1px 2px rgba(125, 125, 125, 0.2) inset, 0 -2px 2px 3px rgba(148, 138, 127, 0.6) inset, 0 1px 2px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(90deg, rgba(226,226,226,1) 0%, rgba(251,251,251,1) 48%, rgba(230,230,230,1) 100%);
+  color: #656565 !important;
+  border:1px solid rgb(77, 76, 76);
+  border-radius:0 0 5px 5px;
+}
+
+li.grey.active, li.grey.selected {
+  /* this gives you those definition lines on the piano keys  */
+  box-shadow:-1px -1px 2px rgba(255,255,255,0.2) inset,0 -2px 2px 3px rgba(0,0,0,0.6) inset,0 1px 2px rgba(0,0,0,0.5);
+  background-color: #6666;
+  background:linear-gradient(to top,rgb(0,128,128) 0%,#222 100%);
+}
+
+li.white.active, li.white.selected {
+  box-shadow:-1px -1px 2px rgba(66, 115, 134, 0.2) inset,0 -2px 2px 3px rgba(84, 84, 84, 0.6) inset,0 1px 2px rgba(92, 92, 92, 0.5);
+  border-top:1px solid #777 !important;
+  border-left:1px solid rgb(116, 116, 116) !important;
+  border-bottom:1px solid rgb(87, 87, 87) !important;
+  background:linear-gradient(to top,rgb(0,128,128) 0%,rgb(255, 255, 255) 100%);
+}
+
+li.white.selected input[type="text"]:focus {
+  color: white !important;
+}
+
+
+#octave-minus {
+  float: left;
+  margin: 10px;
+}
+
+#octave-plus {
+  float: right;
+  margin: 10px;
+}
+
+/* overides */
+
+.progress{
+  background-color: #a0a0a0 !important;
+}
+
+.progress .determinate {
+  background-color: black !important;
+}
+
+.progress .indeterminate {
+  background-color: black !important;
+}
+
+a.project-item, div.pattern-item {
+  color: white !important;
+  background-color: #3e3f40 !important;
+  transition: background-color 1s;
+}
+
+a.project-item:hover, li.pattern-item:hover {
+  background-color: #444444 !important;
+}
+
+div.card-panel {
+  background-color: #3e3f40 !important;
+}
+
+input[type="text"]{
+  color: white !important;
+}
+
+/* record and complete in octave button */
+
+a#record , a#complete, a#save, a#settings, a#adjust, a#format, a#random_all, a#random_one {
+  margin-right: 10px;
+  top: 9px;
+}
+
+a.pattern-link {
+  color: white;
+}
+
+a#record.open-recording-session i {
+  color: red;
+}
+
+.pattern-settings-link {
+  color: white;
+  font-style: italic;
+}
+
+#note-text-text {
+  position: relative;
+  font-size: 70px;
+  display: inline-block;
+  height:20px;
+  width:100%;
+  z-index: 10;
+  text-align: center;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

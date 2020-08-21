@@ -19,7 +19,7 @@
 }
 
 html {
-  background-color: #3e3f40;
+  background-color: #3e3f40 !important;
   color: white !important;
 }
 
