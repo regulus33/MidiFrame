@@ -36,3 +36,14 @@ lbsndfile
 sox 
 
 
+
+## AWS
+
+https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ConnectToPostgreSQLInstance.html
+
+connect 
+```
+psql --host=database-1.cm6q4ckkj80z.us-west-2.rds.amazonaws.com --port=5432 --username=postgres --password --dbname=postgres        
+```
+
+

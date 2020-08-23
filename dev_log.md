@@ -252,7 +252,6 @@ MidiFrame.
 
 Thank God! Yesterday I found a CMD line tool to autotune files! I just added a funciton to it to read input from user to whitelist keys. It will always be 12 indexes to 12 semitones. Anyway, I'm shooting for being in production by next weekend. 
 
-
 # August 14th, 2020 
 
 I just had the image of where midiframe needs to go. 
@@ -278,6 +277,15 @@ And its run by a badass who has mastered the tool.
 THATS what we're going for. Think Bastl, think early Teenage Engineering
 
 Keep mind open to artist/engineers who are interested in collabing. 
+
+
+# August 17th, 2020 
+
+## Invoice Home 
+
+Yesterday I went through all the closed issues in flutter back to early May and made sure all issues in Android have been implemented in iOS or acknowledged as not relevant. At the end of the day I worked on tests for Ratings, will continue and finish today. Today should submit version for review as 4.3.21
+
+
 
 
  

@@ -51,38 +51,17 @@ all run
 
 `brew install sox`
 
-3. PyAutoTune for quantizing video audio
 
-https://github.com/ederwander/PyAutoTune
+## Gotchas
 
-a. install python if you dont have it 
+### Rails master key
 
-b. install pip `brew install python`
+just grab from bitwarden and replace contents of file in `config/master.key`
+with `h89787h739937hr` or whatever the latest key is. 
 
-c. `pip3 install numpy`
+## TODOS FOR PRODUCTION
 
-d. there will be a numpy not imported error 
-
-
-```
-First, in python, import numpy and numpy.get_include() to get the numpy source file location, which is /usr/local/lib/python2.7/site-packages/numpy/core/include/numpy in my case.
-
-Then, copy the directory to global include directory by cp -r /System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python/numpy/core/include /usr/local/include.
-```
-
-d. install a c compiler if there is none 
-
-e. `sudo python setup.py install` 
-
-For input audio file and output:
-
-`brew install libsndfile`
-
-f. `pip3 install scikits.audiolab`
-
-NOTE; there was an import error initially that prevented us from importing numpy. 
-just check voer this: https://github.com/andersbll/cudarray/issues/25 for troubleshooting on new machines. 
-
-NOTE; there seems to be a sub directory with more up to date tooling if required, check `ForPy2X` subfolder.
-
-Now you have installed pyautotune,
+properly install redis for production i.e. server restarts and etc. 
+https://redis.io/topics/quickstart 
+also 
+https://medium.com/@thomasroest/properly-setting-up-redis-and-sidekiq-in-production-on-ubuntu-16-04-f2c4897944b5
