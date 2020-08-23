@@ -10,7 +10,11 @@ div class="card-panel z-depth-5"
    = f.text_field :channel, placeholder: @pattern.channel 
    label step length
    = f.text_field :step_length, placeholder: @pattern.step_length 
-   
+   a id="upload_font_button" class="waves-effect waves-light btn grey darken-4" style="color:white" 
+    label for="midi-file" midi file
+   span file text here
+   = f.file_field :midi_file, id: "midi-file", style: "display:none;", data: { action: "change->midi-parse#onFilePick", target: "midi-parse.midiFile"} 
+    
    = f.submit "S A V E", class: "waves-effect waves-light btn grey darken-4 submit"
 
 =render 'pattern_settings_action_buttons'
