@@ -32,7 +32,7 @@ of note in the realm of vowels are **dipthongs** or 'diphthongy' in czech, they 
 
 ## some consonants that change 
 
-Sometimes certain consonants will morph into their voiceless pair when shifted to the end of a word (there could be otheer conditions as well) 
+Sometimes certain consonants will morph into their voiceless pair when shifted to the end of a word (there could be other conditions as well) 
 
 in particular `v-f` and `b-p` if `b` becomes 'p' at the end of the word as in `fab` would be pronounced `fap` :-)
 
@@ -63,6 +63,51 @@ most nouns ending in  any consonant
 **Neuter** 
 
 most nouns ending in `o` or `i'`
+
+## Plurality intro 
+
+the most common plural form for masculine inanimate and feminine nouns is `y` 
+
+neuter that end in `o` would be `a`
+
+the rest of the nouns usually end in `e`
+
+## Cases 
+
+nominative, accusative, genitive, dative, locative, instrumental and vocative
+
+NOMINATIVE: the regular version of the noun
+
+`David runs`
+
+ACCUSATIVE: the object of a verb 
+
+`I am looking for David|a`
+
+GENITIVE: similar to english `of` 
+
+`a letter for david|a`
+
+DATIVE: to/for 
+
+`He wrote a letter to David|ovi`
+
+LOCATIVE: denotes a fixed location 
+
+`A letter about David|ovi`
+
+INSTRUMENTAL: by / with .
+
+`S/he is going there with
+David|em.`
+
+VOCATIVE: calling people 
+
+`David|e! Come here`
+
+
+
+
 
 
 
