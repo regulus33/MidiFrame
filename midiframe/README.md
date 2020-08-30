@@ -52,6 +52,17 @@ all run
 `brew install sox`
 
 
+## Midi 
+
+### Delta time and frames in midi 
+
+Midi connections, just like any stream are fed to the consumer in frames. Delta time tells us the time a note occurs at since the last frame. Delta time is the time ellapsed between frames. 
+
+in midi parsing, we see notes tied to delta time. The delta time combined with the time division will allow us to convert delta time to real time. Time division is either in ticks per pulse or frames per second.
+
+        
+
+
 ## Gotchas
 
 ### Rails master key

@@ -1,5 +1,5 @@
 
-div class="card-panel z-depth-5"
+div data-controller="patterns--midi-parser" class="card-panel z-depth-5"
  = form_for @pattern, url: { action: 'update' },  html: { class: 'form-group'} do |f|
    
    label Name
@@ -13,7 +13,7 @@ div class="card-panel z-depth-5"
    a id="upload_font_button" class="waves-effect waves-light btn grey darken-4" style="color:white" 
     label for="midi-file" midi file
    span file text here
-   = f.file_field :midi_file, id: "midi-file", style: "display:none;", data: { action: "change->midi-parse#onFilePick", target: "midi-parse.midiFile"} 
+   = f.file_field :midi_file, id: "midi-file", style: "display:none;", data: { action: "change->patterns--midi-parser#onFilePick", target: "patterns--midi-parser.midiFile"} 
     
    = f.submit "S A V E", class: "waves-effect waves-light btn grey darken-4 submit"
 
