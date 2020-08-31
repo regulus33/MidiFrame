@@ -11,6 +11,8 @@ class Pattern < ApplicationRecord
   # ? name of midi notes signaling absolute beginning and end of a clip 
   START = "start"
   STOP = "stop"
+  FILE = "FILE"
+  # LIVE = "LIVE" # so far this is unused, we just assume nil is LIVE 
   # ? To be joined as one entire project 
   has_one_attached :clip
   belongs_to :project
@@ -77,14 +79,20 @@ class Pattern < ApplicationRecord
   def remove_events_not_selected_by_user(events) 
     events.select{|e| self.note_stamps.keys.include?(e[:note].to_s) || [ START, STOP ].include?(e[:note])}
   end
-
+  # if this is midi from recording session
   # make start time 0 and calibrate each successive event by subtracting original start time from their timestamp value
-  # and saving the result. 
-  def calibrate_midi_event_time_stamps(events) 
+  # and saving the result.
+  # else, make the start 
+  def calibrate_midi_event_time_stamps(events)
+    if( midi_from_file?)
+      return events if events.first["timestamp"] == 0  
+      # insert a new 'start' event if nothing exists at 0 
+      events.insert(0, { note: "start", timestamp: 0 })
+    end
     start_time = events.find{|e|e["note"] == "start"}["timestamp"]
     events.map do |event|
       { note: event["note"], timestamp: event["timestamp"] - start_time }
-    end
+    end   
   end
 
   # false if no font attached to parent project
@@ -123,7 +131,7 @@ class Pattern < ApplicationRecord
     # * 2. 
     ffmpeg = FfMpeg.create(
       pattern: self, 
-      project_tempfile_url: source_file, 
+      project_tempfile_url: source_file,
       processed_tempfile_url: processed_video,
       role: type
     )
@@ -195,5 +203,11 @@ class Pattern < ApplicationRecord
   def merge_audio_and_video(audio_path:, video_path:, output_path:) 
     `ffmpeg -i #{video_path} -i #{audio_path} -c:v copy -c:a aac #{output_path}`
   end
-
+  
+  # used to determine if midi should be callibrated, when from file our timestamps do not 
+  # require any downshifting. 
+  def midi_from_file? 
+    return true if self.midi_source == FILE 
+    return false 
+  end
 end

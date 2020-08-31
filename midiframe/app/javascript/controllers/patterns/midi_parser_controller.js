@@ -1,9 +1,10 @@
-import { Controller } from "stimulus"
-import { Midi } from '@tonejs/midi'
+import { Controller } from "stimulus";
+import { Midi } from '@tonejs/midi';
+import { saveProject } from '../../helpers/network';
 
 export default class extends Controller {
 
-  static targets = ['midiFile']
+  static targets = ['midiFile', 'projectId', 'patternId'];
   // open midi file, 
   // convert each note on event to a midi frame note 
   // { note: event.note.number, timestamp: 234 }
@@ -12,6 +13,7 @@ export default class extends Controller {
   //   MidiParser.parse( this.midiFileTarget, (obj)=>{
   //     console.log(obj);
   //  });
+    // console.log();  
     this.formatMidiFileData = this.formatMidiFileData.bind(this);
   }
 
@@ -29,18 +31,27 @@ export default class extends Controller {
     const ppqn = midi.header.ppq; 
     const tickDurationInMilliseconds = 60000 / (bpm * ppqn);
     const formattedForBackend = this.realtTimeEventsArray(midi.tracks[0].notes, tickDurationInMilliseconds);
-    console.log(formattedForBackend);
+    const projectId = this.element.getAttribute("data-midi-parser-projectId");
+    const patternId = this.element.getAttribute("data-midi-parser-patternId");
+    const channel = this.element.getAttribute("data-midi-parser-channel");
+    return saveProject({
+      midiEvents: formattedForBackend,
+      patternId: patternId,
+      projectId: projectId,
+      channel: channel,
+      pianoTextData: {},
+      pianoData: {},
+      midiType: "FILE",
+    });
     // TODO: post to backend and process me!!!! 
-    // TODO: maybe do something with overall duration
-    // TODO: filter our chords. 
-
+    // insert a start time.. 
   }
   
 
   realtTimeEventsArray(events, tickDuration) {
     return events.map((event) => {
-      return { noteNumber: event.midi, timestamp: (event.ticks * tickDuration) };
-    });
+      return { note: event.midi, timestamp: (event.ticks * tickDuration) };
+    }); 
   }
 
  

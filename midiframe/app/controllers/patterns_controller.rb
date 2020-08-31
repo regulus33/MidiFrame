@@ -42,6 +42,8 @@ class PatternsController < ApplicationController
         # *midi_events,
         # *note_stamps
         # *channel
+        binding.pry 
+        @pattern.midi_source = midi_type_params
         @pattern.channel = pattern_params[:channel].to_i
         @pattern.note_stamps = note_stamps_params
         @pattern.text_stamps = text_stamps_params
@@ -50,8 +52,6 @@ class PatternsController < ApplicationController
         # ? if user wants to clear midi events they can just delete the pattern
         @pattern.midi_events_array = midi_events_params if midi_events_params.any?
         @pattern.save!
-
-        #render json: 
         msg
       end
       # ? currently this request originates only from pattern_settings, else it will be a JSON from pattern edit
@@ -106,6 +106,10 @@ class PatternsController < ApplicationController
   def note_stamps_params
     # params.require(:piandData).permit!
     params[:pianoData]
+  end
+
+  def midi_type_params 
+    params[:midiType]
   end
 
   def text_stamps_params

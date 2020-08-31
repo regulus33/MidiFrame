@@ -1,24 +1,17 @@
 
-div data-controller="patterns--midi-parser" class="card-panel z-depth-5"
- = form_for @pattern, url: { action: 'update' },  html: { class: 'form-group'} do |f|
-   
+div data-controller="patterns--midi-parser" data-midi-parser-patternId=@pattern.id data-midi-parser-channel=@pattern.channel data-midi-parser-projectId=@project.id class="card-panel z-depth-5"
+ = form_for @pattern, url: { action: 'update' },  html: { class: 'form-group' } do |f|
    label Name
    = f.text_field :name, placeholder: @pattern.name
    label order in sequence
    = f.text_field :order_in_sequence, placeholder: @pattern.order_in_sequence
    label channel
    = f.text_field :channel, placeholder: @pattern.channel 
-   label step length
+   label step length  
    = f.text_field :step_length, placeholder: @pattern.step_length 
    a id="upload_font_button" class="waves-effect waves-light btn grey darken-4" style="color:white" 
     label for="midi-file" midi file
    span file text here
    = f.file_field :midi_file, id: "midi-file", style: "display:none;", data: { action: "change->patterns--midi-parser#onFilePick", target: "patterns--midi-parser.midiFile"} 
-    
    = f.submit "S A V E", class: "waves-effect waves-light btn grey darken-4 submit"
-
-=render 'pattern_settings_action_buttons'
-
-
-
-   
+=render 'pattern_settings_action_buttons'   
