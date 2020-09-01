@@ -1,21 +1,21 @@
 
 = render 'inline_styles/autotune_piano'
 div id="tune-form"
-  div class="tune-col card-panel z-depth-5" id="autotune-piano" style="width:600px; height:400px"
+  div data-controller="projects--autotune" class="tune-col card-panel z-depth-5" id="autotune-piano" style="width:600px; height:400px"
     h5 allowed notes:
     ul class="set"
-      li class="white b" id="f"f
-      li class="black as" id="fs"f#
-      li class="white a" id="g"g
-      li class="black gs" id="gs"g#
-      li class="white g"a
-      li class="black fs"a#
-      li class="white f" id="b"b
-      li class="white e" id="c"c
-      li class="black ds" id="cs"c#
-      li class="white d" id="d"d
-      li class="black cs" id="ds"d#
-      li class="white c" id="e"e 
+      li data-action="click->projects--autotune#f" class="white b" id="f" f
+      li data-action="click->projects--autotune#fs" class="black as" id="fs"f#
+      li data-action="click->projects--autotune#g" class="white a" id="g"g
+      li data-action="click->projects--autotune#gs" class="black gs" id="gs"g#
+      li data-action="click->projects--autotune#a" class="white g"a
+      li data-action="click->projects--autotune#as" class="black fs"a#
+      li data-action="click->projects--autotune#b" class="white f" id="b"b  
+      li data-action="click->projects--autotune#c" class="white e" id="c"c
+      li data-action="click->projects--autotune#cs" class="black ds" id="cs"c#
+      li data-action="click->projects--autotune#d" class="white d" id="d"d
+      li data-action="click->projects--autotune#ds" class="black cs" id="ds"d#
+      li data-action="click->projects--autotune#e" class="white c" id="e"e 
     a href="#" save 
 
     
