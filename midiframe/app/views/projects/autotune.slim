@@ -1,0 +1,25 @@
+
+= render 'inline_styles/autotune_piano'
+div id="tune-form"
+  div class="tune-col card-panel z-depth-5" id="autotune-piano" style="width:600px; height:400px"
+    h5 allowed notes:
+    ul class="set"
+      li class="white b" id="f"f
+      li class="black as" id="fs"f#
+      li class="white a" id="g"g
+      li class="black gs" id="gs"g#
+      li class="white g"a
+      li class="black fs"a#
+      li class="white f" id="b"b
+      li class="white e" id="c"c
+      li class="black ds" id="cs"c#
+      li class="white d" id="d"d
+      li class="black cs" id="ds"d#
+      li class="white c" id="e"e 
+    a href="#" save 
+
+    
+  div class="tune-col" id="tune-preview"
+    = video_tag(url_for(@project.video.clip), class: "video_preview", controls: true) 
+
+

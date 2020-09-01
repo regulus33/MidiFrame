@@ -2,7 +2,7 @@
 
 # Nest all patterns associated with a single video here
 class ProjectsController < ApplicationController
-  before_action :get_project, only: %i[edit update destroy show]
+  before_action :get_project, only: %i[edit update destroy show autotune]
 
   def index
     # !API:
@@ -76,6 +76,11 @@ class ProjectsController < ApplicationController
     end
     redirect_to projects_path
   end
+
+  def autotune 
+    @project = Project.last
+    params[:page_title] = 'Auto Tune'
+  end 
   
   private
 
