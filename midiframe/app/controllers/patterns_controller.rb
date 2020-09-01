@@ -42,7 +42,6 @@ class PatternsController < ApplicationController
         # *midi_events,
         # *note_stamps
         # *channel
-        binding.pry 
         @pattern.midi_source = midi_type_params
         @pattern.channel = pattern_params[:channel].to_i
         @pattern.note_stamps = note_stamps_params

@@ -4,7 +4,7 @@ import { saveProject } from '../../helpers/network';
 
 export default class extends Controller {
 
-  static targets = ['midiFile', 'projectId', 'patternId'];
+  static targets = ['midiFile', 'fileName'];
   // open midi file, 
   // convert each note on event to a midi frame note 
   // { note: event.note.number, timestamp: 234 }
@@ -15,6 +15,7 @@ export default class extends Controller {
   //  });
     // console.log();  
     this.formatMidiFileData = this.formatMidiFileData.bind(this);
+    this.onFilePick = this.onFilePick.bind(this);
   }
 
   formatMidiFileData(event) {
@@ -46,22 +47,24 @@ export default class extends Controller {
     // TODO: post to backend and process me!!!! 
     // insert a start time.. 
   }
-  
 
   realtTimeEventsArray(events, tickDuration) {
     return events.map((event) => {
       return { note: event.midi, timestamp: (event.ticks * tickDuration) };
     }); 
   }
-
- 
   
   async onFilePick(event) {
     const file = event.target.files[0];
+    if (file.type != "audio/midi") {
+      alert('Midi files only please');
+      return;
+    }
+    debugger 
+    this.fileNameTarget.innerText = file.name 
     const reader = new FileReader();
     reader.onloadend = this.formatMidiFileData;
     reader.readAsArrayBuffer(file);
-
   }
 
-}
+} 
