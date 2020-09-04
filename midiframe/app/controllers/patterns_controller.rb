@@ -32,6 +32,7 @@ class PatternsController < ApplicationController
   
   # PUT /projects/:project_id/patterns/:id(.:format)
   # `params: { pattern: channel: "1",  pianoData: { '13': 345.7778 }, pianoTextData: {'13' : 'Blammo!'}, order_in_sequence: 1, name: 'dope pattern', step_length: 4}`
+  # TODO: there is nosecurity here! anyone can edit anyone else's pattern!!! see projects autotune_generate for methodology 
   def update
     # for json response 
     msg = { status: 'ok', message: 'Success!', html: '<b>...</b>' }
@@ -92,6 +93,7 @@ class PatternsController < ApplicationController
 
   # TODO: fix me before production
   # !Security
+  # TODO see autotune_params in project, u just require param name and permit each possible attribute, large but safe
   def midi_events_params
     # params.require(:midiEvents).permit(:timestamp, :note)
     # params.require(:midiEvents).permit!

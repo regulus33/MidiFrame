@@ -18,6 +18,7 @@ Rails.application.routes.draw do
     resources :patterns
   end
   get 'autotune/:id', to: 'projects#autotune' 
+  put 'autotune/:id', to: 'projects#autotune_generate' 
   # PATTERNS
   #
   # 

@@ -2,7 +2,7 @@
 
 # Nest all patterns associated with a single video here
 class ProjectsController < ApplicationController
-  before_action :get_project, only: %i[edit update destroy show autotune]
+  before_action :get_project, only: %i[edit update destroy show autotune autotune_generate]
 
   def index
     # !API:
@@ -13,7 +13,7 @@ class ProjectsController < ApplicationController
         render json: { projects: projects }.to_json
       end
       format.html do
-        render 'index'
+        render 'index'    
       end
     end
   end
@@ -78,11 +78,28 @@ class ProjectsController < ApplicationController
   end
 
   def autotune 
+    # todo double check 
+    @authenticity_token = session[:_csrf_token]
     @project = Project.last
     params[:page_title] = 'Auto Tune'
   end 
+
+  def autotune_generate 
+    # TODO: public videos should not be edited directly here but copied before hand 
+    respond_to do |f|
+      f.json do 
+        @project.autotune_args_set = JSON.parse(autotune_params.to_json)
+        @project.autotune_video   
+
+      end
+    end
+  end
   
   private
+  # ! this is how its done
+  def autotune_params 
+    params.require(:tuner_args).permit(:f, :fs, :g, :gs, :a, :as, :b, :c, :cs, :d, :ds, :e)
+  end
 
   def handle_font 
     if @project.font 

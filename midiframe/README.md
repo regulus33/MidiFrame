@@ -60,7 +60,18 @@ Midi connections, just like any stream are fed to the consumer in frames. Delta 
 
 in midi parsing, we see notes tied to delta time. The delta time combined with the time division will allow us to convert delta time to real time. Time division is either in ticks per pulse or frames per second.
 
-        
+## Autotune exec
+
+compile: 
+cd into tuner dir 
+run 
+`gcc ./*.c  -lsndfile -o tuner`
+
+add this to your bashrc
+
+`alias tuner= '/mid/midiframe/tuner/tuner'`
+then you can run `tuner` as a command 
+
 
 
 ## Gotchas

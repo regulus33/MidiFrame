@@ -1,4 +1,5 @@
 import { Controller } from "stimulus"
+import { autotuneProject } from '../../helpers/network';
 
 export default class extends Controller {
 
@@ -16,7 +17,9 @@ export default class extends Controller {
             d: false,
             ds: false,
             e: false,
-       } 
+        } 
+        console.log(this.element.getAttribute("data-project-autotune-args"));
+        this.token = this.element.getAttribute("data-authenticity-token");
     }
 
     f(e) {
@@ -78,6 +81,10 @@ export default class extends Controller {
         console.log(this.notes)
         this.notes.e = !(this.notes.e); 
         e.target.classList.toggle("select");
+    }
+
+    save() {
+        autotuneProject(this.notes, this.element.getAttribute("data-project-id"), this.token);
     }
     
     

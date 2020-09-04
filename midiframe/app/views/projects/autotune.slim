@@ -1,7 +1,7 @@
 
 = render 'inline_styles/autotune_piano'
 div id="tune-form"
-  div data-controller="projects--autotune" class="tune-col card-panel z-depth-5" id="autotune-piano" style="width:600px; height:400px"
+  div data-controller="projects--autotune" data-authenticity-token=@authenticity_token data-project-id=@project.id data-project-tune-args=(@project.autotune_args ? @project.autotune_args : {}) class="tune-col card-panel z-depth-5" id="autotune-piano" style="width:600px; height:400px"
     h5 allowed notes:
     ul class="set"
       li data-action="click->projects--autotune#f" class="white b" id="f" f
@@ -16,10 +16,10 @@ div id="tune-form"
       li data-action="click->projects--autotune#d" class="white d" id="d"d
       li data-action="click->projects--autotune#ds" class="black cs" id="ds"d#
       li data-action="click->projects--autotune#e" class="white c" id="e"e 
-    a href="#" save 
+    a data-action="click->projects--autotune#save" save 
 
-    
+  - binding.pry 
   div class="tune-col" id="tune-preview"
-    = video_tag(url_for(@project.video.clip), class: "video_preview", controls: true) 
+    = video_tag(url_for(@project.playback_video), class: "video_preview", controls: true) 
 
 
