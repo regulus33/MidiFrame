@@ -1,25 +1,39 @@
 
 = render 'inline_styles/autotune_piano'
-div id="tune-form"
-  div data-controller="projects--autotune" data-authenticity-token=@authenticity_token data-project-id=@project.id data-project-tune-args=(@project.autotune_args ? @project.autotune_args : {}) class="tune-col card-panel z-depth-5" id="autotune-piano" style="width:600px; height:400px"
+-binding.pry 
+div id="tune-form" data-controller="projects--autotune" data-autotune-args=@project.get_autotune_args.to_json data-authenticity-token=@authenticity_token data-project-id=@project.id  
+  div class="tune-col card-panel z-depth-5" id="autotune-piano" style="width:600px; height:400px"
     h5 allowed notes:
     ul class="set"
-      li data-action="click->projects--autotune#f" class="white b" id="f" f
-      li data-action="click->projects--autotune#fs" class="black as" id="fs"f#
-      li data-action="click->projects--autotune#g" class="white a" id="g"g
-      li data-action="click->projects--autotune#gs" class="black gs" id="gs"g#
-      li data-action="click->projects--autotune#a" class="white g"a
-      li data-action="click->projects--autotune#as" class="black fs"a#
+      - f_classes = "white b #{@project.get_autotune_args["f"] ? 'select' : ''}"
+      li data-action="click->projects--autotune#f" class=f_classes id="f" f
+      - fs_classes = "black as #{@project.get_autotune_args["fs"] ? 'select' : ''}"
+      li data-action="click->projects--autotune#fs" class=fs_classes id="fs"f#
+      - g_classes = "white a #{@project.get_autotune_args["g"] ? 'select' : ''}"
+      li data-action="click->projects--autotune#g" class=g_classes id="g"g
+      - gs_classes = "black gs #{@project.get_autotune_args["gs"] ? 'select' : ''}"
+      li data-action="click->projects--autotune#gs" class=gs_classes id="gs"g#
+      - a_classes = "white g #{@project.get_autotune_args["a"] ? 'select' : ''}"
+      li data-action="click->projects--autotune#a" class=a_classes id="a"a
+      - as_classes = "black fs #{@project.get_autotune_args["as"] ? 'select' : ''}"
+      li data-action="click->projects--autotune#as" class=as_classes id="as"a#
+      - b_classes = "white f #{@project.get_autotune_args["b"] ? 'select' : ''}"
       li data-action="click->projects--autotune#b" class="white f" id="b"b  
-      li data-action="click->projects--autotune#c" class="white e" id="c"c
-      li data-action="click->projects--autotune#cs" class="black ds" id="cs"c#
-      li data-action="click->projects--autotune#d" class="white d" id="d"d
-      li data-action="click->projects--autotune#ds" class="black cs" id="ds"d#
-      li data-action="click->projects--autotune#e" class="white c" id="e"e 
-    a data-action="click->projects--autotune#save" save 
+      - c_classes = "white e #{@project.get_autotune_args["c"] ? 'select' : ''}"
+      li data-action="click->projects--autotune#c" class=c_classes id="c"c
+      - cs_classes = "black ds #{@project.get_autotune_args["cs"] ? 'select' : ''}"
+      li data-action="click->projects--autotune#cs" class=cs_classes id="cs"c#
+      - d_classes = "white d #{@project.get_autotune_args["d"] ? 'select' : ''}"
+      li data-action="click->projects--autotune#d" class=d_classes id="d"d
+      - ds_classes = "black cs #{@project.get_autotune_args["ds"] ? 'select' : ''}"
+      li data-action="click->projects--autotune#ds" class=ds_classes id="ds"d#
+      - e_classes = "white c #{@project.get_autotune_args["e"] ? 'select' : ''}"
+      li data-action="click->projects--autotune#e" class=e_classes id="e"e 
+    a id="autotune-save" data-action="click->projects--autotune#save" save 
 
-  - binding.pry 
   div class="tune-col" id="tune-preview"
-    = video_tag(url_for(@project.playback_video), class: "video_preview", controls: true) 
-
-
+    div class="hidden" data-target="projects--autotune.loading"
+      div class="loader"
+      span id="move" style='text-align:center' P R O C E S S S S S I N G
+    = video_tag(url_for(@project.playback_video), class: "video_preview", controls: true, data: { target: "projects--autotune.videoElement" }) 
+  

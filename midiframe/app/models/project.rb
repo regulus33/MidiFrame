@@ -1,6 +1,22 @@
 # frozen_string_literal: true
 
 class Project < ApplicationRecord
+  # for views for new projects with no autotune
+  INITIAL_AUTOTUNE_ARGS = {
+                f: false,
+                fs: false,
+                g: false,
+                gs: false,
+                a: false,
+                as: false,
+                b: false,
+                c: false,
+                cs: false,
+                d: false,
+                ds: false,
+                e: false,
+  } 
+
   belongs_to :user
   belongs_to :video
   belongs_to :font, optional: true
@@ -36,7 +52,7 @@ class Project < ApplicationRecord
     save_sound_command(original_video: source_video, sound_file: source_audio)
     # Usage: autotalent <in file> <out file> 0 0 0 0 0 0 0 0 0 0 0 0
     # * run the autotalent script on audio
-    `#{autotalent_command(self.autotune_args, source_audio, processed_audio)}`
+    `#{autotalent_command(format_for_autotalent(self.autotune_args), source_audio, processed_audio)}`
     # * replace audio in video, outpus to processed_video path
     merge_audio_and_video(audio_path: processed_audio, video_path: source_video, output_path: processed_video)
     # video should be processed, attach to video file to active storage object
@@ -53,8 +69,15 @@ class Project < ApplicationRecord
     end
   end
 
+  # return auto args if present, else this has never been tuned, initialize data structure for views
+  def get_autotune_args 
+    return self.autotune_args if self.autotune_args 
+    return Project::INITIAL_AUTOTUNE_ARGS
+  end
+
   def autotune_args_set=(args)
-    self.autotune_args = format_for_autotalent(args)
+    binding.pry
+    self.autotune_args = args
   end
 
   private
@@ -62,7 +85,6 @@ class Project < ApplicationRecord
   def format_for_autotalent(args)
     args.keys.each do |r|
       args[r] = convert_bool_to_int(args[r])
-      binding.pry   
     end
     args
   end

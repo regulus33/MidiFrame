@@ -19,13 +19,15 @@ export const saveProject = async ({ channel, pianoData, pianoTextData, midiEvent
   console.log(`[NETWORK] got a response from server, response succeeded?: ${response.ok}`);
 }
 // tunerArgs == {g: true, gs: false, c: true ...}
+// Returns response when done 
 export const autotuneProject = async (tunerArgs, projectId, token) => {
   const requestBody = {authenticity_token: token, tuner_args: tunerArgs}
     const response = await fetch(autoTuneProjectUrl(projectId), {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(requestBody) // body data type must match "Content-Type" header
-  });
+    });
+    return response
 } 
 
 export const generatePatternClip = ({ patternId, projectId }) => {

@@ -80,7 +80,6 @@ class ProjectsController < ApplicationController
   def autotune 
     # todo double check 
     @authenticity_token = session[:_csrf_token]
-    @project = Project.last
     params[:page_title] = 'Auto Tune'
   end 
 
@@ -88,12 +87,18 @@ class ProjectsController < ApplicationController
     # TODO: public videos should not be edited directly here but copied before hand 
     respond_to do |f|
       f.json do 
-        @project.autotune_args_set = JSON.parse(autotune_params.to_json)
-        @project.autotune_video   
-
+        begin 
+          @project.autotune_args_set = JSON.parse(autotune_params.to_json)
+          @project.autotune_video
+          @project.save! 
+            render status: 200,  json: @project.video.autotuned.to_json 
+        rescue Exception
+          # TODO: maile exceptions to me 
+          render status: 200,  json: "Bad Request"
+        end 
       end
-    end
-  end
+    end 
+  end 
   
   private
   # ! this is how its done

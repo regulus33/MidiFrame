@@ -2,23 +2,36 @@ import { Controller } from "stimulus"
 import { autotuneProject } from '../../helpers/network';
 
 export default class extends Controller {
+    
+    static targets = [
+        'loading',
+        'videoElement'
+    ]
 
     connect() {
-        this.notes = {
-            f: false,
-            fs: false,
-            g: false,
-            gs: false,
-            a: false,
-            as: false,
-            b: false,
-            c: false,
-            cs: false,
-            d: false,
-            ds: false,
-            e: false,
-        } 
-        console.log(this.element.getAttribute("data-project-autotune-args"));
+        let oldArgs = JSON.parse(
+            this.element.getAttribute("data-autotune-args")
+        );
+
+        if (oldArgs != null) {
+            this.notes = oldArgs
+        } else {
+            this.notes = {
+                f: false,
+                fs: false,
+                g: false,
+                gs: false,
+                a: false,
+                as: false,
+                b: false,
+                c: false,
+                cs: false,
+                d: false,
+                ds: false,
+                e: false,
+            } 
+        }
+  
         this.token = this.element.getAttribute("data-authenticity-token");
     }
 
@@ -83,12 +96,15 @@ export default class extends Controller {
         e.target.classList.toggle("select");
     }
 
-    save() {
-        autotuneProject(this.notes, this.element.getAttribute("data-project-id"), this.token);
-    }
-    
-    
+    toggleLoading() {
+        this.loadingTarget.classList.toggle("hidden");
+        this.videoElementTarget.classList.toggle("hidden");
+    }       
 
-
+    async save() {
+        this.toggleLoading();
+        await autotuneProject(this.notes, this.element.getAttribute("data-project-id"), this.token);
+        this.toggleLoading();
+    }   
 
 }
