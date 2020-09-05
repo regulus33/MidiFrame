@@ -103,7 +103,11 @@ export default class extends Controller {
 
     async save() {
         this.toggleLoading();
-        await autotuneProject(this.notes, this.element.getAttribute("data-project-id"), this.token);
+        let res = await autotuneProject(this.notes, this.element.getAttribute("data-project-id"), this.token);
+        // TODO: handle error 
+        let body = await res.json(); 
+        debugger
+        this.videoElementTarget.setAttribute("src", body.video)
         this.toggleLoading();
     }   
 

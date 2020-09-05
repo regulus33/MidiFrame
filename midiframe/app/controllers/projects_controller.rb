@@ -91,10 +91,10 @@ class ProjectsController < ApplicationController
           @project.autotune_args_set = JSON.parse(autotune_params.to_json)
           @project.autotune_video
           @project.save! 
-            render status: 200,  json: @project.video.autotuned.to_json 
+            render json: {video: url_for(@project.playback_video)}.to_json 
         rescue Exception
           # TODO: maile exceptions to me 
-          render status: 200,  json: "Bad Request"
+          render status: 200,  json: {error: "bad request"}.to_json
         end 
       end
     end 

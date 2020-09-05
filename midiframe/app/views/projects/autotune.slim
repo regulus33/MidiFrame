@@ -1,6 +1,5 @@
 
 = render 'inline_styles/autotune_piano'
--binding.pry 
 div id="tune-form" data-controller="projects--autotune" data-autotune-args=@project.get_autotune_args.to_json data-authenticity-token=@authenticity_token data-project-id=@project.id  
   div class="tune-col card-panel z-depth-5" id="autotune-piano" style="width:600px; height:400px"
     h5 allowed notes:

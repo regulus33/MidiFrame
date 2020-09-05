@@ -3,18 +3,18 @@
 class Project < ApplicationRecord
   # for views for new projects with no autotune
   INITIAL_AUTOTUNE_ARGS = {
-                f: false,
-                fs: false,
-                g: false,
-                gs: false,
-                a: false,
-                as: false,
-                b: false,
-                c: false,
-                cs: false,
-                d: false,
-                ds: false,
-                e: false,
+    f: false,
+    fs: false,
+    g: false,
+    gs: false,
+    a: false,
+    as: false,
+    b: false,
+    c: false,
+    cs: false,
+    d: false,
+    ds: false,
+    e: false,
   } 
 
   belongs_to :user
@@ -76,17 +76,17 @@ class Project < ApplicationRecord
   end
 
   def autotune_args_set=(args)
-    binding.pry
     self.autotune_args = args
   end
 
   private
 
   def format_for_autotalent(args)
-    args.keys.each do |r|
-      args[r] = convert_bool_to_int(args[r])
+    new_args = {}
+    args.keys.each do |r| 
+      new_args[r] = convert_bool_to_int(args[r])
     end
-    args
+    new_args
   end
 
   def save_sound_command(original_video:, sound_file:)
