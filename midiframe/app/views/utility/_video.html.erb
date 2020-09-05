@@ -1,27 +1,18 @@
 <% if project.font && project.font.file.attached? %>
-  <style> 
+<style>
     @font-face {
-      font-family: "<%= project.font.file.blob.filename %>";
-      src: url("<%= url_for(project.font.file) %>");
+        font-family: "<%= project.font.file.blob.filename %>";
+        src: url("<%= url_for(project.font.file) %>");
     }
+
     span#note-text-text {
         font-family: "<%= project.font.file.blob.filename %>";
     }
-  </style>
+</style>
 <% end %>
 
-<span data-target="patterns--midi-device.noteText"  id="note-text-text"></span>
+<span data-target="patterns--midi-device.noteText" id="note-text-text"></span>
 
-<video 
-  id="midi-video" 
-  class="video-js vjs-fluid" 
-  preload="auto" 
-  width="1000" 
-  data-target="patterns--video.video patterns--midi-device.video"
-  controls
->
-<source 
-  src="<%= url_for(project.video.clip) %>" 
-  type="video/mp4"
-/>
+<video id="midi-video" class="video-js vjs-fluid" preload="auto" width="1000" data-target="patterns--video.video patterns--midi-device.video" controls>
+    <source src="<%= url_for(project.playback_video) %>" type="video/mp4" />
 </video>
