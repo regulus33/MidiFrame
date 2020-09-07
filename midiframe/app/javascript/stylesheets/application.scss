@@ -40,7 +40,7 @@ span.note-title {
 
 /* PROJECTS */
 
-#newProject, #deleteProject, #new_pattern_button, #create_new_pattern, #previewProject, #settings_button {
+#newProject, #deleteProject, #new_pattern_button, #create_new_pattern, #previewProject, #settings_button, #recordButton {
   float: right;
   margin: 20px;
 }
@@ -225,6 +225,10 @@ a#record.open-recording-session i {
   width:100%;
   z-index: 10;
   text-align: center;
+}
+
+h4.page-title {
+  padding-left: 7px;
 }
 
 

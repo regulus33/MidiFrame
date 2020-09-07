@@ -1,8 +1,14 @@
 div class="row"
 
+    a class="btn-floating btn-large waves-effect waves-light pin yellow" id="recordButton"
+      
+      i class="material-icons" dot
+    
     =link_to(project_pattern_path(@project, @pattern), {method: "DELETE", class: "btn-floating btn-large waves-effect waves-light red", id: "deleteProject"}) do 
   
       i class="material-icons" clear
+   
     - if @pattern.clip.attached? 
       =link_to(pattern_preview_path(@pattern, @pattern.project), {class: "btn-floating btn-large waves-effect waves-light teal", id: "previewProject"}) do 
         i class="material-icons" terrain
+        

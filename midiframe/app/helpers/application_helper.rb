@@ -5,7 +5,7 @@ module ApplicationHelper
   # If no argument is passed for title, returns the name of the controller, otherwise we can pass a page title in any controller method
   def determine_appropriate_heading(controller:, title:)
     unless title
-      return controller.upcase 
+      return controller 
     end 
     title
   end
