@@ -1,20 +1,27 @@
 import { Controller } from "stimulus";
 import WebMidi from 'webmidi';
-import { toTheNearestThousandth} from '../../helpers/math'
+import { toTheNearestThousandth} from '../../helpers/math';
 
 export default class extends Controller {
 
   static targets = [
     "recordButton",
+    "progressBar"
   ];
 
   connect() {
     this.recording = false; 
+    this._enable_midi();
+    this._midiEvents = []; 
+    this.clockSignalsPassedSinceRecordStart = 0; 
+    this.animateProgressBar = this.animateProgressBar.bind(this);
   }
 
   onMessageClock(message) {
     // ? only count clock signals if recording 
     if (this._recording) {
+      console.log(this.clockSignalsPassedSinceRecordStart);
+      console.log(message);
       this.clockSignalsPassedSinceRecordStart++
       // console.log(`clock signal passed: ${this.clockSignalsPassedSinceRecordStart} total clock signals: ${this._totaClockSignals}`)
       switch (this.clockSignalsPassedSinceRecordStart) {
@@ -28,21 +35,25 @@ export default class extends Controller {
       }
     }
   }
+
   //? this method adds the starting timestamp (its the most precise way)
   //? and begins adding new midi events to the collection  
   onMessageStart(msg) {
     if (this._recordingSessionOpen) {
+      window.requestAnimationFrame(this.animateProgressBar);
       this._addStartEvent(msg.timestamp);
       this._startRecordingMidiNotes();
     }
   }
 
+  getSavedChannel(){
+    return Number(this.element.getAttribute('data-midi-recorder-channel'));
+  }
 
   toggleRecordingSession() {
     this._recordingSessionOpen = !this._recordingSessionOpen;
     M.toast({ html: `recording session ${this._recordingSessionOpen ? 'open' : 'closed'}` });
   }
-
 
   _resetClock() {
     this.clockSignalsPassedSinceRecordStart = 0;
@@ -66,7 +77,6 @@ export default class extends Controller {
     this.recordButtonTarget.classList.toggle('open-recording-session');
   }
 
-
   //////////////////////////////////////////
   /// WEB MIDI SETUP:                     //
   //////////////////////////////////////////
@@ -87,8 +97,8 @@ export default class extends Controller {
   _on_success(channel) {
     console.log("setting listeners for channel: " + channel)
     // ? just for knowing if midi is being received or not
-    // this._setPlayAndStopListeners()
     this._midiInput.addListener('clock', "all", this.onMessageClock.bind(this));
+    this._midiInput.addListener('start', "all", this.onMessageStart.bind(this));
   }
 
   _getPatternId() {
@@ -116,13 +126,24 @@ export default class extends Controller {
   }   
 
   _addMidiEvent(event) {
-    console.log(event);
     let calibratedTimeStamp
     // ? first you need to get the amount of time to subtract from each timestamp so that the first evetn starts at 0:00
     // ? set the timing in the new event  
     if (this._recording) {
       let processeableEvent = { note: event.note.number, timestamp: event.timestamp };
       this._midiEvents.push(processeableEvent);
+    }
+  }
+
+  // recursively request to execute this dom update before each paint (or frame)
+  // 60 fps 
+  animateProgressBar(){
+    if(this.recording) {
+      let percent = `${(this.clockSignalsPassedSinceRecordStart/this._totaClockSignals)*100}%`;
+      this.progressBarTarget.style.width=percent;
+      console.log(percent);
+      console.log(this.clockSignalsPassedSinceRecordStart);
+      window.requestAnimationFrame(this.animateProgressBar);
     }
   }
 
@@ -135,10 +156,6 @@ export default class extends Controller {
   ///////////////////////////////////////////////////////////////////
   get _channel() {
     return parseInt(this.channelTarget.getAttribute('device-channel'));
-  }
-  set _channel(channel) {
-    this.channelTarget.innerHTML = channel;
-    this.channelTarget.setAttribute('device-channel', channel);
   }
   ///////////////////////////
   get _midiEvents() {
@@ -157,21 +174,6 @@ export default class extends Controller {
     return WebMidi.outputs[0];
   }
 
-  get _piano() {
-    return this.piano;
-  }
-
-  // ? PLAYING we use this to light up channel, to notify forms to ignore playhead's value 
-  // ? and probably a multitude of other things as new requirements emerge. 
-  /////////////////////////
-  get _playing() {
-    return this.playing;
-  }
-
-  set _playing(playing) {
-    this.playing = playing;
-  }
-/////////////////////////////////////////////////////////////////
   get _recording() {
     return this.recording;
   }
@@ -183,6 +185,10 @@ export default class extends Controller {
       this.recording = false;
       this._stopMidi();
     }
+  }
+
+  get _totaClockSignals() {
+    return parseInt(this.recordButtonTarget.getAttribute("data-midi-recorder-total-clock-signals"));
   }
 
 }
