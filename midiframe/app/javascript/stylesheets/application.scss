@@ -22,7 +22,7 @@
 }
 
 html {
-  background-color: #3e3f40 !important;
+  background-color: #1f1f1f !important;
   color: white !important;
 }
 
@@ -227,9 +227,50 @@ a#record.open-recording-session i {
   text-align: center;
 }
 
-h4.page-title {
-  padding-left: 7px;
+.page-title {
+  margin-left: 28px;
 }
+
+.channel-input {
+  display: flex;
+  // display: inline-grid;
+  // grid-template-columns: auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto;
+}
+
+.channel-box {
+  border: 1px solid rgb(255, 255, 255); 
+  margin: 2px;
+  width: 50px;
+  text-align: center !important;
+}
+
+.channel-number {
+  color: white;
+  padding: 10px;
+  font-size: 9px;
+  letter-spacing: 0 !important;
+}
+
+.step-input {
+  display: grid;
+  grid-template-columns: auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto;
+}
+
+.step-box {
+  margin: 2px;
+  border: 1px solid rgb(255, 255, 255); 
+  padding: 10px;
+  text-align: center !important;
+}
+
+.step-number {
+  color: white;
+  padding: 10px;
+  font-size: 10px;
+  letter-spacing: 0 !important;
+}
+
+
 
 
 

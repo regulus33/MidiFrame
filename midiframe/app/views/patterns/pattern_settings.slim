@@ -2,14 +2,13 @@
 div data-controller="patterns--midi-recorder"
   div data-controller="patterns--midi-parser" data-midi-parser-patternId=@pattern.id data-midi-parser-channel=@pattern.channel data-midi-parser-projectId=@project.id class="card-panel z-depth-5"
     = form_for @pattern, url: { action: 'update' },  html: { class: 'form-group' } do |f|
-      label Name
-      = f.text_field :name, placeholder: @pattern.name
-      label order in sequence
-      = f.text_field :order_in_sequence, placeholder: @pattern.order_in_sequence
       label channel
-      = f.text_field :channel, placeholder: @pattern.channel 
+      =render 'channel_buttons'
+      / = f.text_field :channel, placeholder: @pattern.channel 
+      / = f.range_field :channel, :min=>1, :max=>16, :class=>"slide", :id=>"slider1"
       label step length  
-      = f.text_field :step_length, placeholder: @pattern.step_length 
+      / = f.text_field :step_length, placeholder: @pattern.step_length 
+      =render 'step_buttons'
       a id="upload_font_button" class="waves-effect waves-light btn grey darken-4" style="color:white" 
         label for="midi-file" style="color:white" add midi file
       span data-target="patterns--midi-parser.fileName" 
