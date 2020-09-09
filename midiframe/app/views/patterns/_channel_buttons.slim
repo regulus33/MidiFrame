@@ -1,4 +1,5 @@
 div class="channel-input" 
   -16.times do |channel|
+    -channel+=1
     div class="channel-box"
-      div class="channel-number"=channel+1
+      div id=("channel-"<<channel.to_s) class="channel-number"=channel

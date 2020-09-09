@@ -238,6 +238,7 @@ a#record.open-recording-session i {
 }
 
 .channel-box {
+  cursor: pointer;
   border: 1px solid rgb(255, 255, 255); 
   margin: 2px;
   width: 50px;
@@ -245,10 +246,10 @@ a#record.open-recording-session i {
 }
 
 .channel-number {
-  color: white;
+  margin: 2px;
+  border: 1px solid rgb(255, 255, 255); 
   padding: 10px;
-  font-size: 9px;
-  letter-spacing: 0 !important;
+  text-align: center !important;
 }
 
 .step-input {
@@ -269,6 +270,63 @@ a#record.open-recording-session i {
   font-size: 10px;
   letter-spacing: 0 !important;
 }
+
+// channels
+// channels
+// channels
+
+#channel-1:hover {
+  background-color: #d88c98;
+}
+#channel-2:hover {
+  background-color: #d2d0a9;
+}
+#channel-3:hover {
+  background-color: #e3c7a7;
+}
+#channel-4:hover {
+  background-color: #99c1b9;
+}
+#channel-5:hover {
+  background-color: #8e7dbe;
+}
+#channel-6:hover {
+  background-color: #b53e54;
+}
+#channel-7:hover {
+  background-color: #e19238;
+}
+#channel-8:hover {
+  background-color: #cf9e66;
+}
+#channel-9:hover {
+  background-color: #5a9287;
+}
+#channel-10:hover {
+  background-color: #5b488f;
+}
+#channel-11:hover {
+  background-color: #d88c98;
+}
+#channel-12:hover {
+  background-color: #d2d0a9;
+}
+#channel-13:hover {
+  background-color: #e3c7a7;
+}
+#channel-14:hover {
+  background-color: #99c1b9;
+}
+#channel-15:hover {
+  background-color: #8e7dbe;
+}
+#channel-16:hover {
+  background-color: #b53e54;
+}
+
+
+
+
 
 
 
