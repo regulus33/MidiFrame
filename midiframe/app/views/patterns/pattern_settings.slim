@@ -1,5 +1,5 @@
 // TODO: remove patterns--midi-recorder from here if we never end up using it 
-div data-controller="patterns--midi-recorder"
+div data-controller="patterns--midi-recorder patterns--step-and-channel" data-saved-channel=@pattern.channel
   div data-controller="patterns--midi-parser" data-midi-parser-patternId=@pattern.id data-midi-parser-channel=@pattern.channel data-midi-parser-projectId=@project.id class="card-panel z-depth-5"
     = form_for @pattern, url: { action: 'update' },  html: { class: 'form-group' } do |f|
       label channel

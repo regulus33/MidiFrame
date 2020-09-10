@@ -1,4 +1,6 @@
 div class="step-input" 
   -64.times do |step|
     div class="step-box"
-      div class="step-number"=step+1
+       -step = step + 1
+       -target="patterns--step-and-channel." + "step" + in_words(step)
+       div data-action="click->patterns--step-and-channel#stepClick" data-target=target class="step-number"=step

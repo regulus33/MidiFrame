@@ -2,4 +2,6 @@ div class="channel-input"
   -16.times do |channel|
     -channel+=1
     div class="channel-box"
-      div id=("channel-"<<channel.to_s) class="channel-number"=channel
+      -class_list = "channel-number" 
+      -style = channel == @pattern.channel ? "background-color: #{channel_color(channel)}" : ""
+      div data-channel=channel data-action="click->patterns--step-and-channel#channelClick" data-target="patterns--step-and-channel.channel" id=("channel-"<<channel.to_s) style=style class="channel-number"=channel

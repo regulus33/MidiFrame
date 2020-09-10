@@ -247,7 +247,7 @@ a#record.open-recording-session i {
 
 .channel-number {
   margin: 2px;
-  border: 1px solid rgb(255, 255, 255); 
+  // border: 1px solid rgb(255, 255, 255); 
   padding: 10px;
   text-align: center !important;
 }
@@ -270,10 +270,6 @@ a#record.open-recording-session i {
   font-size: 10px;
   letter-spacing: 0 !important;
 }
-
-// channels
-// channels
-// channels
 
 #channel-1:hover {
   background-color: #d88c98;
@@ -322,6 +318,10 @@ a#record.open-recording-session i {
 }
 #channel-16:hover {
   background-color: #b53e54;
+}
+
+div.unselected {
+  background-color: transparent !important;
 }
 
 
