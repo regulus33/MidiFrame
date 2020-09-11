@@ -3,5 +3,5 @@ div class="channel-input"
     -channel+=1
     div class="channel-box"
       -class_list = "channel-number" 
-      -style = channel == @pattern.channel ? "background-color: #{channel_color(channel)}" : ""
+      -style = channel == @pattern.channel ? "background-color: #db7676" : ""
       div data-channel=channel data-action="click->patterns--step-and-channel#channelClick" data-target="patterns--step-and-channel.channel" id=("channel-"<<channel.to_s) style=style class="channel-number"=channel
