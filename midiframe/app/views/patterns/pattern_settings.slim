@@ -4,10 +4,7 @@ div data-controller="patterns--midi-recorder patterns--step-and-channel patterns
     = form_for @pattern, url: { action: 'update' },  html: { class: 'form-group' } do |f|
       label channel
       =render 'channel_buttons'
-      / = f.text_field :channel, placeholder: @pattern.channel 
-      / = f.range_field :channel, :min=>1, :max=>16, :class=>"slide", :id=>"slider1"
       label step length  
-      / = f.text_field :step_length, placeholder: @pattern.step_length 
       =render 'step_buttons'
       a id="upload-midi" class="waves-effect waves-light btn grey darken-4" style="color:white" 
         label for="midi-file" style="color:white; cursor:pointer" add midi file instead

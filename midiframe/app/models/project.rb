@@ -15,7 +15,7 @@ class Project < ApplicationRecord
     d: false,
     ds: false,
     e: false,
-  } 
+  }
 
   belongs_to :user
   belongs_to :video
@@ -25,15 +25,15 @@ class Project < ApplicationRecord
   validates :name, presence: true
   validates :bpm, presence: true
 
-  def playback_video 
-    self.video.display_video.clip 
+  def playback_video
+    self.video.display_video.clip
   end
-  
-  # download og video master 
+
+  # download og video master
   # copy the wav to temp
   # autotune that wav
-  # attach that wav to the dl'ed video copy 
-  # attach the video to a master.autotuned 
+  # attach that wav to the dl'ed video copy
+  # attach the video to a master.autotuned
   def autotune_video
     video = self.video.clip
     file_extension = self.video.file_extension
@@ -47,7 +47,7 @@ class Project < ApplicationRecord
     File.open(source_video, "wb") do |f|
       f.write(video.download)
     end
-    
+
     # * copy the sound to a tmp file to supply to autotalent
     save_sound_command(original_video: source_video, sound_file: source_audio)
     # Usage: autotalent <in file> <out file> 0 0 0 0 0 0 0 0 0 0 0 0
@@ -70,8 +70,8 @@ class Project < ApplicationRecord
   end
 
   # return auto args if present, else this has never been tuned, initialize data structure for views
-  def get_autotune_args 
-    return self.autotune_args if self.autotune_args 
+  def get_autotune_args
+    return self.autotune_args if self.autotune_args
     return Project::INITIAL_AUTOTUNE_ARGS
   end
 
@@ -83,7 +83,7 @@ class Project < ApplicationRecord
 
   def format_for_autotalent(args)
     new_args = {}
-    args.keys.each do |r| 
+    args.keys.each do |r|
       new_args[r] = convert_bool_to_int(args[r])
     end
     new_args
@@ -95,35 +95,35 @@ class Project < ApplicationRecord
   end
 
   def merge_audio_and_video(audio_path:, video_path:, output_path:)
-    `ffmpeg -i #{video_path} -i #{audio_path  } -c:v copy -map 0:v:0 -map 1:a:0 #{output_path}`
+    `ffmpeg -i #{video_path} -i #{audio_path} -c:v copy -map 0:v:0 -map 1:a:0 #{output_path}`
   end
 
   def attach_autotuned_audio(processed_audio:)
-    self.video.audio.clip.attach(      
+    self.video.audio.clip.attach(
       io: File.open(processed_audio),
       filename: "#{self.id.to_s}.#{Video::AUDIO_FILE_EXTENSION}",
       content_type: self.video.clip.content_type,
     )
   end
-  
+
   #if not autotuned video yet, create one and attach it
-  # else find it and replace the clip 
+  # else find it and replace the clip
   def attach_autotuned_video(processed_video:)
     existing_tuned = self.video.autotuned
-    if existing_tuned 
-    existing_tuned.clip.attach(
-      io: File.open(processed_video),
-      filename: "#{self.id.to_s}.#{self.video.file_extension}",
-      content_type: self.video.clip.content_type,
-    )
+    if existing_tuned
+      existing_tuned.clip.attach(
+        io: File.open(processed_video),
+        filename: "#{self.id.to_s}.#{self.video.file_extension}",
+        content_type: self.video.clip.content_type,
+      )
     else
-    new_tuned = Video.create!(user: self.user, role: Video::AUTOTUNED, parent_video: self.video)
-    new_tuned.clip.attach(
-      io: File.open(processed_video),
-      filename: "#{self.id.to_s}.#{self.video.file_extension}",
-      content_type: self.video.clip.content_type,
-    )
-    end 
+      new_tuned = Video.create!(user: self.user, role: Video::AUTOTUNED, parent_video: self.video)
+      new_tuned.clip.attach(
+        io: File.open(processed_video),
+        filename: "#{self.id.to_s}.#{self.video.file_extension}",
+        content_type: self.video.clip.content_type,
+      )
+    end
   end
 
   def convert_bool_to_int(bool)
@@ -134,7 +134,7 @@ class Project < ApplicationRecord
   # TODO: there has to be a more correct way to do this
   def auto_talent_path
     if (Rails.env.development?)
-      return "~/mid/tuner/tuner"
+      return "~/andrWert43h/tuner/tuner"
     end
     return "~/andrWert43h/tuner/tuner"
   end
