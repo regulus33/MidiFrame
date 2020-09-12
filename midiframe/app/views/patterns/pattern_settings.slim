@@ -1,5 +1,5 @@
 // TODO: remove patterns--midi-recorder from here if we never end up using it 
-div data-controller="patterns--midi-recorder patterns--step-and-channel" data-saved-channel=@pattern.channel
+div data-controller="patterns--midi-recorder patterns--step-and-channel" data-saved-channel=@pattern.channel data-saved-step=@pattern
   div data-controller="patterns--midi-parser" data-midi-parser-patternId=@pattern.id data-midi-parser-channel=@pattern.channel data-midi-parser-projectId=@project.id class="card-panel z-depth-5"
     = form_for @pattern, url: { action: 'update' },  html: { class: 'form-group' } do |f|
       label channel
@@ -9,10 +9,10 @@ div data-controller="patterns--midi-recorder patterns--step-and-channel" data-sa
       label step length  
       / = f.text_field :step_length, placeholder: @pattern.step_length 
       =render 'step_buttons'
-      a id="upload_font_button" class="waves-effect waves-light btn grey darken-4" style="color:white" 
-        label for="midi-file" style="color:white" add midi file
-      span data-target="patterns--midi-parser.fileName" 
+      a id="upload-midi" class="waves-effect waves-light btn grey darken-4" style="color:white" 
+        label for="midi-file" style="color:white; cursor:pointer" add midi file instead
+      span id="upload-midi-name" data-target="patterns--midi-parser.fileName" file name 
       = f.file_field :midi_file, id: "midi-file", style: "display:none;", data: { action: "change->patterns--midi-parser#onFilePick", target: "patterns--midi-parser.midiFile"} 
-      = f.submit "S A V E", class: "waves-effect waves-light btn grey darken-4 submit"
+      a id="midi-save" class="waves-effect waves-light btn grey darken-4" style="color:white; float:"save 
   =render 'recording_progress_bar'
   =render 'pattern_settings_action_buttons'   

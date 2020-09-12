@@ -89,16 +89,27 @@ export default class extends Controller {
     alert(error);
   }
 
-  _resetMidiListeners(channel) {
+  resetMidiListeners(channel) {
     this._wipeListeners();
     this._on_success(channel);
+    console.log(`reset all recorder listeners for channel ${channel}`)
+  }
+
+  // not necessary to wipe clock and start since they will always remain the same on 'all'
+  _wipeListeners() {
+    if(this._midiInput){
+      this._midiInput.removeListener('noteon');
+    }
   }
 
   _on_success(channel) {
     console.log("setting listeners for channel: " + channel)
     // ? just for knowing if midi is being received or not
-    this._midiInput.addListener('clock', "all", this.onMessageClock.bind(this));
-    this._midiInput.addListener('start', "all", this.onMessageStart.bind(this));
+    if(this._midiInput){
+      this._midiInput.addListener('clock', "all", this.onMessageClock.bind(this));
+      this._midiInput.addListener('start', "all", this.onMessageStart.bind(this));
+      this._midiInput.addListener('noteon', channel, this.addMidiEvent.bind(this));
+    }
   }
 
   _getPatternId() {
@@ -125,7 +136,7 @@ export default class extends Controller {
     this._midiEvents.push(processeableEvent);
   }   
 
-  _addMidiEvent(event) {
+  addMidiEvent(event) {
     let calibratedTimeStamp
     // ? first you need to get the amount of time to subtract from each timestamp so that the first evetn starts at 0:00
     // ? set the timing in the new event  

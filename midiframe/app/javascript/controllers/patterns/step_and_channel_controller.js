@@ -1,6 +1,4 @@
 import { Controller } from "stimulus";
-import WebMidi from 'webmidi';
-import { toTheNearestThousandth } from '../../helpers/math';
 
 export default class extends Controller {
 
@@ -14,8 +12,9 @@ export default class extends Controller {
     this.channel = parseInt(this.element.getAttribute("data-saved-channel")); //get the channel 
     this.lastChannelTargetClicked = this.selectedChannel();
     this.initializeChannelUIState();
-    this.hoveredStep; // the int of the currently hovered over step
-    this.selectedStep;
+    this.stepLength = parseInt(this.element.getAttribute("data-saved-step")); //get the channel 
+    // TODO: how do we de alloc this? 
+    this.midiRecorderController = this.application.getControllerForElementAndIdentifier(this.element, "patterns--midi-recorder");
   }
 
   initializeChannelUIState() {
@@ -23,30 +22,25 @@ export default class extends Controller {
   }
 
   stepClick(event) {
-    debugger
     let step = parseInt(event.target.getAttribute("data-step"));
-    if (step) {
-      this.selectedStep = step;
-    } else {
-      debugger 
-    }
-
-    for (let i = 0; i < (this.selectedStep); i++) {
+    this.stepLength = step
+    for (let i = 0; i < (this.stepLength); i++) {
       let backGroundColor = "#db7676"
       this.stepTargets[i].style.backgroundColor = backGroundColor;
     }
 
-    for (let i = this.selectedStep; i < 32; i++) {
+    for (let i = this.stepLength; i < 32; i++) {
       this.stepTargets[i].style.backgroundColor = "transparent";
     }
   }
 
   selectedChannel() {
-    return this.channelTargets.find((e) => (parseInt(e.getAttribute("data-channel")) === this.channel))
+    return this.channelTargets.find((e) => (parseInt(e.getAttribute("data-channel")) === this.channel));
   }
 
   channelClick(event) {
     this.channel = parseInt(event.target.getAttribute("data-channel"));
+    this.midiRecorderController.resetMidiListeners(this.channel);
     // set background of last el clicked to null
     this.lastChannelTargetClicked.style.backgroundColor = "";
     // make this channel's clicked state obvious to user
@@ -54,8 +48,6 @@ export default class extends Controller {
     event.target.style.backgroundColor = "#db7676";
     this.lastChannelTargetClicked = event.target;
   }
-
-
 
 }
 

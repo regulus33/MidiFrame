@@ -1,4 +1,5 @@
 div class="step-input" 
   -32.times do |step|
     -step = step + 1
-    div data-step=step data-action="click->patterns--step-and-channel#stepClick" data-target="patterns--step-and-channel.step" class="step-box"=step
+    -style = (step <= @pattern.step_length) ? "background-color: #db7676" : ""
+    div style=style data-step=step data-action="click->patterns--step-and-channel#stepClick" data-target="patterns--step-and-channel.step" class="step-box"=step
