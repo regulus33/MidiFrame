@@ -11,14 +11,9 @@ export default class extends Controller {
   connect() {
     this.channel = parseInt(this.element.getAttribute("data-saved-channel")); //get the channel 
     this.lastChannelTargetClicked = this.selectedChannel();
-    this.initializeChannelUIState();
     this.stepLength = parseInt(this.element.getAttribute("data-saved-step")); //get the channel 
     // TODO: how do we de alloc this? 
     this.midiRecorderController = this.application.getControllerForElementAndIdentifier(this.element, "patterns--midi-recorder");
-  }
-
-  initializeChannelUIState() {
-
   }
 
   stepClick(event) {

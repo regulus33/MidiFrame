@@ -4,10 +4,10 @@ export const patternsUrl = (projectId, patternId) => `${baseUrl}/projects/${proj
 export const patternGeneratorUrl = (patternId, projectId) => `${baseUrl}/pattern-generate/${patternId}/${projectId}`
 export const autoTuneProjectUrl = (projectId) => `${baseUrl}/autotune/${projectId}`
 
-export const saveProject = async ({ channel, pianoData, pianoTextData, midiEvents, patternId, projectId, midiType }) => {
+export const savePattern = async ({ channel, pianoData, pianoTextData, midiEvents, patternId, projectId, midiType, stepLength }) => {
   // Default options are marked with * 
   console.log(`[NETWORK] about to POST pattern data: channel: ${channel}, pianoData: ${JSON.stringify(pianoData)}, pianoTextData: ${JSON.stringify(pianoTextData)}, midiEvents: ${JSON.stringify(midiEvents)}, patternId: ${patternId}, projectId: ${projectId}`);
-  const requestBody = { midiEvents, pianoData, channel, pianoTextData };
+  const requestBody = { midiEvents, pianoData, channel, pianoTextData, stepLength };
   if (midiType != undefined) {
     requestBody['midiType'] = midiType
   }

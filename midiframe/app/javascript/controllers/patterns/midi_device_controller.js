@@ -3,7 +3,7 @@ import WebMidi from 'webmidi';
 import videojs from '../../helpers/video.js';
 import { toTheNearestThousandth, randoMize } from '../../helpers/math'
 import { NUDGE_AMOUNT, baseUrl } from '../../helpers/constants'
-import { saveProject, generatePatternClip } from '../../helpers/network'
+import { savePattern, generatePatternClip } from '../../helpers/network'
 
 export default class extends Controller {
 
@@ -54,7 +54,7 @@ export default class extends Controller {
   //SAVE BUTTON 
   save() {
     console.log(`[MIDI_DEVICE_CONTROLLER] save(), about to save the project`)
-    return saveProject({ channel: this._channel, pianoData: this.pianoData, pianoTextData: this.pianoTextData, midiEvents: this.midiEvents, patternId: this._getPatternId(), projectId: this._getProjectId() })
+    return savePattern({ channel: this._channel, pianoData: this.pianoData, pianoTextData: this.pianoTextData, midiEvents: this.midiEvents, patternId: this._getPatternId(), projectId: this._getProjectId() })
       .then(() => {
         console.log(`[MIDI_DEVICE_CONTROLLER] save(), returning from network response`)
         M.toast({ html: 'Pattern Saved' })

@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-# Simple Controller For HTTP CRUD Patterns  
+# Simple Controller For HTTP CRUD Patterns
 class PatternsController < ApplicationController
   before_action :find_project
   before_action :find_pattern, only: %w[edit update pattern_settings destroy generate_pattern_clip pattern_preview]
-  protect_from_forgery with: :null_session, only: ['update']
+  protect_from_forgery with: :null_session, only: ["update"]
 
   def index
     params[:page_title] = "Saved Patterns For #{@project.name}"
@@ -29,29 +29,28 @@ class PatternsController < ApplicationController
     # todo, don't calculate num that is always the same
     @final_index = (@midi_notes.length - 1)
   end
-  
+
   # PUT /projects/:project_id/patterns/:id(.:format)
   # `params: { pattern: channel: "1",  pianoData: { '13': 345.7778 }, pianoTextData: {'13' : 'Blammo!'}, order_in_sequence: 1, name: 'dope pattern', step_length: 4}`
-  # TODO: there is nosecurity here! anyone can edit anyone else's pattern!!! see projects autotune_generate for methodology 
+  # TODO: there is nosecurity here! anyone can edit anyone else's pattern!!! see projects autotune_generate for methodology
   def update
-    # for json response 
-    msg = { status: 'ok', message: 'Success!', html: '<b>...</b>' }
+    # for json response
+    msg = { status: "ok", message: "Success!", html: "<b>...</b>" }
 
     respond_to do |format|
       format.json do
         # ? in this screen (the edit pattern screen) there are only 3 editable fields
-        # *midi_events,
-        # *note_stamps
-        # *channel
         @pattern.midi_source = midi_type_params
         @pattern.channel = pattern_params[:channel].to_i
         @pattern.note_stamps = note_stamps_params
         @pattern.text_stamps = text_stamps_params
+        binding.pry
         # ? we reset array of midi events to empty if user submits a collection of events
         # ? because of that and just common sense in general, we never save "empty" values
         # ? if user wants to clear midi events they can just delete the pattern
         @pattern.midi_events_array = midi_events_params if midi_events_params.any?
         @pattern.save!
+        binding.pry
         msg
       end
       # ? currently this request originates only from pattern_settings, else it will be a JSON from pattern edit
@@ -66,7 +65,7 @@ class PatternsController < ApplicationController
       end
     end
   end
-  
+
   # DELETE /projects/:project_id/patterns/:id(.:format)
   def destroy
     if @pattern.destroy!
@@ -80,7 +79,7 @@ class PatternsController < ApplicationController
   # * END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE END GOAL HERE
 
   # POST 'pattern-generate/:id/:project_id'
-  # generates the video 
+  # generates the video
   def generate_pattern_clip
     @pattern.assemble_pattern_video
   end
@@ -109,7 +108,7 @@ class PatternsController < ApplicationController
     params[:pianoData]
   end
 
-  def midi_type_params 
+  def midi_type_params
     params[:midiType]
   end
 

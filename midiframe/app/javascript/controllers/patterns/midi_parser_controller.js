@@ -1,6 +1,6 @@
 import { Controller } from "stimulus";
 import { Midi } from '@tonejs/midi';
-import { saveProject } from '../../helpers/network';
+import { savePattern } from '../../helpers/network';
 
 export default class extends Controller {
 
@@ -35,7 +35,7 @@ export default class extends Controller {
     const projectId = this.element.getAttribute("data-midi-parser-projectId");
     const patternId = this.element.getAttribute("data-midi-parser-patternId");
     const channel = this.element.getAttribute("data-midi-parser-channel");
-    return saveProject({
+    return savePattern({
       midiEvents: formattedForBackend,
       patternId: patternId,
       projectId: projectId,

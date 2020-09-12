@@ -12,7 +12,7 @@ export default class extends Controller {
   connect() {
     this.recording = false; 
     this._enable_midi();
-    this._midiEvents = []; 
+    this.midiEvents = []; 
     this.clockSignalsPassedSinceRecordStart = 0; 
     this.animateProgressBar = this.animateProgressBar.bind(this);
   }
@@ -128,12 +128,12 @@ export default class extends Controller {
     // ? on first clock signal of recording session we get the received time of the 
     // ? first note 
     let processeableEvent = { note: "start", timestamp: timestamp };
-    this._midiEvents.push(processeableEvent);
+    this.midiEvents.push(processeableEvent);
   }
 
   _addStopTime(timestamp) {
     let processeableEvent = { note: "stop", timestamp: timestamp };
-    this._midiEvents.push(processeableEvent);
+    this.midiEvents.push(processeableEvent);
   }   
 
   addMidiEvent(event) {
@@ -142,7 +142,7 @@ export default class extends Controller {
     // ? set the timing in the new event  
     if (this._recording) {
       let processeableEvent = { note: event.note.number, timestamp: event.timestamp };
-      this._midiEvents.push(processeableEvent);
+      this.midiEvents.push(processeableEvent);
     }
   }
 
@@ -168,15 +168,7 @@ export default class extends Controller {
   get _channel() {
     return parseInt(this.channelTarget.getAttribute('device-channel'));
   }
-  ///////////////////////////
-  get _midiEvents() {
-    return this.midiEvents;
-  }
-
-  set _midiEvents(events) {
-    this.midiEvents = events;
-  }
-  ///////////////////////////
+/////////////////////////
   get _midiInput() {
     return WebMidi.inputs[0];
   }
