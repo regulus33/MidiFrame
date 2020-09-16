@@ -1,33 +1,42 @@
 div class="row"
-    a id="octave-minus" class="btn-floating btn-large waves-effect waves-light black darken-4 z-depth-5" data-action="patterns--keyboard#prev" data-target="patterns--midi-device.buttonMinus"
+    a id="octave-minus" class="btn-floating btn-large waves-effect waves-light grey darken-1 z-depth-5" data-action="patterns--keyboard#prev" data-target="patterns--midi-device.buttonMinus"
        i class="material-icons"  keyboard_arrow_left
     
-    a id="record" total-clock-signals=@pattern.total_clock_signals class="btn-floating btn-large waves-effect waves-light black darken-1 z-depth-5"  data-action="patterns--midi-device#toggleRecordingSession" data-target="patterns--midi-device.recordButton"
-       i class="material-icons"  panorama_fish_eye
-    
-    a id="complete" class="btn-floating btn-large waves-effect waves-light black lighten-2 z-depth-5"  data-action="patterns--midi-device#generatePatternClip"
-      i class="material-icons"  launch
+    a id="save" class="btn-large waves-effect waves-light grey darken-1 z-depth-5" data-action="patterns--midi-device#save" data-target="patterns--midi-device.saveButton"
+      i class="material-icons pattern-settings-icons" save 
+      span style="color:white;font-size:10px;" Save
 
-    a id="save" class="btn-floating btn-large waves-effect waves-light black lighten-2 z-depth-5" data-action="patterns--midi-device#save" 
-      i class="material-icons"  save
-
-    a id="octave-plus" class="btn-floating btn-large waves-effect waves-light black darken-4 z-depth-5" data-action="patterns--keyboard#next" data-target="patterns--midi-device.buttonPlus"
+    a id="octave-plus" class="btn-floating btn-large waves-effect waves-light grey darken-1 z-depth-5" data-action="click->patterns--keyboard#next" data-target="patterns--midi-device.buttonPlus"
        i class="material-icons"  keyboard_arrow_right
 
-    a id="settings" class="btn-floating btn-large waves-effect waves-light black lighten-2 z-depth-5" data-action="patterns--midi-device#saveAndNavigate" data-target="patterns--midi-device.settings" nav-url="/pattern-settings/#{@pattern.id}/#{@project.id}"
-      i class="material-icons"  settings
+    a id="settings" class="btn-large waves-effect waves-light grey darken-1 z-depth-5" data-action="patterns--midi-device#saveAndNavigate" data-target="patterns--midi-device.settings" nav-url="/pattern-settings/#{@pattern.id}/#{@project.id}"
+      i class="material-icons pattern-settings-icons" check_circle
+      span style="color:white;font-size:10px;" Proceed
     
-    a id="adjust" class="btn-floating btn-large waves-effect waves-light black lighten-2 z-depth-5" data-action="patterns--midi-device#saveCurrentTime" data-target="patterns--midi-device.saveCurrentTime" 
-      i class="material-icons"  adjust
+    a id="adjust" class="btn-large waves-effect waves-light grey darken-1 z-depth-5" data-action="patterns--midi-device#saveCurrentTime" data-target="patterns--midi-device.saveCurrentTime" 
+      i class="material-icons pattern-settings-icons" access_time
+      span style="color:white;font-size:10px;" Select Time 
     
-    a id="format" class="btn-floating btn-large waves-effect waves-light black lighten-2 z-depth-5" data-action="patterns--midi-device#addText" data-target="patterns--midi-device.addTextButton" 
-      i class="material-icons"  format_color_text
+    a id="format" class="btn-large waves-effect waves-light grey darken-1 z-depth-5" data-action="patterns--midi-device#addText" data-target="patterns--midi-device.addTextButton" 
+      i class="material-icons pattern-settings-icons" short_text
+      span style="color:white;font-size:10px;"  Textify 
     
-    a id="random_all" class="btn-floating btn-large waves-effect waves-light teal lighten-2 z-depth-5" data-action="patterns--midi-device#randomizeAll"  
-      i class="material-icons"  looks
+    a id="random_all" class="btn-large waves-effect waves-light grey darken-1 z-depth-5" data-action="patterns--midi-device#randomizeAll"  data-target="patterns--midi-device.randomizeAll"
+      i class="material-icons pattern-settings-icons" fingerprint
+      span style="color:white;font-size:10px;"  Random All
     
-    a id="random_one" class="btn-floating btn-large waves-effect waves-light black lighten-2 z-depth-5" data-action="patterns--midi-device#randomizeOneNote" data-target="patterns--midi-device.randomizeOne"
-      i class="material-icons"  pan_tool    
+    a id="random_one" class="btn-large waves-effect waves-light grey darken-1 z-depth-5" data-action="patterns--midi-device#randomizeOneNote" data-target="patterns--midi-device.randomizeOne"
+      i class="material-icons pattern-settings-icons" fingerprint
+      span style="color:white;font-size:10px;"  Random
+
+    a id="clear_all" class="btn-large waves-effect waves-light grey darken-1 z-depth-5" data-action="patterns--midi-device#clearAll" data-target="patterns--midi-device.clearAll"
+      i class="material-icons pattern-settings-icons" clear
+      span style="color:white;font-size:10px;"  Clear Piano   
+       
+    
+
+
+  
       
       
 

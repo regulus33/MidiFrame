@@ -184,7 +184,7 @@ li.white.selected input[type="text"]:focus {
 
 a.project-item, div.pattern-item {
   color: white !important;
-  background-color: #3e3f40 !important;
+  background-color: #1F1F1F !important;
   transition: background-color 1s;
 }
 
@@ -202,7 +202,7 @@ input[type="text"]{
 
 /* record and complete in octave button */
 
-a#record , a#complete, a#save, a#settings, a#adjust, a#format, a#random_all, a#random_one {
+a#record , a#complete, a#save, a#settings, a#adjust, a#format, a#random_all, a#random_one, a#select_mode, a#clear_all {
   margin-right: 10px;
   top: 9px;
 }
@@ -297,6 +297,17 @@ a#midi-save {
   float: right;
   top: 12px;
   right: 2px;
+}
+
+a#toggle-select-mode {
+  cursor: pointer !important;
+  margin-left: 20px;
+}
+
+i.pattern-settings-icons{
+  font-size:13px;
+  position: relative;
+  top: 2px;
 }
 
 

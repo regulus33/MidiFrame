@@ -23,7 +23,11 @@ export default class extends Controller {
     "textModalTitle",
     "noteText",
     "inputValue",
-    "randomizeOne"
+    "randomizeOne",
+    "toggleSelectMode",
+    "randomizeAll",
+    "saveButton",
+    "clearAll",
   ];
 
   connect() {
@@ -37,7 +41,6 @@ export default class extends Controller {
     this.clockSignalsPassedSinceRecordStart = 0;
     this.video = videojs(this.videoTarget.id);
     this.selectedKey = null;
-    this.playedNotes = new Set();
     this._observe_all_keys();
     this._enable_midi();
     this.saveAndNavigate = this.saveAndNavigate.bind(this);
@@ -49,11 +52,35 @@ export default class extends Controller {
     this.positionTextForVideo();
     this.positionTextOnWindowResize();
     this._initializeTextData();
+    // the current 'mode' either, selecting or demoing midi 
+    this.selecting = true;
   }
+
+  toggleSelectMode(){
+    this.selecting = !this.selecting;
+    this.updateUIFromModeChange(); 
+    this._resetMidiListeners();
+    // reset midi play listener
+  }
+
+  updateUIFromModeChange(){
+    // if we are DEMOING
+    // remove piano role from dom, hide or disable all buttons EXCEPT
+    // toggleOnNotePlay
+    if(!this.selecting){
+      this.noteStampsTarget.style.visibility = 'hidden';
+      this.toggleSelectModeTarget.innerHTML = "Select";
+    } else {
+      this.noteStampsTarget.style.visibility = 'visible';
+      this.toggleSelectModeTarget.innerHTML = "Play"
+    }
+  }
+
+  // when 
 
   //SAVE BUTTON 
   save() {
-    console.log(`[MIDI_DEVICE_CONTROLLER] save(), about to save the project`)
+    console.log(`[MIDI_DEVICE_CONTROLLER] save(), about to save the project`);
     return savePattern({ channel: this._channel, pianoData: this.pianoData, pianoTextData: this.pianoTextData, midiEvents: this.midiEvents, patternId: this._getPatternId(), projectId: this._getProjectId() })
       .then(() => {
         console.log(`[MIDI_DEVICE_CONTROLLER] save(), returning from network response`)
@@ -61,7 +88,7 @@ export default class extends Controller {
         // ? if the midi events are at the server, there is no reason for them to 
         // ? hang around in memory, clear the array in preparation for new recordings 
         this._clearMidiEvents()
-      })
+      });
   }
 
   saveAndNavigate() {
@@ -69,7 +96,7 @@ export default class extends Controller {
     this.save().then(() => {
       // console.log(this._settingsUrl)
       window.location.href = baseUrl + this._settingsUrl
-    })
+    });
   }
 
   //? submitting data to be converted into a video 
@@ -80,34 +107,18 @@ export default class extends Controller {
       })
     })
   }
-
-  onMessageClock(message) {
-    // ? only count clock signals if recording 
-    if (this._recording) {
-      this.clockSignalsPassedSinceRecordStart++
-      // console.log(`clock signal passed: ${this.clockSignalsPassedSinceRecordStart} total clock signals: ${this._totaClockSignals}`)
-      switch (this.clockSignalsPassedSinceRecordStart) {
-        // ! end is reached! exit recording loop
-        case this._totaClockSignals:
-          this._addStopTime(message.timestamp)
-          this._recording = false
-          this._resetClock()
-          this.toggleRecordingSession()
-          break;
-      }
-    }
-  }
-
+  // there should be rwo messagenoteons? 
   onMessageNoteOn(msg) {
     console.log("onMessageNoteOn: " + msg);
-    console.log(msg);
-    const number = this._get_msg_note_number(msg);
+    const number = msg.note.number;
     this._play_note(number);
     this._play_video(number);
-    this._addMidiEvent(msg);
     this.onOnHighlightingRelevantOctaveButton(number);
-    this._addMidiNoteToPlayedNotes(number); // ? save the notes for global randomize 
     this._playText(number);
+  }
+
+  onMessageNoteOnAudition(msg){
+    this._play_video(msg.note.number);
   }
 
   onMessageNoteOff(msg) {
@@ -119,10 +130,6 @@ export default class extends Controller {
   //? this method adds the starting timestamp (its the most precise way)
   //? and begins adding new midi events to the collection  
   onMessageStart(msg) {
-    if (this._recordingSessionOpen) {
-      this._addStartEvent(msg.timestamp);
-      this._startRecordingMidiNotes();
-    }
     this.playVideo();
   }
 
@@ -164,13 +171,12 @@ export default class extends Controller {
     }
     if (e.ctrlKey) {
       if (e.key === "t") this.randomizeAll();
-      if (e.key === "c") this._clearAll();
+      if (e.key === "c") this.clearAll();
     }
   }
 
   randomizeOneNote() {
     let selectedElement = document.getElementsByClassName("selected")
-    debugger
     if (selectedElement.length > 0) {
       this._randomize(selectedElement[0].children[3]);
     }
@@ -193,10 +199,6 @@ export default class extends Controller {
     }
   }
 
-  toggleRecordingSession() {
-    this._recordingSessionOpen = !this._recordingSessionOpen
-    M.toast({ html: `recording session ${this._recordingSessionOpen ? 'open' : 'closed'}` })
-  }
 
   // **************************************************
   // ! PRIVATE METHODS PRIVATE METHODS PRIVATE METHODS
@@ -204,14 +206,6 @@ export default class extends Controller {
 
   _clearMidiEvents() {
     this._midiEvents = []
-  }
-
-  _resetClock() {
-    this.clockSignalsPassedSinceRecordStart = 0
-  }
-
-  _startRecordingMidiNotes() {
-    this._recording = true
   }
 
   _updateData({ time, number }) {
@@ -244,7 +238,6 @@ export default class extends Controller {
 
   _changeChannel(channel) {
     this._channel = channel
-    this._resetPlayedNotes();
     this._resetMidiListeners(parseInt(channel))
   }
 
@@ -272,16 +265,6 @@ export default class extends Controller {
     element.value = time
   }
 
-  // ? RECORDING SESSION 
-  get _recordingSessionOpen() {
-    return this.recordingSessionOpen
-  }
-
-  set _recordingSessionOpen(isOpen) {
-    this.recordingSessionOpen = isOpen
-    this.recordButtonTarget.classList.toggle('open-recording-session')
-  }
-
   _randomize(element) {
     console.log("randomizing video, video length: " + this._videoLength);
     let randomValue = randoMize(this._videoLength)
@@ -289,28 +272,17 @@ export default class extends Controller {
     element.value = randomValue
   }
 
-  // !plural RANDOM 
-  _addMidiNoteToPlayedNotes(note) {
-    this.playedNotes.add(note);
-    // console.log(this.playedNotes);
-  }
-
-  // ? if we change midid channels, played notes will need to change 
-  _resetPlayedNotes() {
-    this.playedNotes = new Set();
-  }
-
   randomizeAll() {
-    for (let [key, value] of this.playedNotes.entries()) {
+    for (let key = 0; key < 108; key++) {
       //! WARNING this lasElementChild method shakily depends on the input being the last child so be careful when changing list items for keyboard.slim
       const randTime = randoMize(this._videoLength);
       this.piano[key].lastElementChild.value = randTime;
       this._updateData({ time: randTime, number: key });
     }
-    M.toast({ html: 'Randomized all midi notes played' });
+    // M.toast({ html: 'Randomized!' });
   }
 
-  _clearAll() {
+  clearAll() {
     Object.keys(this.piano).forEach(pianoKeyKey => {
       this.piano[pianoKeyKey].lastElementChild.value = "";
     });
@@ -346,27 +318,25 @@ export default class extends Controller {
     console.log(`played note ${this.notesLegend[noteNumber]} current note: ${this.currentMidiPosition}`)
     if (this.notesLegend[noteNumber] < this.currentMidiPosition) {
       //? removing black means default to teal
-      this.buttonMinusTarget.classList.remove("black");
+      this.buttonMinusTarget.classList.remove("grey");
     } else if (this.notesLegend[noteNumber] > this.currentMidiPosition) {
-      //? removing black means default to teal
-      this.buttonPlusTarget.classList.remove("black");
+      //? removing grey means default to teal
+      this.buttonPlusTarget.classList.remove("grey");
     } else {
-      this.buttonPlusTarget.classList.add("black");
+      this.buttonPlusTarget.classList.add("grey");
     }
   }
 
   // make button green if the played notes are lower than the current octave
   onOffHighlightingRelevantOctaveButton(noteNumber) {
     if (this.notesLegend[noteNumber] < this.currentMidiPosition) {
-      this.buttonMinusTarget.classList.add("black");
+      this.buttonMinusTarget.classList.add("grey");
     } else if (this.notesLegend[noteNumber] > this.currentMidiPosition) {
-      this.buttonPlusTarget.classList.add("black");
+      this.buttonPlusTarget.classList.add("grey");
     }
   }
 
   // * Midi Information 
-  // * Midi Information 
-
 
   _play_note(number) {
     this._getPianoKey(number).classList.toggle("active", true)
@@ -384,25 +354,25 @@ export default class extends Controller {
 
   _activatePianoKey(element) {
     // the button that changes time should light up to indicate activity
-    this.saveCurrentTimeTarget.classList.toggle("black", false); // teal by default 
+    this.saveCurrentTimeTarget.classList.toggle("grey", false); // teal by default 
     // add text button 
-    this.addTextButtonTarget.classList.toggle("black", false);
+    this.addTextButtonTarget.classList.toggle("grey", false);
 
-    this.randomizeOneTarget.classList.toggle("black", false);
+    this.randomizeOneTarget.classList.toggle("grey", false);
 
     element.parentElement.classList.add("selected");
   }
 
   _deactivatePianoKey() {
     this.selectedKey.parentElement.classList.remove("selected")
-    this.randomizeOneTarget.classList.toggle("black", true);
+    this.randomizeOneTarget.classList.toggle("grey", true);
   }
 
   _deletePianoKey() {
     // the button that changes time should go back to black
-    this.saveCurrentTimeTarget.classList.toggle("black", true);
+    this.saveCurrentTimeTarget.classList.toggle("grey", true);
     // add text button 
-    this.addTextButtonTarget.classList.toggle("black", true);
+    this.addTextButtonTarget.classList.toggle("grey", true);
     this.selectedKey = null
   }
 
@@ -412,10 +382,6 @@ export default class extends Controller {
 
   _add_key_to_piano({ noteNumber, pianoKey }) {
     this._piano[noteNumber] = pianoKey
-  }
-
-  _get_msg_note_number(msg) {
-    return msg.note.number
   }
 
   _get_note_number(keyElement) {
@@ -433,7 +399,7 @@ export default class extends Controller {
   //////////////////////////////////////////
   // basically requests access from browser, only runs if access is enabled 
   _enable_midi() {
-    WebMidi.enable(error => { error ? this._on_error(error) : this._on_success(this.getSavedChannel()) })
+    WebMidi.enable(error => { error ? this._on_error(error) : this._onSuccess(this.getSavedChannel()) })
   }
 
   getSavedChannel() {
@@ -451,7 +417,7 @@ export default class extends Controller {
 
   _resetMidiListeners(channel) {
     this._wipeListeners()
-    this._on_success(channel)
+    this._onSuccess(channel)
   }
 
   _setPlaying() {
@@ -479,13 +445,16 @@ export default class extends Controller {
   //   this._midiInput.addListener('start', 'all', this._setPlaying.bind(this))
   // }
 
-  _on_success(channel) {
-    console.log("setting listeners for channel: " + channel)
-    // ? just for knowing if midi is being received or not
-    // this._setPlayAndStopListeners()
-    this._midiInput.addListener('noteon', channel, msg => this.onMessageNoteOn(msg))
-    this._midiInput.addListener('noteoff', channel, msg => this.onMessageNoteOff(msg))
-    this._midiInput.addListener('clock', "all", this.onMessageClock.bind(this))
+  _onSuccess(channel) {
+    console.log("setting listeners for channel: " + channel);
+    // if we are in time stamp select mode, set the appropriate handler, else, use the slimmed down video player
+    if(this.selecting){
+      this._midiInput.addListener('noteon', channel, msg => this.onMessageNoteOn(msg));
+      this._midiInput.addListener('noteoff', channel, msg => this.onMessageNoteOff(msg));
+    } else {
+      this._midiInput.addListener('noteon', channel, msg => this.onMessageNoteOnAudition(msg));
+      
+    }
     this._midiInput.addListener('start', "all", this.onMessageStart.bind(this))
     this._midiInput.addListener('stop', "all", this.onMessageStop.bind(this))
   }
@@ -498,32 +467,6 @@ export default class extends Controller {
     return this.projectIdTarget.getAttribute("project-id")
   }
 
-  _stopMidi() {
-    this._midiOutput.sendStop()
-  }
-
-  _addStartEvent(timestamp) {
-    // ? on first clock signal of recording session we get the received time of the 
-    // ? first note 
-    let processeableEvent = { note: "start", timestamp: timestamp }
-    this._midiEvents.push(processeableEvent)
-  }
-
-  _addStopTime(timestamp) {
-    let processeableEvent = { note: "stop", timestamp: timestamp }
-    this._midiEvents.push(processeableEvent)
-  }
-
-  _addMidiEvent(event) {
-    console.log(event);
-    let calibratedTimeStamp
-    // ? first you need to get the amount of time to subtract from each timestamp so that the first evetn starts at 0:00
-    // ? set the timing in the new event  
-    if (this._recording) {
-      let processeableEvent = { note: event.note.number, timestamp: event.timestamp }
-      this._midiEvents.push(processeableEvent)
-    }
-  }
 
   // **************************************************************
   // ******************* GETTERS AND SETTERS **********************
@@ -535,6 +478,7 @@ export default class extends Controller {
   get _channel() {
     return parseInt(this.channelTarget.getAttribute('device-channel'))
   }
+
   set _channel(channel) {
     this.channelTarget.innerHTML = channel
     this.channelTarget.setAttribute('device-channel', channel)
@@ -570,25 +514,7 @@ export default class extends Controller {
   set _playing(playing) {
     this.playing = playing
   }
-  /////////////////////////
 
-  // ? RECORDING 
-  // ? the SETTER has extrac functionality tied to it 
-  // ? that extra functionality is key to capturing midi events
-  // ? when we are in a record loop  
-  ///////////////////////////////////////////////////////////////////////
-  get _recording() {
-    return this.recording
-  }
-  // ? set recording AND also stop or start midi based on value of 'recording'
-  set _recording(recording) {
-    if (recording) {
-      this.recording = true
-    } else {
-      this.recording = false
-      this._stopMidi()
-    }
-  }
   ////////////////////////////////////////////////////////////////////////
   // ? SELECTED KEY 
   // ? get the key (form input) that we need to change the time on 

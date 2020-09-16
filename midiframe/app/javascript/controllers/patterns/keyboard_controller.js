@@ -4,10 +4,14 @@ export default class extends Controller {
 
   static targets = ["keyBoardKey"]
 
+  connect(){
+  }
+
   ///////////////////////////////////////////
   ///               PUBLIC                ///
   ///////////////////////////////////////////
   next() {
+    console.log('next')
     if ((this._position + 1) <= this.finalIndex) {
       this._position++
     }
@@ -19,9 +23,6 @@ export default class extends Controller {
     }
   }
 
-  ///////////////////////////////////////////
-  ///              PRIVATE                ///
-  ///////////////////////////////////////////
   get _visible_on_keyboard() {
     return this._notes[this._position].map(arr => parseInt(arr[0]))
   }
