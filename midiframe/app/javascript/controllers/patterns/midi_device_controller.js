@@ -54,6 +54,7 @@ export default class extends Controller {
     this._initializeTextData();
     // the current 'mode' either, selecting or demoing midi 
     this.selecting = true;
+    this.videoPlaying = false;
   }
 
   toggleSelectMode(){
@@ -182,21 +183,43 @@ export default class extends Controller {
   }
 
   onDocumentKeyDown(e) {
-    if (this._keyCodeIsNumber(e.key)) this._changeChannel(e.key);
+    debugger 
+    if(e.code === "Space"){
+      if(this.videoPlaying){
+        this.pauseVideo();
+      } else {
+        this.playVideo()
+      }
+      return;
+    }
+    if (this._keyCodeIsNumber(e.key)){
+      this._changeChannel(e.key);
+      return 
+    } 
     if (e.metaKey && e.key === "s") {
       e.preventDefault();
       this.save();
+      return;
     } 
     let index = this.getVisibleNoteIndexFromKey(e.key);
-    if(index){
+    if(index != undefined){
       let noteNumber = this.visiblesNoteNumbersArray[index]
       // TODO this is gross:
+      debugger 
       this.onMessageNoteOn({note: {number: noteNumber}});
     }
   }
 
+  onDocumentKeyUp(e){
+    let index = this.getVisibleNoteIndexFromKey(e.key);
+    if(index != undefined){
+      let noteNumber = this.visiblesNoteNumbersArray[index]
+      // TODO this is gross:
+      this.onMessageNoteOff({note: {number: noteNumber}});
+    }
+  }
+
   get visiblesNoteNumbersArray(){
-    debugger
     return JSON.parse(this.noteStampsTarget.getAttribute("data-visible-note-numbers-array"));
   }
 
@@ -258,7 +281,8 @@ export default class extends Controller {
   }
 
   _addKeyDownChannelListener() {
-    window.addEventListener('keydown', this.onDocumentKeyDown.bind(this))
+    window.addEventListener('keydown', this.onDocumentKeyDown.bind(this));
+    window.addEventListener('keyup', this.onDocumentKeyUp.bind(this));
   }
 
   _changeChannel(channel) {
@@ -573,6 +597,16 @@ export default class extends Controller {
   // ? used to calculate a random timestamp within video length range 
   get _videoLength() {
     return this._video.duration();
+  }
+
+  playVideo(){
+    this._video.play();
+    this.videoPlaying = true;
+  }
+
+  pauseVideo(){
+    this._video.pause();
+    this.videoPlaying = false;
   }
 
   //? set the currently selected input to the current video time 
