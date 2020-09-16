@@ -5,6 +5,8 @@ export default class extends Controller {
   static targets = ["keyBoardKey"]
 
   connect(){
+    this._visibeNoteNumbersArray = [];
+    this.refreshKeyboard();
   }
 
   ///////////////////////////////////////////
@@ -12,22 +14,30 @@ export default class extends Controller {
   ///////////////////////////////////////////
   next() {
     console.log('next')
-    if ((this._position + 1) <= this.finalIndex) {
-      this._position++
+    if ((this.position + 1) <= this.finalIndex) {
+      this.position++
     }
   }
 
   prev() {
-    if (this._position != 0) {
-      this._position--
+    if (this.position != 0) {
+      this.position--
     }
   }
 
-  get _visible_on_keyboard() {
-    return this._notes[this._position].map(arr => parseInt(arr[0]))
+  get visiblesNoteNumbersArray() {
+    return JSON.parse(this.element.getAttribute("data-visible-note-numbers-array"));
   }
 
-  get _position() {
+  set visiblesNoteNumbersArray(notes){
+    this.element.setAttribute("data-visible-note-numbers-array", notes);
+  }
+
+  get _visible_on_keyboard() {
+    return this._notes[this.position].map(arr => parseInt(arr[0]))
+  }
+
+  get position() {
     return parseInt(this.data.get("position"))
   }
 
@@ -39,24 +49,26 @@ export default class extends Controller {
     return parseInt(this.data.get("final-index"))
   }
 
-  set _position(value) {
+  set position(value) {
     this.data.set("position", value)
-    this._refresh_keyboard()
+    this.refreshKeyboard()
   }
 
   _get_note_number(keyElement) {
     return parseInt(keyElement.getAttribute('midi-note-number'))
   }
 
-  _refresh_keyboard() {
-    this.keyBoardKeyTargets.forEach(key => this._show_key_if_visible(key, this._get_note_number(key)))
+  refreshKeyboard() {
+    this.keyBoardKeyTargets.forEach(key => this._show_key_if_visible_and_add_to_visibles(key, this._get_note_number(key)));
+    this.visiblesNoteNumbersArray = JSON.stringify(this._visibeNoteNumbersArray);
   }
 
-  _show_key_if_visible(keyElement, noteNumber) {
-    let is_in_current_array = this._visible_on_keyboard.includes(noteNumber)
-    keyElement.classList.toggle("hide", !is_in_current_array)
+  _show_key_if_visible_and_add_to_visibles(keyElement, noteNumber) {
+    let is_in_current_array = this._visible_on_keyboard.includes(noteNumber);
+    let visibles = [];
+    keyElement.classList.toggle("hide", !is_in_current_array);
+    if(is_in_current_array) this._visibeNoteNumbersArray.push(noteNumber);
   }
-
 
 }
 

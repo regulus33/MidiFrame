@@ -163,16 +163,41 @@ export default class extends Controller {
     }
   }
 
+  // returns the note number of piano key to push when user presses letter. 
+  getVisibleNoteIndexFromKey(letter){
+    return {
+      a: 0,
+      w: 1,
+      s: 2,
+      e: 3,
+      d: 4, 
+      f: 5, 
+      t: 6, 
+      g: 7, 
+      y: 8, 
+      h: 9, 
+      u: 10,
+      j: 11, 
+    }[letter]
+  }
+
   onDocumentKeyDown(e) {
     if (this._keyCodeIsNumber(e.key)) this._changeChannel(e.key);
     if (e.metaKey && e.key === "s") {
       e.preventDefault();
       this.save();
+    } 
+    let index = this.getVisibleNoteIndexFromKey(e.key);
+    if(index){
+      let noteNumber = this.visiblesNoteNumbersArray[index]
+      // TODO this is gross:
+      this.onMessageNoteOn({note: {number: noteNumber}});
     }
-    if (e.ctrlKey) {
-      if (e.key === "t") this.randomizeAll();
-      if (e.key === "c") this.clearAll();
-    }
+  }
+
+  get visiblesNoteNumbersArray(){
+    debugger
+    return JSON.parse(this.noteStampsTarget.getAttribute("data-visible-note-numbers-array"));
   }
 
   randomizeOneNote() {

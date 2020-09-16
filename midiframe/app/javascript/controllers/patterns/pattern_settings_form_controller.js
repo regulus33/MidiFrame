@@ -10,7 +10,6 @@ export default class extends Controller {
   connect() {
     this.midiRecorderController = this.application.getControllerForElementAndIdentifier(this.element, "patterns--midi-recorder");
     this.stepAndChannelController = this.application.getControllerForElementAndIdentifier(this.element,"patterns--step-and-channel");
-    this.midiParserController = this.application.getControllerForElementAndIdentifier(this.element,"patterns--midi-parser-controller");
     this.patternId = this.requestDataTarget.getAttribute("data-midi-parser-patternId");
     this.projectId = this.requestDataTarget.getAttribute("data-midi-parser-projectId");
   }
