@@ -10,11 +10,10 @@ html
     link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"
   
   body
+    =render 'layouts/nav'
     div data-controller="loading"
       /print the title of the controller as the heading, should be improved after user flow is more defined
-      h6 class="page-title" =determine_appropriate_heading controller: params[:controller], title: params[:page_title]
-      div id="page_content" data-target="loading.hide"
-        = yield 
+      = yield 
       / See loading contoller, this gets shown in a controller action 
       div id="loading_bar" data-target="loading.show" class="hidden"
           div class="progress"

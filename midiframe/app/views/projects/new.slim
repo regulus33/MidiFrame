@@ -16,14 +16,14 @@ div data-controller='projects--file-input' class="card-panel z-depth-5"
     span data-target="projects--file-input.fileDisplayName" no file chosen
 
     = f.file_field :video, style: "display:none;", data: { action: "change->projects--file-input#printFileName", target: "projects--file-input.filename" } 
-    
-    label for="project_font"
+    / TODO: bring back fonts 
+    / label for="project_font"
       
-      a id="upload_font_button" class="waves-effect waves-light btn grey darken-4"Choose Font
+    /   a id="upload_font_button" class="waves-effect waves-light btn grey darken-4"Choose Font
 
-    span data-target="projects--file-input.fontFileDisplayName" no file chosen
+    / span data-target="projects--file-input.fontFileDisplayName" no file chosen
 
-    = f.file_field :font, style: "display:none;", data: { action: "change->projects--file-input#printFontFileName", target: "projects--file-input.fontFileName" } 
+    / = f.file_field :font, style: "display:none;", data: { action: "change->projects--file-input#printFontFileName", target: "projects--file-input.fontFileName" } 
    
     = f.submit "C R E A T E", class: "waves-effect waves-light btn grey darken-4 submit", data: { action: "loading#showLoader" } 
 

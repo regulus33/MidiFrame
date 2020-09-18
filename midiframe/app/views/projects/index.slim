@@ -1,10 +1,12 @@
 ul class="collection"
+  - if current_user.projects.any?
+    -current_user.projects.each do |project| 
 
-  -current_user.projects.each do |project| 
+      =link_to( edit_project_path( project ), class:"collection-item project-item") do 
 
-    =link_to( edit_project_path( project ), class:"collection-item project-item") do 
-
-      =project.name 
+        =project.name 
+  - else 
+    <span> You don't have any projects yet! </span>
 
 =render 'project_action_buttons' 
 

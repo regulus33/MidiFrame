@@ -121,7 +121,7 @@ export default class extends Controller {
     this._play_note(number);
     this._play_video(number);
     this.onOnHighlightingRelevantOctaveButton(number);
-    this._playText(number);
+    // this._playText(number);
     this.lastNote = number;
   }
 
