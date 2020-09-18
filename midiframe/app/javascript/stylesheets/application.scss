@@ -220,16 +220,6 @@ a#record.open-recording-session i {
   font-style: italic;
 }
 
-#note-text-text {
-  position: relative;
-  font-size: 70px;
-  display: inline-block;
-  height: 20px;
-  width: 100%;
-  z-index: 10;
-  text-align: center;
-}
-
 .page-title {
   margin-left: 28px;
 }
@@ -314,6 +304,21 @@ li.white.selected input {
   color: white !important;
 }
 
+.dotted {
+  border: 1px dotted white;
+}
+
+
+#note-text-text {
+  position: absolute;
+  font-size: 70px;
+  z-index: 10;
+  text-align: center;
+}
+
+.vjs-big-play-button{
+  visibility: hidden;
+}
 
 
 

@@ -55,20 +55,26 @@ export default class extends Controller {
     // the current 'mode' either, selecting or demoing midi 
     this.selecting = true;
     this.videoPlaying = false;
+    this.lastNote = null;
   }
 
-  toggleSelectMode(){
+  updateCurrentNoteTextPosition() {
+    this.pianoTextData.bot
+  }
+  // onNote
+
+  toggleSelectMode() {
     this.selecting = !this.selecting;
-    this.updateUIFromModeChange(); 
+    this.updateUIFromModeChange();
     this._resetMidiListeners();
     // reset midi play listener
   }
 
-  updateUIFromModeChange(){
+  updateUIFromModeChange() {
     // if we are DEMOING
     // remove piano role from dom, hide or disable all buttons EXCEPT
     // toggleOnNotePlay
-    if(!this.selecting){
+    if (!this.selecting) {
       this.noteStampsTarget.style.visibility = 'hidden';
       this.toggleSelectModeTarget.innerHTML = "Select";
     } else {
@@ -116,9 +122,10 @@ export default class extends Controller {
     this._play_video(number);
     this.onOnHighlightingRelevantOctaveButton(number);
     this._playText(number);
+    this.lastNote = number;
   }
 
-  onMessageNoteOnAudition(msg){
+  onMessageNoteOnAudition(msg) {
     this._play_video(msg.note.number);
   }
 
@@ -147,7 +154,20 @@ export default class extends Controller {
   }
 
   onPianoKeyClick(event) {
-    this._shouldSelectNote(event.target) ? this._selectNote(event) : this._unselectNote();
+    let target = event.target;
+    let num = parseInt(target.id);
+    if (this._shouldSelectNote(target)) {
+      this._selectNote(event);
+      // notoff last key before lighting up next 
+      if (this.lastNote) {
+        this.onMessageNoteOff({ note: { number: this.lastNote } });
+      }
+      this.onMessageNoteOn({ note: { number: num } });
+      this.lastNote = number;
+    } else {
+      this._unselectNote(target);
+    }
+
   }
 
   updateSelectedNoteTime(event) {
@@ -165,61 +185,59 @@ export default class extends Controller {
   }
 
   // returns the note number of piano key to push when user presses letter. 
-  getVisibleNoteIndexFromKey(letter){
+  getVisibleNoteIndexFromKey(letter) {
     return {
       a: 0,
       w: 1,
       s: 2,
       e: 3,
-      d: 4, 
-      f: 5, 
-      t: 6, 
-      g: 7, 
-      y: 8, 
-      h: 9, 
+      d: 4,
+      f: 5,
+      t: 6,
+      g: 7,
+      y: 8,
+      h: 9,
       u: 10,
-      j: 11, 
+      j: 11,
     }[letter]
   }
 
   onDocumentKeyDown(e) {
-    debugger 
-    if(e.code === "Space"){
-      if(this.videoPlaying){
+    if (e.code === "Space") {
+      if (this.videoPlaying) {
         this.pauseVideo();
       } else {
         this.playVideo()
       }
       return;
     }
-    if (this._keyCodeIsNumber(e.key)){
+    if (this._keyCodeIsNumber(e.key)) {
       this._changeChannel(e.key);
-      return 
-    } 
+      return
+    }
     if (e.metaKey && e.key === "s") {
       e.preventDefault();
       this.save();
       return;
-    } 
+    }
     let index = this.getVisibleNoteIndexFromKey(e.key);
-    if(index != undefined){
+    if (index != undefined) {
       let noteNumber = this.visiblesNoteNumbersArray[index]
       // TODO this is gross:
-      debugger 
-      this.onMessageNoteOn({note: {number: noteNumber}});
+      this.onMessageNoteOn({ note: { number: noteNumber } });
     }
   }
 
-  onDocumentKeyUp(e){
+  onDocumentKeyUp(e) {
     let index = this.getVisibleNoteIndexFromKey(e.key);
-    if(index != undefined){
+    if (index != undefined) {
       let noteNumber = this.visiblesNoteNumbersArray[index]
       // TODO this is gross:
-      this.onMessageNoteOff({note: {number: noteNumber}});
+      this.onMessageNoteOff({ note: { number: noteNumber } });
     }
   }
 
-  get visiblesNoteNumbersArray(){
+  get visiblesNoteNumbersArray() {
     return JSON.parse(this.noteStampsTarget.getAttribute("data-visible-note-numbers-array"));
   }
 
@@ -348,8 +366,8 @@ export default class extends Controller {
     this._selectedKey.addEventListener('keydown', (e) => { this.onFormKeyDown(e) })
   }
 
-  _unselectNote() {
-    this._deactivatePianoKey(this._selectedKey)
+  _unselectNote(element) {
+    this._deactivatePianoKey(element)
     this._deletePianoKey()
   }
   // !Midi Information 
@@ -412,9 +430,10 @@ export default class extends Controller {
     element.parentElement.classList.add("selected");
   }
 
-  _deactivatePianoKey() {
-    this.selectedKey.parentElement.classList.remove("selected")
+  _deactivatePianoKey(element) {
     this.randomizeOneTarget.classList.toggle("grey", true);
+    element.parentElement.classList.remove("selected");
+    element.parentElement.classList.remove("active");
   }
 
   _deletePianoKey() {
@@ -497,12 +516,12 @@ export default class extends Controller {
   _onSuccess(channel) {
     console.log("setting listeners for channel: " + channel);
     // if we are in time stamp select mode, set the appropriate handler, else, use the slimmed down video player
-    if(this.selecting){
+    if (this.selecting) {
       this._midiInput.addListener('noteon', channel, msg => this.onMessageNoteOn(msg));
       this._midiInput.addListener('noteoff', channel, msg => this.onMessageNoteOff(msg));
     } else {
       this._midiInput.addListener('noteon', channel, msg => this.onMessageNoteOnAudition(msg));
-      
+
     }
     this._midiInput.addListener('start', "all", this.onMessageStart.bind(this))
     this._midiInput.addListener('stop', "all", this.onMessageStop.bind(this))
@@ -599,12 +618,12 @@ export default class extends Controller {
     return this._video.duration();
   }
 
-  playVideo(){
+  playVideo() {
     this._video.play();
     this.videoPlaying = true;
   }
 
-  pauseVideo(){
+  pauseVideo() {
     this._video.pause();
     this.videoPlaying = false;
   }
@@ -645,6 +664,8 @@ export default class extends Controller {
     if (this.pianoTextData[num]) {
       let textToDisplay = this.pianoTextData[num];
       this.noteTextTarget.innerHTML = textToDisplay;
+    } else {
+      this.noteTextTarget.innerHTML = "";
     }
   }
   // data action 
@@ -654,13 +675,13 @@ export default class extends Controller {
 
   // ? js centering of optional video text 
   positionTextForVideo() {
-    let textPosition = this.noteTextTarget;
-    let video = document.getElementsByTagName('video')[0]
-    // ! TODO THIS IS STILL NOT WORKED OUT YET
-    var textPositionTop = video.offsetHeight / 2;
-    var textPositionLeft = (video.offsetWidth / 2 - textPosition.width);
-    textPosition.style.left = textPositionLeft + 'px';
-    textPosition.style.top = textPositionTop + 'px';
+    // let textPosition = this.noteTextTarget;
+    // let video = document.getElementsByTagName('video')[0]
+    // // ! TODO THIS IS STILL NOT WORKED OUT YET
+    // var textPositionTop = video.offsetHeight / 2;
+    // var textPositionLeft = (video.offsetWidth / 2 - textPosition.width);
+    // textPosition.style.left = textPositionLeft + 'px';
+    // textPosition.style.top = textPositionTop + 'px';
   }
 
   positionTextOnWindowResize() {
