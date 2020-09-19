@@ -4,7 +4,7 @@
 class SessionsController < ApplicationController
   # Renders sign in screen and sets page title to "Sign in"
   def new
-    params[:page_title] = 'Sign In'
+    params[:page_title] = "Sign In"
   end
 
   # `post '/login'`
@@ -16,13 +16,13 @@ class SessionsController < ApplicationController
       session[:user_id] = @user.id
       redirect_to projects_path
     else
-      redirect_to '/login'
+      redirect_to "/login"
     end
   end
 
   def delete
     reset_session
-    redirect_to login_path 
+    redirect_to login_path
   end
 
   # Serves a default page if unauthenticated user trys to access private data.
@@ -30,9 +30,11 @@ class SessionsController < ApplicationController
 
   def login; end
 
+  def about; end
+
   private
 
   def session_params
-    params.require('/login').permit(:password, :email)
+    params.require("/login").permit(:password, :email)
   end
 end

@@ -1,0 +1,11 @@
+ul class="collection"
+  - if @patterns.any? 
+    -@patterns.each do |pattern| 
+        div class="collection-item pattern-item"
+          a class="pattern-link" href="#{edit_project_pattern_path(pattern.project, pattern)}" 
+            span =pattern.name 
+          a href="/pattern-settings/#{pattern.id}/#{pattern.project.id}" class="secondary-content"
+            span class="pattern-settings-link" settings
+  - else 
+    span Make a pattern! You don't have one yet!
+=render 'new_pattern_button' 

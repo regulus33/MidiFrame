@@ -15,6 +15,7 @@ class Pattern < ApplicationRecord
   # ? To be joined as one entire project
   has_one_attached :clip
   belongs_to :project
+  belongs_to :user
 
   before_create :set_initial_channel, :initialize_name, :initialize_step_length, :initialize_note_stamps, :initialize_order_in_sequence
   # ? after create since the values set above must be present

@@ -12,7 +12,7 @@ class PatternsController < ApplicationController
   end
 
   def new
-    @pattern = Pattern.create(project: @project)
+    @pattern = Pattern.create!(user: current_user, project: @project)
     redirect_to edit_project_pattern_path(@project, @pattern)
   end
 
@@ -80,6 +80,10 @@ class PatternsController < ApplicationController
   # generates the video
   def generate_pattern_clip
     @pattern.assemble_pattern_video
+  end
+
+  def patterns_all
+    @patterns = current_user.patterns
   end
 
   private

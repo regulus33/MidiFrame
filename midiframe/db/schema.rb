@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_02_091051) do
+ActiveRecord::Schema.define(version: 2020_09_18_161409) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -93,6 +93,7 @@ ActiveRecord::Schema.define(version: 2020_09_02_091051) do
     t.jsonb "note_texts"
     t.jsonb "text_stamps"
     t.string "midi_source"
+    t.integer "user_id"
     t.index ["project_id"], name: "index_patterns_on_project_id"
   end
 
@@ -134,4 +135,5 @@ ActiveRecord::Schema.define(version: 2020_09_02_091051) do
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "patterns", "users"
 end
