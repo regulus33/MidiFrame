@@ -8,9 +8,11 @@ html
     =stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' 
     =javascript_pack_tag 'application', 'data-turbolinks-track': 'reload', async: true 
     link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"
-  
+     
   body
     =render 'layouts/nav'
+    p class="alert"=alert
+    p class="notice"=notice
     div data-controller="loading"
       /print the title of the controller as the heading, should be improved after user flow is more defined
       = yield 

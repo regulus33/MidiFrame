@@ -333,6 +333,26 @@ video.video_preview {
   padding: 25px;
 }
 
+p.notice, p.alert {
+  padding: 0px !important;
+  position: relative;
+  bottom: 30px !important;
+  margin-top: 0px !important;
+  text-align: center;
+  font-size: 23px;
+}
+
+.alert {
+  background-color: red;
+}
+
+.notice {
+  background-color: rgb(107, 250, 24);
+}
+
+
+
+
 // a.btn {
 //   letter-spacing: 0px !important;
 //   font-size: 10px !important;
