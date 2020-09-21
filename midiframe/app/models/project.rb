@@ -131,7 +131,7 @@ class Project < ApplicationRecord
     -1
   end
 
-  # TODO: there has to be a more correct way to do this
+  # TODO: how to add these to some kind of global config?
   def auto_talent_path
     if (Rails.env.development?)
       return "~/andrWert43h/tuner/tuner"

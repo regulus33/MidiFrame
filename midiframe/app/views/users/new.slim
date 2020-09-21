@@ -1,8 +1,8 @@
 
 div class="card-panel z-depth-5"
-  
+
   = form_for @user, url: { action: "create" }, html: {class: "form-group"} do |f| 
-    
+    = recaptcha_tags 
     div class="input-field"    
     
       = f.text_field :email
