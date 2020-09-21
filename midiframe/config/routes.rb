@@ -3,6 +3,7 @@
 require "sidekiq/web"
 
 Rails.application.routes.draw do
+  devise_for :users
   root to: "projects#index"
   # SIGN IN AND SIGN UP
   resources :users, only: %i[new create]

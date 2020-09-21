@@ -1,16 +1,20 @@
-<h2>Resend confirmation instructions</h2>
+<h4 style="padding-left:30px">Resend confirmation instructions</h4>
 
-<%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
+<div class="card-panel z-depth-5">
+  <%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f| %>
+    <%= render "devise/shared/error_messages", resource: resource %>
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email", value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email) %>
-  </div>
+    <div class="field">
+      <%= f.label :email %><br />
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email) %>
+    </div>
 
-  <div class="actions">
-    <%= f.submit "Resend confirmation instructions" %>
-  </div>
-<% end %>
+    <div class="actions">
+      <%= f.submit "Resend confirmation instructions", class: "waves-effect waves-light btn grey darken-4 submit" %>
+    </div>
+  <% end %>
+</div>
 
-<%= render "devise/shared/links" %>
+<div class="signup-links">
+  <%= render "devise/shared/links" %>
+</div>

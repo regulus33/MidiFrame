@@ -25,7 +25,7 @@ class ApplicationController < ActionController::Base
     if current_user || %w[sessions users].include?(params[:controller].downcase)
       return
     end
-
-    redirect_to login_path
+    # from devise
+    authenticate_user!
   end
 end

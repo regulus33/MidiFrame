@@ -351,12 +351,21 @@ p.notice, p.alert {
 }
 
 
+div.signup-links {
+  padding-left: 31px;
+  padding-top: 20px;
+  font-size: 16px;
+  color: aliceblue !important;
+}
 
+.auth-form {
+  font-size: 13px !important;
+}
 
-// a.btn {
-//   letter-spacing: 0px !important;
-//   font-size: 10px !important;
-// }
+input#user_email, input#user_password, input#user_password_confirmation {
+  color: white;
+}
+
 
 
 
