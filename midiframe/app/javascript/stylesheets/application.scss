@@ -383,9 +383,9 @@ nav {
   position: relative;
 }
 
-div.splash-container, div.text-container {
-  // position: relative;
-  height: auto;
+div.splash-text{
+  position: absolute;
+  margin-left: 20px;
 }
 
 
