@@ -350,7 +350,6 @@ p.notice, p.alert {
   background-color: rgb(107, 250, 24);
 }
 
-
 div.signup-links {
   padding-left: 31px;
   padding-top: 20px;
@@ -366,6 +365,28 @@ input#user_email, input#user_password, input#user_password_confirmation {
   color: white;
 }
 
+#splash{
+  width: 100%;
+  position: relative;
+}
+
+img#splash, video#video-splash {
+  position: absolute;
+  top: 65px;
+  left: 0;
+}
+video#video-splash {
+width: 100%;
+}
+nav {
+  z-index: 1;
+  position: relative;
+}
+
+div.splash-container, div.text-container {
+  // position: relative;
+  height: auto;
+}
 
 
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_21_160344) do
+ActiveRecord::Schema.define(version: 2020_09_22_000511) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -152,6 +152,7 @@ ActiveRecord::Schema.define(version: 2020_09_21_160344) do
     t.string "role"
     t.integer "parent_video_id"
     t.string "file_extension_string"
+    t.boolean "public"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
