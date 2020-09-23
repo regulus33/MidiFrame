@@ -2,9 +2,26 @@
   <div class="nav-wrapper black" style="">
     <a href='/' style="padding-left: 18px;" class="brand-logo">MidiFrame</a>
     <ul class="hide-on-med-and-down">
+     <% if current_user %>
       <li><a href="/patterns/all">Patterns</a></li>
       <li><a href="/projects">Projects</a></li>
-      <li><a href="/about">About</a></li>
+      <li>
+      <%= link_to destroy_user_session_path, :method => "DELETE" do %>
+        logout
+      <% end %>
+      </li>
+     <% else %>
+      <li>
+        <%= link_to(new_user_session_path) do %>
+          Sign In
+        <% end %>
+      </li>
+      <li>
+        <%= link_to(new_user_registration_path) do %>
+          Sign Up
+        <% end %>
+      </li>
+     <% end %>
     </ul>
   </div>
 </nav>

@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base
 
   # redirect to login if not logged in
   def authorize
-    if current_user || %w[sessions users].include?(params[:controller].downcase)
+    if %w[sessions].include?(params[:controller].downcase)
       return
     end
     # from devise

@@ -5,7 +5,6 @@ class ProjectsController < ApplicationController
   before_action :get_project, only: %i[edit update destroy show autotune autotune_generate]
 
   def index
-    # !API:
     respond_to do |format|
       format.json do
         # ! todo, authentication and projects need to be for signed in user

@@ -339,15 +339,16 @@ p.notice, p.alert {
   bottom: 30px !important;
   margin-top: 0px !important;
   text-align: center;
-  font-size: 13px;
+  font-size: 17px;
+  z-index: 10000;
 }
 
 .alert {
-  background-color: red;
+  background-color: rgb(226, 132, 43);
 }
 
 .notice {
-  background-color: rgb(107, 250, 24);
+  background-color: rgb(84, 175, 32);
 }
 
 div.signup-links {

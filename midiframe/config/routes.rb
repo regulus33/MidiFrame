@@ -4,7 +4,7 @@ require "sidekiq/web"
 
 Rails.application.routes.draw do
   devise_for :users
-  root to: "projects#index"
+  root to: "sessions#about"
   # SIGN IN AND SIGN UP
   # resources :users, only: %i[new create]
   # get "login", to: "sessions#new"
