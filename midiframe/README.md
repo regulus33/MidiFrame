@@ -73,17 +73,8 @@ add this to your bashrc
 then you can run `tuner` as a command 
 
 
+## AWS 
 
-## Gotchas
-
-### Rails master key
-
-just grab from bitwarden and replace contents of file in `config/master.key`
-with `h89787h739937hr` or whatever the latest key is. 
-
-## TODOS FOR PRODUCTION
-
-properly install redis for production i.e. server restarts and etc. 
-https://redis.io/topics/quickstart 
-also 
-https://medium.com/@thomasroest/properly-setting-up-redis-and-sidekiq-in-production-on-ubuntu-16-04-f2c4897944b5
+#### elastic ip address 
+An elastic ip address is just a static ip that maps to whatever Ec2 instance you want to use. 
+Its helpful for DNS resolution, so you can register `midiframe.com` to an ip that will never change regardless of how many ec2 instances you setup and associate with that url. 

@@ -6,9 +6,9 @@ Rails.application.routes.draw do
   devise_for :users
   root to: "projects#index"
   # SIGN IN AND SIGN UP
-  resources :users, only: %i[new create]
-  get "login", to: "sessions#new"
-  post "login", to: "sessions#create"
+  # resources :users, only: %i[new create]
+  # get "login", to: "sessions#new"
+  # post "login", to: "sessions#create"
   # just a simple link should sign user out
   get "logout", to: "sessions#delete"
   get "unauthorized", to: "sessions#page_requires_login"

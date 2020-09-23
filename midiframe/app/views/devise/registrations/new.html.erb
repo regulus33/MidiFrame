@@ -2,7 +2,6 @@
 <div class="auth-form card-panel z-depth-5">
   <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
     <%= render "devise/shared/error_messages", resource: resource %>
-
     <div class="field">
       <%= f.label :email %><br />
       <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
@@ -21,6 +20,7 @@
       <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
     </div>
 
+    <%= recaptcha_tags %>
     <div class="actions">
       <%= f.submit "Sign up", class: "waves-effect waves-light btn grey darken-4 submit" %>
     </div>

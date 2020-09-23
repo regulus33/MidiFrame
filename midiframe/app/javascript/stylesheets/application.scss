@@ -339,7 +339,7 @@ p.notice, p.alert {
   bottom: 30px !important;
   margin-top: 0px !important;
   text-align: center;
-  font-size: 23px;
+  font-size: 13px;
 }
 
 .alert {
@@ -386,6 +386,12 @@ nav {
 div.splash-text{
   position: absolute;
   margin-left: 20px;
+  visibility: hidden;
+}
+
+p.splash-par{
+  letter-spacing: 0px;
+  font-size: 17px;
 }
 
 
