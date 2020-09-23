@@ -1,11 +1,16 @@
-ul class="collection"
   - if @patterns.any? 
-    -@patterns.each do |pattern| 
-        div class="collection-item pattern-item"
-          a class="pattern-link" href="#{edit_project_pattern_path(pattern.project, pattern)}" 
-            span =pattern.name 
-          a href="/pattern-settings/#{pattern.id}/#{pattern.project.id}" class="secondary-content"
+    ul class="collection"
+      -@patterns.each do |pattern| 
+          div class="collection-item pattern-item"
+            a class="pattern-link" href="#{edit_project_pattern_path(pattern.project, pattern)}" 
+              span =pattern.name 
+            a href="/pattern-settings/#{pattern.id}/#{pattern.project.id}" class="secondary-content"
+    =render 'new_pattern_button' 
             span class="pattern-settings-link" settings
-  - else 
+  - elsif current_user.projects.any?
     span Make a pattern! You don't have one yet!
-=render 'new_pattern_button' 
+    =render 'new_pattern_button' 
+  - else 
+    span You need to start a project to make a pattern, click the + button to make one. 
+    =link_to(new_project_path, class:"btn-floating btn-large waves-effect  grey darken-1", id:"newProject") do 
+      i class="material-icons" add 

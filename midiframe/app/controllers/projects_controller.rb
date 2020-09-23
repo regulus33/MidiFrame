@@ -7,13 +7,14 @@ class ProjectsController < ApplicationController
   def index
     # !API:
     respond_to do |format|
-      format.json  do
+      format.json do
         # ! todo, authentication and projects need to be for signed in user
         projects = User.last.projects
         render json: { projects: projects }.to_json
       end
       format.html do
-        render 'index'    
+        @projects = current_user.projects
+        render "index"
       end
     end
   end
@@ -29,7 +30,7 @@ class ProjectsController < ApplicationController
   end
 
   def update
-    handle_font 
+    handle_font
     handle_video
     @project.bpm = project_params[:bpm].to_i if project_params[:bpm]
     @project.name = project_params[:name] if project_params[:name]
@@ -37,10 +38,10 @@ class ProjectsController < ApplicationController
       # TODO: delegate to a job like sideqik
       run_video_processing_if_needed
       @toast = "#{@project.name} updated"
-      render 'index'
+      render "index"
     else
       # this is a last resort, validations will be client side.
-      toast 'something went wrong, project not updated'
+      toast "something went wrong, project not updated"
       redirect_to projects_path
     end
   end
@@ -61,9 +62,9 @@ class ProjectsController < ApplicationController
       # TODO: delegate to delayed_job
       run_video_processing_if_needed
       @toast = "#{@project.name} created"
-      render 'index'
+      render "index"
     else
-      toast 'something went wrong, project not created'
+      toast "something went wrong, project not created"
       redirect_to projects_path
     end
   end
@@ -72,50 +73,51 @@ class ProjectsController < ApplicationController
     if @project.destroy
       toast "deleted #{@project.name}"
     else
-      error_toast 'error deleting project'
+      error_toast "error deleting project"
     end
     redirect_to projects_path
   end
 
-  def autotune 
-    # todo double check 
+  def autotune
+    # todo double check
     @authenticity_token = session[:_csrf_token]
-    params[:page_title] = 'Auto Tune'
-  end 
+    params[:page_title] = "Auto Tune"
+  end
 
-  def autotune_generate 
-    # TODO: public videos should not be edited directly here but copied before hand 
+  def autotune_generate
+    # TODO: public videos should not be edited directly here but copied before hand
     respond_to do |f|
-      f.json do 
-        begin 
+      f.json do
+        begin
           @project.autotune_args_set = JSON.parse(autotune_params.to_json)
           @project.autotune_video
-          @project.save! 
-            render json: {video: url_for(@project.playback_video)}.to_json 
+          @project.save!
+          render json: { video: url_for(@project.playback_video) }.to_json
         rescue Exception
-          # TODO: maile exceptions to me 
-          render status: 200,  json: {error: "bad request"}.to_json
-        end 
+          # TODO: maile exceptions to me
+          render status: 200, json: { error: "bad request" }.to_json
+        end
       end
-    end 
-  end 
-  
+    end
+  end
+
   private
+
   # ! this is how its done
-  def autotune_params 
+  def autotune_params
     params.require(:tuner_args).permit(:f, :fs, :g, :gs, :a, :as, :b, :c, :cs, :d, :ds, :e)
   end
 
-  def handle_font 
-    if @project.font 
+  def handle_font
+    if @project.font
       @project.font.file = project_params[:font]
-    else 
+    else
       @project.font = Font.new(file: project_params[:font])
     end
   end
 
   def handle_video
-    @project.video.clip = project_params[:video] if project_params[:video] 
+    @project.video.clip = project_params[:video] if project_params[:video]
   end
 
   def project_params
@@ -126,7 +128,7 @@ class ProjectsController < ApplicationController
     @project = Project.find_by(id: params[:id])
   end
 
-  def insert_params_create 
+  def insert_params_create
     @project.bpm = project_params[:bpm].to_i if project_params[:bpm]
     @project.name = project_params[:name] if project_params[:name]
     @video.clip = project_params[:video] if project_params[:video]

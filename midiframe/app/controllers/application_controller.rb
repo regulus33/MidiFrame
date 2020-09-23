@@ -7,10 +7,6 @@ class ApplicationController < ActionController::Base
   before_action :show_toast
   before_action :authorize
 
-  def current_user
-    @current_user ||= User.find_by_id(session[:user_id]) if session[:user_id]
-  end
-
   # Shows a toast message after redirect
   def toast(msg)
     cookies[:toast] = msg
