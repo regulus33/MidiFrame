@@ -115,8 +115,8 @@ Rails.application.configure do
   config.action_mailer.smtp_settings = {
     :address => "email-smtp.eu-central-1.amazonaws.com",
     :port => 587,
-    :user_name => Rails.application.credentials.aws["sms_username"],
-    :password => Rails.application.credentials.aws["sms_password"],
+    :user_name => 'AKIARALIQT5IZUO6YEK6',
+    :password => 'BHckw0uuv7UUD4W6tF4ECo//2hjhZ7NfCS5oMpoS9bGM',
     :authentication => :login,
     :enable_starttls_auto => true,
   }
