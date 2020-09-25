@@ -1,0 +1,1 @@
+{"ast":null,"code":"/**\n * mux.js\n *\n * Copyright (c) Brightcove\n * Licensed Apache-2.0 https://github.com/videojs/mux.js/blob/master/LICENSE\n */\n'use strict';\n\nmodule.exports = {\n  H264_STREAM_TYPE: 0x1B,\n  ADTS_STREAM_TYPE: 0x0F,\n  METADATA_STREAM_TYPE: 0x15\n};","map":null,"metadata":{},"sourceType":"module"}
