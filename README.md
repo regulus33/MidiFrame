@@ -1,8 +1,11 @@
-## Welcome To Midi Frame 
 
-https://github.com/regulus33/andrWert43h/tree/dev
+## AWS Connect to RDS 
 
-Midi Frame is a powerful midi-driven video editor that makes it fun and easy to quickly generate audio-visual content and music videos with your favorrite class compliant midi devices. 
+In order to connect to our db we need to add environment variables in two places, one is the .bashrc profile and the other is the nginx config file. 
+
+in those files we list the username, password, endpoint etc. see bitwarden for the values. 
+
+In the past, I have had problems with rds creating a default db. If you cant connect because `<DB-NAME> does not exist` simply connect to the rds using `psql` client and `CREATE DB <DB-NAME>`
 
 **Purge all development active sttorage records**
 
@@ -36,14 +39,5 @@ lbsndfile
 sox 
 
 
-
-## AWS
-
-https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ConnectToPostgreSQLInstance.html
-
-connect 
-```
-psql --host=database-1.cm6q4ckkj80z.us-west-2.rds.amazonaws.com --port=5432 --username=postgres --password --dbname=postgres        
-```
 
 

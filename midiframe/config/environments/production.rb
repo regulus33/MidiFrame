@@ -11,7 +11,7 @@ Rails.application.configure do
   # and those relying on copy on write to perform better.
   # Rake tasks automatically ignore this option for performance.
   config.eager_load = true
-  config.action_mailer.default_url_options = { :host => 'midiframe.com' }
+  config.action_mailer.default_url_options = { :host => "midiframe.com" }
   # Full error reports are disabled and caching is turned on.
   config.consider_all_requests_local = false
   config.action_controller.perform_caching = true
@@ -111,12 +111,12 @@ Rails.application.configure do
   # config.active_record.database_selector = { delay: 2.seconds }
   # config.active_record.database_resolver = ActiveRecord::Middleware::DatabaseSelector::Resolver
   # config.active_record.database_resolver_context = ActiveRecord::Middleware::DatabaseSelector::Resolver::Session
-
+  # Rails.application.credentials.dig(:aws, :ses)
   config.action_mailer.smtp_settings = {
-    :address => "email-smtp.eu-central-1.amazonaws.com",
+    :address => Rails.application.credentials.dig(:aws, :ses_endpoint),
     :port => 587,
-    :user_name => 'AKIARALIQT5IZUO6YEK6',
-    :password => 'BHckw0uuv7UUD4W6tF4ECo//2hjhZ7NfCS5oMpoS9bGM',
+    :user_name => Rails.application.credentials.dig(:aws, :ses_username),
+    :password => Rails.application.credentials.dig(:aws, :ses_password),
     :authentication => :login,
     :enable_starttls_auto => true,
   }
