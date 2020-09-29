@@ -114,7 +114,9 @@ class Video < ApplicationRecord
   # strips sound from video and returns the sound record
   def save_sound_from_video(original_video:, file_extension:)
     sound_from_video = "#{Rails.root}/tmp/#{self.clip.blob.key}_sound_from_video.#{file_extension}"
-    save_sound_command(original_video: original_video, sound_file: sound_from_video)
+  
+    result_of_command = save_sound_command(original_video: original_video, sound_file: sound_from_video)
+    puts result_of_command
     sound_record = Video.create!(parent_video: self, user: self.user, role: AUDIO, file_extension_string: file_extension)
     sound_record.clip.attach(
       io: File.open(sound_from_video),
