@@ -1,8 +1,12 @@
 =render 'inline_styles/splash'
 div id="splash-page" data-controller="splash" 
+  div data-target="splash.overlay" id="overlay" style="background-color:black;position:fixed;top0;z-index:999;height:100%;width:100%"
+  div data-target="splash.loader" class="loader"
   div class="splash-container"  
-    video id="video-splash" src="splash_video.mp4" autoplay="true" muted="true" loop="true"
-    img id="splash" src="/splash.png" data-target="splash.splashImage"
+    video id="video-splash" autoplay="true" muted="true" loop="true" data-target="splash.splashVideo"
+    img id="splash" style="pointer-events:none" data-target="splash.splashImage" src=""
+    video style="position:relative;width:90%;z-index:-4" controls="true" id="clownVid" src="" data-target="splash.clownVideo" 
+    a style="position:relative;z-index:300;cursor:pointer;font-size:56px;color:white" data-target="splash.playButton" data-action="click->splash#playVideo" PLAY
   div class="splash-text" data-target="splash.splashText" 
     h2 MIDIFRAME is an app for rapid, music video editing. 
   
