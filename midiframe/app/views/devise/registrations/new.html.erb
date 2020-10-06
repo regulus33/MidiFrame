@@ -19,8 +19,9 @@
       <%= f.label :password_confirmation %><br />
       <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
     </div>
-
-    <%= recaptcha_tags %>
+    <% if Rails.env.production? %>
+      <%= recaptcha_tags %>
+    <% end %>
     <div class="actions">
       <%= f.submit "Sign up", class: "waves-effect waves-light btn grey darken-4 submit" %>
     </div>

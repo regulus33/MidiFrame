@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 # Nest all patterns associated with a single video here
 class ProjectsController < ApplicationController
   before_action :get_project, only: %i[edit update destroy show autotune autotune_generate]
@@ -7,8 +6,8 @@ class ProjectsController < ApplicationController
   def index
     respond_to do |format|
       #format.json do
-       # projects = User.last.projects
-       # render json: { projects: projects }.to_json
+      # projects = User.last.projects
+      # render json: { projects: projects }.to_json
       #end
       format.html do
         @projects = current_user.projects
@@ -47,6 +46,7 @@ class ProjectsController < ApplicationController
   def create
     # create new video file and save it as "original"
     # after save, duplicate it as a soundstripped video and set the soundstripped as "default"
+
     @project = Project.new
     @video = Video.new
     @font = Font.new
@@ -128,7 +128,9 @@ class ProjectsController < ApplicationController
 
   def insert_params_create
     @project.bpm = project_params[:bpm].to_i if project_params[:bpm]
-    @project.name = project_params[:name] if project_params[:name]
+    # generate a
+    @project.name = helpers.generate_default_name(current_user: current_user)
+
     @video.clip = project_params[:video] if project_params[:video]
   end
 

@@ -1,12 +1,14 @@
+=render 'inline_scripts/tooltip_initializer'
+p style="padding-left: 2.7%" To get started, paste a url to your video (fast) or upload an mp4 from your machine.
+
 div data-controller='projects--file-input' class="card-panel z-depth-5"
-  
   = form_for @project, url: { action: "create" }, html: {class: "form-group"} do |f| 
-    div class="input-field"    
-      = f.text_field :name
-      label for="project_name_new" class="active" Name
+
     div class="input-field"  
       = f.text_field :bpm, html: { id: "bpm_new"} 
-      label for="bpm_new" class="active" BPM
+      label for="bpm_new" class="active" 
+        span style="letter-spacing:0px;position:relative;right:5px" BPM 
+        span class="tooltipped" data-position="right"  style="letter-spacing:0px;position:relative;right:20px;color:#42f5c5;cursor:pointer" ?
     div class="input-field"
 
     label for="project_video"
@@ -16,6 +18,7 @@ div data-controller='projects--file-input' class="card-panel z-depth-5"
     span data-target="projects--file-input.fileDisplayName" no file chosen
 
     = f.file_field :video, style: "display:none;", data: { action: "change->projects--file-input#printFileName", target: "projects--file-input.filename" } 
+
     / TODO: bring back fonts 
     / label for="project_font"
       
@@ -24,8 +27,14 @@ div data-controller='projects--file-input' class="card-panel z-depth-5"
     / span data-target="projects--file-input.fontFileDisplayName" no file chosen
 
     / = f.file_field :font, style: "display:none;", data: { action: "change->projects--file-input#printFontFileName", target: "projects--file-input.fontFileName" } 
-   
-    = f.submit "C R E A T E", class: "waves-effect waves-light btn grey darken-4 submit", data: { action: "loading#showLoader" } 
+    br 
+    div class="input-field"    
+      span style="font-weight:bold;position:relative;top:12px" or paste a url to your video:
+      label for="url" 
+      input id="url" type="text"
+    br
 
+    = f.submit "C R E A T E", class: "waves-effect waves-light btn grey darken-4 submit", data: { action: "loading#showLoader" } 
+    
         
 = render 'project_action_buttons' 

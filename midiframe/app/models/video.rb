@@ -45,26 +45,26 @@ class Video < ApplicationRecord
     return nil
   end
 
-  # public facing video, this is the video we can destructivly change, unlike master, this can always be the same 
-  def autotuned  
-    if master? 
-      self.videos.where(role: AUTOTUNED).first 
+  # public facing video, this is the video we can destructivly change, unlike master, this can always be the same
+  def autotuned
+    if master?
+      self.videos.where(role: AUTOTUNED).first
     end
   end
- 
-  # if the user has autotuned a video, return the autotuned part, else return the master 
-  def display_video 
+
+  # if the user has autotuned a video, return the autotuned part, else return the master
+  def display_video
     if self.master?
       tuned = self.videos.where(role: AUTOTUNED).first
-      return tuned if tuned 
-      return self 
+      return tuned if tuned
+      return self
     end
   end
 
   # Separated into a method so we can add more video processing over time
 
   def create_video_formats
-    save_master_video 
+    save_master_video
     # ? get location of actual video
     active_storage_video = self.clip
     # ? construct a unique URL in the Temp Dir, based on the blob.key + filename, its a unique string we get for free
@@ -82,7 +82,7 @@ class Video < ApplicationRecord
     File.delete(original_video)
   end
 
-  # save the mast   er video with role = 'master' 
+  # save the mast   er video with role = 'master'
   # copy sound and save it as video of role = 'audio' and parent = master
   # copy the video without the sound and save it as role = 'visual'
   # when playing video, always play video where role = 'master'
@@ -114,7 +114,7 @@ class Video < ApplicationRecord
   # strips sound from video and returns the sound record
   def save_sound_from_video(original_video:, file_extension:)
     sound_from_video = "#{Rails.root}/tmp/#{self.clip.blob.key}_sound_from_video.#{file_extension}"
-  
+
     result_of_command = save_sound_command(original_video: original_video, sound_file: sound_from_video)
     puts result_of_command
     sound_record = Video.create!(parent_video: self, user: self.user, role: AUDIO, file_extension_string: file_extension)

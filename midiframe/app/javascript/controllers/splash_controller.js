@@ -22,7 +22,6 @@ export default class extends Controller {
     window.onload = this.splashVideoTarget.setAttribute('src', videoUrl);
     window.onload = this.clownVideoTarget.setAttribute('src', clownUrl);
     document.addEventListener('readystatechange', this.test.bind(this));
-
   }
 
   playVideo() {
