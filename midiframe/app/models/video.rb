@@ -1,4 +1,8 @@
 # frozen_string_literal: true
+# for video download
+require "net/http"
+require "tempfile"
+require "uri"
 
 class Video < ApplicationRecord
   MASTER = "MASTER"
@@ -59,6 +63,24 @@ class Video < ApplicationRecord
       return tuned if tuned
       return self
     end
+  end
+
+  #download video from url
+  def download_external_video
+    video_file = "#{Dir.tmpdir}/#{self.id}.mp4"
+    uri = URI.parse("https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4")
+    resp = Net::HTTP.get_response(uri)
+    binding.pry
+
+    File.open(video_file, "wb") do |f|
+      f.write(resp.body)
+    end
+
+    self.clip.attach(
+      io: File.open(video_file),
+      filename: self.id,
+      content_type: "video",
+    )
   end
 
   # Separated into a method so we can add more video processing over time

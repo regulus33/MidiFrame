@@ -46,12 +46,12 @@ class ProjectsController < ApplicationController
   def create
     # create new video file and save it as "original"
     # after save, duplicate it as a soundstripped video and set the soundstripped as "default"
-
     @project = Project.new
     @video = Video.new
     @font = Font.new
     @font.file = project_params[:font] if project_params[:font]
     insert_params_create
+
     @project.video = @video
     @project.user = current_user
     @project.font = @font if project_params[:font]
@@ -119,7 +119,7 @@ class ProjectsController < ApplicationController
   end
 
   def project_params
-    params.require(:project).permit(:name, :bpm, :video, :font)
+    params.require(:project).permit(:name, :bpm, :video, :font, :video_url)
   end
 
   def get_project
@@ -130,18 +130,23 @@ class ProjectsController < ApplicationController
     @project.bpm = project_params[:bpm].to_i if project_params[:bpm]
     # generate a
     @project.name = helpers.generate_default_name(current_user: current_user)
-
-    @video.clip = project_params[:video] if project_params[:video]
+    if project_params[:video_url]
+      @video.clip = project_params[:video] if project_params[:video]
+    elsif project_params[:video_url]
+      @video.url = project_params[:video_url] if project_params[:video_url]
+    end
   end
 
-  # TODO: will this false positive sometimes?
-  # ? IF VIDEO IS NEW STRIP SOUND ETC
+  # split sound anddownload video if necessary
   def run_video_processing_if_needed
     if project_params[:video]
-      # TODO: put more params in here, eventually we will add soundful videos
       @project.video.create_video_formats
-      # CompressVideoJob.perform_later(@project.video.id, @project.id)
+    elsif project_params[:video_url]
+      @project.video.url = project_params[:video_url]
+      @project.video.download_external_video
+      @project.video.create_video_formats
     end
+    # CompressVideoJob.perform_later(@project.video.id, @project.id)
   end
 end
 
