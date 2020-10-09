@@ -1,4 +1,4 @@
-- if @projects.any?
+- if @projects.present?
   ul class="collection"
     - @projects.each do |project| 
       =link_to( edit_project_path( project ), class:"collection-item project-item") do 

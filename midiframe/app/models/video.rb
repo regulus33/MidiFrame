@@ -26,6 +26,8 @@ class Video < ApplicationRecord
   belongs_to :parent_video, class_name: "Video", foreign_key: "parent_video_id", optional: true
   has_many :videos, class_name: "Video", foreign_key: "parent_video_id"
 
+  scope :public_videos, -> { where(private: nil) }
+
   def file_extension
     return self.file_extension_string if self.file_extension_string.present?
     return clip.content_type.split("/").pop if clip.attached?
@@ -68,9 +70,8 @@ class Video < ApplicationRecord
   #download video from url
   def download_external_video
     video_file = "#{Dir.tmpdir}/#{self.id}.mp4"
-    uri = URI.parse("https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4")
+    uri = URI.parse(self.url)
     resp = Net::HTTP.get_response(uri)
-    binding.pry
 
     File.open(video_file, "wb") do |f|
       f.write(resp.body)
@@ -83,8 +84,6 @@ class Video < ApplicationRecord
     )
   end
 
-  # Separated into a method so we can add more video processing over time
-
   def create_video_formats
     save_master_video
     # ? get location of actual video
@@ -94,6 +93,9 @@ class Video < ApplicationRecord
     File.open(original_video, "wb") do |f|
       f.write(active_storage_video.download)
     end
+    # save meta information from this file
+    save_metadata(original_video)
+    save_thumbnail(original_video)
     # we grab the audio file's extension with ffrpobe from the video download above and pass to Video.create ONLY for audio
     # audio_file_extension = determine_file_extension_of_audio(original_video)
     # send it the reference to the local download of the original video
@@ -195,6 +197,31 @@ class Video < ApplicationRecord
 
   private
 
+  # save thumbnail
+  def save_thumbnail(input_file)
+    output_file = "#{Rails.root}/tmp/#{self.id}_thumb.jpg"
+    random_timestamp = rand(1..duration)
+    `ffmpeg -i #{input_file} -vframes 1 -an -s #{width}x#{height} -ss #{random_timestamp} #{output_file}`
+    self.thumbnail.attach(
+      io: File.open(output_file),
+      filename: self.id,
+      content_type: "image/jpeg",
+    )
+    # binding.pry
+    File.delete(output_file)
+  end
+
+  def save_metadata(input_file)
+    # ffprobe for duration, dimensions AND keyframes while we are at it!
+    json_data = `ffprobe -v quiet -print_format json -show_format -show_streams #{input_file}`
+    self.metadata = JSON.parse(json_data)
+    self.keyframes = `ffprobe -loglevel error -select_streams v:0 -show_entries packet=pts_time,flags -of csv=print_section=0 #{input_file} | awk -F',' '/K/ {print $1}'`.split("\n")
+  end
+
+  def extract_image_command
+    "ffmpeg -i test.mp4 -vframes 1 -an -s 100x222 -ss 30 thumb.png"
+  end
+
   def save_sound_command(original_video:, sound_file:)
     # `ffmpeg -i #{original_video} -vn -acodec copy #{sound_file}`
     `ffmpeg -i #{original_video} #{sound_file}`
@@ -214,5 +241,17 @@ class Video < ApplicationRecord
 
   def strip_sound_command(original_video:, soundless_video:)
     `ffmpeg -i #{original_video} -c copy -an #{soundless_video}`
+  end
+
+  def duration
+    self.metadata["streams"][0]["duration"].to_i
+  end
+
+  def width
+    self.metadata["streams"][0]["width"]
+  end
+
+  def height
+    self.metadata["streams"][0]["width"]
   end
 end

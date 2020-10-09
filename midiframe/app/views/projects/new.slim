@@ -1,5 +1,5 @@
 =render 'inline_scripts/tooltip_initializer'
-p style="padding-left: 2.7%" To get started, paste a url to your video (fast) or upload an mp4 from your machine.
+p style="padding-left: 2.7%" To get started, paste a url to your source video (fast) or upload an mp4 from your machine.
 
 div data-controller='projects--file-input' class="card-panel z-depth-5"
   = form_for @project, url: { action: "create" }, html: {class: "form-group"} do |f| 
@@ -32,8 +32,16 @@ div data-controller='projects--file-input' class="card-panel z-depth-5"
       span style="font-weight:bold;position:relative;top:12px" or paste a url to your video:
       label for="url" 
       input id="url" type="text" name="project[video_url]"
+    div class="input-field"    
+      span style="font-weight:bold;position:relative;top:12px" video title 
+      label for="title" 
+      input id="title" type="text" name="project[video_name]"
     br
-
+    p  
+      label
+        input type="checkbox" class="filled-in" checked="checked" name="project[video_private]"
+          span private ( uncheck if you want to be a boss and allow other artists to create art with your video source file )
+    br
     = f.submit "C R E A T E", class: "waves-effect waves-light btn grey darken-4 submit", data: { action: "loading#showLoader" } 
     
         

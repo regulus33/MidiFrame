@@ -10,6 +10,7 @@ class ProjectsController < ApplicationController
       # render json: { projects: projects }.to_json
       #end
       format.html do
+        binding.pry unless current_user.projects
         @projects = current_user.projects
         render "index"
       end
@@ -34,6 +35,9 @@ class ProjectsController < ApplicationController
     if @project.save && @project.video.save && (@project.font ? @project.font.save : true)
       # TODO: delegate to a job like sideqik
       run_video_processing_if_needed
+      # processing made saveable data
+      # todo flasherror if no save same for create
+      @video.save
       @toast = "#{@project.name} updated"
       render "index"
     else
@@ -59,6 +63,8 @@ class ProjectsController < ApplicationController
     if @project.save
       # TODO: delegate to delayed_job
       run_video_processing_if_needed
+      # run_video_processing requires video to be saved
+      @video.save
       @toast = "#{@project.name} created"
       render "index"
     else
@@ -119,7 +125,7 @@ class ProjectsController < ApplicationController
   end
 
   def project_params
-    params.require(:project).permit(:name, :bpm, :video, :font, :video_url)
+    params.require(:project).permit(:name, :bpm, :video, :font, :video_url, :video_name, :video_private)
   end
 
   def get_project
@@ -128,12 +134,24 @@ class ProjectsController < ApplicationController
 
   def insert_params_create
     @project.bpm = project_params[:bpm].to_i if project_params[:bpm]
-    # generate a
+    # generate a placeholder project name project-1, 2 3 etc
     @project.name = helpers.generate_default_name(current_user: current_user)
-    if project_params[:video_url]
-      @video.clip = project_params[:video] if project_params[:video]
+
+    #video title
+    if project_params[:video_name]
+      @video.name = project_params[:video_name]
+    end
+
+    # video privacy status
+    if project_params[:video_private]
+      @video.private = true
+    end
+
+    #video source types
+    if project_params[:video]
+      @video.clip = project_params[:video]
     elsif project_params[:video_url]
-      @video.url = project_params[:video_url] if project_params[:video_url]
+      @video.url = project_params[:video_url]
     end
   end
 
@@ -142,9 +160,10 @@ class ProjectsController < ApplicationController
     if project_params[:video]
       @project.video.create_video_formats
     elsif project_params[:video_url]
-      @project.video.url = project_params[:video_url]
+      # @project.video.url = project_params[:video_url]
       @project.video.download_external_video
       @project.video.create_video_formats
+      binding.pry
     end
     # CompressVideoJob.perform_later(@project.video.id, @project.id)
   end

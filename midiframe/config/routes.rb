@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 require "sidekiq/web"
 
 Rails.application.routes.draw do
@@ -30,6 +29,10 @@ Rails.application.routes.draw do
   get "pattern-preview/:id/:project_id", to: "patterns#pattern_preview", as: "pattern_preview"
   get "pattern-settings/:id/:project_id", to: "patterns#pattern_settings"
   post "pattern-generate/:id/:project_id", to: "patterns#generate_pattern_clip"
+
+  #videos
+  get "videos", to: "videos#index"
+
   # TODO: security make this private once production
   mount Sidekiq::Web => "/sidekiq"
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html

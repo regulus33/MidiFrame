@@ -1,0 +1,13 @@
+- if @user_vids.present?
+  ul class="collection"
+    - @user_vids.each do |video| 
+      / - binding.pry 
+      - if video.thumbnail.attached? 
+        =image_tag(video.thumbnail)
+      / =link_to( edit_project_path( project ), class:"collection-item project-item") do 
+      /   =project.name 
+- else 
+  span hmm, no public videos here ???   
+
+/ =render 'project_action_buttons' 
+
