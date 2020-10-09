@@ -1,9 +1,9 @@
 - if @user_vids.present?
-  ul class="collection"
+  div class="video-collection"
     - @user_vids.each do |video| 
-      / - binding.pry 
       - if video.thumbnail.attached? 
-        =image_tag(video.thumbnail)
+        / =image_tag(video.thumbnail)
+        =render partial: 'shared/card', locals: {image: video.thumbnail, title: video.name}
       / =link_to( edit_project_path( project ), class:"collection-item project-item") do 
       /   =project.name 
 - else 

@@ -404,6 +404,18 @@ div#overlay{
   width: 100%;
 }
 
+div.video-card {
+  width:32%;
+  padding-bottom: 18%;
+  margin-bottom: 2%;
+}
+
+.video-collection {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
 
 
 
