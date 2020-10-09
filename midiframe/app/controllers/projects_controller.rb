@@ -163,7 +163,6 @@ class ProjectsController < ApplicationController
       # @project.video.url = project_params[:video_url]
       @project.video.download_external_video
       @project.video.create_video_formats
-      binding.pry
     end
     # CompressVideoJob.perform_later(@project.video.id, @project.id)
   end

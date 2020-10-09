@@ -11,7 +11,7 @@ export default class extends Controller {
     // e.target.outer
     debugger 
     let video_url = e.target.parentElement.getAttribute("data-video-url");
-    e.target.outerHTML = `<video style="width:100%;height:auto" src="${video_url}"/>`
+    e.target.outerHTML = `<video style="width:100%;height:auto" controls src="${video_url}"/>`
   }
 
 
