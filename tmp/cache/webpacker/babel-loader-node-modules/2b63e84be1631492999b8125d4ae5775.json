@@ -1,1 +1,0 @@
-{"ast":null,"code":"exports.parseMidi = require('./lib/midi-parser');\nexports.writeMidi = require('./lib/midi-writer');","map":null,"metadata":{},"sourceType":"module"}
