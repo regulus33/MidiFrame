@@ -252,6 +252,6 @@ class Video < ApplicationRecord
   end
 
   def height
-    self.metadata["streams"][0]["width"]
+    self.metadata["streams"][0]["height"]
   end
 end
