@@ -5,6 +5,10 @@ require "tempfile"
 require "uri"
 
 class Video < ApplicationRecord
+
+  #will paginate limit
+  self.per_page = 8
+
   MASTER = "MASTER"
   AUDIO = "AUDIO"
   VISUAL = "VISUAL"

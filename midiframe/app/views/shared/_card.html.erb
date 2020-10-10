@@ -2,7 +2,9 @@
       <div class="card video-card">
         <div class="card-image">
           <div style="cursor:pointer;">
-            <%= image_tag(image, style: "width:100%;height:auto") %>
+            <%= link_to link_url do %>
+              <%= image_tag(image, style: "width:100%;height:auto") %>
+            <% end %>
           </div>
           <span class="card-title"><%= title %></span>
           <a class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">add</i></a>
