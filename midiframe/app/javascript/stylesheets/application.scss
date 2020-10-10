@@ -405,17 +405,19 @@ div#overlay{
 }
 
 div.video-card {
-  width:30%;
+  // width:35%;
   // padding-bottom: 10%;
   // margin-bottom: 14%;
-  align-self: center;
+  // grid-column: 3 / span 2;
+  // grid-row: third-line / 4;
+  justify-self: center;
 }
 
 .video-collection {
+  grid-template-columns: auto auto;
   display: grid;
-  grid-template-columns: auto auto auto;
+  // grid-template-columns: auto auto auto;
   // justify-items: center;
-  flex-wrap: wrap;
   // justify-content: center;
 }
 
