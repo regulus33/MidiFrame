@@ -9,6 +9,11 @@ class VideosController < ApplicationController
   end
 
   def show
+    if params[:last_page].present?
+      @back_link = "/videos?page=#{params[:last_page]}"
+    else
+      @back_link = "/videos"
+    end
     @video = Video.find(params[:id])
   end
 end

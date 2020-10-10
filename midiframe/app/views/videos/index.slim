@@ -3,7 +3,7 @@
     - @user_vids.each do |video| 
       - if video.thumbnail.attached? 
         / =image_tag(video.thumbnail)
-        =render partial: 'shared/card', locals: {image: video.thumbnail, title: video.name, link_url: "videos/#{video.id}"}
+        =render partial: 'shared/card', locals: {image: video.thumbnail, title: video.name, link_url: "videos/#{video.id}#{params[:page].present? ? "?last_page=" << params[:page] : ""}"}
       / =link_to( edit_project_path( project ), class:"collection-item project-item") do 
       /   =project.name 
 - else 
