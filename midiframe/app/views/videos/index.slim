@@ -1,5 +1,5 @@
 - if @user_vids.present?
-  div class="video-collection" data-controller="videos--video-preview"
+  div 
     - @user_vids.each do |video| 
       - if video.thumbnail.attached? 
         / =image_tag(video.thumbnail)

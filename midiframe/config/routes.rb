@@ -32,6 +32,7 @@ Rails.application.routes.draw do
 
   #videos
   get "videos", to: "videos#index"
+  get "videos/:id", to: "videos#show"
 
   # TODO: security make this private once production
   mount Sidekiq::Web => "/sidekiq"

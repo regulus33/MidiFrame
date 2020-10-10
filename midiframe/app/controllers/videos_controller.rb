@@ -7,4 +7,8 @@ class VideosController < ApplicationController
     @user_vids = current_user.videos
     # binding.pry
   end
+
+  def show
+    @video = Video.find(params[:id])
+  end
 end
