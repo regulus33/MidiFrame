@@ -1,14 +1,19 @@
-- if @user_vids.present?
-  div class="video-collection"
-    - @user_vids.each do |video| 
+span id="filter-title" Filter
+div id="filter-links"
+  a class="filter-link" href="/videos/public" public
+  a class="filter-link" href="/videos" private
+
+- if @videos.present?
+  div class="video-collection" data-controller="videos--video-preview"
+    - @videos.each do |video| 
       - if video.thumbnail.attached? 
         / =image_tag(video.thumbnail)
-        =render partial: 'shared/card', locals: {image: video.thumbnail, title: video.name, link_url: "videos/#{video.id}#{params[:page].present? ? "?last_page=" << params[:page] : ""}"}
+        =render partial: 'shared/card', locals: {image: video.thumbnail, video_id: video.id, title: video.name, link_url: "videos/#{video.id}#{params[:page].present? ? "?last_page=" << params[:page] : ""}"}
       / =link_to( edit_project_path( project ), class:"collection-item project-item") do 
       /   =project.name 
 - else 
-  span hmm, no public videos here ???   
-
-= will_paginate @user_vids, :style => 'color:blue' 
+  span class="nothing-here" you haven't added any videos yet. Try public videos  
+- if @videos.present?
+ = will_paginate @videos, :style => 'color:blue' 
 / =render 'project_action_buttons' 
 

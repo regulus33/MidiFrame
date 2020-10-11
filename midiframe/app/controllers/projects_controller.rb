@@ -47,6 +47,12 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def set_video
+    format.json do
+      video_id
+    end
+  end
+
   def create
     # create new video file and save it as "original"
     # after save, duplicate it as a soundstripped video and set the soundstripped as "default"

@@ -1,0 +1,27 @@
+=render 'inline_scripts/tooltip_initializer'
+span style="padding-left: 2.7%;margin-bottom:25px" to get started, add a video or
+a href="/videos" choose and existing one
+div data-controller='projects--file-input' class="card-panel z-depth-5" style="margin-top:20px"
+  = form_for @video, url: { action: "create" }, html: {class: "form-group"} do |f| 
+    label for="video"
+      a id="upload_video_button" class="waves-effect waves-light btn grey darken-4"Choose Video
+    span data-target="projects--file-input.fileDisplayName" no file chosen
+    = f.file_field :clip, style: "display:none;", data: { action: "change->projects--file-input#printFileName", target: "projects--file-input.filename" } 
+    br 
+    div class="input-field"    
+      span style="font-weight:bold;position:relative;top:12px" or paste a url to your video:
+      label for="url" 
+      = f.text_field :url, id: "url"
+    div class="input-field"    
+      span style="font-weight:bold;position:relative;top:12px" video title 
+      label for="title" 
+      = f.text_field :name, id: "title"
+    br
+    p  
+      label
+        input type="checkbox" class="filled-in" checked="checked" name="video[private]"
+          span private ( uncheck if you want to be a boss and allow other artists to create art with your video source file )
+    br
+    = f.submit "C R E A T E", class: "waves-effect waves-light btn grey darken-4 submit", data: { action: "loading#showLoader" } 
+    
+        
