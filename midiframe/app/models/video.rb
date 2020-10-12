@@ -80,15 +80,16 @@ class Video < ApplicationRecord
     File.open(video_file, "wb") do |f|
       f.write(resp.body)
     end
-
+    filename = self.url.split("/").last
     self.clip.attach(
       io: File.open(video_file),
-      filename: self.id,
+      filename: filename,
       content_type: "video",
     )
   end
 
   def create_video_formats
+    binding.pry
     save_master_video
     # ? get location of actual video
     active_storage_video = self.clip

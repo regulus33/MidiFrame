@@ -436,13 +436,12 @@ span.card-title {
 }
 
 #filter-links {
-  margin-top: 20px;
+  margin-top: 10px;
   margin-left: 25px;
 }
 
 #filter-title {
   margin-left: 15px;
-
 }
 
 .filter-link{
@@ -459,6 +458,15 @@ span.card-title {
   position: relative;
   left: 30px;
   margin-bottom: 20px;
+}
+
+a#select-video {
+  position: relative;
+  top: 12px;
+}
+
+em.current, span.disabled {
+  color:grey
 }
 
 
