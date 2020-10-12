@@ -89,7 +89,6 @@ class Video < ApplicationRecord
   end
 
   def create_video_formats
-    binding.pry
     save_master_video
     # ? get location of actual video
     active_storage_video = self.clip

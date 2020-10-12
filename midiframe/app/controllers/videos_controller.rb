@@ -35,7 +35,8 @@ class VideosController < ApplicationController
       redirect_to "videos/new"
     end
     run_video_processing_if_needed
-    render "index"
+    @video.save
+    redirect_to "/videos"
   end
 
   def show
