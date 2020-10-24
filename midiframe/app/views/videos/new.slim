@@ -24,7 +24,9 @@ div data-controller='projects--file-input' class="card-panel z-depth-5"
     / = f.file_field :font, style: "display:none;", data: { action: "change->projects--file-input#printFontFileName", target: "projects--file-input.fontFileName" } 
     / br 
     div class="input-field"    
-      a id="select-video" class="btn btn" href="/videos/public" select a video 
+      / Params mean that we are creating a new project, but we need to select the vidoe first 
+      a id="select-video" class="btn btn" href="/videos?intent=new_project" select a video 
+      link to
       span style="font-weight:bold;position:relative;top:12px" or paste a url to your video:
       label for="url" 
       =f.text_field :url, id: "url"

@@ -2,27 +2,23 @@
 # Nest all patterns associated with a single video here
 class ProjectsController < ApplicationController
   before_action :get_project, only: %i[edit update destroy show autotune autotune_generate]
+  # protect_from_forgery with: :null_session, only: ["set_video", "new_project_from_video"]
 
+  #returns all projects of the current user
   def index
-    respond_to do |format|
-      #format.json do
-      # projects = User.last.projects
-      # render json: { projects: projects }.to_json
-      #end
-      format.html do
-        binding.pry unless current_user.projects
-        @projects = current_user.projects
-        render "index"
-      end
-    end
+    @projects = current_user.projects
+    render "index"
   end
 
+  # redirects to edit
   def show
     redirect_to edit_project_path @project
   end
 
+  # simple edit project form. Needs to be redesigned
   def edit; end
 
+  #
   def new
     @project = Project.new(user: current_user, bpm: 120)
   end
@@ -47,9 +43,28 @@ class ProjectsController < ApplicationController
     end
   end
 
+  # !!!! security
   def set_video
-    format.json do
-      video_id
+    # format.json do
+
+    # end
+  end
+
+  # !!!! security, no authentication here!
+  def new_project_from_video
+    respond_to do |format|
+      format.json do
+        # check that the video actually exists first
+        video_id = params[:video_id].to_i
+        video = Video.find(video_id)
+        project = Project.create!(
+          user: current_user,
+          video: video,
+          name: helpers.generate_default_name(current_user: current_user),
+          bpm: 120,
+        )
+        render json: { nextUrl: new_project_pattern_path(project) }
+      end
     end
   end
 

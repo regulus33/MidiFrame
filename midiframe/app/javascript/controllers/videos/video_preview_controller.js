@@ -1,23 +1,32 @@
 import { Controller } from "stimulus"
+import { newProjectFromVideo } from "../../helpers/network"
 export default class extends Controller {
 
   static targets = ["preview"]
 
   connect(){
-    document.addEventListener('DOMContentLoaded', function() {
-      var elems = document.querySelectorAll('.modal');
-      var instances = M.Modal.init(elems, options);
-    });
+    this.createProjectFromVideo = this.createProjectFromVideo.bind(this);
   }
 
   addVideoToProject(e) {
-    // let videoId = e.target.getAttribute("data-video-id");
-    // fetch('projects/');
-    // if we havent selected a note, dont show modal
-    const d = document.querySelectorAll('.modal');
-    const instances = M.Modal.init(d, { title: "moon" });
-    // this.inputValueTarget.value = this.pianoTextData[currentKey] ? this.pianoTextData[currentKey] : ""
-    // this.textModalTitleTarget.innerHTML = "title"
-    instances[0].open();
+    // newProjectFromVideoUrl()
+  }
+
+  createProjectFromVideo(e) {
+    let element;
+    if(e.target.childElementCount){
+      element = e.target;
+    } else {
+      element = e.target.parentElement;
+    }
+    newProjectFromVideo({
+      videoId: element.getAttribute("data-video-id"), 
+      authenticityToken: this.element.getAttribute("data-auth-token")
+    }).then((e)=>{
+      e.json().then((r)=>{
+        // redirect to patterns create time 
+        window.location.href = r.nextUrl 
+      })
+    })
   }
 }

@@ -5,8 +5,12 @@
         <%= image_tag(image, style: "width:100%;height:auto") %>
       <% end %>
     </div>
+    <% if @new_project_from_video %>
+    <% action_to_call = "createProjectFromVideo" %>
+    <% elsif @todome %>
+    <% end %>
     <span class="card-title"><%= title %></span>
-    <a data-action="videos--video-preview#addVideoToProject" data-video-id="<%= video_id %>" class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">add</i></a>
+    <a data-action="videos--video-preview#<%= action_to_call %>" data-video-id="<%= video_id %>" class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">add</i></a>
   </div>
 </div>
 

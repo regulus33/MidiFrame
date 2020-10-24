@@ -1,8 +1,16 @@
 # frozen_string_literal: true
 # Nest all patterns associated with a single video here
 class VideosController < ApplicationController
+
+  # ? intents
+  NEW_PROJECT = "new_project"
+
   # before_action :get_project, only: %i[edit update destroy show autotune autotune_generate]
   def index
+    if intent_param == NEW_PROJECT
+      @new_project_from_video = true
+    end
+    # TODO: edit project intent
     # @public_videos = Video.public_videos
     # ! will paginate MUST be called on a result of a WHERE clause, otherwise theper page ordering will be broken
     @videos = current_user.videos.where(role: "MASTER").paginate(:page => params[:page])
@@ -49,6 +57,10 @@ class VideosController < ApplicationController
   end
 
   private
+
+  def intent_param
+    params.permit(:intent)[:intent]
+  end
 
   def video_params
     params.require(:video).permit(:name, :url, :private, :clip)

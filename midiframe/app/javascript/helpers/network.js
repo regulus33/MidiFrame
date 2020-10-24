@@ -3,6 +3,14 @@ import { baseUrl } from "./constants";
 export const patternsUrl = (projectId, patternId) => `${baseUrl}/projects/${projectId}/patterns/${patternId}`
 export const patternGeneratorUrl = (patternId, projectId) => `${baseUrl}/pattern-generate/${patternId}/${projectId}`
 export const autoTuneProjectUrl = (projectId) => `${baseUrl}/autotune/${projectId}`
+export const newProjectFromVideoUrl = (videoId, authenticityToken) => `${baseUrl}/new-project-from-video/${videoId}`
+// sends token with ajax request
+const headers = () => {
+  return { 
+    'X-CSRF-Token': document.querySelector("meta[name='csrf-token']")["content"],
+    'Content-Type' : 'application/json'
+  }
+}
 
 export const savePattern = async ({ channel, pianoData, pianoTextData, midiEvents, patternId, projectId, midiType, stepLength }) => {
   // Default options are marked with * 
@@ -13,7 +21,7 @@ export const savePattern = async ({ channel, pianoData, pianoTextData, midiEvent
   }
   const response = await fetch(patternsUrl(projectId, patternId), {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    headers: headers(),
     body: JSON.stringify(requestBody) // body data type must match "Content-Type" header
   });
   console.log(`[NETWORK] got a response from server, response succeeded?: ${response.ok}`);
@@ -24,7 +32,7 @@ export const autotuneProject = async (tunerArgs, projectId, token) => {
   const requestBody = {authenticity_token: token, tuner_args: tunerArgs}
     const response = await fetch(autoTuneProjectUrl(projectId), {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    headers: headers(),
     body: JSON.stringify(requestBody) // body data type must match "Content-Type" header
     });
     return response
@@ -34,6 +42,14 @@ export const generatePatternClip = ({ patternId, projectId }) => {
   console.log(patternId)
   return fetch(patternGeneratorUrl(patternId, projectId), {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' }
+    headers: headers()
+  });
+}
+
+export const newProjectFromVideo = ({ videoId, authenticityToken }) => {
+  console.log(videoId)
+  return fetch(newProjectFromVideoUrl(videoId, authenticityToken), {
+    method: 'POST',
+    headers: headers()
   });
 }

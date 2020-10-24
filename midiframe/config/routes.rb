@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   # PROJECTS
   #
   #
+  post "new-project-from-video/:video_id", to: "projects#new_project_from_video"
   resources :projects do
     resources :patterns
   end

@@ -1,10 +1,11 @@
+/ = javascript_tag "const AUTH_TOKEN = #{form_authenticity_token.inspect};" if protect_against_forgery? 
 span id="filter-title" Filter:
 div id="filter-links"
   a class="filter-link" href="/videos/public" public
   a class="filter-link" href="/videos" private
 
 - if @videos.present?
-  div class="video-collection" data-controller="videos--video-preview"
+  div class="video-collection" data-controller="videos--video-preview" data-auth-token=form_authenticity_token.inspect
     - @videos.each do |video| 
       - if video.thumbnail.attached? 
         / =image_tag(video.thumbnail)
@@ -16,11 +17,3 @@ div id="filter-links"
 - if @videos.present?
  = will_paginate @videos, :style => 'color:blue' 
 / =render 'project_action_buttons' 
-
-div id="modal-a" class="modal"
-  div class="modal-content"
-    h4 Modal Header
-    p A bunch of text
-  div class="modal-footer"
-    a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
-        

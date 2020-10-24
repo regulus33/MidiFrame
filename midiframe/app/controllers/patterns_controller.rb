@@ -4,7 +4,7 @@
 class PatternsController < ApplicationController
   before_action :find_project
   before_action :find_pattern, only: %w[edit update pattern_settings destroy generate_pattern_clip pattern_preview]
-  protect_from_forgery with: :null_session, only: ["update"]
+  # protect_from_forgery with: :null_session, only: ["update"]
 
   def index
     params[:page_title] = "Saved Patterns For #{@project.name}"
