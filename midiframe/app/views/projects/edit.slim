@@ -8,12 +8,15 @@ div data-controller="projects--file-input" class="card-panel z-depth-5"
       = f.text_field :bpm, placeholder: @project.name, id: "edit_bpm"
       label class="active" for="edit_bpm" bpm 
     div class="input-field"
+      - linky_to_video_selecty = "/videos?update_project_with_video=#{@project.id}"
+      a href=linky_to_video_selecty change video
+    / div class="input-field"
       / = render partial: 'lofi', locals: {f: f}
-    label for="project_video"
-      a id="upload_video_button" class="waves-effect waves-light btn grey darken-4" Add Video
+    / label for="project_video"
+    /   a id="upload_video_button" class="waves-effect waves-light btn grey darken-4" Add Video
 
-    span data-target="projects--file-input.fileDisplayName" = @project.video.clip.attached? ? "Replace video" : "Choose a video" 
-    = f.file_field :video, style: "display:none;", data: { action: "change->projects--file-input#printFileName", target: "projects--file-input.filename"} 
+    / span data-target="projects--file-input.fileDisplayName" = @project.video.clip.attached? ? "Replace video" : "Choose a video" 
+    / = f.file_field :video, style: "display:none;", data: { action: "change->projects--file-input#printFileName", target: "projects--file-input.filename"} 
 
     / TODO: implement text editing
     / label for="project_font"

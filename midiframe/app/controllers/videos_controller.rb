@@ -7,8 +7,11 @@ class VideosController < ApplicationController
 
   # before_action :get_project, only: %i[edit update destroy show autotune autotune_generate]
   def index
-    if intent_param == NEW_PROJECT
+    if new_project_from_video?
       @new_project_from_video = true
+      # if it is in the params, id is the value, find project and pass to view
+    elsif project_id = update_project_with_video
+      @update_project_with_video = Project.find(project_id)
     end
     # TODO: edit project intent
     # @public_videos = Video.public_videos
@@ -58,8 +61,13 @@ class VideosController < ApplicationController
 
   private
 
-  def intent_param
-    params.permit(:intent)[:intent]
+  def update_project_with_video
+    par = params.permit(:update_project_with_video)
+    return par[:update_project_with_video] if par[:update_project_with_video]
+  end
+
+  def new_project_from_video?
+    params.permit(:new_project_from_video)[:new_project_from_video].present?
   end
 
   def video_params

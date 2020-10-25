@@ -3,7 +3,8 @@ import { baseUrl } from "./constants";
 export const patternsUrl = (projectId, patternId) => `${baseUrl}/projects/${projectId}/patterns/${patternId}`
 export const patternGeneratorUrl = (patternId, projectId) => `${baseUrl}/pattern-generate/${patternId}/${projectId}`
 export const autoTuneProjectUrl = (projectId) => `${baseUrl}/autotune/${projectId}`
-export const newProjectFromVideoUrl = (videoId, authenticityToken) => `${baseUrl}/new-project-from-video/${videoId}`
+export const newProjectFromVideoUrl = (videoId) => `${baseUrl}/new-project-from-video/${videoId}`
+export const updateProjectWithVideoUrl = (videoId, projectId) => `${baseUrl}/update-project-with-video/${videoId}/${projectId}`
 // sends token with ajax request
 const headers = () => {
   return { 
@@ -46,10 +47,18 @@ export const generatePatternClip = ({ patternId, projectId }) => {
   });
 }
 
-export const newProjectFromVideo = ({ videoId, authenticityToken }) => {
+export const newProjectFromVideo = ({ videoId}) => {
   console.log(videoId)
-  return fetch(newProjectFromVideoUrl(videoId, authenticityToken), {
+  return fetch(newProjectFromVideoUrl(videoId), {
     method: 'POST',
+    headers: headers()
+  });
+}
+
+export const editProjectWithVideo = ({ videoId, projectId }) => {
+  console.log(videoId)
+  return fetch(updateProjectWithVideo(videoId, projectId), {
+    method: 'PUT',
     headers: headers()
   });
 }

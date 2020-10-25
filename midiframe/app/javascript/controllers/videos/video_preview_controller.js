@@ -8,9 +8,24 @@ export default class extends Controller {
     this.createProjectFromVideo = this.createProjectFromVideo.bind(this);
   }
 
-  addVideoToProject(e) {
-    // newProjectFromVideoUrl()
+  updateProjectWithVideo(e) {
+    let element;
+    if(e.target.childElementCount){
+      element = e.target;
+    } else {
+      element = e.target.parentElement;
+    }
+    newProjectFromVideo({
+      videoId: element.getAttribute("data-video-id"), 
+      projectId: this.element[""]
+    }).then((e)=>{
+      e.json().then((r)=>{
+        // redirect to patterns create time 
+        window.location.href = r.nextUrl 
+      })
+    })
   }
+
 
   createProjectFromVideo(e) {
     let element;
@@ -21,7 +36,6 @@ export default class extends Controller {
     }
     newProjectFromVideo({
       videoId: element.getAttribute("data-video-id"), 
-      authenticityToken: this.element.getAttribute("data-auth-token")
     }).then((e)=>{
       e.json().then((r)=>{
         // redirect to patterns create time 

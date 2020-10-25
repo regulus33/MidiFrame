@@ -3,13 +3,17 @@ span id="filter-title" Filter:
 div id="filter-links"
   a class="filter-link" href="/videos/public" public
   a class="filter-link" href="/videos" private
-
+  - if @new_project_from_video 
+    - action_to_call = "createProjectFromVideo" 
+  - elsif @update_project_with_video
+    - action_to_call = "updateProjectWithVideo"
+  
 - if @videos.present?
-  div class="video-collection" data-controller="videos--video-preview" data-auth-token=form_authenticity_token.inspect
+  div class="video-collection" data-controller="videos--video-preview" 
     - @videos.each do |video| 
       - if video.thumbnail.attached? 
         / =image_tag(video.thumbnail)
-        =render partial: 'shared/card', locals: {image: video.thumbnail, video_id: video.id, title: video.name, link_url: "videos/#{video.id}#{params[:page].present? ? "?last_page=" << params[:page] : ""}"}
+        =render partial: 'shared/card', locals: {action_to_call: action_to_call, image: video.thumbnail, video_id: video.id, title: video.name, link_url: "videos/#{video.id}#{params[:page].present? ? "?last_page=" << params[:page] : ""}"}
       / =link_to( edit_project_path( project ), class:"collection-item project-item") do 
       /   =project.name 
 - else 

@@ -43,14 +43,21 @@ class ProjectsController < ApplicationController
     end
   end
 
-  # !!!! security
-  def set_video
-    # format.json do
-
-    # end
+  def updateProjectWithVideo
+    respond_to do |format|
+      format.json do
+        # check that the video actually exists first
+        video_id = params[:video_id].to_i
+        video = Video.find(video_id)
+        project = Project.find(params[:project_id])
+        project.update!(
+          video: video,
+        )
+        render json: { nextUrl: new_project_pattern_path(project) }
+      end
+    end
   end
 
-  # !!!! security, no authentication here!
   def new_project_from_video
     respond_to do |format|
       format.json do
