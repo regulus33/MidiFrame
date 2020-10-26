@@ -199,6 +199,18 @@ class Video < ApplicationRecord
     File.delete(original_video)
   end
 
+  def duration
+    self.metadata["streams"][0]["duration"].to_i
+  end
+
+  def width
+    self.metadata["streams"][0]["width"]
+  end
+
+  def height
+    self.metadata["streams"][0]["height"]
+  end
+
   private
 
   # save thumbnail
@@ -245,17 +257,5 @@ class Video < ApplicationRecord
 
   def strip_sound_command(original_video:, soundless_video:)
     `ffmpeg -i #{original_video} -c copy -an #{soundless_video}`
-  end
-
-  def duration
-    self.metadata["streams"][0]["duration"].to_i
-  end
-
-  def width
-    self.metadata["streams"][0]["width"]
-  end
-
-  def height
-    self.metadata["streams"][0]["height"]
   end
 end

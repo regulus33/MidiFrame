@@ -21,6 +21,9 @@ class PatternsController < ApplicationController
   def pattern_preview; end
 
   def edit
+    # Dimensions for text sizing
+    # todo this seems like n+1
+    @video_width = @pattern.project.video.width
     # Eventually for edit, we can calculate this based on prefs, but very much not a priority
     @notes_in_which_octave_identifier = Pattern::NOTES_IN_WHICH_OCTAVE_IDENTIFIER.to_json
     # TODO: save this somewhere so you dont need to nav to it each time
@@ -32,7 +35,7 @@ class PatternsController < ApplicationController
 
   # PUT /projects/:project_id/patterns/:id(.:format)
   # `params: { pattern: channel: "1",  pianoData: { '13': 345.7778 }, pianoTextData: {'13' : 'Blammo!'}, order_in_sequence: 1, name: 'dope pattern', step_length: 4}`
-  # TODO: there is nosecurity here! anyone can edit anyone else's pattern!!! see projects autotune_generate for methodology
+  # TODO: THIS IS PROTECT WITH CSRF is that enough?
   def update
     # for json response
     msg = { status: "ok", message: "Success!", html: "<b>...</b>" }
