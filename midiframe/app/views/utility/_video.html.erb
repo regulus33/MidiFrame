@@ -6,13 +6,21 @@
     }
 
     span#note-text-text {
-        font-family: "<%= project.font.file.blob.filename %>";
+      font-family: "<%= project.font.file.blob.filename %>";
+    }
+
+    /* make text go under vjs controlbar */
+    .vjs-control-bar {
+      z-index: 4000;
     }
 </style>
 <% end %>
 
-<div id="video-bounding-box">
-  <span data-video-width=<%= @video_width %> data-target="patterns--midi-device.noteText patterns--video-text.noteText" data-action="mousedown->patterns--video-text#onMouseDown" id="note-text-text"></span>
+<% # note, this is only relative so we can have text be absolutely positioned in relation %>
+<% # to direct parent. %>
+<% # it will not be pos relative ot parent if parent is not 'positioned' %>
+<div data-target="patterns--video-text.boundingBox" id="video-bounding-box" style="position:relative;max-width:50%">
+  <span style="cursor:pointer" data-video-width=<%= @video_width %> data-target="patterns--midi-device.noteText patterns--video-text.noteText" data-action="mousedown->patterns--video-text#onMouseTextClick" id="note-text-text"></span>
   <video id="midi-video" class="video-js vjs-fluid" preload="auto" width="1000" data-target="patterns--video.video patterns--midi-device.video" controls>
       <source src="<%= url_for(project.playback_video) %>" type="video/mp4" />
   </video>

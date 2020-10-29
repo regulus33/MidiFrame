@@ -45,7 +45,7 @@ export default class extends Controller {
     alert('loaded image');
   }
 
-  test() {
+  test() {  
     var state = document.readyState
     if (state == 'complete') {
       this.loaderTarget.style.display = 'none';
