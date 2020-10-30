@@ -6,8 +6,16 @@
       <h4 data-target="patterns--midi-device.textModalTitle" style="color: black">Text</h4>
      <input data-action="input->patterns--midi-device#onTextType" data-target="patterns--midi-device.inputValue">
      <p class="range-field">
+      <span class="modal-text-label">
+       Size
+      </span>
       <input type="range" id="test5" min="0" max="100" />
      </p>
+     <div>
+      <input type="color" id="head" name="head"
+           value="#e66465">
+      <label for="head">Head</label>
+    </div>
     </div>
     <div class="modal-footer">
       <a data-action="patterns--midi-device#clearText" class="modal-close waves-effect waves-green btn-flat">clear</a>
