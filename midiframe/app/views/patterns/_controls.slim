@@ -1,0 +1,29 @@
+div class="controls"
+  a id="adjust" class="btn-large waves-effect waves-light grey z-depth-5 control-button" data-action="patterns--midi-device#saveCurrentTime" data-target="patterns--midi-device.saveCurrentTime" 
+      i class="material-icons pattern-settings-icons" access_time
+      span class="controls__text" Select Time 
+  a id="format" class="btn-large waves-effect waves-light grey z-depth-5 control-button" data-action="patterns--midi-device#addText" data-target="patterns--midi-device.addTextButton" 
+    i class="material-icons pattern-settings-icons" short_text
+    span class="controls__text"  Textify 
+
+  a id="random_all" class="btn-large waves-effect waves-light grey z-depth-5 control-button" data-action="patterns--midi-device#randomizeAll"  data-target="patterns--midi-device.randomizeAll"
+    i class="material-icons pattern-settings-icons" fingerprint
+    span class="controls__text"  Random All
+
+  a id="random_one" class="btn-large waves-effect waves-light grey z-depth-5 control-button" data-action="patterns--midi-device#randomizeOneNote" data-target="patterns--midi-device.randomizeOne"
+    i class="material-icons pattern-settings-icons" fingerprint
+    span class="controls__text"  Random
+  
+  a id="save" class="btn-large waves-effect waves-light grey z-depth-5 control-button" data-action="patterns--midi-device#save" data-target="patterns--midi-device.saveButton"
+    i class="material-icons pattern-settings-icons" save 
+    span cla Save
+
+  a id="settings" class="btn-large waves-effect waves-light grey z-depth-5 control-button" data-action="patterns--midi-device#saveAndNavigate" data-target="patterns--midi-device.settings" nav-url="/pattern-settings/#{@pattern.id}/#{@project.id}"
+    i class="material-icons pattern-settings-icons" check_circle
+    span cla Proceed
+    
+   
+  a id="clear_all" class="btn-large waves-effect waves-light grey z-depth-5 control-button" data-action="patterns--midi-device#clearAll" data-target="patterns--midi-device.clearAll"
+    i class="material-icons pattern-settings-icons" clear
+    span cla  Clear Piano   
+       

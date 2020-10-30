@@ -1,9 +1,7 @@
-
-
-# Contains the instuctions with which you need to split and join a video 
-# based on recorded midi events provided by the parent pattern 
+# Contains the instuctions with which you need to split and join a video
+# based on recorded midi events provided by the parent pattern
 class FfMpeg < ApplicationRecord
-  PROJECT_TEMPFILE_PLACEHOLDER = 'PROJECT_TEMPFILE_PLACEHOLDER'
+  PROJECT_TEMPFILE_PLACEHOLDER = "PROJECT_TEMPFILE_PLACEHOLDER"
 
   belongs_to :pattern
 
@@ -15,7 +13,7 @@ class FfMpeg < ApplicationRecord
     loop_through_events_and_process_them(events: events)
   end
 
-  # 
+  #
   def create_blueprints_for_text_drawings
     events = pattern.midi_events
     loop_through_events_and_process_text(events: events)
@@ -52,30 +50,30 @@ class FfMpeg < ApplicationRecord
   # ? which invokes the FFMPEG binary for clip slicing.
   def generate_slice_blue_print(event:, next_event:)
     # ? ffmpeg -t requires seconds, its still very precise so we just convert
-    slice_duration = convert_seconds_to_milliseconds_and_convert_scientific_notation_to_strings(next_event['timestamp'] - event['timestamp'])
+    slice_duration = convert_seconds_to_milliseconds_and_convert_scientific_notation_to_strings(next_event["timestamp"] - event["timestamp"])
     # "ffmpeg #{self.role == Video::VISUAL ? '-an' : ''} -y -ss #{timestamp_to_play_in_video(event: event)} -i #{project_tempfile_url} -t #{slice_duration} -c:v libx264 #{generate_unique_tempfile_clip_location_url(event['timestamp'])}"
     if self.role == Video::VISUAL
       ffmpeg_slice event: event, next_event: next_event, slice_duration: slice_duration
     else
-    sox_slice event: event, next_event: next_event, slice_duration: slice_duration
-    end 
+      sox_slice event: event, next_event: next_event, slice_duration: slice_duration
+    end
   end
 
   def ffmpeg_slice(event:, next_event:, slice_duration:)
-    "ffmpeg -an -y -ss #{timestamp_to_play_in_video(event: event)} -i #{project_tempfile_url} -t #{slice_duration} -c:v libx264 #{generate_unique_tempfile_clip_location_url(event['timestamp'])}"
+    "ffmpeg -an -y -ss #{timestamp_to_play_in_video(event: event)} -i #{project_tempfile_url} -t #{slice_duration} -c:v libx264 #{generate_unique_tempfile_clip_location_url(event["timestamp"])}"
   end
 
   def sox_slice(event:, next_event:, slice_duration:)
-    "sox #{project_tempfile_url} #{generate_unique_tempfile_clip_location_url(event['timestamp'])} trim #{timestamp_to_play_in_video(event: event)} #{slice_duration}"
+    "sox #{project_tempfile_url} #{generate_unique_tempfile_clip_location_url(event["timestamp"])} trim #{timestamp_to_play_in_video(event: event)} #{slice_duration}"
   end
 
   def generate_concat_blueprint(event)
-    "file '#{generate_unique_tempfile_clip_location_url(event['timestamp'])}'\n"
+    "file '#{generate_unique_tempfile_clip_location_url(event["timestamp"])}'\n"
   end
 
   def timestamp_to_play_in_video(event:)
-    note = event['note']
-    return 0.0 if note == 'start'
+    note = event["note"]
+    return 0.0 if note == "start"
     pattern.note_stamps[note.to_s]
   end
 
@@ -105,12 +103,12 @@ class FfMpeg < ApplicationRecord
   end
 
   def save_and_add_blue_prints_to_text_blueprints(blue_prints)
-    self.text_blueprints = blue_prints.gsub(/\n/, '').strip
+    self.text_blueprints = blue_prints.gsub(/\n/, "").strip
     save!
   end
 
   def file_extension
-    return pattern.project.video.audio.file_extension if(self.role == Video::AUDIO)
+    return pattern.project.video.audio.file_extension if (self.role == Video::AUDIO)
     pattern.project.video.file_extension
   end
 
@@ -133,10 +131,10 @@ class FfMpeg < ApplicationRecord
     " #{processed_tempfile_url}
     TRAILING
     events.each_with_index do |event, index|
-      break if event['note'] == 'stop'
+      break if event["note"] == "stop"
 
-      comma = ','
-      comma = '' if (events.length - 2) == index
+      comma = ","
+      comma = "" if (events.length - 2) == index
       next_event = events[index + 1] unless reached_the_last_event? current_index: index, array_length: events.length
       text_blue_print_to_add = generate_text_blueprint(event: event, next_event: next_event)
       text_blue_prints << text_blue_print_to_add.strip + comma if text_blue_print_to_add
@@ -150,11 +148,11 @@ class FfMpeg < ApplicationRecord
     # ? for each event, get the start time and end time of a note by finding the event's timestamp
     pattern_blueprints = []
     clip_filenames = []
-    pattern_concat_blueprints = ''
+    pattern_concat_blueprints = ""
 
     events.each_with_index do |event, index|
       # ? stop is the last event, there is not command for this event, it only serves as a sign when the last note should terminate
-      break if event['note'] == 'stop'
+      break if event["note"] == "stop"
 
       # ? calculate the end time of the note by searching starttime of next note
       next_event = events[index + 1] unless reached_the_last_event? current_index: index, array_length: events.length
@@ -167,7 +165,7 @@ class FfMpeg < ApplicationRecord
       pattern_blueprints << blue_print_to_add
       pattern_concat_blueprints << concat_blue_print_to_add
       # ? need to save clip filenames to delete later
-      clip_filenames << generate_unique_tempfile_clip_location_url(event['timestamp'])
+      clip_filenames << generate_unique_tempfile_clip_location_url(event["timestamp"])
     end
     # *
     #      EVERYTHING YOU NEED TO SLICE CONCAT AND DELETE CLIPS
@@ -181,9 +179,9 @@ class FfMpeg < ApplicationRecord
     # establish beginning and end times,
     # ffmpeg -y -i #{self.clip_tempfile_path} -vf
     cmd = false
-    start_time = convert_seconds_to_milliseconds_and_convert_scientific_notation_to_strings(event['timestamp'])
-    end_time = convert_seconds_to_milliseconds_and_convert_scientific_notation_to_strings(next_event['timestamp'])
-    note_number_key = event['note'].to_s
+    start_time = convert_seconds_to_milliseconds_and_convert_scientific_notation_to_strings(event["timestamp"])
+    end_time = convert_seconds_to_milliseconds_and_convert_scientific_notation_to_strings(next_event["timestamp"])
+    note_number_key = event["note"].to_s
     text_to_display = pattern.text_stamps[note_number_key]
     if text_to_display.present?
       cmd = <<-FFMPEG
@@ -198,6 +196,6 @@ class FfMpeg < ApplicationRecord
   end
 
   def remove_dots(string)
-    string.to_s.gsub('.', '')
+    string.to_s.gsub(".", "")
   end
 end

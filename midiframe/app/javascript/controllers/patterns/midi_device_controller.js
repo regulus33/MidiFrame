@@ -422,10 +422,13 @@ export default class extends Controller {
   _activatePianoKey(element) {
     // the button that changes time should light up to indicate activity
     this.saveCurrentTimeTarget.classList.toggle("grey", false); // teal by default 
+    this.saveCurrentTimeTarget.classList.toggle("teal", true) // teal by default 
     // add text button 
     this.addTextButtonTarget.classList.toggle("grey", false);
+    this.addTextButtonTarget.classList.toggle("teal", true)
 
     this.randomizeOneTarget.classList.toggle("grey", false);
+    this.randomizeOneTarget.classList.toggle("teal", true)
 
     element.parentElement.classList.add("selected");
   }
