@@ -4,6 +4,7 @@ import videojs from '../../helpers/video.js';
 import { toTheNearestThousandth, randoMize } from '../../helpers/math'
 import { NUDGE_AMOUNT, baseUrl } from '../../helpers/constants'
 import { savePattern, generatePatternClip } from '../../helpers/network'
+import PianoTextData from '../../models/piano_text_data'
 
 export default class extends Controller {
 
@@ -33,7 +34,7 @@ export default class extends Controller {
   connect() {
     this.piano = {};
     this.pianoData = {};
-    this.pianoTextData = {};
+    this.pianoTextData = new PianoTextData();;
     this.recordingSessionOpen = false;
     this.recording = false;
     this.midiEvents = [];
@@ -49,13 +50,17 @@ export default class extends Controller {
     //everytime a new notes comes in we will add it 
     this.isSeeking = false;
     //? text styling
-    this.positionTextForVideo();
-    this.positionTextOnWindowResize();
     this._initializeTextData();
     // the current 'mode' either, selecting or demoing midi 
     this.selecting = true;
     this.videoPlaying = false;
     this.lastNote = null;
+  }
+
+  // TODO we should move this someday 
+
+  updateTextPosition({noteNumber, text}){
+    this.pianoTextData.updateTextFor({noteNumber:noteNumber,text:text})
   }
 
   updateCurrentNoteTextPosition() {
@@ -86,9 +91,10 @@ export default class extends Controller {
   // when 
 
   //SAVE BUTTON 
+  // *DOME
   save() {
     console.log(`[MIDI_DEVICE_CONTROLLER] save(), about to save the project`);
-    return savePattern({ channel: this._channel, pianoData: this.pianoData, pianoTextData: this.pianoTextData, midiEvents: this.midiEvents, patternId: this._getPatternId(), projectId: this._getProjectId() })
+    return savePattern({ channel: this._channel, pianoData: this.pianoData, pianoTextData: this.pianoTextData.resolveToJson(), midiEvents: this.midiEvents, patternId: this._getPatternId(), projectId: this._getProjectId() })
       .then(() => {
         console.log(`[MIDI_DEVICE_CONTROLLER] save(), returning from network response`)
         M.toast({ html: 'Pattern Saved' })
@@ -279,7 +285,8 @@ export default class extends Controller {
   }
 
   _updateTextData({ string, number }) {
-    this.pianoTextData[number] = string;
+    // ! done
+    this.pianoTextData.updateTextFor({noteNumber: number, text: string})
     console.log(this.pianoTextData)
   }
 
@@ -290,11 +297,14 @@ export default class extends Controller {
       this.pianoData = noteStamps
     }
   }
-
+  // take the html strings from db and save into pianoTextData
   _initializeTextData() {
     let textStamps = JSON.parse(this.noteStampsTarget.getAttribute("text-stamps"))
+
     if (textStamps) {
-      this.pianoTextData = textStamps
+      // ! done
+      this.pianoTextData.initializeFromJson({json:textStamps});
+      debugger
     }
   }
 
@@ -648,11 +658,14 @@ export default class extends Controller {
   addText() {
     // if we havent selected a note, dont show modal
     if (!this._selectedKey) return
+    // get current data key
     const currentKey = this.selectedKey.id;
     const elems = document.querySelectorAll('.modal');
     const instances = M.Modal.init(elems, { title: "whatever" });
     //? if there is presaved data, show it in the input field 
-    this.inputValueTarget.value = this.pianoTextData[currentKey] ? this.pianoTextData[currentKey] : ""
+    // * put the data from the pianotextdata into the form so user knows
+    // ! done
+    this.inputValueTarget.value = this.pianoTextData.getTextFor({noteNumber: currentKey})
     this.textModalTitleTarget.innerHTML = `Text for midi: ${currentKey}`
     instances[0].open();
   }
@@ -662,33 +675,19 @@ export default class extends Controller {
     let string = e.target.value;
     this._updateTextData({ number: number, string: string })
   }
-
+  // !DONE
   _playText(num) {
-    if (this.pianoTextData[num]) {
-      let textToDisplay = this.pianoTextData[num];
-      this.noteTextTarget.innerHTML = textToDisplay;
-    } else {
-      this.noteTextTarget.innerHTML = "";
-    }
+    let data = this.pianoTextData.notes[num]
+    this.noteTextTarget.innerHTML = this.pianoTextData.getTextFor({noteNumber: num});
+    //position text
+    debugger
+    this.noteTextTarget.style.left = `${data["x"]}px`;
+    this.noteTextTarget.style.top = `${data["y"]}px`;
   }
   // data action 
+  // !DONE
   clearText() {
-    delete this.pianoTextData[this.selectedKey.id]
-  }
-
-  // ? js centering of optional video text 
-  positionTextForVideo() {
-    // let textPosition = this.noteTextTarget;
-    // let video = document.getElementsByTagName('video')[0]
-    // // ! TODO THIS IS STILL NOT WORKED OUT YET
-    // var textPositionTop = video.offsetHeight / 2;
-    // var textPositionLeft = (video.offsetWidth / 2 - textPosition.width);
-    // textPosition.style.left = textPositionLeft + 'px';
-    // textPosition.style.top = textPositionTop + 'px';
-  }
-
-  positionTextOnWindowResize() {
-    window.addEventListener('resize', this.positionTextForVideo.bind(this));
+    this.pianoTextData.clearTextFor({noteNumber:this.selectedKey.id})
   }
 
 }
