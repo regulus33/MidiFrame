@@ -211,6 +211,16 @@ class Video < ApplicationRecord
     self.metadata["streams"][0]["height"]
   end
 
+  #  for initial positioning
+  def midway_x
+    self.width / 2
+  end
+
+  # ditto
+  def midway_y
+    self.height / 2
+  end
+
   private
 
   # save thumbnail

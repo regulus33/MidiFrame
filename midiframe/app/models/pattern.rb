@@ -7,6 +7,9 @@
 # interacting with the FfMpeg class.
 class Pattern < ApplicationRecord
   CLOCK_SIGNALS_IN_1_BAR = 96
+  SUPPORTED_MIDI_NOTES = 107
+  DEFAULT_FONT_SIZE = 12
+  DEFAULT_FONT_COLOR = "white"
   # ? name of midi notes signaling absolute beginning and end of a clip
   START = "start"
   STOP = "stop"
@@ -17,7 +20,7 @@ class Pattern < ApplicationRecord
   belongs_to :project
   belongs_to :user
 
-  before_create :set_initial_channel, :initialize_name, :initialize_step_length, :initialize_note_stamps, :initialize_order_in_sequence
+  before_create :set_initial_channel, :initialize_name, :initialize_step_length, :initialize_note_stamps, :initialize_order_in_sequence, :initialize_note_texts
   # ? after create since the values set above must be present
   after_create :set_initial_channel, :initialize_name
 
@@ -210,5 +213,28 @@ class Pattern < ApplicationRecord
   def midi_from_file?
     return true if self.midi_source == FILE
     return false
+  end
+
+  # hatch the egg with some yoke boyeeeeee
+  def initialize_note_texts
+    # 1:
+    video = self.project.video
+    x = video.midway_x
+    y = video.midway_y
+    notes = Hash.new()
+
+    SUPPORTED_MIDI_NOTES.times do |midi_note|
+      midi_note = midi_note + 1
+      random_text = RandomWord.nouns.next
+
+      notes[midi_note] = {
+        text: random_text,
+        size: DEFAULT_FONT_SIZE,
+        color: DEFAULT_FONT_COLOR,
+        x: x,
+        y: y,
+      }
+    end
+    self.note_texts = notes
   end
 end

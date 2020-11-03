@@ -32,6 +32,7 @@ export default class extends Controller {
   ];
 
   connect() {
+    this.videoTextController = this.application.getControllerForElementAndIdentifier(this.element, "patterns--video-text");
     this.piano = {};
     this.pianoData = {};
     this.pianoTextData = new PianoTextData();;
@@ -55,9 +56,19 @@ export default class extends Controller {
     this.selecting = true;
     this.videoPlaying = false;
     this.lastNote = null;
+
   }
 
-  // TODO we should move this someday 
+  // return 48 if none selected yet
+  currentNote(){
+    if(this.selectedKey){
+      return this.selectedKey.id;
+    } else if(this.lastNote){
+      return this.lastNote;
+    } else {
+      return 48
+    }
+  }
 
   updateTextPosition({noteNumber, text}){
     this.pianoTextData.updateTextFor({noteNumber:noteNumber,text:text})
@@ -304,7 +315,8 @@ export default class extends Controller {
     if (textStamps) {
       // ! done
       this.pianoTextData.initializeFromJson({json:textStamps});
-      debugger
+      // as soon as data is in memory we need to scale the font-size and x-y position
+      this.videoTextController.scaleScaleables();
     }
   }
 
@@ -680,7 +692,6 @@ export default class extends Controller {
     let data = this.pianoTextData.notes[num]
     this.noteTextTarget.innerHTML = this.pianoTextData.getTextFor({noteNumber: num});
     //position text
-    debugger
     this.noteTextTarget.style.left = `${data["x"]}px`;
     this.noteTextTarget.style.top = `${data["y"]}px`;
   }

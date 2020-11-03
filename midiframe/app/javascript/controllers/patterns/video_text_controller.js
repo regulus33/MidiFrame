@@ -23,14 +23,26 @@ export default class extends Controller {
     // box width, need it to scale text from 
     this.initialVidContainerWidth = this.boundingBoxTarget.clientWidth;
     this.initialTextPositionX = this.boundingBoxTarget.clientX;
-    // TEXT RESIZING 
-    // * keep me as member var, i am important and you should be able to change me as a user.
-    this.productionFontSize = 12;
 
-    this.scaleFont();
-    this.scalePositionText();
+    // have a window resize event occured? 
+    this.firstClientResizePassed = false;
 
     window.addEventListener('resize', this.setPostWindowResize.bind(this));
+  }
+
+  scaleScaleables(){
+    this.scalePositionText();
+    this.scaleFont();
+    this.scaleData();  
+  }
+
+  onTextResize(e){
+    let size = e.target.value;
+    this.noteTextTarget.style.fontSize = `${size}px`;
+    this.midiDeviceController.pianoTextData.updateSizeFor({
+      noteNumber: this.midiDeviceController.selectedKey,
+      size: size,
+    });
   }
 
   setupBoundingBoxForText() {
@@ -56,21 +68,32 @@ export default class extends Controller {
     // console.log(ratio);
   }
 
+  scaleData(){
+    this.midiDeviceController.pianoTextData.transformNotesTextScaleAndPosition({scalar: this.calcFontRatio()});
+  }
+
   scaleFont(ratio){
     if( ratio == undefined ) {
       ratio = this.calcFontRatio();
     }
-    let newPixelWidth = `${this.productionFontSize * ratio}px`;
+      
+    let newPixelWidth = `${this.midiDeviceController.pianoTextData.getSizeFor({noteNumber: this.midiDeviceController.currentNote()}) * ratio}px`;
     this.noteTextTarget.style.fontSize = newPixelWidth;
   }
 
+  // TODO NAME CHANGE
   calcFontRatio(){
+    if(this.firstClientResizePassed) {
+      return this.boundingBoxTarget.clientWidth / this.initialVidContainerWidth;
+    }
     return this.boundingBoxTarget.clientWidth / this.videoWidth;
   }
 
+    // TODO REMOVE
   calcPositionRatio(){
     return this.boundingBoxTarget.clientWidth / this.initialVidContainerWidth;
   }
+  
 
   // on click text 
   onMouseTextClick(e) {
@@ -93,13 +116,8 @@ export default class extends Controller {
 
   closeDragElement() {
     //get current note to update
-    let currentNote = this.midiDeviceController.selectedKey
-    if(this.midiDeviceController.selectedKey) {
-      currentNote = this.midiDeviceController.selectedKey.id;
-    } else {
-      currentNote = this.midiDeviceController.lastNote;
-    }
-    this.updateTextPosition({noteNumber: currentNote, x:this.textPositionX, y:this.textPositionY})
+    
+    this.updateTextPosition({noteNumber: this.midiDeviceController.currentNote(), x:this.textPositionX, y:this.textPositionY})
     document.onmouseup = null;
     document.onmousemove = null;
   }
@@ -142,12 +160,12 @@ export default class extends Controller {
 
   // this is custom, on resized dont exist 
   onWindowResized(){
-    this.scalePositionText();
-    this.scaleFont();
+    this.scaleScaleables();
+    this.makeTextVisible();
     // save video container width just before resize
     this.initialVidContainerWidth = this.boundingBoxTarget.clientWidth;
     this.initialTextPositionX = this.boundingBoxTarget.clientX;
-    this.makeTextVisible();
+    this.firstClientResizePassed = true;
   }
 
   // make text disappear until window resized
