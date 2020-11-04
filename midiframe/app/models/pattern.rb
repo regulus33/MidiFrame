@@ -20,7 +20,7 @@ class Pattern < ApplicationRecord
   belongs_to :project
   belongs_to :user
 
-  before_create :set_initial_channel, :initialize_name, :initialize_step_length, :initialize_note_stamps, :initialize_order_in_sequence, :initialize_note_texts
+  before_create :set_initial_channel, :initialize_name, :initialize_step_length, :initialize_note_stamps, :initialize_order_in_sequence, :initialize_text_stamps
   # ? after create since the values set above must be present
   after_create :set_initial_channel, :initialize_name
 
@@ -216,7 +216,7 @@ class Pattern < ApplicationRecord
   end
 
   # hatch the egg with some yoke boyeeeeee
-  def initialize_note_texts
+  def initialize_text_stamps
     # 1:
     video = self.project.video
     x = video.midway_x
@@ -235,6 +235,6 @@ class Pattern < ApplicationRecord
         y: y,
       }
     end
-    self.note_texts = notes
+    self.text_stamps = notes
   end
 end

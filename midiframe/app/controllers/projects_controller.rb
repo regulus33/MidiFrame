@@ -2,7 +2,6 @@
 # Nest all patterns associated with a single video here
 class ProjectsController < ApplicationController
   before_action :get_project, only: %i[edit update destroy show autotune autotune_generate]
-  # protect_from_forgery with: :null_session, only: ["set_video", "new_project_from_video"]
 
   #returns all projects of the current user
   def index
