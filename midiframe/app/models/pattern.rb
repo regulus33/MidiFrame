@@ -215,7 +215,8 @@ class Pattern < ApplicationRecord
     return false
   end
 
-  # hatch the egg with some yoke boyeeeeee
+  # todo
+  # https://stackoverflow.com/questions/28951261/fibererror-fiber-called-across-threads
   def initialize_text_stamps
     # 1:
     video = self.project.video
@@ -225,7 +226,8 @@ class Pattern < ApplicationRecord
 
     SUPPORTED_MIDI_NOTES.times do |midi_note|
       midi_note = midi_note + 1
-      random_text = RandomWord.nouns.next
+      # todo: lil bit icky, should develop a more cost effective random word strategy
+      random_text = RandomWord.nouns.next.split("_").first
 
       notes[midi_note] = {
         text: random_text,

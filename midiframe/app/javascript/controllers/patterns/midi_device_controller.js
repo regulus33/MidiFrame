@@ -310,12 +310,11 @@ export default class extends Controller {
   }
   // take the html strings from db and save into pianoTextData
   _initializeTextData() {
-    debugger
     let textStamps = JSON.parse(this.noteStampsTarget.getAttribute("text-stamps"))
+
     if (textStamps) {
       // ! done
       this.pianoTextData.initializeFromJson({json:textStamps});
-      debugger
       // as soon as data is in memory we need to scale the font-size and x-y position
       this.videoTextController.scaleScaleables();
     }

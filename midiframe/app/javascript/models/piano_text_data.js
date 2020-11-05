@@ -18,9 +18,10 @@ export default class PianoTextData {
     }
 
     transformNotesTextScaleAndPosition({scalar}){
-      for(let i = 1;i< 109;i++){
+      for(let i = 1;i< 108;i++){
         
-        currentObj = this.notes[i];
+        let currentObj = this.notes[i];
+     
         let size = currentObj.size; 
         let x = currentObj.x; 
         let y = currentObj.y;
