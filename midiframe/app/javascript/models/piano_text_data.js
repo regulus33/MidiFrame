@@ -1,22 +1,22 @@
 // TODO: 
 
-// ? SIZE 
-// on the first 
-// ? POSITION 
-// you only need to worry about 1 kind of ratio: the current video width divided by the original video width
-
-
-
-
 
 export default class PianoTextData {
 
   constructor() {
     this.scalar = 0.0; 
     // 1:{text:"",size:"",color:"", x:"", y:""},
-    this.notes = {}
-    }
+    this.notes = {};
+  }
 
+    // this runs every time we resize the window. 
+    // unfortunately, we are mutating data here and it would
+    // be better to copy this notes object with translated sizing but 
+    // in the interest of simplicity I'm just letting this be 
+
+    // the important thing to remember is that we need to scale the 
+    // text on page load, all window resizes 
+    // and on http PUT 
     transformNotesTextScaleAndPosition({scalar}){
       for(let i = 1;i< 108;i++){
         
@@ -67,6 +67,7 @@ export default class PianoTextData {
     }
 
     updateSizeFor({noteNumber, size}){
+      debugger 
       this.notes[noteNumber].size = size;
     }
 

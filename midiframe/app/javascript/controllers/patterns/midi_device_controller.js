@@ -29,10 +29,10 @@ export default class extends Controller {
     "randomizeAll",
     "saveButton",
     "clearAll",
+    "textSizeRangeInput"
   ];
 
   connect() {
-    this.videoTextController = this.application.getControllerForElementAndIdentifier(this.element, "patterns--video-text");
     this.piano = {};
     this.pianoData = {};
     this.pianoTextData = new PianoTextData();;
@@ -51,11 +51,12 @@ export default class extends Controller {
     //everytime a new notes comes in we will add it 
     this.isSeeking = false;
     //? text styling
-    this._initializeTextData();
     // the current 'mode' either, selecting or demoing midi 
     this.selecting = true;
     this.videoPlaying = false;
     this.lastNote = null;
+    //TODO FIX ME 
+    window.setTimeout(this.initializeTextData.bind(this), 500);
 
   }
 
@@ -180,7 +181,7 @@ export default class extends Controller {
         this.onMessageNoteOff({ note: { number: this.lastNote } });
       }
       this.onMessageNoteOn({ note: { number: num } });
-      this.lastNote = number;
+      this.lastNote = num;
     } else {
       this._unselectNote(target);
     }
@@ -309,14 +310,13 @@ export default class extends Controller {
     }
   }
   // take the html strings from db and save into pianoTextData
-  _initializeTextData() {
+  initializeTextData() {
     let textStamps = JSON.parse(this.noteStampsTarget.getAttribute("text-stamps"))
 
     if (textStamps) {
-      // ! done
       this.pianoTextData.initializeFromJson({json:textStamps});
       // as soon as data is in memory we need to scale the font-size and x-y position
-      this.videoTextController.scaleScaleables();
+      this.application.getControllerForElementAndIdentifier(this.element, "patterns--video-text").scaleScaleables();
     }
   }
 
@@ -674,6 +674,9 @@ export default class extends Controller {
     const currentKey = this.selectedKey.id;
     const elems = document.querySelectorAll('.modal');
     const instances = M.Modal.init(elems, { title: "whatever" });
+    // this.textSizeRangeInput.
+    // SET UI TO CURRENT VALLL
+    this.textSizeRangeInputTarget.value = this.pianoTextData.getSizeFor({noteNumber:this.currentNote()});
     //? if there is presaved data, show it in the input field 
     // * put the data from the pianotextdata into the form so user knows
     // ! done
@@ -689,11 +692,13 @@ export default class extends Controller {
   }
   // !DONE
   _playText(num) {
-    let data = this.pianoTextData.notes[num]
-    this.noteTextTarget.innerHTML = this.pianoTextData.getTextFor({noteNumber: num});
+    let data = this.pianoTextData.notes[num];
+    this.noteTextTarget.innerHTML = data.text;
     //position text
     this.noteTextTarget.style.left = `${data["x"]}px`;
     this.noteTextTarget.style.top = `${data["y"]}px`;
+    //size text 
+    this.noteTextTarget.style.fontSize = `${data.size}vmax`
   }
   // data action 
   // !DONE

@@ -8,6 +8,7 @@ export default class extends Controller {
   ];
 
   connect() {
+    this.midiDeviceController = null; // sets in window.onload
     this.textPositionX = 0
     this.textPositionY = 0
     // ! Only used for text animation, this is not to be interpreted anywhere else
@@ -18,16 +19,28 @@ export default class extends Controller {
     //box boundaries, total width and height in pixels
     this.boxBoundaryX = 0;
     this.boxBoundaryY = 0;
-    this.midiDeviceController = this.application.getControllerForElementAndIdentifier(this.element, "patterns--midi-device");
     this.videoWidth = this.noteTextTarget.getAttribute("data-video-width");
     // box width, need it to scale text from 
-    this.initialVidContainerWidth = this.boundingBoxTarget.clientWidth;
+    this.lastVideoContainerWidth = this.boundingBoxTarget.clientWidth;
     this.initialTextPositionX = this.boundingBoxTarget.clientX;
 
     // have a window resize event occured? 
     this.firstClientResizePassed = false;
 
     window.addEventListener('resize', this.setPostWindowResize.bind(this));
+    window.addEventListener('load', this.setControllerPointer.bind(this));
+  }
+
+  pianoTextData(){
+    return this.midiDeviceController.pianoTextData
+  }
+
+  currentTextObject(){
+    return this.pianoTextData()[this.midiDeviceController.currentNote()];
+  }
+
+  setControllerPointer(){
+    this.midiDeviceController = this.application.getControllerForElementAndIdentifier(this.element, "patterns--midi-device");
   }
 
   scaleScaleables(){
@@ -36,14 +49,18 @@ export default class extends Controller {
     this.scaleData();  
   }
 
+  // vmax
+  // TODO figure out math for how this is interpreted on server 
   onTextResize(e){
     let size = e.target.value;
-    this.noteTextTarget.style.fontSize = `${size}px`;
+    this.noteTextTarget.style.fontSize = `${size}vmax`;
     this.midiDeviceController.pianoTextData.updateSizeFor({
-      noteNumber: this.midiDeviceController.selectedKey,
+      noteNumber: this.midiDeviceController.currentNote(),
       size: size,
     });
   }
+
+
 
   setupBoundingBoxForText() {
     // debugger
@@ -54,7 +71,7 @@ export default class extends Controller {
 
   scalePositionText(ratio) {
     if( ratio === undefined ) {
-      ratio = this.calcPositionRatio();
+      ratio = this.calcRatio();
     }
 
     let left = this.noteTextTarget.offsetLeft; 
@@ -69,12 +86,12 @@ export default class extends Controller {
   }
 
   scaleData(){
-    this.midiDeviceController.pianoTextData.transformNotesTextScaleAndPosition({scalar: this.calcFontRatio()});
+    this.midiDeviceController.pianoTextData.transformNotesTextScaleAndPosition({scalar: this.calcRatio()});
   }
 
   scaleFont(ratio){
     if( ratio == undefined ) {
-      ratio = this.calcFontRatio();
+      ratio = this.calcRatio();
     }
       
     let newPixelWidth = `${this.midiDeviceController.pianoTextData.getSizeFor({noteNumber: this.midiDeviceController.currentNote()}) * ratio}px`;
@@ -82,18 +99,12 @@ export default class extends Controller {
   }
 
   // TODO NAME CHANGE
-  calcFontRatio(){
+  calcRatio(){
     if(this.firstClientResizePassed) {
-      return this.boundingBoxTarget.clientWidth / this.initialVidContainerWidth;
+      return this.boundingBoxTarget.clientWidth / this.lastVideoContainerWidth;
     }
     return this.boundingBoxTarget.clientWidth / this.videoWidth;
   }
-
-    // TODO REMOVE
-  calcPositionRatio(){
-    return this.boundingBoxTarget.clientWidth / this.initialVidContainerWidth;
-  }
-  
 
   // on click text 
   onMouseTextClick(e) {
@@ -163,7 +174,7 @@ export default class extends Controller {
     this.scaleScaleables();
     this.makeTextVisible();
     // save video container width just before resize
-    this.initialVidContainerWidth = this.boundingBoxTarget.clientWidth;
+    this.lastVideoContainerWidth = this.boundingBoxTarget.clientWidth;
     this.initialTextPositionX = this.boundingBoxTarget.clientX;
     this.firstClientResizePassed = true;
   }
