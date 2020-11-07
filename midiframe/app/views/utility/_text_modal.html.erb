@@ -1,26 +1,23 @@
-  <!-- Modal Structure -->
-  
-
-  <div id="text-modal" class="modal modal-fixed-footer" data-target="patterns--midi-device.textModal">
-    <div class="modal-content">
-      <h4 data-target="patterns--midi-device.textModalTitle" style="color: black">Text</h4>
-     <input data-action="input->patterns--midi-device#onTextType" data-target="patterns--midi-device.inputValue">
-     <p class="range-field">
-      <span class="modal-text-label">
-       Size
-      </span>
-      <input data-target="patterns--midi-device.textSizeRangeInput" type="range" min="0" max="20" data-action="input->patterns--video-text#onTextResize" />
-     </p>
-     <div>
-      <input type="color" id="head" name="head"
-           value="#e66465">
-      <label for="head">Head</label>
-    </div>
-    </div>
-    <div class="modal-footer">
-      <a data-action="patterns--midi-device#clearText" class="modal-close waves-effect waves-green btn-flat">clear</a>
-      <a class="modal-close waves-effect waves-green btn-flat">ok</a>
-    </div>
+<div id="text-modal" class="modal modal-fixed-footer" data-target="patterns--midi-device.textModal">
+  <div class="modal-content">
+    <h4 data-target="patterns--midi-device.textModalTitle" style="color: black">Text</h4>
+    <input data-action="input->patterns--midi-device#onTextType" data-target="patterns--midi-device.inputValue">
+    <p class="range-field">
+    <span class="modal-text-label">
+      Size
+    </span>
+    <input data-target="patterns--midi-device.textSizeRangeInput" type="range" min="0" max="20" data-action="input->patterns--video-text#onTextResize" />
+    </p>
+    <div>
+    <label for="color">Color</label>
+    <input data-target="patterns--midi-device.textColorInput" data-action="input->patterns--video-text#onColorChange" type="color" id="color" name="color"
+          value="#ffffff">
   </div>
+  </div>
+  <div class="modal-footer">
+    <a data-action="patterns--midi-device#clearText" class="modal-close waves-effect waves-green btn-flat">clear</a>
+    <a class="modal-close waves-effect waves-green btn-flat">ok</a>
+  </div>
+</div>
           
   

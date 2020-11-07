@@ -29,7 +29,8 @@ export default class extends Controller {
     "randomizeAll",
     "saveButton",
     "clearAll",
-    "textSizeRangeInput"
+    "textSizeRangeInput",
+    "textColorInput"
   ];
 
   connect() {
@@ -681,24 +682,28 @@ export default class extends Controller {
     // * put the data from the pianotextdata into the form so user knows
     // ! done
     this.inputValueTarget.value = this.pianoTextData.getTextFor({noteNumber: currentKey})
+    this.textColorInputTarget.value = this.pianoTextData.getColorFor({noteNumber: currentKey})
     this.textModalTitleTarget.innerHTML = `Text for midi: ${currentKey}`
+
     instances[0].open();
   }
 
   onTextType(e) {
     let number = this.selectedKey.id;
     let string = e.target.value;
-    this._updateTextData({ number: number, string: string })
+    this._updateTextData({ number: number, string: string });
   }
   // !DONE
   _playText(num) {
     let data = this.pianoTextData.notes[num];
-    this.noteTextTarget.innerHTML = data.text;
+    this.noteTextTarget.innerHTML = data["text"];
     //position text
     this.noteTextTarget.style.left = `${data["x"]}px`;
     this.noteTextTarget.style.top = `${data["y"]}px`;
     //size text 
     this.noteTextTarget.style.fontSize = `${data.size}vmax`
+
+    this.noteTextTarget.style.color = data["color"];
   }
   // data action 
   // !DONE

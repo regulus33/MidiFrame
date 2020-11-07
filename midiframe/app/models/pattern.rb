@@ -8,7 +8,7 @@
 class Pattern < ApplicationRecord
   CLOCK_SIGNALS_IN_1_BAR = 96
   SUPPORTED_MIDI_NOTES = 107
-  DEFAULT_FONT_SIZE = 12
+  DEFAULT_FONT_SIZE = 1
   DEFAULT_FONT_COLOR = "white"
   # ? name of midi notes signaling absolute beginning and end of a clip
   START = "start"

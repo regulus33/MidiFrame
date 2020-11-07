@@ -8,7 +8,7 @@ export default class extends Controller {
   ];
 
   connect() {
-    this.midiDeviceController = null; // sets in window.onload
+    this.midiDeviceController = this.application.getControllerForElementAndIdentifier(this.element, "patterns--midi-device");
     this.textPositionX = 0
     this.textPositionY = 0
     // ! Only used for text animation, this is not to be interpreted anywhere else
@@ -60,7 +60,11 @@ export default class extends Controller {
     });
   }
 
-
+  onColorChange(e){
+    let color = e.target.value;
+    this.noteTextTarget.style.color = color;
+    this.midiDeviceController.pianoTextData.updateColorFor({noteNumber: this.midiDeviceController.currentNote(), color:color})
+  }
 
   setupBoundingBoxForText() {
     // debugger

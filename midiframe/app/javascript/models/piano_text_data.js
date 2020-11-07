@@ -41,6 +41,10 @@ export default class PianoTextData {
      return this.notes[noteNumber].text;
     }
 
+    getColorFor({noteNumber}){
+      return this.notes[noteNumber].color;
+     }
+
     getSizeFor({noteNumber}){
       return this.notes[noteNumber].size;
     }
@@ -67,8 +71,11 @@ export default class PianoTextData {
     }
 
     updateSizeFor({noteNumber, size}){
-      debugger 
       this.notes[noteNumber].size = size;
+    }
+
+    updateColorFor({noteNumber, color}){
+      this.notes[noteNumber].color = color; 
     }
 
     formatDataForServer(){
