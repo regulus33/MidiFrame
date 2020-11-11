@@ -8,26 +8,38 @@ export default class extends Controller {
   ];
 
   connect() {
+    
     this.midiDeviceController = this.application.getControllerForElementAndIdentifier(this.element, "patterns--midi-device");
+    
     this.textPositionX = 0
     this.textPositionY = 0
+
     // ! Only used for text animation, this is not to be interpreted anywhere else
     this.pos1 = 0;
     this.pos2 = 0; 
     this.pos3 = 0;
     this.pos4 = 0;
+
     //box boundaries, total width and height in pixels
     this.boxBoundaryX = 0;
     this.boxBoundaryY = 0;
-    this.videoWidth = this.noteTextTarget.getAttribute("data-video-width");
-    // box width, need it to scale text from 
-    this.lastVideoContainerWidth = this.boundingBoxTarget.clientWidth;
-    this.initialTextPositionX = this.boundingBoxTarget.clientX;
 
-    // have a window resize event occured? 
+    // what was the original video width? needed for initial sizing and just before save 
+    this.videoWidth = this.noteTextTarget.getAttribute("data-video-width");
+
+    // ! box width, need it to scale text from in all future resizings 
+    this.lastVideoContainerWidth = this.boundingBoxTarget.clientWidth;
+    
+
+    // ! this is crucial ! 
+    // in our formula, we need to know whether our equation should use the last video-in-browser width OR 
+    // the original video width 
+    // ! this is crucial ! 
     this.firstClientResizePassed = false;
 
     window.addEventListener('resize', this.setPostWindowResize.bind(this));
+    
+    // ? do we really need this
     window.addEventListener('load', this.setControllerPointer.bind(this));
   }
 
@@ -47,6 +59,8 @@ export default class extends Controller {
     this.scalePositionText();
     this.scaleFont();
     this.scaleData();  
+    // even if we calculate this on window load, technically the video has been resized so we need to set this here
+    this.firstClientResizePassed = true;
   }
 
   // vmax
@@ -60,7 +74,7 @@ export default class extends Controller {
     });
   }
 
-  onColorChange(e){
+  onColorChange(e) {
     let color = e.target.value;
     this.noteTextTarget.style.color = color;
     this.midiDeviceController.pianoTextData.updateColorFor({noteNumber: this.midiDeviceController.currentNote(), color:color})
@@ -89,11 +103,11 @@ export default class extends Controller {
     // console.log(ratio);
   }
 
-  scaleData(){
+  scaleData() {
     this.midiDeviceController.pianoTextData.transformNotesTextScaleAndPosition({scalar: this.calcRatio()});
   }
 
-  scaleFont(ratio){
+  scaleFont(ratio) {
     if( ratio == undefined ) {
       ratio = this.calcRatio();
     }
@@ -102,14 +116,18 @@ export default class extends Controller {
     this.noteTextTarget.style.fontSize = newPixelWidth;
   }
 
-  // TODO NAME CHANGE
   calcRatio(){
+    let scalar;
     if(this.firstClientResizePassed) {
-      return this.boundingBoxTarget.clientWidth / this.lastVideoContainerWidth;
+      scalar = this.boundingBoxTarget.clientWidth / this.lastVideoContainerWidth;
+      console.log(scalar, "client/last_container");
+      return scalar;
     }
-    return this.boundingBoxTarget.clientWidth / this.videoWidth;
+    scalar = this.boundingBoxTarget.clientWidth / this.videoWidth;
+    console.log(scalar, "client/og_video");
+    return scalar;
   }
-
+  
   // on click text 
   onMouseTextClick(e) {
     // setting up boundaries on each mousedown ()
@@ -179,8 +197,6 @@ export default class extends Controller {
     this.makeTextVisible();
     // save video container width just before resize
     this.lastVideoContainerWidth = this.boundingBoxTarget.clientWidth;
-    this.initialTextPositionX = this.boundingBoxTarget.clientX;
-    this.firstClientResizePassed = true;
   }
 
   // make text disappear until window resized

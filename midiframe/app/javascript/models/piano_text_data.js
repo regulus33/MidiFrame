@@ -54,11 +54,6 @@ export default class PianoTextData {
       this.notes = json
     }
 
-    //snapshots the current state to a JSON 
-    resolveToJson(){
-      return this.notes;
-    }
-
     // * PUBLIC MUTATION METHODS
     // update the text
     updateTextFor({noteNumber, text}){
@@ -78,13 +73,30 @@ export default class PianoTextData {
       this.notes[noteNumber].color = color; 
     }
 
-    formatDataForServer(){
-      // multiply everything by the scalar
+    formattedForServer({scalar}){
+      // multiply everything by the scalar 
+      let notesCopy = this.cloneNotes()
+    
+      for(let i = 1;i< 108;i++){
+        let currentObj = notesCopy[i];
+        debugger 
+        let size = currentObj.size; 
+        let x = currentObj.x; 
+        let y = currentObj.y;
+
+        currentObj.size = size * scalar;
+        currentObj.x = x * scalar;
+        currentObj.y = y * scalar;
+
+      }
+      return notesCopy
     }
 
-    formatDataForClient(){
-      // multiply everything by the scalar
+    // This should/could improve, obviously not very efficient but its an occasional process
+    cloneNotes(){
+      return JSON.parse(JSON.stringify(this.notes));
     }
+
   }
 
   // updateData({string, number}) {

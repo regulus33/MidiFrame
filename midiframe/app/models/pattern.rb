@@ -223,14 +223,14 @@ class Pattern < ApplicationRecord
     x = video.midway_x
     y = video.midway_y
     notes = Hash.new()
+    random_text = ["People", "Dragon", "El Paso", "Lime", "Certainty", "Dads"]
 
     SUPPORTED_MIDI_NOTES.times do |midi_note|
       midi_note = midi_note + 1
       # todo: lil bit icky, should develop a more cost effective random word strategy
-      random_text = RandomWord.nouns.next.split("_").first
 
       notes[midi_note] = {
-        text: random_text,
+        text: random_text.sample,
         size: DEFAULT_FONT_SIZE,
         color: DEFAULT_FONT_COLOR,
         x: x,

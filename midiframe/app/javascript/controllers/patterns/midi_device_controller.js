@@ -101,13 +101,15 @@ export default class extends Controller {
     }
   }
 
-  // when 
-
   //SAVE BUTTON 
-  // *DOME
   save() {
     console.log(`[MIDI_DEVICE_CONTROLLER] save(), about to save the project`);
-    return savePattern({ channel: this._channel, pianoData: this.pianoData, pianoTextData: this.pianoTextData.resolveToJson(), midiEvents: this.midiEvents, patternId: this._getPatternId(), projectId: this._getProjectId() })
+    let textController = this.application.getControllerForElementAndIdentifier(this.element, "patterns--video-text");
+    let width = textController.lastVideoContainerWidth;
+    let ogWidth = textController.videoWidth;
+    let scalar =  ogWidth / width;
+    let data = this.pianoTextData.formattedForServer({scalar: scalar});
+    return savePattern({ channel: this._channel, pianoData: this.pianoData, pianoTextData: data, midiEvents: this.midiEvents, patternId: this._getPatternId(), projectId: this._getProjectId() })
       .then(() => {
         console.log(`[MIDI_DEVICE_CONTROLLER] save(), returning from network response`)
         M.toast({ html: 'Pattern Saved' })
