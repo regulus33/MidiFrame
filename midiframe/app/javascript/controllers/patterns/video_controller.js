@@ -47,8 +47,7 @@ export default class extends Controller {
   async blob() {
     let b 
     if(this.cachedVideoBlob){
-    // if(false){
-        b = this.cachedVideoBlob
+      b = this.cachedVideoBlob
     } else {
       b = this.fetchVideoBlob({ downloadUrl: this.src}) 
       saveResponseInCache(this.src, b)

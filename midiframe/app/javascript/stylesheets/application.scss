@@ -22,7 +22,7 @@
 }
 
 html {
-  background-color: #717171 !important;
+  background-color: #ece5e5 !important;
   color: white !important;
 }
 
@@ -485,7 +485,7 @@ em.current, span.disabled {
 .control-button {
   display: inline-block;
   background-color: grey;
-  // height: 80%;
+  width: 80%;
 
   
   &__text {
