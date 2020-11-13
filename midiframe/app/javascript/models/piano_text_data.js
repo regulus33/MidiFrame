@@ -20,17 +20,11 @@ export default class PianoTextData {
     transformNotesTextScaleAndPosition({scalar, fakeWindowWidth}){
       if(fakeWindowWidth == undefined) {
         for(let i = 1;i< 108;i++){
-          
           let currentObj = this.notes[i];
-        
-          
           let x = currentObj.x; 
           let y = currentObj.y;
-  
-        
           currentObj.x = x * scalar;
           currentObj.y = y * scalar;
-  
         }
       } else {
 
@@ -95,7 +89,6 @@ export default class PianoTextData {
         let size = currentObj.size; 
         let x = currentObj.x; 
         let y = currentObj.y;
-        debugger 
         currentObj.size = this.calcNonRelativeFontToPixels({size: size, fakeWindowWidth: fakeWindowWidth})
         currentObj.x = x * scalar;
         currentObj.y = y * scalar;

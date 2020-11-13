@@ -60,7 +60,6 @@ export default class extends Controller {
       alert('Midi files only please');
       return;
     }
-    debugger 
     this.fileNameTarget.innerText = file.name 
     const reader = new FileReader();
     reader.onloadend = this.formatMidiFileData;

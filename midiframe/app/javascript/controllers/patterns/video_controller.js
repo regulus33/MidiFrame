@@ -6,7 +6,7 @@ import { ENABLE_CACHE } from '../../helpers/constants'
 
 export default class extends Controller {
 
-  static targets = ["video", "loadingBar"]
+  static targets = ["video", "loadingBar", "progressContainer"]
 
   async connect() { 
     //DELETE BELOW LINE 
@@ -41,6 +41,7 @@ export default class extends Controller {
 
   onDownloadProgress(bufferedPercent) {
     this.loadingBarTarget.style.width = `${bufferedPercent}%`
+    console.log(bufferedPercent)
   }
 
   async blob() {
@@ -77,6 +78,7 @@ export default class extends Controller {
       this.onDownloadProgress(percentDownloaded)
     
     }
+    this.progressContainerTarget.style.display = 'none'
     return new Blob(chunks)
   }
   

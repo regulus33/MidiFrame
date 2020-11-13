@@ -4,7 +4,7 @@ div class="controls"
       span class="controls__text" Select Time 
   a id="format" class="btn-large waves-effect waves-light grey z-depth-5 control-button" data-action="patterns--midi-device#addText" data-target="patterns--midi-device.addTextButton" 
     i class="material-icons pattern-settings-icons" short_text
-    span class="controls__text"  Textify 
+    span class="controls__text"  Text 
 
   a id="random_all" class="btn-large waves-effect waves-light grey z-depth-5 control-button" data-action="patterns--midi-device#randomizeAll"  data-target="patterns--midi-device.randomizeAll"
     i class="material-icons pattern-settings-icons" fingerprint
@@ -16,14 +16,26 @@ div class="controls"
   
   a id="save" class="btn-large waves-effect waves-light grey z-depth-5 control-button" data-action="patterns--midi-device#save" data-target="patterns--midi-device.saveButton"
     i class="material-icons pattern-settings-icons" save 
-    span cla Save
 
   a id="settings" class="btn-large waves-effect waves-light grey z-depth-5 control-button" data-action="patterns--midi-device#saveAndNavigate" data-target="patterns--midi-device.settings" nav-url="/pattern-settings/#{@pattern.id}/#{@project.id}"
     i class="material-icons pattern-settings-icons" check_circle
-    span cla Proceed
+    span done
     
-   
   a id="clear_all" class="btn-large waves-effect waves-light grey z-depth-5 control-button" data-action="patterns--midi-device#clearAll" data-target="patterns--midi-device.clearAll"
     i class="material-icons pattern-settings-icons" clear
-    span cla  Clear Piano   
+    span Clear    
+  
+  / a id="font_select" class="btn-large waves-effect waves-light grey z-depth-5 control-button" data-action="patterns--font-uploader#uploadFont" 
+    i class="material-icons pattern-settings-icons" clear
+    span Select Font 
+  label for="project_font"
+  a id="upload_font_button" class="waves-effect waves-light btn grey darken-4" Choose Font
+    span data-target="projects--file-input.fontFileDisplayName" = @project.font && @project.font.file.attached? ? @project.font.file.blob.filename.to_s : "Choose a font" 
+    input type="file" name="font" style="display:none;" data-action="change->patterns--font-uploader#uploadFont"
+     
+  
+  a id="settings" class="btn-large waves-effect waves-light grey z-depth-5 control-button" 
+    i class="material-icons pattern-settings-icons" settings
+    span Settings   
+        
        

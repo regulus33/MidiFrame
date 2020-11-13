@@ -3,7 +3,7 @@ div id="page-container" data-controller="patterns--midi-device patterns--video-t
   span style="margin-left:15px;letter-spacing: 4px;" data-target="patterns--midi-device.channel patterns--midi-device.patternId patterns--midi-device.projectId" pattern-id=@pattern.id project-id=@project.id device-channel=@pattern.channel =@pattern.channel
   a id="toggle-select-mode" data-action="patterns--midi-device#toggleSelectMode" data-target="patterns--midi-device.toggleSelectMode" play
   div class="video-preview" data-controller="patterns--video" 
-    div class="progress"
+    div class="progress" data-target="patterns--video.progressContainer"
       div class="determinate" data-target="patterns--video.loadingBar"
     =render '/utility/text_modal'
     div class="video-control-panel"

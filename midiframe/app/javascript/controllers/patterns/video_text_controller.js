@@ -104,7 +104,6 @@ export default class extends Controller {
   }
 
   scaleData(fakeWindowWidth) {
-    debugger 
     if(fakeWindowWidth){
       this.midiDeviceController.pianoTextData.transformNotesTextScaleAndPosition({scalar: this.calcRatio(), fakeWindowWidth: fakeWindowWidth});
     } else {
