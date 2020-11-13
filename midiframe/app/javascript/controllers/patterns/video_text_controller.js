@@ -55,10 +55,10 @@ export default class extends Controller {
     this.midiDeviceController = this.application.getControllerForElementAndIdentifier(this.element, "patterns--midi-device");
   }
 
-  scaleScaleables(){
+  scaleScaleables(fakeWindowWidth){
     this.scalePositionText();
     this.scaleFont();
-    this.scaleData();  
+    fakeWindowWidth ? this.scaleData(fakeWindowWidth) : this.scaleData();  
     // even if we calculate this on window load, technically the video has been resized so we need to set this here
     this.firstClientResizePassed = true;
   }
@@ -103,8 +103,13 @@ export default class extends Controller {
     // console.log(ratio);
   }
 
-  scaleData() {
-    this.midiDeviceController.pianoTextData.transformNotesTextScaleAndPosition({scalar: this.calcRatio()});
+  scaleData(fakeWindowWidth) {
+    debugger 
+    if(fakeWindowWidth){
+      this.midiDeviceController.pianoTextData.transformNotesTextScaleAndPosition({scalar: this.calcRatio(), fakeWindowWidth: fakeWindowWidth});
+    } else {
+      this.midiDeviceController.pianoTextData.transformNotesTextScaleAndPosition({scalar: this.calcRatio()});
+    }
   }
 
   scaleFont(ratio) {
@@ -192,7 +197,7 @@ export default class extends Controller {
   }
 
   // this is custom, on resized dont exist 
-  onWindowResized(){
+  onWindowResized(fakeWindowWidth){
     this.scaleScaleables();
     this.makeTextVisible();
     // save video container width just before resize

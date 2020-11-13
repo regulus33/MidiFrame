@@ -17,19 +17,32 @@ export default class PianoTextData {
     // the important thing to remember is that we need to scale the 
     // text on page load, all window resizes 
     // and on http PUT 
-    transformNotesTextScaleAndPosition({scalar}){
-      for(let i = 1;i< 108;i++){
+    transformNotesTextScaleAndPosition({scalar, fakeWindowWidth}){
+      if(fakeWindowWidth == undefined) {
+        for(let i = 1;i< 108;i++){
+          
+          let currentObj = this.notes[i];
         
-        let currentObj = this.notes[i];
-     
-        let size = currentObj.size; 
-        let x = currentObj.x; 
-        let y = currentObj.y;
+          
+          let x = currentObj.x; 
+          let y = currentObj.y;
+  
+        
+          currentObj.x = x * scalar;
+          currentObj.y = y * scalar;
+  
+        }
+      } else {
 
-        currentObj.size = size * scalar;
-        currentObj.x = x * scalar;
-        currentObj.y = y * scalar;
-
+        for(let e = 1;e< 108;e++){
+          let o = this.notes[e];
+          let left = o.x; 
+          let top= o.y;
+          let size = o.size;
+          o.size = 100*(size/fakeWindowWidth);
+          o.x = left * scalar;
+          o.y = top * scalar;
+        }
       }
     }
 
@@ -50,46 +63,49 @@ export default class PianoTextData {
     }
 
     // TODO: more fields
-    initializeFromJson({json}){
+    initializeFromJson({json}) {
       this.notes = json
     }
 
     // * PUBLIC MUTATION METHODS
     // update the text
-    updateTextFor({noteNumber, text}){
+    updateTextFor({noteNumber, text}) {
       this.notes[noteNumber].text = text; 
     }
 
-    updatePositionFor({noteNumber, x, y}){
+    updatePositionFor({noteNumber, x, y}) {
       this.notes[noteNumber].x = x;
       this.notes[noteNumber].y = y;
     }
 
-    updateSizeFor({noteNumber, size}){
+    updateSizeFor({noteNumber, size}) {
       this.notes[noteNumber].size = size;
     }
 
-    updateColorFor({noteNumber, color}){
+    updateColorFor({noteNumber, color}) {
       this.notes[noteNumber].color = color; 
     }
 
-    formattedForServer({scalar}){
+    formattedForServer({scalar, fakeWindowWidth, videoWindowRatio}) {
       // multiply everything by the scalar 
       let notesCopy = this.cloneNotes()
-    
+      
       for(let i = 1;i< 108;i++){
         let currentObj = notesCopy[i];
-        debugger 
         let size = currentObj.size; 
         let x = currentObj.x; 
         let y = currentObj.y;
-
-        currentObj.size = size * scalar;
+        debugger 
+        currentObj.size = this.calcNonRelativeFontToPixels({size: size, fakeWindowWidth: fakeWindowWidth})
         currentObj.x = x * scalar;
         currentObj.y = y * scalar;
 
       }
       return notesCopy
+    }
+
+    calcNonRelativeFontToPixels({size, fakeWindowWidth}){
+       return fakeWindowWidth * (size / 100); 
     }
 
     // This should/could improve, obviously not very efficient but its an occasional process

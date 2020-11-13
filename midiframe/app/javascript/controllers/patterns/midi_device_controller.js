@@ -59,6 +59,9 @@ export default class extends Controller {
     //TODO FIX ME 
     window.setTimeout(this.initializeTextData.bind(this), 500);
 
+    // ! debug !
+    window.pianoTextData = this.pianoTextData;
+
   }
 
   // return 48 if none selected yet
@@ -101,14 +104,35 @@ export default class extends Controller {
     }
   }
 
+  // used for scaling text to original video width
+  fakeWindowWidth(){
+    let textController = this.application.getControllerForElementAndIdentifier(this.element, "patterns--video-text");
+    let ogWidth = textController.videoWidth;
+    let currentVideoWidth = textController.boundingBoxTarget.clientWidth;
+    let viewportWidth = window.innerWidth;
+    let videoWindowRatio =  currentVideoWidth / viewportWidth;
+    // * create the fake video window
+    let fakeWindowWidth = ogWidth / videoWindowRatio;
+    return fakeWindowWidth
+  }
+
   //SAVE BUTTON 
   save() {
     console.log(`[MIDI_DEVICE_CONTROLLER] save(), about to save the project`);
+
     let textController = this.application.getControllerForElementAndIdentifier(this.element, "patterns--video-text");
+    
     let width = textController.lastVideoContainerWidth;
+    
     let ogWidth = textController.videoWidth;
+    
     let scalar =  ogWidth / width;
-    let data = this.pianoTextData.formattedForServer({scalar: scalar});
+
+    let data = this.pianoTextData.formattedForServer({
+      scalar: scalar, 
+      fakeWindowWidth: this.fakeWindowWidth()
+    });
+
     return savePattern({ channel: this._channel, pianoData: this.pianoData, pianoTextData: data, midiEvents: this.midiEvents, patternId: this._getPatternId(), projectId: this._getProjectId() })
       .then(() => {
         console.log(`[MIDI_DEVICE_CONTROLLER] save(), returning from network response`)
@@ -319,7 +343,7 @@ export default class extends Controller {
     if (textStamps) {
       this.pianoTextData.initializeFromJson({json:textStamps});
       // as soon as data is in memory we need to scale the font-size and x-y position
-      this.application.getControllerForElementAndIdentifier(this.element, "patterns--video-text").scaleScaleables();
+      this.application.getControllerForElementAndIdentifier(this.element, "patterns--video-text").scaleScaleables(this.fakeWindowWidth());
     }
   }
 
@@ -695,6 +719,7 @@ export default class extends Controller {
     let string = e.target.value;
     this._updateTextData({ number: number, string: string });
   }
+
   // !DONE
   _playText(num) {
     let data = this.pianoTextData.notes[num];
