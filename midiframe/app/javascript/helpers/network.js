@@ -5,11 +5,18 @@ export const patternGeneratorUrl = (patternId, projectId) => `${baseUrl}/pattern
 export const autoTuneProjectUrl = (projectId) => `${baseUrl}/autotune/${projectId}`
 export const newProjectFromVideoUrl = (videoId) => `${baseUrl}/new-project-from-video/${videoId}`
 export const updateProjectWithVideoUrl = (videoId, projectId) => `${baseUrl}/update-project-with-video/${videoId}/${projectId}`
+export const updateProjectWithFontUrl = (projectId) => `${baseUrl}/update-project-with-font/${projectId}`
 // sends token with ajax request
 const headers = () => {
-  return { 
+  return {
     'X-CSRF-Token': document.querySelector("meta[name='csrf-token']")["content"],
-    'Content-Type' : 'application/json'
+    'Content-Type': 'application/json'
+  }
+}
+
+const headersUpload = () => {
+  return {
+    'X-CSRF-Token': document.querySelector("meta[name='csrf-token']")["content"],
   }
 }
 
@@ -30,14 +37,14 @@ export const savePattern = async ({ channel, pianoData, pianoTextData, midiEvent
 // tunerArgs == {g: true, gs: false, c: true ...}
 // Returns response when done 
 export const autotuneProject = async (tunerArgs, projectId, token) => {
-  const requestBody = {authenticity_token: token, tuner_args: tunerArgs}
-    const response = await fetch(autoTuneProjectUrl(projectId), {
+  const requestBody = { authenticity_token: token, tuner_args: tunerArgs }
+  const response = await fetch(autoTuneProjectUrl(projectId), {
     method: 'PUT',
     headers: headers(),
     body: JSON.stringify(requestBody) // body data type must match "Content-Type" header
-    });
-    return response
-} 
+  });
+  return response
+}
 
 export const generatePatternClip = ({ patternId, projectId }) => {
   console.log(patternId)
@@ -47,7 +54,7 @@ export const generatePatternClip = ({ patternId, projectId }) => {
   });
 }
 
-export const newProjectFromVideo = ({ videoId}) => {
+export const newProjectFromVideo = ({ videoId }) => {
   console.log(videoId)
   return fetch(newProjectFromVideoUrl(videoId), {
     method: 'POST',
@@ -57,8 +64,18 @@ export const newProjectFromVideo = ({ videoId}) => {
 
 export const editProjectWithVideo = ({ videoId, projectId }) => {
   console.log(videoId)
-  return fetch(updateProjectWithVideo(videoId, projectId), {
+  return fetch(updateProjectWithVideoUrl(videoId, projectId), {
     method: 'PUT',
     headers: headers()
+  });
+}
+
+export const editProjectWithFont = ({ projectId, fontFile }) => {
+  const formData = new FormData();
+  formData.append('file', fontFile);
+  return fetch(updateProjectWithFontUrl(projectId), {
+    method: 'PUT',
+    body: formData,
+    headers: headersUpload(),
   });
 }

@@ -42,7 +42,7 @@ class ProjectsController < ApplicationController
     end
   end
 
-  def updateProjectWithVideo
+  def update_project_with_video
     respond_to do |format|
       format.json do
         # check that the video actually exists first
@@ -53,6 +53,23 @@ class ProjectsController < ApplicationController
           video: video,
         )
         render json: { nextUrl: new_project_pattern_path(project) }
+      end
+    end
+  end
+
+  def update_project_with_font
+    respond_to do |format|
+      format.json do
+        # binding.pry
+        # check that the video actually exists first
+        project = Project.find(params[:project_id])
+        font = Font.new
+        # TODO: SECURITY
+        font.file = params[:file]
+        project.update!(
+          font: font,
+        )
+        render json: { newFontUrl: url_for(project.font.file), newFontFamily: project.font.file.blob.filename }
       end
     end
   end

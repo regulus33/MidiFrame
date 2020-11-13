@@ -32,7 +32,7 @@ div class="controls"
   - button_title = @project.font && @project.font.file.attached? ? @project.font.file.blob.filename.to_s : "Choose a font"
   label for="file_input"  
     a class="btn-large waves-effect waves-light black z-depth-5 control-button"=button_title 
-  input id="file_input" type="file" name="font" style="display:none;" data-action="change->patterns--font-uploader#uploadFont"
+  input id="file_input" type="file" name="font" style="display:none;" data-action="patterns--font-uploader#uploadFont"
      
   
   a id="settings" class="btn-large waves-effect waves-light black z-depth-5 control-button" 

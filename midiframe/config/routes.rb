@@ -20,6 +20,9 @@ Rails.application.routes.draw do
   #
   post "new-project-from-video/:video_id", to: "projects#new_project_from_video"
   put "update-project-with-video/:video_id/:project_id", to: "projects#update_project_with_video"
+
+  put "update-project-with-font/:project_id", to: "projects#update_project_with_font"
+
   resources :projects do
     resources :patterns
   end
