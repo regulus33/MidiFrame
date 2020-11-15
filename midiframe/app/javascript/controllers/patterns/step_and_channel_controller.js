@@ -6,6 +6,7 @@ export default class extends Controller {
     // probably dont need these channel targets 
     'channel',
     'step',
+    'recordButton'
   ];
 
   connect() {
@@ -27,6 +28,11 @@ export default class extends Controller {
     for (let i = this.stepLength; i < 32; i++) {
       this.stepTargets[i].style.backgroundColor = "transparent";
     }
+    this.recordButtonTarget.setAttribute("data-midi-recorder-total-clock-signals", this.totalClocksFromBars({bars: this.stepLength}))
+  }
+
+  totalClocksFromBars({bars}){
+    96 * bars
   }
 
   selectedChannel() {

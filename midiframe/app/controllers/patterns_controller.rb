@@ -43,10 +43,10 @@ class PatternsController < ApplicationController
     respond_to do |format|
       format.json do
         # ? in this screen (the edit pattern screen) there are only 3 editable fields
-        @pattern.midi_source = midi_type_params
-        @pattern.channel = pattern_params[:channel].to_i
-        @pattern.note_stamps = note_stamps_params
-        @pattern.text_stamps = text_stamps_params
+        @pattern.midi_source = midi_type_params if midi_type_params
+        @pattern.channel = pattern_params[:channel].to_i if pattern_params[:channel]
+        @pattern.note_stamps = note_stamps_params if note_stamps_params
+        @pattern.text_stamps = text_stamps_params if text_stamps_params
         # ? we reset array of midi events to empty if user submits a collection of events
         # ? because of that and just common sense in general, we never save "empty" values
         # ? if user wants to clear midi events they can just delete the pattern

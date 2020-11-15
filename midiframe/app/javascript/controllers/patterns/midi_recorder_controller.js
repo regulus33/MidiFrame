@@ -47,7 +47,7 @@ export default class extends Controller {
   }
 
   getSavedChannel(){
-    return Number(this.element.getAttribute('data-midi-recorder-channel'));
+    return Number(this.recordButtonTarget.getAttribute('data-midi-recorder-channel'));
   }
 
   toggleRecordingSession() {

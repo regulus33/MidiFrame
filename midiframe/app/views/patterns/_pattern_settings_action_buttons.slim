@@ -1,5 +1,5 @@
 div class="row"
-    a data-midi-recorder-channel=@pattern.channel data-midi-recorder-total-clock-signals=@pattern.total_clock_signals data-target="patterns--midi-recorder.recordButton" data-action="click->patterns--midi-recorder#toggleRecordingSession" class="btn-floating btn-md waves-effect waves-light pin red accent-4" id="recordButton"
+    a data-midi-recorder-channel=@pattern.channel data-midi-recorder-total-clock-signals=@pattern.total_clock_signals data-target="patterns--midi-recorder.recordButton patterns--step-and-channel.recordButton" data-action="click->patterns--midi-recorder#toggleRecordingSession" class="btn-floating btn-md waves-effect waves-light pin red accent-4" id="recordButton"
       i class="material-icons" dot
     - if @pattern.clip.attached? 
       =link_to(pattern_preview_path(@pattern, @pattern.project), {class: "btn-floating btn-large waves-effect waves-light teal", id: "previewProject"}) do 

@@ -1,5 +1,5 @@
 import { Controller } from "stimulus";
-import { savePattern } from "../../helpers/network.js"
+import { savePattern, generatePatternClip } from "../../helpers/network.js"
 
 export default class extends Controller {
 
@@ -20,7 +20,14 @@ export default class extends Controller {
     let stepLength = this.stepAndChannelController.stepLength;
     let channel = this.stepAndChannelController.channel;
     // the midi parser has already sent the midi data if it was engaged by user 
-    savePattern(({ midiEvents: midiEvents, channel: channel, stepLength:stepLength, channel: channel, projectId: this.projectId, patternId: this.patternId}));
+    return savePattern(({ midiEvents: midiEvents, channel: channel, stepLength:stepLength, channel: channel, projectId: this.projectId, patternId: this.patternId}));
+  }
+
+  generatePatternClip(){
+    this.save().then((e) => {
+      debugger 
+      generatePatternClip({patternId: this.patternId, projectId: this.projectId});
+    });
   }
 }
 

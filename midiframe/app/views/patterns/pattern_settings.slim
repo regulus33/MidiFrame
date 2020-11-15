@@ -10,6 +10,6 @@ div data-controller="patterns--midi-recorder patterns--step-and-channel patterns
         label for="midi-file" style="color:white; cursor:pointer" add midi file instead
       span id="upload-midi-name" data-target="patterns--midi-parser.fileName" file name 
       = f.file_field :midi_file, id: "midi-file", style: "display:none;", data: { action: "change->patterns--midi-parser#onFilePick", target: "patterns--midi-parser.midiFile"} 
-      a id="midi-save" data-action="click->patterns--pattern-settings-form#save" class="waves-effect waves-light btn grey darken-4" style="color:white; float:"save 
+    a id="midi-save" data-action="click->patterns--pattern-settings-form#generatePatternClip" class="waves-effect waves-light btn grey darken-4" style="color:white; float:"save and create video 
   =render 'recording_progress_bar'
   =render 'pattern_settings_action_buttons'   

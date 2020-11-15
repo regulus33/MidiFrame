@@ -178,17 +178,26 @@ class FfMpeg < ApplicationRecord
   def generate_text_blueprint(event:, next_event:)
     # establish beginning and end times,
     # ffmpeg -y -i #{self.clip_tempfile_path} -vf
+    # ! IMPORTANT we skip if this is start or stop, this could fuck with time
+
     cmd = false
     start_time = convert_seconds_to_milliseconds_and_convert_scientific_notation_to_strings(event["timestamp"])
     end_time = convert_seconds_to_milliseconds_and_convert_scientific_notation_to_strings(next_event["timestamp"])
     note_number_key = event["note"].to_s
     text_object = pattern.text_stamps[note_number_key]
-
-    text = text_object["text"]
-    color = text_object["color"].gsub("#", "x0")
-    size = text_object["size"]
-    x = text_object["x"]
-    y = text_object["y"]
+    if (event["note"] == "start" || event["note"] == "stop")
+      text = ""
+      color = "white"
+      size = 1
+      x = 1
+      y = 1
+    else
+      text = text_object["text"]
+      color = text_object["color"].gsub("#", "x0")
+      size = text_object["size"]
+      x = text_object["x"]
+      y = text_object["y"]
+    end
 
     # drawtext=enable='between(t,#{start_time},#{end_time})':fontfile=#{font_tempfile_path}:text='#{text}':fontsize=#{size}:fontcolor=#{color}:x=(w-text_w)/2: y=(h-text_h-line_h)/2
     if text.present?
