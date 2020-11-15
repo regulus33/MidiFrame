@@ -147,26 +147,26 @@ class Pattern < ApplicationRecord
     concatenate_clips(path_to_input_text_file: generate_new_text_concat_file_path, processed_video: processed_video, role: type)
 
     if make_text?
-      # # clip file is already here
-      # font_file_extension = self.project.font.file_extension
-      # active_storage_font = self.project.font.file
-      # font_file_temp_path = "#{Rails.root}/tmp/#{active_storage_font.blob.key}_#{active_storage_font.name.to_s}#{font_file_extension}"
-      # # * download the fontfile
-      # File.open(font_file_temp_path, 'wb') do |f|
-      #   f.write(active_storage_font.download)
-      # end
-      # # output will be into the existing pattern video :)
-      # # ADD fontfile temp path to this ff_mpeg instance
-      # ffmpeg.clip_tempfile_path = processed_video # *
-      # ffmpeg.processed_tempfile_url = "#{Rails.root}/tmp/textified_video_#{active_storage_video.blob.key}_#{self.project.id.to_s}-#{self.id.to_s}.#{self.project.video.file_extension}"
-      # # * now create an empty file there
-      # ffmpeg.font_tempfile_path = font_file_temp_path
-      # ffmpeg.create_blueprints_for_text_drawings
-      # ffmpeg.draw_texts
-      # # TODO: attach the clip to the pattern
-      # attach_video(processed_video: ffmpeg.processed_tempfile_url)
-      # # TODO: DELETE - the dl'ed font
-      # File.delete(font_file_temp_path)
+      # clip file is already here
+      font_file_extension = self.project.font.file_extension
+      active_storage_font = self.project.font.file
+      font_file_temp_path = "#{Rails.root}/tmp/#{active_storage_font.blob.key}_#{active_storage_font.name.to_s}#{font_file_extension}"
+      # * download the fontfile
+      File.open(font_file_temp_path, "wb") do |f|
+        f.write(active_storage_font.download)
+      end
+      # output will be into the existing pattern video :)
+      # ADD fontfile temp path to this ff_mpeg instance
+      ffmpeg.clip_tempfile_path = processed_video # *
+      ffmpeg.processed_tempfile_url = "#{Rails.root}/tmp/textified_video_#{active_storage_video.blob.key}_#{self.project.id.to_s}-#{self.id.to_s}.#{self.project.video.file_extension}"
+      # * now create an empty file there
+      ffmpeg.font_tempfile_path = font_file_temp_path
+      ffmpeg.create_blueprints_for_text_drawings
+      ffmpeg.draw_texts
+      # TODO: attach the clip to the pattern
+      attach_video(processed_video: ffmpeg.processed_tempfile_url)
+      # TODO: DELETE - the dl'ed font
+      File.delete(font_file_temp_path)
     end
 
     ffmpeg.remove_clips_from_tempfile()

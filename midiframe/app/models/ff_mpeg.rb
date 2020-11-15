@@ -182,10 +182,18 @@ class FfMpeg < ApplicationRecord
     start_time = convert_seconds_to_milliseconds_and_convert_scientific_notation_to_strings(event["timestamp"])
     end_time = convert_seconds_to_milliseconds_and_convert_scientific_notation_to_strings(next_event["timestamp"])
     note_number_key = event["note"].to_s
-    text_to_display = pattern.text_stamps[note_number_key]
-    if text_to_display.present?
+    text_object = pattern.text_stamps[note_number_key]
+
+    text = text_object["text"]
+    color = text_object["color"].gsub("#", "x0")
+    size = text_object["size"]
+    x = text_object["x"]
+    y = text_object["y"]
+
+    # drawtext=enable='between(t,#{start_time},#{end_time})':fontfile=#{font_tempfile_path}:text='#{text}':fontsize=#{size}:fontcolor=#{color}:x=(w-text_w)/2: y=(h-text_h-line_h)/2
+    if text.present?
       cmd = <<-FFMPEG
-      drawtext=enable='between(t,#{start_time},#{end_time})':fontfile=#{font_tempfile_path}:text='#{text_to_display}':fontsize=70:fontcolor=white:x=(w-text_w)/2: y=(h-text_h-line_h)/2
+      drawtext=enable='between(t,#{start_time},#{end_time})':fontfile=#{font_tempfile_path}:text='#{text}':fontsize=#{size}:fontcolor=#{color}:x=#{x}:y=#{y}
       FFMPEG
     end
     cmd
