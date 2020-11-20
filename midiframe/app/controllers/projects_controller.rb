@@ -31,8 +31,6 @@ class ProjectsController < ApplicationController
       # TODO: delegate to a job like sideqik
       run_video_processing_if_needed
       # processing made saveable data
-      # todo flasherror if no save same for create
-      @video.save
       @toast = "#{@project.name} updated"
       render "index"
     else
