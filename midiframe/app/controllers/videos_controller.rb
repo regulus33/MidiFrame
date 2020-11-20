@@ -37,9 +37,9 @@ class VideosController < ApplicationController
     # we will prioritize the video url over the file, if user submits both, the backend will ignore the file.
     # the validation will be on the frontend so a user doesnt waste her time by submitting both.
     # we will add some js to automatically clear the file input if text is added to url
-    if video_params[:url]
+    if video_params[:url].present?
       @video.url = video_params[:url]
-    elsif video_params[:clip]
+    elsif video_params[:clip].present?
       @video.clip = video_params[:clip]
     else
       toast "You need to add a video first"
@@ -75,9 +75,9 @@ class VideosController < ApplicationController
   end
 
   def run_video_processing_if_needed
-    if video_params[:clip]
+    if video_params[:clip].present?
       @video.create_video_formats
-    elsif video_params[:url]
+    elsif video_params[:url].preset?
       # @project.video.url = project_params[:video_url]
       @video.download_external_video
       @video.create_video_formats

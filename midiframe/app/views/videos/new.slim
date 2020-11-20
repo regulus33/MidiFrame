@@ -4,25 +4,16 @@ p style="padding-left: 2.7%" To get started, add a video
 div data-controller='projects--file-input' class="card-panel z-depth-5"
   = form_for @video, url: { action: "create" }, html: {class: "form-group"} do |f| 
 
-    / div class="input-field"
+    div class="input-field"
 
-    / label for="project_video"
-      
-    /   a id="upload_video_button" class="waves-effect waves-light btn grey darken-4"Choose Video
+    label for="new_video_file"
+      a id="project_video" class="waves-effect waves-light btn grey darken-4"Choose Video
 
-    / span data-target="projects--file-input.fileDisplayName" no file chosen
+    span data-target="projects--file-input.fileDisplayName" no file chosen
 
-    / = f.file_field :video, style: "display:none;", data: { action: "change->projects--file-input#printFileName", target: "projects--file-input.filename" } 
+    = f.file_field :clip, id: 'new_video_file', style: "display:none;", data: { action: "change->projects--file-input#printFileName", target: "projects--file-input.filename" } 
 
-    / TODO: bring back fonts 
-    / label for="project_font"
-      
-    /   a id="upload_font_button" class="waves-effect waves-light btn grey darken-4"Choose Font
-
-    / span data-target="projects--file-input.fontFileDisplayName" no file chosen
-
-    / = f.file_field :font, style: "display:none;", data: { action: "change->projects--file-input#printFontFileName", target: "projects--file-input.fontFileName" } 
-    / br 
+    br 
     div class="input-field"    
       / Params mean that we are creating a new project, but we need to select the vidoe first 
       a id="select-video" class="btn btn" href=new_project_from_video_url() select a video 
