@@ -15,11 +15,23 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 
 ActiveRecord::Migration.maintain_test_schema!
 
-Capybara.register_driver :selenium_chrome do |app|
-  Capybara::Selenium::Driver.new(app, browser: :chrome)
+Capybara.register_driver :selenium_chrome_headless do |app|
+  # Capybara::Selenium::Driver.load_selenium
+  browser_options = ::Selenium::WebDriver::Chrome::Options.new.tap do |opts|
+    # opts.args << "--window-size=1920,1080"
+    # opts.args << "--force-device-scale-factor=0.95"
+    opts.args << "--disable-web-security"
+    # opts.args << "--headless"
+    # opts.args << "--disable-gpu"
+    # opts.args << "--disable-site-isolation-trials"
+    # opts.args << "--no-sandbox"
+  end
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: browser_options)
 end
 
-Capybara.javascript_driver = :selenium_chrome
+Capybara.javascript_driver = :selenium_chrome_headless
+Capybara.default_driver = :selenium_chrome_headless
+
 Capybara.server = :puma # Until your setup is working
 Capybara.server = :puma, { Silent: true } # To clean up your test output
 
@@ -40,6 +52,7 @@ RSpec.configure do |config|
   end
 
   config.before(:each, js: true) do
+    Capybara.current_driver = :selenium_chrome_headless
     DatabaseCleaner.strategy = :truncation
   end
 

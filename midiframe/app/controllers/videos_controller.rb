@@ -47,7 +47,7 @@ class VideosController < ApplicationController
     end
     run_video_processing_if_needed
     @video.save
-    redirect_to "/videos"
+    redirect_to "/videos?new_project_from_video=true"
   end
 
   def show
@@ -77,7 +77,7 @@ class VideosController < ApplicationController
   def run_video_processing_if_needed
     if video_params[:clip].present?
       @video.create_video_formats
-    elsif video_params[:url].preset?
+    elsif video_params[:url].present?
       # @project.video.url = project_params[:video_url]
       @video.download_external_video
       @video.create_video_formats

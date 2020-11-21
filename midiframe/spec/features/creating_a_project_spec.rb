@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe "End To End", type: :system do
   it "Uploads file, creates a pattern, edits a pattern and generates a clip" do
+    Capybara.current_driver = :selenium_chrome_headless
     # logs in user
     # user = FactoryBot.create(:user)
     # user.confirmed_at = Time.now
@@ -25,5 +26,7 @@ RSpec.describe "End To End", type: :system do
     visit videos_new_path
     attach_file("new_video_file", Rails.root.join("spec", "test_upload.mp4"), make_visible: true)
     find("input[type='submit']").click
+    find("a[data-action='videos--video-preview#createProjectFromVideo']").click
+    binding.pry
   end
 end

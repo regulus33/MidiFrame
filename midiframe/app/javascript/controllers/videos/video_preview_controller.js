@@ -34,10 +34,13 @@ export default class extends Controller {
     } else {
       element = e.target.parentElement;
     }
+    debugger
     newProjectFromVideo({
       videoId: element.getAttribute("data-video-id"), 
     }).then((e)=>{
+      debugger
       e.json().then((r)=>{
+        debugger
         // redirect to patterns create time 
         window.location.href = r.nextUrl 
       })
