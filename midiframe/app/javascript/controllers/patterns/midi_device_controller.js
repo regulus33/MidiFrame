@@ -59,9 +59,10 @@ export default class extends Controller {
     //TODO FIX ME 
     window.setTimeout(this.initializeTextData.bind(this), 500);
 
-    // ! debug !
-    window.pianoTextData = this.pianoTextData;
-
+    // ! debug and test, global access !
+    if(window.location.origin != "https://midiframe.com"){
+      window.midiDeviceController = this;
+    }
   }
 
   // return 48 if none selected yet

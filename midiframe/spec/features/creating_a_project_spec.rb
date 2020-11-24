@@ -27,6 +27,24 @@ RSpec.describe "End To End", type: :system do
     attach_file("new_video_file", Rails.root.join("spec", "test_upload.mp4"), make_visible: true)
     find("input[type='submit']").click
     find("a[data-action='videos--video-preview#createProjectFromVideo']").click
+    find("a[data-action='patterns--midi-device#randomizeAll']").click
+    find("body").native.send_key("s")
+    input_value = evaluate_script('document.getElementById("50").value').to_f
+    video_value = evaluate_script('document.getElementsByTagName("video")[0].currentTime').to_f
+    expect(input_value).to eq(video_value)
+    text_span = find("span#note-text-text")
+    target = find("a#clear_all")
+    text_span.drag_to(target)
+    selenium_webdriver = page.driver.browser
     binding.pry
+    selenium_webdriver.mouse.down(text_span.native)
+    selenium_webdriver.mouse.move_to(target.native, 0, 10)
+    binding.pry
+    # randomly play various li and assert that the playhead changes
+    # slice pattern and have an error thrown in midi slice process
+    # if slice name is not the same as the slice length
+
+    # next we may want to find out how to test this faster without end to end
+    # https://github.com/thoughtbot/factory_bot/issues/1282
   end
 end
