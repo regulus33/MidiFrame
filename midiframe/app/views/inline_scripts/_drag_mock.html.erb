@@ -1,0 +1,32 @@
+<script>
+// this is a hacky global way to get capybara to run mouse move events on
+// our dragabble programmatically see feautures tests 
+window.onload = () => {
+  var simulateMouseEvent = function(element, eventName, coordX, coordY) {
+    element.dispatchEvent(new MouseEvent(eventName, {
+      view: window,
+      bubbles: true,
+      cancelable: true,
+      clientX: coordX,
+      clientY: coordY,
+      button: 0
+    }));
+  };
+
+  var theText = document.getElementById('note-text-text');
+
+  var box = theText.getBoundingClientRect(),
+          coordX = box.left + (box.right - box.left) / 2,
+          coordY = box.top + (box.bottom - box.top) / 2;
+
+  window.runDragMock = () => {
+    simulateMouseEvent (theText, "mousedown", coordX, coordY);
+    simulateMouseEvent (theText, "mousemove", coordX - 30, coordY - 30);
+    simulateMouseEvent (theText, "mouseup", coordX, coordY);
+  }
+
+  
+
+}
+
+</script>
