@@ -142,10 +142,14 @@ class Pattern < ApplicationRecord
     ffmpeg.create_blueprints_for_slices
     ffmpeg.create_slices
     # * 3.
+    # ! SLICE IS DONE, WE ARE EITHER IN WAVS OR MP4
+    # ! TEST
+    unless Rails.env.production?
+      check_audio_and_video_clips
+    end
     processed_video = generate_new_video_concat_file_path(role: type)
     create_concat_file(name: generate_new_text_concat_file_path, concat_blue_prints: ffmpeg.pattern_concat_blueprints)
     concatenate_clips(path_to_input_text_file: generate_new_text_concat_file_path, processed_video: processed_video, role: type)
-
     if make_text?
       # clip file is already here
       font_file_extension = self.project.font.file_extension
@@ -238,5 +242,49 @@ class Pattern < ApplicationRecord
       }
     end
     self.text_stamps = notes
+  end
+
+  # TESTING ONLY
+  def check_audio_and_video_clips
+    # sort the array and pluck anything not .wav or .mp4
+    # if this file is
+    sorted = Dir.entries(Rails.root.join("tmp").to_s).select { |f| %w{wav mp4}.include?(f.split(".").pop) }.sort_by do |d|
+      time_from_file_string(d)
+    end
+    sorted.each_with_index do |file, index|
+      next if is_not_timestamp_name(file)
+      # TODO solve LAST TIME! sorted[index+1] out of bounds at the end look for end time in this pattern
+      expected_duration = json_ffprobe(file)["format"]["duration"].to_f * 1000 # ! its in seconds multiply to get milliseconds
+      if (index == sorted.length - 1)
+        # we at the end
+        binding.pry
+        actual_duration = self.midi_events.last["timestamp"] - time_from_file_string(file)
+      else
+        actual_duration = time_from_file_string(sorted[index + 1]) - time_from_file_string(file)
+      end
+      # binding.pry
+      # throw "for #{actual_duration} :: BAD SLICING :: expected_duration was: #{expected_duration}, instead got #{actual_duration}" if expected_duration != actual_duration
+      # ! THROW A MOTHERFUCKIN ERR ROAR IF WE ARE SO MUCH AS 10 MILISECONDS OFFFF BIATCH!
+      throw "for #{actual_duration} :: BAD SLICING :: expected_duration was: #{expected_duration}, instead got #{actual_duration}" if (expected_duration - actual_duration).abs > 10
+    end
+  end
+
+  def json_ffprobe(file)
+    JSON.parse(`ffprobe -v quiet -print_format json -show_format -show_streams #{Rails.root.join("tmp").to_s + "/" + file}`)
+  end
+
+  def time_from_file_string(string)
+    string = string.split("_").pop
+    d = string.split(".")
+    d.pop
+    d = d.join(".")
+    d.to_f
+  end
+
+  def is_not_timestamp_name(filename)
+    name = filename.split(".")
+    name.pop
+    name = name.join(".")
+    name.to_f == 0.0 && name != 0 && name != 0.0
   end
 end
