@@ -82,7 +82,18 @@ class PatternsController < ApplicationController
   # POST 'pattern-generate/:id/:project_id'
   # generates the video
   def generate_pattern_clip
-    @pattern.assemble_pattern_video
+    respond_to do |f|
+      f.json do
+        response = { status: "ok" }
+        begin
+          @pattern.assemble_pattern_video
+        rescue StandardError => e
+          puts e.message
+          response["status"] = "error"
+        end
+        render json: response
+      end
+    end
   end
 
   def patterns_all

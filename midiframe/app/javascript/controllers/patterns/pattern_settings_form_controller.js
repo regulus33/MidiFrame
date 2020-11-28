@@ -25,8 +25,13 @@ export default class extends Controller {
 
   generatePatternClip(){
     this.save().then((e) => {
-      debugger 
-      generatePatternClip({patternId: this.patternId, projectId: this.projectId});
+      generatePatternClip({patternId: this.patternId, projectId: this.projectId}).then((response)=>{
+        response.json().then((j)=> {
+          // this gets checked in a test over and over again vals are 
+          // 'ok' or 'error'
+          window.generatePatternClipStatus = j.status
+        })
+      });
     });
   }
 }

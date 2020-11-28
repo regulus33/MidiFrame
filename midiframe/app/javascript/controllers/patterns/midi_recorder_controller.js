@@ -15,6 +15,12 @@ export default class extends Controller {
     this.midiEvents = []; 
     this.clockSignalsPassedSinceRecordStart = 0; 
     this.animateProgressBar = this.animateProgressBar.bind(this);
+    // ! debug and test, global access !
+    if(window.location.origin != "https://midiframe.com"){
+      window.midiRecorderController = this;
+      // mock mididevice for tests, see getter for _midiOutput 
+      this.testing = true;
+    }
   }
 
   onMessageClock(message) {
@@ -174,6 +180,13 @@ export default class extends Controller {
   }
 
   get _midiOutput() {
+    if(this.testing){
+      return {
+        sendStop: () => {
+          console.log("mock send stop called");
+        }
+      }
+    }
     return WebMidi.outputs[0];
   }
 
