@@ -106,8 +106,8 @@ class Pattern < ApplicationRecord
 
   def assemble_pattern_video
     master_video = self.project.video
-    audio_path = create_clip(type: Video::AUDIO)
     video_path = create_clip(type: Video::VISUAL)
+    audio_path = create_clip(type: Video::AUDIO)
     output_path = "#{Rails.root}/tmp/#{master_video.clip.blob.key}_#{master_video.name.to_s}.#{master_video.file_extension}"
     merge_audio_and_video(audio_path: audio_path, video_path: video_path, output_path: output_path)
     attach_video(processed_video: output_path)
@@ -248,7 +248,7 @@ class Pattern < ApplicationRecord
   def check_audio_and_video_clips
     # sort the array and pluck anything not .wav or .mp4
     # if this file is
-    sorted = Dir.entries(Rails.root.join("tmp").to_s).select { |f| %w{wav mp4}.include?(f.split(".").pop) }.sort_by do |d|
+    sorted = Dir.entries(Rails.root.join("tmp").to_s).select { |f| %w{wav mp4}.include?(f.split(".").pop) && f.split("_").join("").gsub(/\.(wav|mp4)$/, "").to_f != 0.0 }.sort_by do |d|
       time_from_file_string(d)
     end
     sorted.each_with_index do |file, index|
@@ -257,7 +257,6 @@ class Pattern < ApplicationRecord
       expected_duration = json_ffprobe(file)["format"]["duration"].to_f * 1000 # ! its in seconds multiply to get milliseconds
       if (index == sorted.length - 1)
         # we at the end
-        binding.pry
         actual_duration = self.midi_events.last["timestamp"] - time_from_file_string(file)
       else
         actual_duration = time_from_file_string(sorted[index + 1]) - time_from_file_string(file)
@@ -265,7 +264,8 @@ class Pattern < ApplicationRecord
       # binding.pry
       # throw "for #{actual_duration} :: BAD SLICING :: expected_duration was: #{expected_duration}, instead got #{actual_duration}" if expected_duration != actual_duration
       # ! THROW A MOTHERFUCKIN ERR ROAR IF WE ARE SO MUCH AS 10 MILISECONDS OFFFF BIATCH!
-      throw "for #{actual_duration} :: BAD SLICING :: expected_duration was: #{expected_duration}, instead got #{actual_duration}" if (expected_duration - actual_duration).abs > 10
+      # throw "for #{actual_duration} :: BAD SLICING :: expected_duration was: #{expected_duration}, instead got #{actual_duration}" if (expected_duration - actual_duration).abs > 10 && file.split(".").last != ".wav"
+      binding.pry if (expected_duration - actual_duration).abs > 10 && file.split(".").last != ".wav"
     end
   end
 
