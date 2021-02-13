@@ -1,5 +1,5 @@
 require 'rails_helper'
-# TODO: we still need to deal with failed processes not cleaning up there mess
+# TODO: we still need to deal with failed processes not cleaning up there mess in prod env
 def wipe_temp
   `rm #{Rails.root.join('tmp').to_s}/*.mp4`
   `rm #{Rails.root.join('tmp').to_s}/*.wav`
@@ -120,6 +120,15 @@ def wait_for_response_and_test_status
   expect(generate_pattern_clip_status).to eq('ok')
 end
 
+def test_octave_buttons
+  press_s_key
+  first_video_value = evaluate_script('document.getElementsByTagName("video")[0].currentTime').to_f
+  find('#octave-plus').click
+  press_s_key
+  second_video_value = evaluate_script('document.getElementsByTagName("video")[0].currentTime').to_f
+  expect(first_video_value != second_video_value)
+end
+
 RSpec.describe 'End To End', type: :system do
   it 'Uploads file, creates a pattern, edits a pattern and generates a clip' do
     Capybara.current_driver = :selenium_chrome_headless
@@ -130,10 +139,10 @@ RSpec.describe 'End To End', type: :system do
     upload_video()
     go_to_pattern_edit()
     randomize_all_timestamps()
-    binding.pry
     press_s_key()
     assert_key_press_results_in_video_responding()
     test_dragging_functionality()
+    test_octave_buttons()
     go_to_midi_record()
     click_record()
     inject_test_data_into_midirecorder()
