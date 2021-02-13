@@ -470,11 +470,13 @@ var _default = /*#__PURE__*/function (_Controller) {
 
     this._enable_midi();
 
+    this._initVisibleNoteNumbersArray();
+
     this.saveAndNavigate = this.saveAndNavigate.bind(this);
 
     this._addKeyDownChannelListener();
 
-    this._initializePianoData(); //everytime a new notes comes in we will add it 
+    this._initializePianoData(); //everytime a new notes comes in we will add it
 
 
     this.isSeeking = false; //? text styling
@@ -489,6 +491,10 @@ var _default = /*#__PURE__*/function (_Controller) {
     if (window.location.origin != "https://midiframe.com") {
       window.midiDeviceController = this;
     }
+  };
+
+  _proto.dataVisibleNoteNumbersArray = function dataVisibleNoteNumbersArray() {
+    this.application.getControllerForElementAndIdentifier(this.element, "patterns--keyboard").dataVisibleNoteNumbersArray;
   } // return 48 if none selected yet
   ;
 
@@ -736,6 +742,7 @@ var _default = /*#__PURE__*/function (_Controller) {
     }
 
     var index = this.getVisibleNoteIndexFromKey(e.key);
+    debugger;
 
     if (index != undefined) {
       var noteNumber = this.dataVisibleNoteNumbersArray[index]; // TODO this is gross:
@@ -1228,11 +1235,6 @@ var _default = /*#__PURE__*/function (_Controller) {
   };
 
   _createClass(_default, [{
-    key: "dataVisibleNoteNumbersArray",
-    get: function get() {
-      return JSON.parse(this.noteStampsTarget.getAttribute("data-visible-note-numbers-array"));
-    }
-  }, {
     key: "currentMidiPosition",
     get: function get() {
       return parseInt(this.noteStampsTarget.getAttribute("data-patterns--keyboard-position"));
@@ -1901,6 +1903,12 @@ var _default = /*#__PURE__*/function (_Controller) {
       Object(_helpers_network_js__WEBPACK_IMPORTED_MODULE_1__["generatePatternClip"])({
         patternId: _this.patternId,
         projectId: _this.projectId
+      }).then(function (response) {
+        response.json().then(function (j) {
+          // this gets checked in a test over and over again vals are 
+          // 'ok' or 'error'
+          window.generatePatternClipStatus = j.status;
+        });
       });
     });
   };
@@ -83194,4 +83202,4 @@ function extend() {
 /***/ })
 
 /******/ });
-//# sourceMappingURL=application-8b1c28199d29d98ade9f.js.map
+//# sourceMappingURL=application-0f73c435dd95a68c7774.js.map

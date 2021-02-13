@@ -1,74 +1,102 @@
-import { Controller } from "stimulus"
+import {Controller} from "stimulus"
 
 export default class extends Controller {
+    // keyboard key is any key or all keys its a class
+    static targets = ["keyBoardKey"]
 
-  static targets = ["keyBoardKey"]
-
-  connect(){
-    this._visibeNoteNumbersArray = [];
-    this.refreshKeyboard();
-  }
-
-  ///////////////////////////////////////////
-  ///               PUBLIC                ///
-  ///////////////////////////////////////////
-  next() {
-    console.log('next')
-    if ((this.position + 1) <= this.finalIndex) {
-      this.position++
+    connect() {
+        // instantiate a wrapper around html based data ,
+        this._visibeNoteNumbersArray = new VisibleNotesArray(this.element);
+        this.refreshKeyboard();
     }
-  }
 
-  prev() {
-    if (this.position != 0) {
-      this.position--
+    // click the octave up key
+    next() {
+        // if we are not at the final index, ++ our current index
+        // the index is representative of our position on a piano roll
+        // so 1 index = 12 notes
+        if ((this.position + 1) <= this.finalIndex) {
+            this.position++
+        }
     }
-  }
+    // !ditto
+    prev() {
+        if (this.position != 0) {
+            this.position--
+        }
+    }
+    // get an array of notes that should be visible on the keyboard
+    get _visible_on_keyboard() {
+        return this._notes[this.position].map(arr => parseInt(arr[0]))
+    }
 
-  get visiblesNoteNumbersArray() {
-    return JSON.parse(this.element.getAttribute("data-visible-note-numbers-array"));
-  }
+    // saved position from backend
+    get position() {
+        return parseInt(this.data.get("position"))
+    }
 
-  set visiblesNoteNumbersArray(notes){
-    this.element.setAttribute("data-visible-note-numbers-array", notes);
-  }
+    // static array of notes in the western scale, its a 2d array or an array of arrays, child arrays represent 12 semitones
+    get _notes() {
+        return JSON.parse(this.data.get("notes"))
+    }
 
-  get _visible_on_keyboard() {
-    return this._notes[this.position].map(arr => parseInt(arr[0]))
-  }
+    // the end of the line, dont ++ past this
+    get finalIndex() {
+        return parseInt(this.data.get("final-index"))
+    }
 
-  get position() {
-    return parseInt(this.data.get("position"))
-  }
+    // this sets the current state but also re-renders the keyboard
+    set position(octave_index) {
+        this.data.set("position", octave_index)
+        this.refreshKeyboard(octave_index)
+    }
+    // for display purposes
+    _get_note_number(keyElement) {
+        return parseInt(keyElement.getAttribute('midi-note-number'))
+    }
 
-  get _notes() {
-    return JSON.parse(this.data.get("notes"))
-  }
+    // render method
+    refreshKeyboard(octave_index) {
+        // let visibleNoteNumbers = []
+        this._visibeNoteNumbersArray.clear();
+        this.keyBoardKeyTargets.forEach(key => {
+            // visibleNoteNumbers.push(this._get_note_number(key))
+            this.showKeyIfVisibleAndAddToVisibleNotes(key, this._get_note_number(key))
+        })
+    }
 
-  get finalIndex() {
-    return parseInt(this.data.get("final-index"))
-  }
+    showKeyIfVisibleAndAddToVisibleNotes(keyElement, noteNumber) {
+        let is_in_current_array = this._visible_on_keyboard.includes(noteNumber);
+        keyElement.classList.toggle("hide", !is_in_current_array);
+        if(is_in_current_array){
+            this._visibeNoteNumbersArray.push(noteNumber);
+        }
+    }
 
-  set position(value) {
-    this.data.set("position", value)
-    this.refreshKeyboard()
-  }
+}
 
-  _get_note_number(keyElement) {
-    return parseInt(keyElement.getAttribute('midi-note-number'))
-  }
+class VisibleNotesArray {
 
-  refreshKeyboard() {
-    this.keyBoardKeyTargets.forEach(key => this._show_key_if_visible_and_add_to_visibles(key, this._get_note_number(key)));
-    this.visiblesNoteNumbersArray = JSON.stringify(this._visibeNoteNumbersArray);
-  }
+    constructor(element) {
+        this.array = [];
+        this.element = element
+    }
 
-  _show_key_if_visible_and_add_to_visibles(keyElement, noteNumber) {
-    let is_in_current_array = this._visible_on_keyboard.includes(noteNumber);
-    let visibles = [];
-    keyElement.classList.toggle("hide", !is_in_current_array);
-    if(is_in_current_array) this._visibeNoteNumbersArray.push(noteNumber);
-  }
+    clear() {
+        this.element.setAttribute("data-visible-note-numbers-array", JSON.stringify([]));
+    }
+
+
+    read() {
+       return JSON.parse(this.element.getAttribute("data-visible-note-numbers-array"));
+    }
+
+    push(number){
+        const currentArray = this.read();
+        currentArray.push(number);
+        this.element.setAttribute("data-visible-note-numbers-array", JSON.stringify(currentArray));
+    }
+
 
 }
 

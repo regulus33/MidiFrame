@@ -9,11 +9,11 @@ class Pattern < ApplicationRecord
   CLOCK_SIGNALS_IN_1_BAR = 96
   SUPPORTED_MIDI_NOTES = 107
   DEFAULT_FONT_SIZE = 12 # pixels
-  DEFAULT_FONT_COLOR = "white"
+  DEFAULT_FONT_COLOR = 'white'
   # ? name of midi notes signaling absolute beginning and end of a clip
-  START = "start"
-  STOP = "stop"
-  FILE = "FILE"
+  START = 'start'
+  STOP = 'stop'
+  FILE = 'FILE'
   # LIVE = "LIVE" # so far this is unused, we just assume nil is LIVE
   # ? To be joined as one entire project
   has_one_attached :clip
@@ -27,19 +27,19 @@ class Pattern < ApplicationRecord
   # * all note numbers that we will support, normally there are 0-128 but Id rather keep things as simple as possible and ,ake the end result evenly divisible by twelve, which is how many notes we keep in our on screen keyboard
   NOTES_GROUPED_IN_OCTAVES =
     [
-      [[0, "C0"], [1, "C#0"], [2, "D0"], [3, "D#0"], [4, "E0"], [5, "F0"], [6, "F#0"], [7, "G0"], [8, "G#0"], [9, "A0"], [10, "A#0"], [11, "B0"]],
-      [[12, "C1"], [13, "C#1"], [14, "D1"], [15, "D#1"], [16, "E1"], [17, "F1"], [18, "F#1"], [19, "G1"], [20, "G#1"], [21, "A1"], [22, "A#1"], [23, "B1"]],
-      [[24, "C2"], [25, "C#2"], [26, "D2"], [27, "D#2"], [28, "E2"], [29, "F2"], [30, "F#2"], [31, "G2"], [32, "G#2"], [33, "A2"], [34, "A#2"], [35, "B2"]],
-      [[36, "C3"], [37, "C#3"], [38, "D3"], [39, "D#3"], [40, "E3"], [41, "F3"], [42, "F#3"], [43, "G3"], [44, "G#3"], [45, "A3"], [46, "A#3"], [47, "B3"]],
-      [[48, "C4"], [49, "C#4"], [50, "D4"], [51, "D#4"], [52, "E4"], [53, "F4"], [54, "F#4"], [55, "G4"], [56, "G#4"], [57, "A4"], [58, "A#4"], [59, "B4"]],
-      [[60, "C5"], [61, "C#5"], [62, "D5"], [63, "D#5"], [64, "E5"], [65, "F5"], [66, "F#5"], [67, "G5"], [68, "G#5"], [69, "A5"], [70, "A#5"], [71, "B5"]],
-      [[72, "C6"], [73, "C#6"], [74, "D6"], [75, "D#6"], [76, "E6"], [77, "F6"], [78, "F#6"], [79, "G6"], [80, "G#6"], [81, "A6"], [82, "A#6"], [83, "B6"]],
-      [[84, "C7"], [85, "C#7"], [86, "D7"], [87, "D#7"], [88, "E7"], [89, "F7"], [90, "F#7"], [91, "G7"], [92, "G#7"], [93, "A7"], [94, "A#7"], [95, "B7"]],
-      [[96, "C8"], [97, "C#8"], [98, "D8"], [99, "D#8"], [100, "E8"], [101, "F8"], [102, "F#8"], [103, "G8"], [104, "G#8"], [105, "A8"], [106, "A#8"], [107, "B8"]],
-    ]
+      [[0, 'C0'], [1, 'C#0'], [2, 'D0'], [3, 'D#0'], [4, 'E0'], [5, 'F0'], [6, 'F#0'], [7, 'G0'], [8, 'G#0'], [9, 'A0'], [10, 'A#0'], [11, 'B0']],
+      [[12, 'C1'], [13, 'C#1'], [14, 'D1'], [15, 'D#1'], [16, 'E1'], [17, 'F1'], [18, 'F#1'], [19, 'G1'], [20, 'G#1'], [21, 'A1'], [22, 'A#1'], [23, 'B1']],
+      [[24, 'C2'], [25, 'C#2'], [26, 'D2'], [27, 'D#2'], [28, 'E2'], [29, 'F2'], [30, 'F#2'], [31, 'G2'], [32, 'G#2'], [33, 'A2'], [34, 'A#2'], [35, 'B2']],
+      [[36, 'C3'], [37, 'C#3'], [38, 'D3'], [39, 'D#3'], [40, 'E3'], [41, 'F3'], [42, 'F#3'], [43, 'G3'], [44, 'G#3'], [45, 'A3'], [46, 'A#3'], [47, 'B3']],
+      [[48, 'C4'], [49, 'C#4'], [50, 'D4'], [51, 'D#4'], [52, 'E4'], [53, 'F4'], [54, 'F#4'], [55, 'G4'], [56, 'G#4'], [57, 'A4'], [58, 'A#4'], [59, 'B4']],
+      [[60, 'C5'], [61, 'C#5'], [62, 'D5'], [63, 'D#5'], [64, 'E5'], [65, 'F5'], [66, 'F#5'], [67, 'G5'], [68, 'G#5'], [69, 'A5'], [70, 'A#5'], [71, 'B5']],
+      [[72, 'C6'], [73, 'C#6'], [74, 'D6'], [75, 'D#6'], [76, 'E6'], [77, 'F6'], [78, 'F#6'], [79, 'G6'], [80, 'G#6'], [81, 'A6'], [82, 'A#6'], [83, 'B6']],
+      [[84, 'C7'], [85, 'C#7'], [86, 'D7'], [87, 'D#7'], [88, 'E7'], [89, 'F7'], [90, 'F#7'], [91, 'G7'], [92, 'G#7'], [93, 'A7'], [94, 'A#7'], [95, 'B7']],
+      [[96, 'C8'], [97, 'C#8'], [98, 'D8'], [99, 'D#8'], [100, 'E8'], [101, 'F8'], [102, 'F#8'], [103, 'G8'], [104, 'G#8'], [105, 'A8'], [106, 'A#8'], [107, 'B8']],
+    ].freeze
   # * hard coded note numbers to octave index, we can check
   # we can check: data-patterns--keyboard-position="4" against midi incoming messages.
-  NOTES_IN_WHICH_OCTAVE_IDENTIFIER = { 0 => 0, 1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0, 6 => 0, 7 => 0, 8 => 0, 9 => 0, 10 => 0, 11 => 0, 12 => 1, 13 => 1, 14 => 1, 15 => 1, 16 => 1, 17 => 1, 18 => 1, 19 => 1, 20 => 1, 21 => 1, 22 => 1, 23 => 1, 24 => 2, 25 => 2, 26 => 2, 27 => 2, 28 => 2, 29 => 2, 30 => 2, 31 => 2, 32 => 2, 33 => 2, 34 => 2, 35 => 2, 36 => 3, 37 => 3, 38 => 3, 39 => 3, 40 => 3, 41 => 3, 42 => 3, 43 => 3, 44 => 3, 45 => 3, 46 => 3, 47 => 3, 48 => 4, 49 => 4, 50 => 4, 51 => 4, 52 => 4, 53 => 4, 54 => 4, 55 => 4, 56 => 4, 57 => 4, 58 => 4, 59 => 4, 60 => 5, 61 => 5, 62 => 5, 63 => 5, 64 => 5, 65 => 5, 66 => 5, 67 => 5, 68 => 5, 69 => 5, 70 => 5, 71 => 5, 72 => 6, 73 => 6, 74 => 6, 75 => 6, 76 => 6, 77 => 6, 78 => 6, 79 => 6, 80 => 6, 81 => 6, 82 => 6, 83 => 6, 84 => 7, 85 => 7, 86 => 7, 87 => 7, 88 => 7, 89 => 7, 90 => 7, 91 => 7, 92 => 7, 93 => 7, 94 => 7, 95 => 7, 96 => 8, 97 => 8, 98 => 8, 99 => 8, 100 => 8, 101 => 8, 102 => 8, 103 => 8, 104 => 8, 105 => 8, 106 => 8, 107 => 8 }
+  NOTES_IN_WHICH_OCTAVE_IDENTIFIER = { 0 => 0, 1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0, 6 => 0, 7 => 0, 8 => 0, 9 => 0, 10 => 0, 11 => 0, 12 => 1, 13 => 1, 14 => 1, 15 => 1, 16 => 1, 17 => 1, 18 => 1, 19 => 1, 20 => 1, 21 => 1, 22 => 1, 23 => 1, 24 => 2, 25 => 2, 26 => 2, 27 => 2, 28 => 2, 29 => 2, 30 => 2, 31 => 2, 32 => 2, 33 => 2, 34 => 2, 35 => 2, 36 => 3, 37 => 3, 38 => 3, 39 => 3, 40 => 3, 41 => 3, 42 => 3, 43 => 3, 44 => 3, 45 => 3, 46 => 3, 47 => 3, 48 => 4, 49 => 4, 50 => 4, 51 => 4, 52 => 4, 53 => 4, 54 => 4, 55 => 4, 56 => 4, 57 => 4, 58 => 4, 59 => 4, 60 => 5, 61 => 5, 62 => 5, 63 => 5, 64 => 5, 65 => 5, 66 => 5, 67 => 5, 68 => 5, 69 => 5, 70 => 5, 71 => 5, 72 => 6, 73 => 6, 74 => 6, 75 => 6, 76 => 6, 77 => 6, 78 => 6, 79 => 6, 80 => 6, 81 => 6, 82 => 6, 83 => 6, 84 => 7, 85 => 7, 86 => 7, 87 => 7, 88 => 7, 89 => 7, 90 => 7, 91 => 7, 92 => 7, 93 => 7, 94 => 7, 95 => 7, 96 => 8, 97 => 8, 98 => 8, 99 => 8, 100 => 8, 101 => 8, 102 => 8, 103 => 8, 104 => 8, 105 => 8, 106 => 8, 107 => 8 }.freeze
 
   # sets both total clock signals and step_length
   # purpose being that the JS recorder needs to know how many clock signals should pass before exit.
@@ -55,7 +55,7 @@ class Pattern < ApplicationRecord
 
   # set initial pattern name on insert so the front end has something to work with at the beginning
   def initialize_name
-    self.name = "new pattern"
+    self.name = 'new pattern'
   end
 
   # set step length to 4  on insert
@@ -89,13 +89,13 @@ class Pattern < ApplicationRecord
   # else, make the start
   def calibrate_midi_event_time_stamps(events)
     if (midi_from_file?)
-      return events if events.first["timestamp"] == 0
+      return events if events.first['timestamp'] == 0
       # insert a new 'start' event if nothing exists at 0
-      events.insert(0, { note: "start", timestamp: 0 })
+      events.insert(0, { note: 'start', timestamp: 0 })
     end
-    start_time = events.find { |e| e["note"] == "start" }["timestamp"]
+    start_time = events.find { |e| e['note'] == 'start' }['timestamp']
     events.map do |event|
-      { note: event["note"], timestamp: event["timestamp"] - start_time }
+      { note: event['note'], timestamp: event['timestamp'] - start_time }
     end
   end
 
@@ -124,12 +124,12 @@ class Pattern < ApplicationRecord
       active_storage_video = self.project.video.audio.clip
       file_extension = self.project.video.audio.file_extension
     else
-      throw "Argument error, create_clip requires a type, VISUAL or AUDIO"
+      throw 'Argument error, create_clip requires a type, VISUAL or AUDIO'
     end
 
     source_file = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_#{active_storage_video.name.to_s}_#{type}.#{file_extension}"
     processed_video = "#{Rails.root}/tmp/#{active_storage_video.blob.key}_#{self.project.id.to_s}-#{self.id.to_s}_#{type}.#{file_extension}"
-    File.open(source_file, "wb") do |f|
+    File.open(source_file, 'wb') do |f|
       f.write(active_storage_video.download)
     end
     # * 2.
@@ -156,7 +156,7 @@ class Pattern < ApplicationRecord
       active_storage_font = self.project.font.file
       font_file_temp_path = "#{Rails.root}/tmp/#{active_storage_font.blob.key}_#{active_storage_font.name.to_s}#{font_file_extension}"
       # * download the fontfile
-      File.open(font_file_temp_path, "wb") do |f|
+      File.open(font_file_temp_path, 'wb') do |f|
         f.write(active_storage_font.download)
       end
       # output will be into the existing pattern video :)
@@ -189,7 +189,7 @@ class Pattern < ApplicationRecord
   end
 
   def concatenate_clips(path_to_input_text_file:, processed_video:, role:)
-    `ffmpeg #{role == Video::VISUAL ? "-an" : ""} -f concat -safe 0 -i #{path_to_input_text_file} -c copy #{processed_video}`
+    `ffmpeg #{role == Video::VISUAL ? '-an' : ''} -f concat -safe 0 -i #{path_to_input_text_file} -c copy #{processed_video}`
   end
 
   def generate_new_video_concat_file_path(role:)
@@ -198,13 +198,13 @@ class Pattern < ApplicationRecord
   end
 
   def create_concat_file(name:, concat_blue_prints:)
-    File.open(name, "wb") do |f|
+    File.open(name, 'wb') do |f|
       f.write(concat_blue_prints)
     end
   end
 
   def generate_new_text_concat_file_path
-    file_name = "concat_file" + self.id.to_s
+    file_name = 'concat_file' + self.id.to_s
     "#{Rails.root}/tmp/#{file_name}.txt"
   end
 
@@ -227,7 +227,7 @@ class Pattern < ApplicationRecord
     x = video.midway_x
     y = video.midway_y
     notes = Hash.new()
-    random_text = ["People", "Dragon", "El Paso", "Lime", "Certainty", "Dads"]
+    random_text = ['People', 'Dragon', 'El Paso', 'Lime', 'Certainty', 'Dads']
 
     SUPPORTED_MIDI_NOTES.times do |midi_note|
       midi_note = midi_note + 1
@@ -248,16 +248,16 @@ class Pattern < ApplicationRecord
   def check_audio_and_video_clips
     # sort the array and pluck anything not .wav or .mp4
     # if this file is
-    sorted = Dir.entries(Rails.root.join("tmp").to_s).select { |f| %w{wav mp4}.include?(f.split(".").pop) && f.split("_").join("").gsub(/\.(wav|mp4)$/, "").to_f != 0.0 }.sort_by do |d|
+    sorted = Dir.entries(Rails.root.join('tmp').to_s).select { |f| %w{wav mp4}.include?(f.split('.').pop) && f.split('_').join('').gsub(/\.(wav|mp4)$/, '').to_f != 0.0 }.sort_by do |d|
       time_from_file_string(d)
     end
     sorted.each_with_index do |file, index|
       next if is_not_timestamp_name(file)
       # TODO solve LAST TIME! sorted[index+1] out of bounds at the end look for end time in this pattern
-      expected_duration = json_ffprobe(file)["format"]["duration"].to_f * 1000 # ! its in seconds multiply to get milliseconds
+      expected_duration = json_ffprobe(file)['format']['duration'].to_f * 1000 # ! its in seconds multiply to get milliseconds
       if (index == sorted.length - 1)
         # we at the end
-        actual_duration = self.midi_events.last["timestamp"] - time_from_file_string(file)
+        actual_duration = self.midi_events.last['timestamp'] - time_from_file_string(file)
       else
         actual_duration = time_from_file_string(sorted[index + 1]) - time_from_file_string(file)
       end
@@ -265,26 +265,26 @@ class Pattern < ApplicationRecord
       # throw "for #{actual_duration} :: BAD SLICING :: expected_duration was: #{expected_duration}, instead got #{actual_duration}" if expected_duration != actual_duration
       # ! THROW A MOTHERFUCKIN ERR ROAR IF WE ARE SO MUCH AS 10 MILISECONDS OFFFF BIATCH!
       # throw "for #{actual_duration} :: BAD SLICING :: expected_duration was: #{expected_duration}, instead got #{actual_duration}" if (expected_duration - actual_duration).abs > 10 && file.split(".").last != ".wav"
-      binding.pry if (expected_duration - actual_duration).abs > 10 && file.split(".").last != ".wav"
+      # binding.pry if (expected_duration - actual_duration).abs > 10 && file.split(".").last != ".wav"
     end
   end
 
   def json_ffprobe(file)
-    JSON.parse(`ffprobe -v quiet -print_format json -show_format -show_streams #{Rails.root.join("tmp").to_s + "/" + file}`)
+    JSON.parse(`ffprobe -v quiet -print_format json -show_format -show_streams #{Rails.root.join('tmp').to_s + '/' + file}`)
   end
 
   def time_from_file_string(string)
-    string = string.split("_").pop
-    d = string.split(".")
+    string = string.split('_').pop
+    d = string.split('.')
     d.pop
-    d = d.join(".")
+    d = d.join('.')
     d.to_f
   end
 
   def is_not_timestamp_name(filename)
-    name = filename.split(".")
+    name = filename.split('.')
     name.pop
-    name = name.join(".")
+    name = name.join('.')
     name.to_f == 0.0 && name != 0 && name != 0.0
   end
 end

@@ -77,7 +77,7 @@
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/packs-test/";
+/******/ 	__webpack_require__.p = "/packs/";
 /******/
 /******/
 /******/ 	// Load entry module and return exports
@@ -357,7 +357,7 @@ var _default = /*#__PURE__*/function (_Controller) {
     this.keyBoardKeyTargets.forEach(function (key) {
       return _this._show_key_if_visible_and_add_to_visibles(key, _this._get_note_number(key));
     });
-    this.dataVisibleNoteNumbersArray = JSON.stringify(this._visibeNoteNumbersArray);
+    this.visiblesNoteNumbersArray = JSON.stringify(this._visibeNoteNumbersArray);
   };
 
   _proto._show_key_if_visible_and_add_to_visibles = function _show_key_if_visible_and_add_to_visibles(keyElement, noteNumber) {
@@ -369,7 +369,7 @@ var _default = /*#__PURE__*/function (_Controller) {
   };
 
   _createClass(_default, [{
-    key: "dataVisibleNoteNumbersArray",
+    key: "visiblesNoteNumbersArray",
     get: function get() {
       return JSON.parse(this.element.getAttribute("data-visible-note-numbers-array"));
     },
@@ -465,16 +465,19 @@ var _default = /*#__PURE__*/function (_Controller) {
     this.clockSignalsPassedSinceRecordStart = 0;
     this.video = Object(_helpers_video_js__WEBPACK_IMPORTED_MODULE_2__["default"])(this.videoTarget.id);
     this.selectedKey = null;
+    this.visiblesNoteNumbersArray = [];
 
     this._observe_all_keys();
 
     this._enable_midi();
 
+    this._initVisibleNoteNumbersArray();
+
     this.saveAndNavigate = this.saveAndNavigate.bind(this);
 
     this._addKeyDownChannelListener();
 
-    this._initializePianoData(); //everytime a new notes comes in we will add it 
+    this._initializePianoData(); //everytime a new notes comes in we will add it
 
 
     this.isSeeking = false; //? text styling
@@ -489,6 +492,10 @@ var _default = /*#__PURE__*/function (_Controller) {
     if (window.location.origin != "https://midiframe.com") {
       window.midiDeviceController = this;
     }
+  };
+
+  _proto._initVisibleNoteNumbersArray = function _initVisibleNoteNumbersArray() {
+    this.visiblesNoteNumbersArray = JSON.parse(this.noteStampsTarget.getAttribute("data-visible-note-numbers-array"));
   } // return 48 if none selected yet
   ;
 
@@ -738,7 +745,7 @@ var _default = /*#__PURE__*/function (_Controller) {
     var index = this.getVisibleNoteIndexFromKey(e.key);
 
     if (index != undefined) {
-      var noteNumber = this.dataVisibleNoteNumbersArray[index]; // TODO this is gross:
+      var noteNumber = this.visiblesNoteNumbersArray[index]; // TODO this is gross:
 
       this.onMessageNoteOn({
         note: {
@@ -752,7 +759,7 @@ var _default = /*#__PURE__*/function (_Controller) {
     var index = this.getVisibleNoteIndexFromKey(e.key);
 
     if (index != undefined) {
-      var noteNumber = this.dataVisibleNoteNumbersArray[index]; // TODO this is gross:
+      var noteNumber = this.visiblesNoteNumbersArray[index]; // TODO this is gross:
 
       this.onMessageNoteOff({
         note: {
@@ -1228,11 +1235,6 @@ var _default = /*#__PURE__*/function (_Controller) {
   };
 
   _createClass(_default, [{
-    key: "dataVisibleNoteNumbersArray",
-    get: function get() {
-      return JSON.parse(this.noteStampsTarget.getAttribute("data-visible-note-numbers-array"));
-    }
-  }, {
     key: "currentMidiPosition",
     get: function get() {
       return parseInt(this.noteStampsTarget.getAttribute("data-patterns--keyboard-position"));
@@ -1901,6 +1903,12 @@ var _default = /*#__PURE__*/function (_Controller) {
       Object(_helpers_network_js__WEBPACK_IMPORTED_MODULE_1__["generatePatternClip"])({
         patternId: _this.patternId,
         projectId: _this.projectId
+      }).then(function (response) {
+        response.json().then(function (j) {
+          // this gets checked in a test over and over again vals are 
+          // 'ok' or 'error'
+          window.generatePatternClipStatus = j.status;
+        });
       });
     });
   };
@@ -83194,4 +83202,4 @@ function extend() {
 /***/ })
 
 /******/ });
-//# sourceMappingURL=application-8b1c28199d29d98ade9f.js.map
+//# sourceMappingURL=application-b438b2cdfa524b39a26d.js.map

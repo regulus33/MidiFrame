@@ -1,4 +1,4 @@
-div data-controller="patterns--keyboard" data-target="patterns--midi-device.noteStamps" data-visible-note-numbers-array="null" note-stamps=pattern.note_stamps.to_json text-stamps=pattern.text_stamps.to_json data-patterns--keyboard-notes=midi_notes.to_json  data-notes-in-which-octave-identifier=@notes_in_which_octave_identifier data-patterns--keyboard-position=current_index_in_notes_array data-patterns--keyboard-final-index=@final_index
+div data-controller="patterns--keyboard" data-target="patterns--midi-device.noteStamps" data-visible-note-numbers-array="[]" note-stamps=pattern.note_stamps.to_json text-stamps=pattern.text_stamps.to_json data-patterns--keyboard-notes=midi_notes.to_json  data-notes-in-which-octave-identifier=@notes_in_which_octave_identifier data-patterns--keyboard-position=current_index_in_notes_array data-patterns--keyboard-final-index=@final_index
   ul class="set z-depth-5 keyboard-list"
     -midi_notes.each_with_index do |array_of_notes, index|
       / if the note is in the default index, add nothing otherwise ass hide 

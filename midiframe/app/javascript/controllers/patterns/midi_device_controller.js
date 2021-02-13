@@ -49,7 +49,7 @@ export default class extends Controller {
     this.saveAndNavigate = this.saveAndNavigate.bind(this);
     this._addKeyDownChannelListener();
     this._initializePianoData();
-    //everytime a new notes comes in we will add it 
+    //everytime a new notes comes in we will add it
     this.isSeeking = false;
     //? text styling
     // the current 'mode' either, selecting or demoing midi 
@@ -63,6 +63,10 @@ export default class extends Controller {
     if(window.location.origin != "https://midiframe.com"){
       window.midiDeviceController = this;
     }
+  }
+
+  get dataVisibleNoteNumbersArray(){
+    return JSON.parse(this.noteStampsTarget.getAttribute('data-visible-note-numbers-array'))
   }
 
   // return 48 if none selected yet
@@ -268,7 +272,8 @@ export default class extends Controller {
     }
     let index = this.getVisibleNoteIndexFromKey(e.key);
     if (index != undefined) {
-      let noteNumber = this.visiblesNoteNumbersArray[index]
+      debugger
+      let noteNumber = this.dataVisibleNoteNumbersArray[index]
       // TODO this is gross:
       this.onMessageNoteOn({ note: { number: noteNumber } });
     }
@@ -277,14 +282,10 @@ export default class extends Controller {
   onDocumentKeyUp(e) {
     let index = this.getVisibleNoteIndexFromKey(e.key);
     if (index != undefined) {
-      let noteNumber = this.visiblesNoteNumbersArray[index]
+      let noteNumber = this.dataVisibleNoteNumbersArray[index]
       // TODO this is gross:
       this.onMessageNoteOff({ note: { number: noteNumber } });
     }
-  }
-
-  get visiblesNoteNumbersArray() {
-    return JSON.parse(this.noteStampsTarget.getAttribute("data-visible-note-numbers-array"));
   }
 
   randomizeOneNote() {
@@ -447,6 +448,7 @@ export default class extends Controller {
   // make button green if the played notes are lower than the current octave
   onOffHighlightingRelevantOctaveButton(noteNumber) {
     if (this.notesLegend[noteNumber] < this.currentMidiPosition) {
+      debugger
       this.buttonMinusTarget.classList.add("grey");
     } else if (this.notesLegend[noteNumber] > this.currentMidiPosition) {
       this.buttonPlusTarget.classList.add("grey");

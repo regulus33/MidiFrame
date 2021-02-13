@@ -357,7 +357,7 @@ var _default = /*#__PURE__*/function (_Controller) {
     this.keyBoardKeyTargets.forEach(function (key) {
       return _this._show_key_if_visible_and_add_to_visibles(key, _this._get_note_number(key));
     });
-    this.visiblesNoteNumbersArray = JSON.stringify(this._visibeNoteNumbersArray);
+    this.dataVisibleNoteNumbersArray = JSON.stringify(this._visibeNoteNumbersArray);
   };
 
   _proto._show_key_if_visible_and_add_to_visibles = function _show_key_if_visible_and_add_to_visibles(keyElement, noteNumber) {
@@ -369,7 +369,7 @@ var _default = /*#__PURE__*/function (_Controller) {
   };
 
   _createClass(_default, [{
-    key: "visiblesNoteNumbersArray",
+    key: "dataVisibleNoteNumbersArray",
     get: function get() {
       return JSON.parse(this.element.getAttribute("data-visible-note-numbers-array"));
     },
@@ -736,7 +736,7 @@ var _default = /*#__PURE__*/function (_Controller) {
     var index = this.getVisibleNoteIndexFromKey(e.key);
 
     if (index != undefined) {
-      var noteNumber = this.visiblesNoteNumbersArray[index]; // TODO this is gross:
+      var noteNumber = this.dataVisibleNoteNumbersArray[index]; // TODO this is gross:
 
       this.onMessageNoteOn({
         note: {
@@ -750,7 +750,7 @@ var _default = /*#__PURE__*/function (_Controller) {
     var index = this.getVisibleNoteIndexFromKey(e.key);
 
     if (index != undefined) {
-      var noteNumber = this.visiblesNoteNumbersArray[index]; // TODO this is gross:
+      var noteNumber = this.dataVisibleNoteNumbersArray[index]; // TODO this is gross:
 
       this.onMessageNoteOff({
         note: {
@@ -1226,7 +1226,7 @@ var _default = /*#__PURE__*/function (_Controller) {
   };
 
   _createClass(_default, [{
-    key: "visiblesNoteNumbersArray",
+    key: "dataVisibleNoteNumbersArray",
     get: function get() {
       return JSON.parse(this.noteStampsTarget.getAttribute("data-visible-note-numbers-array"));
     }

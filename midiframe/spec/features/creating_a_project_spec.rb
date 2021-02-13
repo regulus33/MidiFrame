@@ -1,36 +1,36 @@
-require "rails_helper"
+require 'rails_helper'
 # TODO: we still need to deal with failed processes not cleaning up there mess
 def wipe_temp
-  `rm #{Rails.root.join("tmp").to_s}/*.mp4`
-  `rm #{Rails.root.join("tmp").to_s}/*.wav`
-  `rm #{Rails.root.join("tmp").to_s}/*.txt`
+  `rm #{Rails.root.join('tmp').to_s}/*.mp4`
+  `rm #{Rails.root.join('tmp').to_s}/*.wav`
+  `rm #{Rails.root.join('tmp').to_s}/*.txt`
 end
 
 def signup
   visit new_user_registration_path
-  fill_in "user_email", with: "zacharyrowden89@gmail.com"
-  fill_in "user_password", with: "password123456"
-  fill_in "user_password_confirmation", with: "password123456"
+  fill_in 'user_email', with: 'zacharyrowden89@gmail.com'
+  fill_in 'user_password', with: 'password123456'
+  fill_in 'user_password_confirmation', with: 'password123456'
   find("input[type='submit']").click
 end
 
 def visit_email_confirmation_link
   email = ActionMailer::Base.deliveries.last.body
   link = email.to_s.scan(/href\s*=\s*"([^"]*)"/).first.first
-  base_url = evaluate_script("window.location.origin")
-  link.gsub!("http://midiframe.com", base_url)
+  base_url = evaluate_script('window.location.origin')
+  link.gsub!('http://midiframe.com', base_url)
   visit link
 end
 
 def signin
-  fill_in "user_email", with: "zacharyrowden89@gmail.com"
-  fill_in "user_password", with: "password123456"
+  fill_in 'user_email', with: 'zacharyrowden89@gmail.com'
+  fill_in 'user_password', with: 'password123456'
   find("input[type='submit']").click
 end
 
 def upload_video
   visit videos_new_path
-  attach_file("new_video_file", Rails.root.join("spec", "test_upload.mp4"), make_visible: true)
+  attach_file('new_video_file', Rails.root.join('spec', 'test_upload.mp4'), make_visible: true)
   find("input[type='submit']").click
 end
 
@@ -43,7 +43,7 @@ def randomize_all_timestamps
 end
 
 def press_s_key
-  find("body").native.send_key("s")
+  find('body').native.send_key('s')
 end
 
 def assert_key_press_results_in_video_responding
@@ -60,13 +60,13 @@ def test_dragging_functionality
   text_span_left_original = evaluate_script('document.getElementById("note-text-text").offsetLeft').to_i
   text_span_top_original = evaluate_script('document.getElementById("note-text-text").offsetTop').to_i
   sleep 1
-  execute_script("window.runDragMock()")
+  execute_script('window.runDragMock()')
   text_span_left_now = evaluate_script('document.getElementById("note-text-text").offsetLeft').to_i
   text_span_top_now = evaluate_script('document.getElementById("note-text-text").offsetTop').to_i
   sleep 1
   expect(text_span_top_now).to eq(text_span_top_original - 30)
   expect(text_span_left_now).to eq(text_span_left_original - 30)
-  find("body").native.send_key("a")
+  find('body').native.send_key('a')
   text_span_left_after_keypress = evaluate_script('document.getElementById("note-text-text").offsetLeft').to_i
   expect(text_span_left_after_keypress).to be(text_span_left_original)
 end
@@ -82,7 +82,7 @@ def fake_events
     else
       timestamp = last_millisec + rand(0.0...300.0)
     end
-    events << { "note" => rand(0...107), "timestamp" => timestamp }
+    events << { 'note' => rand(0...107), 'timestamp' => timestamp }
     last_millisec = timestamp
   end
   return events
@@ -96,10 +96,10 @@ def inject_test_data_into_midirecorder
   sleep 1
   # start stamp
   fake_events = fake_events()
-  execute_script("window.midiRecorderController.onMessageStart({timestamp: 0.0})")
+  execute_script('window.midiRecorderController.onMessageStart({timestamp: 0.0})')
   30.times do |num|
-    timestamp = fake_events[num]["timestamp"]
-    note_number = fake_events[num]["note"]
+    timestamp = fake_events[num]['timestamp']
+    note_number = fake_events[num]['note']
     execute_script("window.midiRecorderController.addMidiEvent({timestamp:#{timestamp},note:{number:#{note_number}}})")
     # execute_script("window.midiRecorderController.midiEvents = JSON.parse('#{fake_events.to_json}')")
   end
@@ -114,14 +114,14 @@ end
 
 def wait_for_response_and_test_status
   while true
-    generate_pattern_clip_status = evaluate_script("window.generatePatternClipStatus")
+    generate_pattern_clip_status = evaluate_script('window.generatePatternClipStatus')
     break if generate_pattern_clip_status
   end
-  expect(generate_pattern_clip_status).to eq("ok")
+  expect(generate_pattern_clip_status).to eq('ok')
 end
 
-RSpec.describe "End To End", type: :system do
-  it "Uploads file, creates a pattern, edits a pattern and generates a clip" do
+RSpec.describe 'End To End', type: :system do
+  it 'Uploads file, creates a pattern, edits a pattern and generates a clip' do
     Capybara.current_driver = :selenium_chrome_headless
     wipe_temp()
     signup()
@@ -130,6 +130,7 @@ RSpec.describe "End To End", type: :system do
     upload_video()
     go_to_pattern_edit()
     randomize_all_timestamps()
+    binding.pry
     press_s_key()
     assert_key_press_results_in_video_responding()
     test_dragging_functionality()
