@@ -1,5 +1,4 @@
-<img src="./midiframe.png/>
-<img src="./midiframe.png" width="604"/>
+<img src="./midiframe.png" width="800"/>
 
 **Creates mp4 files based on midi captured data**
 
